@@ -1,0 +1,69 @@
+.zm-loader span{
+  padding-left: 30px;
+  font-size: 14px;
+}
+
+.widget-product-cart,.zip-express-payment-button{
+  clear:both;
+}
+
+.zm-loader:before{
+	height: 1em;
+	width: 1em;
+	position: absolute;
+	content: "";
+	-webkit-animation: spin 1s ease-in-out infinite;
+	-moz-animation: spin 1s ease-in-out infinite;
+	animation: spin 1s ease-in-out infinite;
+	background: url(../../../woocommerce/assets/images/icons/loader.svg) center center;
+	background-size: cover;
+	line-height: 1;
+	text-align: center;
+	font-size: 1em;
+	color: rgba(0,0,0,.75);
+	margin-top: 5px;
+	margin-left:0px;
+}
+
+a.zip-productbuttonlink{
+  font-size: 11px;
+  cursor: pointer;
+  display: inline !important;
+  text-decoration:none;
+  border:none;
+}
+
+a#zipmoney-learn-more{
+  cursor: pointer;
+  display: inline !important;
+}
+
+.zip-overlay {
+	position: fixed; /* Sit on top of the page content */
+	display: none; /* Hidden by default */
+	width: 100%; /* Full width (cover the whole page) */
+	height: 100%; /* Full height (cover the whole page) */
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,0.6); /* Black background with opacity */
+	z-index: 1000; /* Specify a stack order in case you're using a different order for other elements */
+	pointer-events: none; /* Add a pointer on hover */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='your_transparent.png', sizingMethod='scale');
+}
+
+.zip-overlay-text{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	font-size: 50px;
+	color: white;
+	transform: translate(-50%,-50%);
+	-ms-transform: translate(-50%,-50%);
+}
+
+.save-zip-account{
+	margin-left: 10px;
+	display: inline;
+}

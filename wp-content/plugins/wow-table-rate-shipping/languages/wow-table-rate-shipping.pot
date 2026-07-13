@@ -1,0 +1,2751 @@
+# Copyright (C) 2026 WPXPO
+# This file is distributed under the GPLv3.
+msgid ""
+msgstr ""
+"Project-Id-Version: WowShipping - Weight Based Table Rate Shipping with Live Rates for UPS, USPS, DHL 1.1.18-alpha\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wow-table-rate-shipping\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-04-28T03:58:11+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: wow-table-rate-shipping\n"
+
+#. Plugin Name of the plugin
+msgid "WowShipping - Weight Based Table Rate Shipping with Live Rates for UPS, USPS, DHL"
+msgstr ""
+
+#. Description of the plugin
+msgid "Flexible table rate shipping plugin with live rates to solve any complex shipping scenario using weight, cart, location, and 30+ conditions."
+msgstr ""
+
+#. Author of the plugin
+msgid "WPXPO"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.wpxpo.com/about"
+msgstr ""
+
+#: includes/class-conditions.php:60
+#: assets/js/wtrs-backend.js:1
+msgid "Sunday"
+msgstr ""
+
+#: includes/class-conditions.php:64
+#: assets/js/wtrs-backend.js:1
+msgid "Monday"
+msgstr ""
+
+#: includes/class-conditions.php:68
+#: assets/js/wtrs-backend.js:1
+msgid "Tuesday"
+msgstr ""
+
+#: includes/class-conditions.php:72
+#: assets/js/wtrs-backend.js:1
+msgid "Wednesday"
+msgstr ""
+
+#: includes/class-conditions.php:76
+#: assets/js/wtrs-backend.js:1
+msgid "Thursday"
+msgstr ""
+
+#: includes/class-conditions.php:80
+#: assets/js/wtrs-backend.js:1
+msgid "Friday"
+msgstr ""
+
+#: includes/class-conditions.php:84
+#: assets/js/wtrs-backend.js:1
+msgid "Saturday"
+msgstr ""
+
+#: includes/class-conditions.php:264
+msgid "Any Free Shipping Coupons"
+msgstr ""
+
+#: includes/class-handling-fee.php:98
+#: assets/js/wtrs-backend.js:184
+msgid "Handling Fee"
+msgstr ""
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:699
+msgid "%d day(s)"
+msgstr ""
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:702
+msgid "%1$d-%2$d day(s)"
+msgstr ""
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:706
+msgid "%d+ day(s)"
+msgstr ""
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:709
+msgid "Up to %d day(s)"
+msgstr ""
+
+#: includes/class-wow-shipping-method.php:126
+msgid "Flexible Shipping (WowShipping)"
+msgstr ""
+
+#: includes/class-wow-shipping-method.php:127
+msgid "Set flexible Table Rate shipping based on 30+ conditions, including cart weight, cart quantity, price, and more."
+msgstr ""
+
+#: includes/rest/class-rest.php:400
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping rule saved successfully"
+msgstr ""
+
+#: includes/rest/class-rest.php:404
+msgid "Failed to save shipping rule"
+msgstr ""
+
+#: includes/rest/class-rest.php:789
+#: includes/rest/class-rest.php:846
+msgid "Shipping zone name is required."
+msgstr ""
+
+#: includes/rest/class-rest.php:803
+#: includes/utils/class-import-helper.php:507
+msgid "Failed to create WooCommerce shipping zone."
+msgstr ""
+
+#: includes/rest/class-rest.php:814
+msgid "WooCommerce shipping zone created successfully."
+msgstr ""
+
+#: includes/rest/class-rest.php:838
+msgid "A valid shipping zone is required."
+msgstr ""
+
+#: includes/rest/class-rest.php:855
+msgid "Shipping zone not found."
+msgstr ""
+
+#: includes/rest/class-rest.php:870
+msgid "WooCommerce shipping zone updated successfully."
+msgstr ""
+
+#: includes/utils/class-deactive.php:67
+msgid "The plugin isn’t working properly."
+msgstr ""
+
+#: includes/utils/class-deactive.php:72
+msgid "Limited features on the free version."
+msgstr ""
+
+#: includes/utils/class-deactive.php:77
+msgid "I found a better plugin."
+msgstr ""
+
+#: includes/utils/class-deactive.php:78
+msgid "Please share which plugin."
+msgstr ""
+
+#: includes/utils/class-deactive.php:83
+msgid "It's a temporary deactivation."
+msgstr ""
+
+#: includes/utils/class-deactive.php:88
+msgid "Other."
+msgstr ""
+
+#: includes/utils/class-deactive.php:89
+msgid "Please share the reason."
+msgstr ""
+
+#: includes/utils/class-deactive.php:105
+msgid "Quick Feedback"
+msgstr ""
+
+#: includes/utils/class-deactive.php:110
+msgid "If you have a moment, please let us know why you are deactivating WowShipping:"
+msgstr ""
+
+#: includes/utils/class-deactive.php:127
+msgid "Submit & Deactivate"
+msgstr ""
+
+#: includes/utils/class-deactive.php:128
+msgid "Skip & Deactivate"
+msgstr ""
+
+#: includes/utils/class-import-helper.php:156
+msgid "Invalid Columns"
+msgstr ""
+
+#. translators: column name.
+#: includes/utils/class-import-helper.php:181
+msgid "Invalid JSON data in column '%s'"
+msgstr ""
+
+#. translators: row number.
+#: includes/utils/class-import-helper.php:270
+msgid "Failed to resolve WooCommerce zone for row %d"
+msgstr ""
+
+#: includes/utils/class-import-helper.php:482
+msgid "Imported Zone"
+msgstr ""
+
+#: includes/utils/class-import-helper.php:488
+msgid "Invalid WooCommerce zone locations in import data."
+msgstr ""
+
+#: includes/utils/class-notice.php:107
+msgid "Hello Bar Action performed"
+msgstr ""
+
+#: includes/utils/class-notice.php:190
+#: includes/utils/class-notice.php:208
+msgid "Spring Sale:"
+msgstr ""
+
+#: includes/utils/class-notice.php:191
+#: includes/utils/class-notice.php:209
+msgid "WowShipping offers are live - Enjoy %s off on WowShipping Pro."
+msgstr ""
+
+#: includes/utils/class-notice.php:195
+#: includes/utils/class-notice.php:213
+msgid "Claim Your Discount!"
+msgstr ""
+
+#: includes/utils/class-notice.php:546
+msgid "Close Banner"
+msgstr ""
+
+#: includes/utils/class-notice.php:753
+msgid "Want to help make WowShipping even more awesome?"
+msgstr ""
+
+#: includes/utils/class-notice.php:755
+msgid "Allow us to collect diagnostic data and usage information. see "
+msgstr ""
+
+#: includes/utils/class-notice.php:756
+msgid "what we collect."
+msgstr ""
+
+#: includes/utils/class-notice.php:774
+msgid "Accept & Close"
+msgstr ""
+
+#: includes/utils/class-notice.php:815
+msgid "Invalid nonce."
+msgstr ""
+
+#: includes/utils/class-notice.php:819
+msgid "Invalid request."
+msgstr ""
+
+#: includes/utils/class-options.php:65
+msgid "Follow Us"
+msgstr ""
+
+#: includes/utils/class-options.php:90
+#: includes/utils/class-options.php:91
+msgid "WowShipping"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:34
+msgid "Spring Sale - Up to 60% OFF"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:43
+#: assets/js/wtrs-backend.js:181
+msgid "Create Shipping"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:56
+#: assets/js/wtrs-backend.js:1
+msgid "Renew License"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:60
+#: assets/js/wtrs-backend.js:1
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:95
+msgid "Docs"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:96
+msgid "Support"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Drag and Drop File Here"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "You can upload files"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "OR"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Browse Files"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Continue to upload"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Uploading Files…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "useToast must be used within a ToastProvider"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Average Shipping Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+#: assets/js/wtrs-backend.js:181
+msgid "Error fetching orders"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Flexible"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Flat"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Carrier"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "This week"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Last 30 Days"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Last 90 Days"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "View Full Analytics"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Select Days"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Pass"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Proceed to the next tier as usual."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Stop"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Stop at this tier, yielding the shipping cost calculated so far. No more tiers will be evaluated."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Deny"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Deny this shipping method, stopping at this tier with no shipping option. No more tiers will be evaluated."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Cart Weight-based shipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "A sample scenario of weight-based shipping. You can easily customize to fit your store's requirements."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Cart Quantity-based Shipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Here’s an example scenario for setting up shipping rates based on the total quantity of items in the cart."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Country + Cart Weight"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "This example shows a combination of country-based rules with cart-weight conditions to set precise shipping rates."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Country + Weight with Variable Charges"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "This example shows a combination of country-based rules, weight ranges, and flexible variable charges."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Sum"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Add up the costs from all applicable tiers to get the final shipping cost."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Highest"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Select the highest cost among the applicable tiers as the final shipping cost."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Lowest"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Select the lowest cost among the applicable tiers as the final shipping cost."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "First"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Use the cost from the first applicable tier as the final shipping cost."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Last"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Use the cost from the last applicable tier as the final shipping cost."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Manual Rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Selecting this option lets you set your preferred conditions for manually calculating shipping rates."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Carrier Live Rates (Beta)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Selecting this option will help you choose and configure your preferred shipping carrier so that the shipping rate will be calculated in real time via the carrier's API."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Flexible Rate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Flat Rate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Free Shipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Taxable"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "None"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Logged-In Users"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Logged-Out Users"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Everyone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Fixed Amount"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+#: assets/js/wtrs-backend.js:190
+msgid "Percentage"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Entire Order"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Per Item"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Per Class: Charge shipping for each shipping class individually."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Per Order: Charge shipping for the most expensive shipping class."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "extends the functionality of your WooCommerce store with additional features and options."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "is a B2B wholesale plugin featuring advanced wholesale pricing and customization features."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "is a complete WooCommerce store builder featuring advanced options to improve sales!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Boost sales and maximize revenue with the advanced discount campaigns of WowRevenue."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Generates actionable leads and boost sales with popups, banners, and floating bars using WowOptin."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "creates wonderful custom blogs and more using the powerful and customizable PostX site builder."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Do I need the free version of the plugin on my site?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Yes. You can use the free version of the plugin, which includes the free features of WowShipping. However, please note that to use the pro features, you need the free version of the plugin installed on your WordPress site."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Where do I get my product license?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "You can copy the product license from the client dashboard. Once you copy it, paste the license key into the WowShipping License validation page."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "How do I get help to use WowShipping Pro?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Please go to the support link: <a href='https://www.wpxpo.com/contact/.' target='_blank'>www.wpxpo.com/contact</a>"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Overview"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Shipping Methods"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Analytics & Logs"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Settings"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "WPXPO Plugins"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "License"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Create unlimited shipping rules"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Stack unlimited rule groups"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Fully unlocked carrier integrations"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Fully unlock table rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Unlock handling fees, visibility, and more!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Scale Your Shipping Efforts with Pro!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Want to improve your shipping game? Unlock the pro features to create super advanced shipping rules, connect to carriers, and a whole lot more!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "WOWSHIPPING PRO"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Get Pro!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+#: assets/js/wtrs-backend.js:187
+#: assets/js/wtrs-backend.js:190
+msgid "View Docs"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Pro Feature"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Pro"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Search…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Clear search"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "No options found"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Start time"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "End time"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Select timezone…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Select time range…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Start Time"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "End Time"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+#: assets/js/wtrs-backend.js:199
+#: assets/js/wtrs-backend.js:200
+msgid "Save"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Select Weekdays"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Select Timezone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Spring Sale - Enjoy Up to 60% Off on"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "WowShipping Pro"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Upgrade Now"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Close notification"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "WowShipping AI Assitant"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Navigation menu"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "An error occurred"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Congratulations!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "You've unlocked WowShipping Pro - all you have to do is build shipping rules and deploy. WowShipping will take care of the rest!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "License Type:"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Expires On:"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Deactivate License"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Ready to Use WowShipping Pro?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "You can find your license key in the purchase confirmation email or in your WPXPO account."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Activate License"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "1 Site - Yearly"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Unlimited Sites - Yearly"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "1 Sites - Lifetime"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Unlimited Sites - Lifetime"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Choose a upgrade plan"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Failed to fetch license data"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "WowShipping is a product of WPXPO. The contact support team is ready to help you with any queries, including how to use the pro version of WowShipping."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:1
+msgid "Manage License"
+msgstr ""
+
+#. translators: 1: Filter name.
+#: assets/js/wtrs-backend.js:181
+msgid "Failed to fetch order logs"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Error fetching order logs"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Date"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Order ID"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Method Name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:190
+msgid "Shipping Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:199
+msgid "Error!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Order Logs Analytics"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "No order logs found."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Carrier Live Rate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "No data available"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping Method Usage (%)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping Analytics & Logs"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping Cost Insights"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Set condition-based table rate shipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Configure progressive incremental rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Calculate live rate from popular carriers"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "WowShipping - Table Rate Shipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Create Table Rate Shipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Join the Community"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Join the WowRecommendation community - share your thoughts, concerns, and ideas with everyone."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Join the Facebook"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Show real-time international and domestic shipping rates at checkout."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Show accurate shipping prices instantly using package weight"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Show live delivery rates and multiple shipping speed options."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Provide live shipping costs so customers see the right price."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Get real-time shipping rates across Australia and worldwide."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Connect WowShipping with your preferred carrier"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Charge real-time calculated shipping rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Integrations with Shipping Carriers"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Discover All Carriers"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Explore 7+ popular shipping carrier integrations now!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Full feature access"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Advanced shipping methods"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Integration with top carriers"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Tons of extra power"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Upgrade to Pro 🚀"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Here's what you get with Pro:"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Documentation"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Read Now"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Feature Requests"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Request a Feature"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Quick Access"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Enjoying WowShipping?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Help us grow by showing your love to us with a 5-star rating."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Leave a Review"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Error fetching shipping rules"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Error fetching shipping rule"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Please select a shipping zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Please enter a shipping method name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Delivery time in not valid"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Delivery time \"From\" value cannot be greater than \"To\" value"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping rule updated successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Error saving shipping rule"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping method deleted successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Error deleting shipping method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping method duplicated successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Error duplicating shipping rule"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Failed to load shipping zones"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping zone created successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Failed to create shipping zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping zone updated successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Failed to update shipping zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "No methods active yet"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Global"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Active Shipping Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Shipping Method Name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "No Title"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Status"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Toggle shipping method status"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Method Type"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Carrier Live Rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+#: assets/js/wtrs-backend.js:199
+msgid "Zone Name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "—"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Edit Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Edit Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Duplicate Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Duplicate Shipping Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Are you sure you want to duplicate this shipping method?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+#: assets/js/wtrs-backend.js:199
+msgid "Cancel"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Duplicating…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Duplicate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+#: assets/js/wtrs-backend.js:190
+#: assets/js/wtrs-backend.js:199
+msgid "Delete"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Delete Shipping Method"
+msgid_plural "Delete Shipping Methods"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Are you sure you want to delete this shipping method? This action cannot be undone."
+msgid_plural "Are you sure you want to delete selected shipping methods? This action cannot be undone."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Deleting…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Installing…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Activate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Activated"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Install Now"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Plugin installed successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Plugin installation failed"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Plugin Details"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Hot"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "useShippingRegion must be used within a ShippingRegionProvider"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Failed to load regions data"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Settings updated successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Failed to update settings"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "General Settings"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Configure general settings for shipping behavior and debugging."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Default Shipping Tax Status"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Debug Mode"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Turns off caching and displays logs and errors to help with troubleshooting."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping methods are visible only to Admins and Shop Managers when this is turned on."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "View logs"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Delete Data on Uninstall"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Permanently deletes all plugin data upon uninstalling the plugin."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Use with caution."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping Origin"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "These values will override the default WooCommerce Store Address and will be used as the shipping origin."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Saving…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Wow Shipping Methods Empty List"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "You Haven't Created Any Shipping Methods"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping rules let you control costs and logic based on cart value, weight, quantity, and more."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Add Shipping Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Processing…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping rules imported successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Completed"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Error importing shipping rules"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Uploading File…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Import Shipping Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Upload CSV"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Start Importing"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Import Completed!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Your CSV file has been imported successfully!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Import Another File"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Total Rows"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Successful"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+#: assets/js/wtrs-backend.js:184
+msgid "Error"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:181
+msgid "Your CSV file has been imported successfully"
+msgstr ""
+
+#. translators: %s: Success Percentage.
+#: assets/js/wtrs-backend.js:184
+msgid "%s%% Success Rate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Error List"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Row"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "usePrompt must be used within a PromptProvider"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Confirm Action"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "This can’t be undone. Are you sure you want to continue?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Confirm"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Please select an action and at least one item."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Bulk Apply"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Bulk operation completed successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Error performing bulk operation"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Bulk Actions"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+#: assets/js/wtrs-backend.js:200
+msgid "Publish"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+#: assets/js/wtrs-backend.js:200
+msgid "Draft"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Apply"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "All Status"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Search"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Import"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Exporting methods…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Error while exporting methods"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Methods exported successfully"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "No methods found to export"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Export"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Manage Shipping Methods"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Equals"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Does not equal"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Greater than"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Less than"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Greater than or equal to"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Less than or equal to"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Between"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Contains"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Does not Contain"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Does not Equal"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "None Applied"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Starts With"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Does not Start With"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Ends With"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Does not End With"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Failed to fetch data"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Failed to fetch attributes!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "General"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Always"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Specific"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Quantity"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Item(s)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Total"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Subtotal"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Weight"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Coupons"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Length"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Width"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Height"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Cart Volume"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Specific"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Categories"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Tags"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Shipping Class"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Quantity"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Price"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Total"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Weight"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Height"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Width"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Length"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Product Volume"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Customer"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "User"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "User Role"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Email"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Comma-separated multiple values are supported. Case sensitive comparison is applied."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Phone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "First Order Spent"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Last Order Spent"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Total Number of Orders"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Order(s)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Location"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Country"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "State"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "City/Town"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Comma-separated multiple values are supported. Case insensitive comparison is applied."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Zip/Postcode"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Comma-separated multiple values are supported. Postcodes containing wildcards (e.g. CB23*) or fully numeric ranges (e.g. 90210…99000) are also supported."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Others"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Weekday"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Time"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Additional Settings"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Shipping Tax Status"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Add the tax amount to the shipping cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Who can view this shipping method?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Handling/Extra Fee"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Apply extra fee that is displayed as a separate line item."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Fee Label"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Fee Type"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+#: assets/js/wtrs-backend.js:190
+msgid "Amount"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Minimum Fee"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Maximum Fee"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Apply Fee On"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Make handling fee taxable"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "This field is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Too short."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Too long."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Invalid format."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Invalid value."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Error validating carrier settings. Please check your credentials."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Validating…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Select Options"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading options…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Coverage Amount"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "COD Amount"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Mode"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Live"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Test"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading services…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Service"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Select Special Services"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading special services…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Use Account Rates Only"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Use negotiated account rates (when available) instead of list rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Residential Delivery"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Shipment Insurance"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading pickup types…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Pickup Type"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "How the shipment will be tendered to FedEx."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading duty payment types…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Duties Payment"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Who pays customs duties/taxes for international shipments."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "API Key *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "API Key is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "API Key"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "API Secret *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "API Secret is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "API Secret"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Account Number *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Account Number is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Account Number"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Sandbox"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Select Product"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Insurance (Optional)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Insurance Amount"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Sendle ID *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Sendle ID is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Sendle ID"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Select Service"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Indicate if the delivery is to a residential address. This may impact the shipping cost."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Use Negotiated Rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Use negotiated UPS account rates when available instead of published list rates."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Client ID *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Client ID is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Client ID"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Client Secret *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Client Secret is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Client Secret"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading price types…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Price Type"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Fetch Delivery Time from API"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Uses API to get accurate delivery time"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Expected Delivery Time (Optional)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Days"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Extra Services"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading extra services…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Select All"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Select Extra Services"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Production"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Development"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Unpackaged"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Check this to indicate that the parcel will be unpackaged (e.g. tires)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Mailing Tube"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Check this to indicate that the object will be shipped in a mailing tube"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Username *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Username is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Username"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Password *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Password is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Password"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Customer Number"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Contract ID"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Loading products…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Learn more about Sendle products"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Extra Cover"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Learn more about extra cover"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Auth Key *"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Auth Key is required."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Auth Key"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Error checking account status."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Please Wait…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Please wait while we check your account status."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Edit Account"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Account connected! You can edit your account details below."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Connect Account"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "You need to connect your account to use this carrier."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:184
+msgid "Account connected successfully."
+msgstr ""
+
+#. translators: 1: Carrier Title.
+#: assets/js/wtrs-backend.js:187
+msgid "%s Account"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:187
+msgid "Error fetching account details."
+msgstr ""
+
+#. translators: 1: Carrier Title.
+#: assets/js/wtrs-backend.js:190
+msgid "Manage %s Account"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Select Carrier Service"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Packaging Strategy"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Loading packaging options…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Select Packaging Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Maximum Weight of Package"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Box Length"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Box Width"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Box Height"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Box Weight"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Box Max Weight"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Padding"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Add Box"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Default Weight and Dimensions"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Default Weight"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Default Length"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Default Width"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Default Height"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "These values are applied when a cart item is missing weight or dimensions (length, width, or height)."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Fallback Method (Optional)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "These values are applied when the carrier fails to respond or provide a rate during the query."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Fallback Shipping Method Name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "e.g. My Fallback Shipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Fallback Rate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Type"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Fixed"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Markup (Optional)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Add positive (e.g., 2) or negative (e.g., -2) values to adjust the live rate. Negative values will reduce the rate."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Both positive and negative values are allowed."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Select Operator"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+#: assets/js/wtrs-backend.js:199
+msgid "Min"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+#: assets/js/wtrs-backend.js:199
+msgid "Max"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Value"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Select"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Add Display Rule"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Enter a cost (excl. tax) or sum, e.g. 10.00 * [qty]. Use [qty] for the number of items, [cost] for the total cost of items, and [fee percent=\"10\" min_fee=\"20\" max_fee=\"\"] for percentage based fees."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Class Name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Add Shipping Class"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Remove Shipping Class"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Select Shipping Class"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "No Shipping Class Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Set the shipping cost for products that do not have any shipping class assigned. Formula supported similar to Shipping Cost."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Calculation Type"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Shipping Class Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Use This Scenario"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Use Predefined Scenarios"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Choose a Preferred Predefined Scenario"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Explore preconfigured table-rate shipping scenarios, select the one that aligns with your business needs, and further customize it to set accurate shipping rates."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Scenario has been applied successfully."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:190
+msgid "Based on"
+msgstr ""
+
+#. translators: 1: initial value, 2: currency, 3: then value, 4: currency, 5: every value, 6: unit.
+#: assets/js/wtrs-backend.js:193
+msgid "The customer pays base cost of %1$s %2$s with addition of %3$s %4$s for every %5$s %6$s."
+msgstr ""
+
+#. translators: 1: initial value with currency, 2: unit, 3: first value 4: unit, 5: then value, 6: currency, 7: every value, 8: unit.
+#: assets/js/wtrs-backend.js:196
+msgid "The customer pays %1$s %2$s for the first %3$s %4$s, then %5$s %6$s for every additional %7$s %8$s."
+msgstr ""
+
+#. translators: 1: initial value, 2: currecy code, 3: every value, 4: unit.
+#: assets/js/wtrs-backend.js:199
+msgid "The customer pays %1$s %2$s for every %3$s %4$s."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "The customer pays nothing for shipping (Free Shipping)."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Fixed Rate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Incremental Rate"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "For Every"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Base Cost + Additional Charge"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Base Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "For the First"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Then"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "For Every Additional"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Define Shipping Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Summary:"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Free"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "The shipping cost is"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Special Action"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Copy"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Conditions"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Move up"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Move down"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Remove “AND” Condition"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "WHEN"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "AND"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Add AND Condition"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Add Rate Tier"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Rate Calculation"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Select…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Select Method Type"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Shipping rates will be calculated differently depending on the shipping method type you choose."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Expected Delivery Time"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Displays a delivery estimate to customers during checkout."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Day(s)"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Enable Special Actions"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Control the flow of rate calculation by enabling special actions."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Select a Shipping Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Loading Shipping Zones…"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Global Shipping Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Add New Shipping Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Edit Shipping Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Create New Shipping Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Enter a shipping zone name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Give your zone a name! E.g. Local, or Worldwide."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Zone regions"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "List the regions you'd like to include in your shipping zone. Customers will be matched against these regions."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Start typing to filter zones"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Everywhere"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "WooCommerce region picker assets are not available on this page."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Update Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Create Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Selecting “Global Shipping Method” makes this shipping method apply universally, instead of being restricted to any specific shipping zone."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "It will be available across all locations, regardless of the customer's region or configured zones."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Select How You Want to Calculate Shipping Rates"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Advanced Display Rules"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Add one or more display rules. The current shipping method will not be displayed unless all these rules are met."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Customize Shipping Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Customize your shipping method by selecting the method type and configuring it according to your business needs."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Create your first Shipping Method with WowShipping"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Take a quick guided tour to learn how to configure a shipping method in WowShipping. Click Start to continue or Close this modal to skip the guide."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Start"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Set Shipping Method Name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Set a name for your shipping method that will be displayed to customers."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Set Shipping Zone"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Set your targeted zone for this shipping method."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Customized Shipping Method"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Create shipping methods using manual calculations or integrations with shipping carriers to streamline your shipping process."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Manual Rate Calculation"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "The manual calculation option allows you to select from flexible shipping, flat rate shipping, and free shipping."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Integrate with Popular Carriers"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "You can also fetch live rates from popular carriers like FedEx, DHL, UPS, USPS, etc."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Tier-based Shipping Cost"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Customize your shipping costs in a flexible, tier-based manner, allowing you to customize your shipping cost exactly as per your requirements."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Set Shipping Cost based on Conditions"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Here you can define your conditions such as cart total, weight, item count etc. and set the corresponding shipping cost for each condition."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Add Flexible Tiers"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "You can add multiple flexible tiers to create a comprehensive shipping method."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Additional Setting"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Make additional configurations, including shipping tax and determining to whom this rule should be visible, between logged-in and logged-out users."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Publish or Draft"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:199
+msgid "Once you're done with the configuration, you can publish the shipping rule to make it available for the shoppers. Alternatively, you can save it as a draft to continue the configuration at a later time."
+msgstr ""
+
+#. translators: 1: current step number placeholder, 2: total steps placeholder
+#: assets/js/wtrs-backend.js:200
+msgid "Step %1$s of %2$s"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Next"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Back"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Done"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Unsaved Changes"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "You have unsaved changes. Are you sure you want to leave this page?"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Leave"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Stay"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Exit"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Specify a name for this shipping method. This label will be shown in the frontend."
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Enter shipping method name"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Shipping Method Status"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Updated"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Update"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Saved"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Error fetching shipping rules for this instance"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Get Support"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Open Support Chat"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Thank You!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Your message has been received. We will contact you soon on your email with a response. Stay connected and check mail!"
+msgstr ""
+
+#: assets/js/wtrs-backend.js:200
+msgid "Message"
+msgstr ""

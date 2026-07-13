@@ -1,0 +1,166 @@
+.w-100{
+    width: 100% !important;
+}
+.w-50{
+    width: 50% !important;
+}
+
+/*productx tab csss in woocommerce product page in admin*/
+.wopb-productx-options-tab-wrap .wopb-tab-title-wrap{
+    padding: 0px;
+    background-color: #000000 !important;
+    text-align: left;
+}
+
+.wopb-productx-options-tab-wrap .wopb-tab-title-wrap .wopb-tab-title{
+    color: #fff !important;
+    text-decoration: none;
+    padding: 10px 20px;
+}
+
+.wopb-productx-options-tab-wrap a:focus{
+    box-shadow: unset !important;
+}
+
+.wopb-productx-options-tab-wrap .wopb-tab-title.active{
+    border-bottom: 2px solid #ff176b;
+}
+
+.wopb-input-group{
+    position: relative;
+}
+.wopb-input-group .dashicons-calendar-alt{
+    position: absolute;
+    right: 12px;
+    top: -3px;
+    cursor: pointer;
+}
+
+#wopb-preorder-select-instruction{
+    display: none;
+}
+.wopb-preorder-select-instruction-title {
+    color: #6b5209;
+    background-color: #fff3cd;
+    border-color: #fae7ae;
+    max-width: 70%;
+    margin: 50px auto !important;
+    border-radius: 5px;
+    padding: 12px 20px !important;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 16px;
+}
+
+.wopb-woocommerce-preorder-field-group, .wopb-woocommerce-variable-preorder-field-group {
+    padding: 15px;
+    background: #f5f5f5;
+    border: 1px solid #d8d8d8;
+    margin-bottom: 15px;
+}
+.wopb-woocommerce-variable-preorder-field-group .form-field label{
+    padding-bottom: 2px;
+    display: inline-block;
+}
+.wopb-woocommerce-variable-preorder-field-group .form-field input[type=checkbox]{
+    margin-right: 8px !important;
+    float: none;
+    margin-left: 12px !important;
+}
+.wopb-woocommerce-variable-preorder-field-group .wopb-woocommerce-preorder-title {
+    border-bottom: 1px solid #bbb;
+    margin: 0;
+    padding: 0 0 8px;
+    font-size: 18px;
+}
+
+.wopb-woocommerce-preorder-field-group .wopb-woocommerce-preorder-title{
+    margin-left: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    border-bottom: 1px solid #bbb;
+    padding-bottom: 8px;
+    font-size: 20px;
+    display: flex;
+}
+ ._wopb_preorder_auto_convert_field .description, ._wopb_preorder_price_manage_field .description{
+    display: inline !important;
+    margin-left: 5px !important;
+}
+
+.wopb-singlepage-no-date {
+    display: block;
+    margin-top: 5px;
+}
+.wopb-singlepage-no-date .wopb-no-date-message{
+    font-size: 22px;
+}
+
+.wopb-singlepage-preorder-countdown{
+    display: inline-flex;
+    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.wopb-singlepage-preorder-countdown .wopb-countdown-block{
+    display: flex;
+    align-items: center;
+    line-height: 15px;
+    text-align: center;
+}
+
+.wopb-singlepage-preorder-countdown .wopb-preorder-countdown-text{
+    display: block;
+}
+
+.wopb-singlepage-preorder-countdown .wopb-preorder-countdown-separator{
+    margin: 0px 17px;
+}
+
+.wopb-cart-preorder-badge{
+    margin-left: 3px;
+}
+
+.wopb-cart-preorder-message{
+    display: none;
+}
+.wopb-cart-preorder-message .wopb-preorder-message,
+.wopb-cart-preorder-message .wopb-preorder-duration {
+    font-size: 14px;
+}
+
+.woocommerce-cart-form__contents .wopb-cart-preorder-message{
+    display: block;
+}
+
+.wc-item-meta-label .wopb-cart-preorder-badge, .display_meta .wopb-cart-preorder-badge{
+    margin-right: 5px;
+}
+
+.wopb-preorder-closed{
+    color: red;
+}
+
+#wopb-preorder-field-group-pro-instruction a img{
+ width: 100%;
+    margin-top: 10px;
+}
+.woocommerce_options_panel input[type=datetime-local]{
+    width: 50%;
+    float: left;   
+}
+
+.wopb-single-product-preorder{
+    display: none;
+}
+.summary .wopb-single-product-preorder, 
+.wopb-builder-container .wopb-product-wrapper .wopb-single-product-preorder,
+.wopb-singlepage-preorder-message,
+.wopb-countdown-block-item,
+.wopb-singlepage-preorder-remaining-item{
+    display: block;
+}
+.wopb-countdown-block-item{
+    font-weight: 400;
+}

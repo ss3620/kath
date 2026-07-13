@@ -1,0 +1,31 @@
+= 1.0.5 – 15th May 2025 =
+* Update: Compatibility with WowStore Quickview addon.
+* New: Country dial code selection in Telephone field
+* New: Update product gallery image feature in Image Swatches field - Allows users to dynamically update the product gallery images based on the selected swatch, enhancing the visual shopping experience.
+* New: Tax support in Addon prices, including compatibility with WooCommerce's tax settings and support for multiple tax rates.
+
+= 1.0.4 – 7 May 2025 =
+* Update: Compatibility with WowStore Currency Switcher addon.
+* Update: Compatibility with FOX – Currency Switcher Professional for WooCommerce plugin.
+* Update: Compatibility with YayCurrency – WooCommerce Multi-Currency Switcher plugin.
+* Update: Compatibility with CURCY – Multi Currency for WooCommerce plugin.
+* Update: Compatibility with Currency Switcher for WooCommerce plugin by WPExperts.
+* Update: Compatibility with YITH Multi Currency Switcher for WooCommerce plugin.
+* Update: Compatibility with Currency Switcher for WooCommerce plugin by WP Wham.
+
+= 1.0.3 – 28 April 2025 =
+* Fix: Theme compatibility issues with popular themes.
+* Fix: Block style mismatch between frontend and backend.
+* Fix: Broken date picker in block condition settings.
+* Fix: Broken color picker in block settings.
+* Fix: Date picker issue with previous and next month.
+* Fix: Toolbar styling issue.
+
+= 1.0.2-beta – 26 March 2025 =
+* Update: Option Builder drag and drop functionality
+
+= 1.0.1-beta – 24 March 2025 =
+* Update: Beta Version
+
+= 1.0.0 – 02 February 2025 =
+* New: First submission of this plugin

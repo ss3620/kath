@@ -1,0 +1,228 @@
+*** Product Recommendation Quiz for WooCommerce ***
+
+2026-05-29 - version 2.3.10
+* New - Admin screens, setup flow and error notices are now fully translatable (community translations via translate.wordpress.org)
+* Dev - i18n: whole-sentence translatable strings, .pot regenerated in the build, translation-freshness + split-sentence checks in CI
+
+2026-05-29 - version 2.3.9
+* Fix - Hardened rate limiting on the connection endpoints (server-verified IP; X-Forwarded-For ignored unless a proxy is explicitly trusted; no fail-open when the IP is unknown)
+* Fix - Deactivating the plugin no longer deletes your connection credentials; only uninstalling does
+* Fix - Connection credentials are now format-validated, and the plugin sends a fixed user-agent to its API instead of forwarding the visitor's
+* Dev - The WordPress and WooCommerce editions now build from a single shared source; external services are now documented in the readme
+
+2026-05-27 - version 2.3.8
+* Dev - Refreshed plugin intro video on the WordPress.org listing
+
+2026-05-26 - version 2.3.7
+* Dev - Refreshed plugin intro video on the WordPress.org listing
+
+2026-05-26 - version 2.3.6
+* Dev - Tested up to WooCommerce 10.7.0
+
+2026-05-26 - version 2.3.5
+* Dev - Replace raw cURL with WordPress HTTP API (wp_remote_post) for better hosting compatibility
+* Dev - Use wp_parse_url() for cross-PHP-version URL parsing consistency
+* Dev - Prefix REST API callback functions to align with WordPress.org naming conventions
+
+2026-05-26 - version 2.3.4
+* Dev - tested up to WP 7.0
+* Dev - PHP 8.5 compatibility (avoid redundant curl_close on PHP 8.5+)
+
+2026-02-22 - version 2.3.3
+* Fix - Skip loading embed.js on WooCommerce checkout and cart pages to prevent connection timeouts from blocking critical shopping pages
+* Fix - Load embed.js with async attribute so a slow or failed connection to RevenueHunt servers never blocks page rendering
+
+2026-02-02 - version 2.3.2
+* Fix - Exclude .dev TLD from local development detection patterns (.dev is a legitimate production domain owned by Google)
+
+2026-01-18 - version 2.3.1
+* Fix - OAuth authorization showing localhost.run URL on production sites when WP_ENVIRONMENT_TYPE is set to 'development' or 'local'
+
+2025-01-15 - version 2.3.0
+* Refactor - Code refactoring, security improvements, and enhanced maintainability
+
+2025-10-09 - version 2.2.14
+* Dev - tested up to WP 6.8.3 and WooCommerce up to Version 10.2.2
+
+2025-06-04 - version 2.2.13
+* Dev - tested up to WP 6.8.1 and WooCommerce up to Version 9.8.5
+
+2025-03-15 - version 2.2.12
+* Dev - improve compatibility
+
+2025-03-15 - version 2.2.11
+* Dev - tested up to WP 6.7.2 and WooCommerce up to Version 9.7.1
+
+2025-01-01 - version 2.2.10
+* Dev - tested up to WP 6.7.1
+
+2024-08-14 - version 2.2.9
+* Fix - page level auth
+
+2024-07-29 - version 2.2.8
+* Dev - tested up to WP 6.6.1
+
+2024-04-30 - version 2.2.7
+* Dev - tested up to WP 6.5.2
+
+2024-02-01 - version 2.2.6
+* Fix - http_build_query bug
+
+2023-12-20 - version 2.2.5
+* Dev - Check WPML version
+
+2023-12-15 - version 2.2.4
+* Dev - Plain permalinks warning
+
+2023-11-29 - version 2.2.3
+* Dev - link to FAQs article
+
+2023-11-18 - version 2.2.2
+* Fix - vulnerability issue
+
+2023-11-13 - version 2.2.1
+* Fix - revert last commits
+
+2023-10-28 - version 2.1.2
+* Fix - vulnerability issue
+
+2023-10-19 - version 2.1.0
+* Dev - declare_compatibility custom_order_table
+
+2023-10-18 - version 2.0.29
+* Fix - Undefined variable $host
+
+2023-10-13 - version 2.0.28
+* Fix - multisite login issue
+
+2023-10-13 - version 2.0.27
+* Fix - multisite login issue
+
+2023-09-20 - version 2.0.26
+* Dev - Enable multisite
+
+2023-09-19 - version 2.0.25
+* Chores - Update plugin version
+
+2023-09-12 - version 2.0.24
+* Dev - folder install, testing
+
+2023-09-09 - version 2.0.23
+* Dev - undo fix security issues
+
+2023-09-04 - version 2.0.22
+* Dev - tested up to WP 6.3 and fix security issues
+
+2023-03-28 - version 2.0.20
+* Dev - tested up to WP 6.2
+
+2023-03-28 - version 2.0.19
+* Chores - Update plugin version
+
+2023-01-30 - version 2.0.18
+* Fix - PHP Warning: Undefined array key "host" 
+
+2022-12-05 - version 2.0.17
+* Dev - tested up to WP 6.1.1
+
+2022-10-18 - version 2.0.16
+* Chores - Add link to demo WP site
+
+2022-07-11 - version 2.0.15
+* Chores - Update plugin version
+
+2022-05-12 - version 2.0.14
+* Fix - REST API endpoint error message
+
+2022-05-12 - version 2.0.13
+* Dev - tested up to WP 6.0
+
+2022-03-23 - version 2.0.12
+* Fix - show additional error info when invalid JSON format
+
+2022-03-22 - version 2.0.11
+* Dev - show additional error info on API check fail
+
+2022-01-24 - version 2.0.10
+* Dev - tested up to WP 5.9
+
+2021-09-22 - version 2.0.9
+* Dev - do not allow localhost
+
+2021-08-04 - version 2.0.8
+* Dev - check if wp-json works via server API
+
+2021-08-02 - version 2.0.7
+* Dev - warning when WPML plugin is installed and active
+
+2021-08-01 - version 2.0.6
+* Fix - disable continue when wp_json_error 
+
+2021-08-01 - version 2.0.5
+* Fix - allow continue when wp_json_error 
+
+2021-07-30 - version 2.0.4
+* Fix - add permission_callback to settoken
+
+2021-07-27 - version 2.0.3
+* Fix - replace file_get_contents for curl
+
+2021-07-23 - version 2.0.2
+* Dev - warning when no WordPress REST API
+
+2021-07-13 - version 2.0.0
+* Dev - Change oauth method
+
+2021-06-15 - version 1.1.2
+* Fix - Upgrade WC_Countries to WC()->countries
+
+2021-06-04 - version 1.1.1
+* Dev - Send store country code in knock
+
+2021-03-31 - version 1.1.0
+* Dev - Automatic migration from dev/staging to live stores
+
+2021-01-28 - version 1.0.14
+* Dev - set flag update_option autoload false
+
+2021-01-22 - version 1.0.13
+* Dev - Minor layout fix
+
+2020-11-20 - version 1.0.12
+* Dev - New logo and minor updates
+
+2020-09-02 - version 1.0.11
+* Fix - Requires WooCommerce v3.5 or higher
+
+2020-08-14 - version 1.0.10
+* Fix - Bypass wp cache on login
+
+2020-07-27 - version 1.0.9
+* Fix - Include plugin file
+
+2020-07-27 - version 1.0.8
+* Fix - Set plugin version constant
+
+2020-07-27 - version 1.0.7
+* Dev - Pass route param to login
+
+2020-07-14 - version 1.0.6
+* Fix - Shorten menu URL
+
+2020-07-12 - version 1.0.5
+* Dev - Fix variable names
+
+2020-07-06 - version 1.0.4
+* Dev - Pass WooCommerce and WordPress version
+
+2020-06-21 - version 1.0.3
+* Dev - Pass channel parameter to server
+
+2020-06-20 - version 1.0.2
+* Fix - Store URL host bug
+
+2020-06-19 - version 1.0.1
+* Dev - Added HTTPS/SSL verification
+
+2020-06-06 - version 1.0.0
+* Dev - Initial release

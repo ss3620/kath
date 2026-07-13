@@ -1,0 +1,207 @@
+/* phpcs:ignoreFile */
+#afwc_referral_url_container .fa {
+	display: inline-block;
+	width: 1.375em;
+	height: 1.375em;
+	background-color: currentColor;
+}
+#afwc_referral_url_container .fa.fa-pencil-alt {
+	-webkit-mask: url('../../../images/afwc-edit-icon.svg') no-repeat center;
+	mask: url('../../../images/afwc-edit-icon.svg') no-repeat center;
+}
+#afwc_referral_url_container .fa.fa-save {
+	-webkit-mask: url('../../../images/afwc-save-icon.svg') no-repeat center;
+	mask: url('../../../images/afwc-save-icon.svg') no-repeat center;
+	height: 1.625em;
+	width: 1.625em;
+}
+#afwc_referral_url_container .fa.fa-light.fa-ban {
+	-webkit-mask: url('../../../images/afwc-cancel-icon.svg') no-repeat center;
+	mask: url('../../../images/afwc-cancel-icon.svg') no-repeat center;
+}
+#afwc_save_identifier svg:hover {
+	stroke-width: 2;
+}
+#afwc_change_identifier,
+#afwc_save_identifier,
+#afwc_cancel_change_identifier {
+	display: inline-flex;
+	vertical-align: middle;
+}
+.afwc_save_account_status {
+	display: inline-block;
+	visibility: visible;
+	vertical-align: middle;
+	width: 2em;
+	height: 2em;
+	background-size: 2em;
+}
+.afwc_status_spinner {
+	background: url(../../../../../../../wp-admin/images/spinner.gif) no-repeat center;
+}
+.afwc_status_yes {
+	background: url(../../../../../../../wp-admin/images/yes.png) no-repeat center;
+}
+.afwc_status_no {
+	background: url(../../../../../../../wp-admin/images/no.png) no-repeat center;
+}
+.afwc_success {
+	color: green;
+}
+.afwc_error {
+	color: #e2401c;
+}
+#afwc_id_save_wrap input {
+	width: 30% !important;
+	margin-right: 0.5em;
+}
+#afwc_identifier_change_warning {
+	display: block;
+	font-style: italic;
+}
+#afwc_resources_wrapper,
+#afwc_payment_wrapper {
+	display: inline-block;
+	margin: 1em 0.5em;
+	width: 100%;
+}
+#afwc_resources_wrapper p,
+#afwc_payment_wrapper p {
+	position: relative;
+	width: 100%;
+	display: inline-block;
+}
+#afwc_resources_wrapper p input,
+#afwc_payment_wrapper p input {
+	width: 96%;
+}
+#afwc_resources_wrapper code {
+	cursor: pointer;
+	font-size: 0.8em;
+	display: initial !important;
+}
+#afwc_referral_url_container,
+#afwc_referral_coupon_container,
+#afwc_contact_admin_container {
+	margin-top: 1em;
+}
+#afwc_id_save_wrap #afwc_save_identifier {
+	margin-right: 0.5rem;
+}
+.afwc-profile-tab-wrapper #afwc_referral_url_container,
+.afwc-profile-tab-wrapper #afwc_referral_coupon_container,
+.afwc-profile-tab-wrapper #afwc_landing_pages_container,
+.afwc-profile-tab-wrapper #afwc_direct_links_container {
+	margin: 1em 0.5em;
+}
+.afwc-profile-tab-wrapper #afwc_payment_wrapper .afwc-paypal-input-wrapper .afwc-paypal-input-description {
+	color: #9CA3AF;
+}
+.afwc-profile-tab-wrapper #afwc_payment_wrapper .afwc-paypal-input-wrapper {
+	margin-bottom: 1rem;
+}
+.afwc-profile-tab-wrapper #afwc_payment_wrapper .afwc-paypal-input-wrapper .afwc-paypal-input-label {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 0.5rem;
+	align-items: center;
+}
+.afwc-profile-tab-wrapper #afwc_payment_wrapper .afwc-paypal-input-wrapper #afwc_affiliate_paypal_email {
+	box-shadow: none;
+	width: 50%;
+}
+#afwc_payout_details_container .afwc-stripe-connect {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	width: fit-content;
+}
+#afwc_payout_details_container .afwc-stripe-connect-loader {
+	display: inline;
+	height: 1.5rem;
+	margin-left: 0.25rem;
+}
+#afwc_payout_details_container .afwc-account-save-response-msg {
+	display: inline-block;
+	vertical-align: middle;
+}
+/* START: Deprecated: Old referral link generator. */
+#afwc_custom_referral_url_container {
+	margin-top: 2em;
+}
+.afwc-profile-tab-wrapper .afwc-ref-url-generator-wrapper {
+	margin: 1em 0.5em;
+}
+.afwc-profile-tab-wrapper #afwc_custom_referral_url_container .afwc-ref-url-generator-desc {
+	color: #9CA3AF;
+}
+.afwc-profile-tab-wrapper .afwc-ref-url-generator-input-wrapper {
+	margin-top: 1em;
+}
+input#afwc_affiliate_link {
+	width: 12em !important;
+	height: 1.8em !important;
+	box-shadow: none !important;
+}
+/* END: Deprecated: Old referral link generator. */
+/* START: New referral link generator. */
+#afwc_referral_link_generator {
+	margin: 2rem 0;
+}
+#afwc_referral_link_generator .afwc-data-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+#afwc_referral_link_generator .afwc-label-input-container {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+}
+#afwc_referral_link_generator .afwc-label-input-container label {
+	width: 15%;
+}
+#afwc_referral_link_generator .afwc-input-wrapper {
+	display: flex;
+	width: 50%;
+	gap: 0.1rem;
+}
+#afwc_referral_link_generator #afwc_page_url_input {
+	width: 100%;
+}
+#afwc_referral_link_generator #afwc_referral_url_output {
+	flex: 1;
+}
+#afwc_referral_link_generator #afwc_copy_referral_link_button {
+	width: 20%;
+	transition: all 0.15s ease-in-out;
+	height: auto;
+	padding: 0;
+}
+#afwc_referral_link_generator .afwc_error {
+	display: none;
+	margin-left: calc(15% + 1rem);
+}
+@media only screen and (max-width: 760px) {
+	#afwc_referral_link_generator .afwc-label-input-container {
+		gap: 0;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	#afwc_referral_link_generator .afwc-label-input-container label {
+		width: 100%;
+	}
+	#afwc_referral_link_generator .afwc-input-wrapper {
+		width: 100%;
+	}
+	#afwc_referral_link_generator .afwc_error {
+		margin-left: 0;
+	}
+}
+/* END: New referral link generator. */
+@media only screen and (min-width: 760px) {
+	table.afwc_coupons thead th[data-header="coupon-url"],
+	table.afwc_coupons tbody td[data-header="coupon-url"] {
+		width: 50%;
+	}
+}

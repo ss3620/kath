@@ -1,0 +1,27 @@
+.revx-attr-container {
+	padding: 1rem;
+	border-radius: 10px;
+	background: #f9f9f9;
+	margin-top: 10px;
+	border: 1px solid #eee;
+}
+.revx-attr-heading {
+	font-weight: 500;
+	margin-bottom: 0.75rem;
+}
+.revx-attr-row {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 0.75rem;
+}
+.revx-attr-label {
+	width: 2rem;
+	font-weight: bold;
+}
+.revx-attr-select {
+	padding: 0.4rem;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	flex: 1;
+}

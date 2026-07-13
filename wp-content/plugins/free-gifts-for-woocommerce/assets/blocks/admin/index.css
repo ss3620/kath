@@ -1,0 +1,64 @@
+.fgf-progress-bar-wrapper{
+	float:left;
+	width:100%;
+	margin:5px 0;
+	display: block;
+}
+
+.fgf-progress-bar-wrapper p.fgf-progress-bar-heading-label {
+	font-size: 22px;
+	width: 100%;
+	display: block;
+	color: #000;
+	margin-bottom: 10px;
+}
+
+.fgf-progress-bar-above-details-wrapper,
+.fgf-progress-bar-below-details-wrapper{
+	display: table;
+	width: 100%;
+	margin: 10px 0;
+}
+
+.fgf-progress-bar-start,
+.fgf-progress-bar-end {
+	width: auto;
+	padding:0;
+	margin:0;
+	color: #666;
+	font-size: 16px;
+}
+
+.fgf-progress-bar-start {
+	float: left;
+}
+
+.fgf-progress-bar-end {
+	float: right;
+
+}
+
+.fgf-progress-bar-outer-wrapper {
+	height: 15px;
+	border-radius: 5px;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	padding:0;
+	margin: 10px 0;
+	background:#f3efe6;
+}
+
+.fgf-progress-bar-outer-wrapper span {
+	display: block;
+	height: 100%;
+}
+
+.fgf-progress-bar-outer-wrapper span.fgf-progress-bar-fill {
+	background:#03dfb6;
+	-webkit-animation: currentpledgebar 2s ease-in-out;
+	-webkit-animation-fill-mode: both;
+	-moz-animation: currentpledgebar 2s ease-in-out;
+	animation-fill-mode: none;
+	-moz-animation-fill-mode: both;
+}

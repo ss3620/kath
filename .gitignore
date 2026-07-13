@@ -1,0 +1,76 @@
+# ------------------------------
+# OS / IDE
+# ------------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# ------------------------------
+# Logs
+# ------------------------------
+*.log
+error_log
+debug.log
+
+# ------------------------------
+# Environment
+# ------------------------------
+.env
+.env.*
+!.env.example
+
+# ------------------------------
+# WordPress uploads
+# ------------------------------
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/cache/
+wp-content/advanced-cache.php
+wp-content/object-cache.php
+
+# ------------------------------
+# Cache plugins
+# ------------------------------
+wp-content/litespeed/
+wp-content/wflogs/
+wp-content/ai1wm-backups/
+wp-content/backups/
+wp-content/updraft/
+wp-content/uploads/cache/
+wp-content/uploads/wpallimport/
+wp-content/uploads/sucuri/
+
+# ------------------------------
+# Node / Composer
+# ------------------------------
+node_modules/
+vendor/
+
+# ------------------------------
+# Package files
+# ------------------------------
+npm-debug.log*
+yarn-error.log*
+
+# ------------------------------
+# Backup files
+# ------------------------------
+*.zip
+*.tar
+*.gz
+*.bak
+*.old
+
+# ------------------------------
+# Database dumps
+# ------------------------------
+*.sql
+*.sql.gz
+
+# ------------------------------
+# Temporary files
+# ------------------------------
+tmp/
+temp/

@@ -1,0 +1,13 @@
+{
+    "require": {
+        "saminyaser\/boxpackerlite": "^1.0"
+    },
+    "scripts": {
+        "install-prefixed": "composer install --no-dev --prefer-dist && php-scoper add-prefix  --force -n && composer dump-autoload --working-dir vendor_prefixed --classmap-authoritative"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
+    }
+}

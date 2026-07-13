@@ -1,0 +1,265 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WowShipping – Weight Based Flexible Table Rate Shipping for WooCommerce 1.1.14\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wow-table-rate-shipping\n"
+"Last-Translator: AI Translation <noreply@example.com>\n"
+"Language-Team: de_DE <noreply@example.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-03-30T03:35:56+00:00\n"
+"PO-Revision-Date: 2026-03-30 03:40+0000\n"
+"Language: de_DE\n"
+"X-Generator: wtrs-ai-i18n\n"
+"X-Domain: wow-table-rate-shipping\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Plugin Name of the plugin
+msgid "WowShipping – Weight Based Flexible Table Rate Shipping for WooCommerce"
+msgstr "WowShipping – Gewichtsbasiertes flexibles Tabellenversand für WooCommerce"
+
+#. Description of the plugin
+msgid "WowShipping allows store owners to define flexible shipping rates based on conditions like weight, destination, price, item count etc."
+msgstr "WowShipping ermöglicht es Shop-Besitzern, flexible Versandkosten basierend auf Bedingungen wie Gewicht, Zielort, Preis, Artikelanzahl usw. zu definieren."
+
+#. Author of the plugin
+msgid "WPXPO"
+msgstr "WPXPO"
+
+#. Author URI of the plugin
+msgid "https://www.wpxpo.com/about"
+msgstr "https://www.wpxpo.com/about"
+
+#: includes/class-conditions.php:60
+#: assets/js/wtrs-backend.js:1
+msgid "Sunday"
+msgstr "Sonntag"
+
+#: includes/class-conditions.php:64
+#: assets/js/wtrs-backend.js:1
+msgid "Monday"
+msgstr "Montag"
+
+#: includes/class-conditions.php:68
+#: assets/js/wtrs-backend.js:1
+msgid "Tuesday"
+msgstr "Dienstag"
+
+#: includes/class-conditions.php:72
+#: assets/js/wtrs-backend.js:1
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+#: includes/class-conditions.php:76
+#: assets/js/wtrs-backend.js:1
+msgid "Thursday"
+msgstr "Donnerstag"
+
+#: includes/class-conditions.php:80
+#: assets/js/wtrs-backend.js:1
+msgid "Friday"
+msgstr "Freitag"
+
+#: includes/class-conditions.php:84
+#: assets/js/wtrs-backend.js:1
+msgid "Saturday"
+msgstr "Samstag"
+
+#: includes/class-conditions.php:264
+msgid "Any Free Shipping Coupons"
+msgstr "Alle kostenlosen Versandgutscheine"
+
+#: includes/class-handling-fee.php:80
+#: assets/js/wtrs-backend.js:184
+msgid "Handling Fee"
+msgstr "Bearbeitungsgebühr"
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:699
+msgid "%d day(s)"
+msgstr "%d Tag(e)"
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:702
+msgid "%1$d-%2$d day(s)"
+msgstr "%1$d-%2$d Tag(e)"
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:706
+msgid "%d+ day(s)"
+msgstr "%d+ Tag(e)"
+
+#. translators: Delivery day text.
+#: includes/class-method-helper.php:709
+msgid "Up to %d day(s)"
+msgstr "Bis zu %d Tag(e)"
+
+#: includes/class-wow-shipping-method.php:126
+msgid "Flexible Shipping (WowShipping)"
+msgstr "Flexibler Versand (WowShipping)"
+
+#: includes/class-wow-shipping-method.php:127
+msgid "Set flexible Table Rate shipping based on 30+ conditions, including cart weight, cart quantity, price, and more."
+msgstr "Setzen Sie flexibles Tabellenversand basierend auf über 30 Bedingungen, einschließlich Warenkorbgewicht, Warenkorbmenge, Preis und mehr."
+
+#: includes/rest/class-rest.php:380
+#: assets/js/wtrs-backend.js:181
+msgid "Shipping rule saved successfully"
+msgstr "Versandregel erfolgreich gespeichert"
+
+#: includes/rest/class-rest.php:384
+msgid "Failed to save shipping rule"
+msgstr "Speichern der Versandregel fehlgeschlagen"
+
+#: includes/utils/class-deactive.php:67
+msgid "The plugin isn’t working properly."
+msgstr "Das Plugin funktioniert nicht richtig."
+
+#: includes/utils/class-deactive.php:72
+msgid "Limited features on the free version."
+msgstr "Eingeschränkte Funktionen in der kostenlosen Version."
+
+#: includes/utils/class-deactive.php:77
+msgid "I found a better plugin."
+msgstr "Ich habe ein besseres Plugin gefunden."
+
+#: includes/utils/class-deactive.php:78
+msgid "Please share which plugin."
+msgstr "Bitte teilen Sie mit, welches Plugin."
+
+#: includes/utils/class-deactive.php:83
+msgid "It's a temporary deactivation."
+msgstr "Es ist eine vorübergehende Deaktivierung."
+
+#: includes/utils/class-deactive.php:88
+msgid "Other."
+msgstr "Andere."
+
+#: includes/utils/class-deactive.php:89
+msgid "Please share the reason."
+msgstr "Bitte teilen Sie den Grund."
+
+#: includes/utils/class-deactive.php:105
+msgid "Quick Feedback"
+msgstr "Schnelles Feedback"
+
+#: includes/utils/class-deactive.php:110
+msgid "If you have a moment, please let us know why you are deactivating WowShipping:"
+msgstr "Wenn Sie einen Moment Zeit haben, lassen Sie uns bitte wissen, warum Sie WowShipping deaktivieren:"
+
+#: includes/utils/class-deactive.php:127
+msgid "Submit & Deactivate"
+msgstr "Einreichen & Deaktivieren"
+
+#: includes/utils/class-deactive.php:128
+msgid "Skip & Deactivate"
+msgstr "Überspringen & Deaktivieren"
+
+#: includes/utils/class-import-helper.php:156
+msgid "Invalid Columns"
+msgstr "Ungültige Spalten"
+
+#. translators: column name.
+#: includes/utils/class-import-helper.php:181
+msgid "Invalid JSON data in column '%s'"
+msgstr "Ungültige JSON-Daten in der Spalte '%s'"
+
+#. translators: row number.
+#: includes/utils/class-import-helper.php:270
+msgid "Failed to resolve WooCommerce zone for row %d"
+msgstr "Fehler beim Auflösen der WooCommerce-Zone für Zeile %d"
+
+#: includes/utils/class-import-helper.php:482
+msgid "Imported Zone"
+msgstr "Importierte Zone"
+
+#: includes/utils/class-import-helper.php:488
+msgid "Invalid WooCommerce zone locations in import data."
+msgstr "Ungültige WooCommerce-Zonenstandorte in den Importdaten."
+
+#: includes/utils/class-import-helper.php:507
+msgid "Failed to create WooCommerce shipping zone."
+msgstr "Fehler beim Erstellen der WooCommerce-Versandzone."
+
+#: includes/utils/class-notice.php:107
+msgid "Hello Bar Action performed"
+msgstr "Hallo Bar-Aktion ausgeführt"
+
+#: includes/utils/class-notice.php:190
+#: includes/utils/class-notice.php:208
+msgid "Spring Sale:"
+msgstr "Frühjahrsverkauf:"
+
+#: includes/utils/class-notice.php:191
+#: includes/utils/class-notice.php:209
+msgid "WowShipping offers are live - Enjoy %s off on WowShipping Pro."
+msgstr "WowShipping-Angebote sind live - Genießen Sie %s Rabatt auf WowShipping Pro."
+
+#: includes/utils/class-notice.php:195
+#: includes/utils/class-notice.php:213
+msgid "Claim Your Discount!"
+msgstr "Fordern Sie Ihren Rabatt an!"
+
+#: includes/utils/class-notice.php:546
+msgid "Close Banner"
+msgstr "Banner schließen"
+
+#: includes/utils/class-notice.php:753
+msgid "Want to help make WowShipping even more awesome?"
+msgstr "Möchten Sie helfen, WowShipping noch besser zu machen?"
+
+#: includes/utils/class-notice.php:755
+msgid "Allow us to collect diagnostic data and usage information. see "
+msgstr "Erlauben Sie uns, Diagnosedaten und Nutzungsinformationen zu sammeln. siehe "
+
+#: includes/utils/class-notice.php:756
+msgid "what we collect."
+msgstr "was wir sammeln."
+
+#: includes/utils/class-notice.php:774
+msgid "Accept & Close"
+msgstr "Akzeptieren & Schließen"
+
+#: includes/utils/class-notice.php:815
+msgid "Invalid nonce."
+msgstr "Ungültiger nonce."
+
+#: includes/utils/class-notice.php:819
+msgid "Invalid request."
+msgstr "Ungültige Anfrage."
+
+#: includes/utils/class-options.php:65
+msgid "Follow Us"
+msgstr "Folgen Sie uns"
+
+#: includes/utils/class-options.php:90
+#: includes/utils/class-options.php:91
+msgid "WowShipping"
+msgstr "WowShipping"
+
+#: includes/utils/class-plugin-actions.php:34
+msgid "Spring Sale - Up to 60% OFF"
+msgstr "Frühjahrsverkauf - Bis zu 60% RABATT"
+
+#: includes/utils/class-plugin-actions.php:43
+#: assets/js/wtrs-backend.js:181
+msgid "Create Shipping"
+msgstr "Versand erstellen"
+
+#: includes/utils/class-plugin-actions.php:56
+#: assets/js/wtrs-backend.js:1
+msgid "Renew License"
+msgstr "Lizenz erneuern"
+
+#: includes/utils/class-plugin-actions.php:60
+#: assets/js/wtrs-backend.js:1
+msgid "Upgrade to Pro"
+msgstr "Upgrade auf Pro"
+
+#: includes/utils/class-plugin-actions.php:95
+msgid "Docs"
+msgstr "Dokumente"
+
+#: includes/utils/class-plugin-actions.php:96
+msgid "Support"
+msgstr "Support"

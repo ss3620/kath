@@ -1,0 +1,43 @@
+<wpml-config>
+    <admin-texts>
+        <!-- Localizations-->
+        <key name="fgf_settings_free_gift_heading_label"/>
+        <key name="fgf_settings_free_gift_add_to_cart_button_label"/>
+        <key name="fgf_settings_free_gift_dropdown_default_option_label"/>
+        <key name="fgf_settings_free_gift_cart_item_type_localization"/>
+        <key name="fgf_settings_free_gift_cart_item_type_value_localization"/>
+        <key name="fgf_settings_progress_bar_heading_label"/>
+        <key name="fgf_settings_progress_bar_maximum_gift_count_label"/>
+        <key name="fgf_settings_progress_bar_added_gift_count_label"/>
+        <key name="fgf_settings_progress_bar_remaining_gift_count_label"/>
+        
+        <!-- Localizations-->
+        
+        <!-- Messages-->
+        <key name="fgf_settings_free_gift_notice_message"/>
+        <key name="fgf_settings_free_gift_popup_notice_message"/>
+        <key name="fgf_settings_free_gift_popup_link_message"/>
+        <key name="fgf_settings_checkout_free_gift_notice_message"/>
+        <key name="fgf_settings_checkout_free_gift_notice_shortcode_message"/>
+        <key name="fgf_settings_shortcode_free_gift_empty_message"/>
+        <key name="fgf_settings_gift_product_dropdown_valid_message"/>
+        <key name="fgf_settings_free_gift_success_message"/>
+        <key name="fgf_settings_free_gift_automatic_success_message"/>
+        <key name="fgf_settings_free_gift_bogo_success_message"/>
+        <key name="fgf_settings_free_gift_coupon_success_message"/>
+        <key name="fgf_settings_subtotal_based_free_gifts_success_message"/>
+        <key name="fgf_settings_bulk_pricing_based_free_gifts_success_message"/>
+        <key name="fgf_settings_bulk_quantity_based_free_gifts_success_message"/>
+        <key name="fgf_settings_cheapest_gift_based_free_gifts_success_message"/>
+        <key name="fgf_settings_free_gift_error_message"/>
+        <key name="fgf_settings_free_gift_coupon_restriction_error_message"/>
+      
+        <!-- Messages-->
+                
+        <!-- Notifications -->        
+        <key name="fgf_settings_manual_gift_email_subject"/>
+        <key name="fgf_settings_manual_gift_email_message"/>
+        <!-- Notifications -->
+        
+    </admin-texts>
+</wpml-config>

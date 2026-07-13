@@ -1,0 +1,95 @@
+body { 
+   direction: rtl; 
+   unicode-bidi: embed; 
+}
+
+/* backend editor */
+.wopb-popup-select .wopb-search-icon {
+    position: absolute;
+    right: auto;
+    left: 10px;
+}
+.wopb-field-color2 .wopb-sub-field {
+    margin-right: auto;
+    margin-left: 0;
+}
+.wopb-button-group .wopb-base-control-btn {
+    margin-right: 0;
+    margin-left: 8px;
+}
+.wopb-button-group span {
+    border-radius: 0 3px 3px 0;
+}
+.wopb-button-group span:last-child {
+    border-right: none;
+    border-left: 1px solid #d4d4d4;
+    border-radius: 3px 0 0 3px;
+}
+.wopb-field-toggle .wopb-sub-field {
+    float: left;
+}
+.components-toggle-control .components-base-control__field .components-form-toggle {
+    margin-left: 0;
+    margin-right: 16px;
+}
+.wopb-label-control label {
+    margin-right: 0;
+    margin-left: 5px;
+}
+.wopb-edit-btn .wopb-base-control-btn.dashicons-image-rotate,
+.wopb-field-color .wopb-clear,
+.wopb-field-select .wopb-multiple-value>span {
+    margin-right: 0;
+    margin-left: 4px;
+}
+.wopb-field-select .wopb-multiple-value>span span.wopb-select-close {
+    margin-left: 0;
+    margin-right: 4px;
+}
+
+/* filter */
+.wopb-heading-filter .wopb-filter-navigation {
+    left: 0;
+    justify-content: flex-end;
+    right: auto;
+}
+
+.wopb-next-prev-wrap ul li {
+    margin-right: 0;
+    margin-left: 5px;
+}
+.wopb-heading-filter .wopb-next-prev-wrap {
+    margin-left: 0;
+    margin-right: 15px;
+}
+.wopb-next-prev-wrap ul li:last-child {
+    margin-left: 0;
+}
+
+.wopb-heading-style11 .wopb-heading-btn svg {
+    transform: rotate(180deg);
+    margin-left: 0;
+    margin-right: 8px;
+}
+.wopb-next-page-numbers svg {
+    transform: rotate(180deg); 
+}
+.wopb-prev-page-numbers svg {
+    transform: rotate(180deg); 
+}
+.wopb-prev-action svg {
+    transform: rotate(180deg); 
+}
+.wopb-next-action svg {
+    transform: rotate(180deg); 
+}
+
+/* meta */
+.wopb-meta-author-img {
+    margin-right: 0;
+    margin-left: 5px;
+}
+
+.wopb-heading-filter .wopb-filter-navigation {
+    margin: auto 200px 0 0;
+}

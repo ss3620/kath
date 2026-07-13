@@ -1,0 +1,4 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+// SAME WORDPRESS REGISTRATION SPAM CHECK WORKS FOR THIS ONE.
