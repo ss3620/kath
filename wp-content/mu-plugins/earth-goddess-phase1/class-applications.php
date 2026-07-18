@@ -15,14 +15,66 @@ class EG_Applications {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_cpt' ) );
 		add_action( 'init', array( __CLASS__, 'register_shortcodes' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+		add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'disable_block_editor' ), 10, 2 );
+
 		add_action( 'admin_post_nopriv_eg_submit_application', array( __CLASS__, 'handle_submit' ) );
 		add_action( 'admin_post_eg_submit_application', array( __CLASS__, 'handle_submit' ) );
+		add_action( 'admin_post_eg_approve_application', array( __CLASS__, 'handle_approve' ) );
+
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
-		add_action( 'save_post_' . self::CPT, array( __CLASS__, 'save_approval' ), 10, 2 );
 		add_filter( 'manage_' . self::CPT . '_posts_columns', array( __CLASS__, 'columns' ) );
 		add_action( 'manage_' . self::CPT . '_posts_custom_column', array( __CLASS__, 'column_content' ), 10, 2 );
+		add_action( 'admin_notices', array( __CLASS__, 'admin_notices' ) );
 		add_action( 'admin_init', array( __CLASS__, 'maybe_create_pages' ) );
 		add_action( 'woocommerce_account_dashboard', array( __CLASS__, 'render_my_account_pathways' ), 5 );
+	}
+
+	/**
+	 * Classic editor for applications so approve actions work reliably.
+	 *
+	 * @param bool   $use Whether to use block editor.
+	 * @param string $post_type Post type.
+	 * @return bool
+	 */
+	public static function disable_block_editor( $use, $post_type ) {
+		if ( self::CPT === $post_type ) {
+			return false;
+		}
+		return $use;
+	}
+
+	/**
+	 * Frontend form CSS.
+	 */
+	public static function enqueue_assets() {
+		if ( ! is_singular( 'page' ) ) {
+			return;
+		}
+		$post = get_post();
+		if ( ! $post ) {
+			return;
+		}
+
+		$content = (string) $post->post_content;
+		$has_shortcode = has_shortcode( $content, 'eg_affiliate_application' )
+			|| has_shortcode( $content, 'eg_ambassador_application' )
+			|| has_shortcode( $content, 'eg_wholesale_application' );
+		$slugs = array(
+			'affiliate-business-builder-application',
+			'ambassador-application',
+			'wholesale-partner-application',
+		);
+		if ( ! $has_shortcode && ! in_array( $post->post_name, $slugs, true ) ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'eg-applications',
+			self::asset_url( 'assets/eg-applications.css' ),
+			array(),
+			EG_PHASE1_VERSION
+		);
 	}
 
 	/**
@@ -73,6 +125,7 @@ class EG_Applications {
 				'capability_type'     => 'post',
 				'supports'            => array( 'title' ),
 				'exclude_from_search' => true,
+				'show_in_rest'        => false,
 			)
 		);
 	}
@@ -154,12 +207,12 @@ class EG_Applications {
 		return self::render_form(
 			'ambassador',
 			array(
-				'full_name'      => 'Name',
-				'email'          => 'Email',
-				'social_links'   => 'Social Media Profiles',
-				'audience_size'  => 'Audience Size',
-				'main_platform'  => 'Main Platform',
-				'why_partner'    => 'Why do you wish to partner with Earth Goddess AU?',
+				'full_name'     => 'Name',
+				'email'         => 'Email',
+				'social_links'  => 'Social Media Profiles',
+				'audience_size' => 'Audience Size',
+				'main_platform' => 'Main Platform',
+				'why_partner'   => 'Why do you wish to partner with Earth Goddess AU?',
 			)
 		);
 	}
@@ -171,14 +224,14 @@ class EG_Applications {
 		return self::render_form(
 			'wholesale',
 			array(
-				'business_name' => 'Business Name',
-				'abn'           => 'ABN',
-				'website'       => 'Website',
-				'business_type' => 'Business Type',
-				'contact_person'=> 'Contact Person',
-				'email'         => 'Email',
-				'phone'         => 'Phone',
-				'reason'        => 'Reason for Applying',
+				'business_name'  => 'Business Name',
+				'abn'            => 'ABN',
+				'website'        => 'Website',
+				'business_type'  => 'Business Type',
+				'contact_person' => 'Contact Person',
+				'email'          => 'Email',
+				'phone'          => 'Phone',
+				'reason'         => 'Reason for Applying',
 			)
 		);
 	}
@@ -189,6 +242,14 @@ class EG_Applications {
 	 * @return string
 	 */
 	private static function render_form( $type, $fields ) {
+		// Ensure CSS loads even if page builder wraps shortcode oddly.
+		wp_enqueue_style(
+			'eg-applications',
+			self::asset_url( 'assets/eg-applications.css' ),
+			array(),
+			EG_PHASE1_VERSION
+		);
+
 		$notice = '';
 		if ( ! empty( $_GET['eg_app'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$status = sanitize_text_field( wp_unslash( $_GET['eg_app'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -200,26 +261,41 @@ class EG_Applications {
 		}
 
 		ob_start();
-		echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
-		<form class="eg-application-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="eg_submit_application" />
-			<input type="hidden" name="eg_app_type" value="<?php echo esc_attr( $type ); ?>" />
-			<?php wp_nonce_field( 'eg_submit_application_' . $type, 'eg_app_nonce' ); ?>
-			<?php foreach ( $fields as $name => $label ) : ?>
-				<p>
-					<label for="eg_<?php echo esc_attr( $name ); ?>"><?php echo esc_html( $label ); ?></label><br />
-					<?php if ( in_array( $name, array( 'why_join', 'why_partner', 'reason', 'social_links' ), true ) ) : ?>
-						<textarea id="eg_<?php echo esc_attr( $name ); ?>" name="<?php echo esc_attr( $name ); ?>" rows="4" required></textarea>
-					<?php else : ?>
-						<input id="eg_<?php echo esc_attr( $name ); ?>" type="<?php echo 'email' === $name ? 'email' : 'text'; ?>" name="<?php echo esc_attr( $name ); ?>" required />
-					<?php endif; ?>
-				</p>
-			<?php endforeach; ?>
-			<p><button type="submit"><?php esc_html_e( 'Submit Application', 'earth-goddess' ); ?></button></p>
-		</form>
+		<div class="eg-application-wrap">
+			<?php echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<form class="eg-application-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="eg_submit_application" />
+				<input type="hidden" name="eg_app_type" value="<?php echo esc_attr( $type ); ?>" />
+				<?php wp_nonce_field( 'eg_submit_application_' . $type, 'eg_app_nonce' ); ?>
+				<?php foreach ( $fields as $name => $label ) : ?>
+					<div class="eg-field">
+						<label for="eg_<?php echo esc_attr( $name ); ?>"><?php echo esc_html( $label ); ?></label>
+						<?php if ( in_array( $name, array( 'why_join', 'why_partner', 'reason', 'social_links' ), true ) ) : ?>
+							<textarea id="eg_<?php echo esc_attr( $name ); ?>" name="<?php echo esc_attr( $name ); ?>" rows="4" required></textarea>
+						<?php else : ?>
+							<input id="eg_<?php echo esc_attr( $name ); ?>" type="<?php echo 'email' === $name ? 'email' : 'text'; ?>" name="<?php echo esc_attr( $name ); ?>" required />
+						<?php endif; ?>
+					</div>
+				<?php endforeach; ?>
+				<div class="eg-submit">
+					<button type="submit"><?php esc_html_e( 'Submit Application', 'earth-goddess' ); ?></button>
+				</div>
+			</form>
+		</div>
 		<?php
 		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Absolute URL for MU-plugin assets.
+	 *
+	 * @param string $relative Relative path under earth-goddess-phase1/.
+	 * @return string
+	 */
+	private static function asset_url( $relative ) {
+		$mu_url = content_url( 'mu-plugins/earth-goddess-phase1/' . ltrim( $relative, '/' ) );
+		return $mu_url;
 	}
 
 	/**
@@ -247,7 +323,7 @@ class EG_Applications {
 		$email = isset( $data['email'] ) ? $data['email'] : '';
 		$name  = isset( $data['full_name'] ) ? $data['full_name'] : ( isset( $data['contact_person'] ) ? $data['contact_person'] : ( isset( $data['business_name'] ) ? $data['business_name'] : 'Applicant' ) );
 
-		if ( empty( $email ) || empty( $name ) ) {
+		if ( empty( $email ) || empty( $name ) || ! is_email( $email ) ) {
 			self::redirect_back( $type, 'error' );
 		}
 
@@ -310,84 +386,126 @@ class EG_Applications {
 		$type   = get_post_meta( $post->ID, '_eg_app_type', true );
 		$data   = get_post_meta( $post->ID, '_eg_app_data', true );
 		$status = get_post_meta( $post->ID, '_eg_app_status', true );
+		$user_id = (int) get_post_meta( $post->ID, '_eg_app_user_id', true );
 		if ( ! is_array( $data ) ) {
 			$data = array();
 		}
-		wp_nonce_field( 'eg_app_approve_' . $post->ID, 'eg_app_approve_nonce' );
+
 		echo '<p><strong>Type:</strong> ' . esc_html( (string) $type ) . '</p>';
 		echo '<p><strong>Status:</strong> ' . esc_html( $status ? $status : 'pending' ) . '</p>';
-		echo '<table class="widefat"><tbody>';
+		if ( $user_id ) {
+			echo '<p><strong>User ID:</strong> <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . (int) $user_id . '</a></p>';
+		}
+		echo '<table class="widefat striped"><tbody>';
 		foreach ( $data as $k => $v ) {
-			echo '<tr><th>' . esc_html( $k ) . '</th><td>' . esc_html( (string) $v ) . '</td></tr>';
+			echo '<tr><th style="width:30%">' . esc_html( $k ) . '</th><td>' . esc_html( (string) $v ) . '</td></tr>';
 		}
 		echo '</tbody></table>';
 
 		if ( 'approved' !== $status ) {
-			echo '<p><label><input type="checkbox" name="eg_approve_application" value="1" /> Approve and assign role / default affiliate rank</label></p>';
-			echo '<p class="description">Affiliate → role affiliate_business_builder + tag Clear Quartz Partner. Ambassador → ambassador + Seed Ambassador. Wholesale → wholesale_starter.</p>';
+			$action_url = wp_nonce_url(
+				admin_url( 'admin-post.php?action=eg_approve_application&application_id=' . (int) $post->ID ),
+				'eg_approve_application_' . (int) $post->ID
+			);
+			echo '<p style="margin-top:16px"><a class="button button-primary button-hero" href="' . esc_url( $action_url ) . '">Approve Application</a></p>';
+			echo '<p class="description">Affiliate → role affiliate_business_builder + Clear Quartz tag. Ambassador → ambassador + Seed tag. Wholesale → wholesale_starter.</p>';
 		} else {
 			echo '<p><em>Already approved.</em></p>';
 		}
 	}
 
 	/**
-	 * On approve: assign role and AFWC defaults.
-	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post.
+	 * Approve via dedicated admin-post action (works outside block editor).
 	 */
-	public static function save_approval( $post_id, $post ) {
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return;
+	public static function handle_approve() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Forbidden', 'earth-goddess' ) );
 		}
-		if ( empty( $_POST['eg_app_approve_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['eg_app_approve_nonce'] ) ), 'eg_app_approve_' . $post_id ) ) {
-			return;
+
+		$post_id = isset( $_GET['application_id'] ) ? absint( $_GET['application_id'] ) : 0;
+		if ( ! $post_id || empty( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'eg_approve_application_' . $post_id ) ) {
+			wp_die( esc_html__( 'Invalid approval request.', 'earth-goddess' ) );
 		}
-		if ( empty( $_POST['eg_approve_application'] ) ) {
-			return;
+
+		$result = self::approve_application( $post_id );
+		$args   = array(
+			'post' => $post_id,
+			'action' => 'edit',
+		);
+		if ( is_wp_error( $result ) ) {
+			$args['eg_app_notice'] = 'error';
+			$args['eg_app_msg']    = rawurlencode( $result->get_error_message() );
+		} else {
+			$args['eg_app_notice'] = 'approved';
+			$args['eg_app_user']   = (int) $result;
 		}
+
+		wp_safe_redirect( add_query_arg( $args, admin_url( 'post.php' ) ) );
+		exit;
+	}
+
+	/**
+	 * Approve application and assign role / affiliate flags.
+	 *
+	 * @param int $post_id Application ID.
+	 * @return int|WP_Error User ID on success.
+	 */
+	public static function approve_application( $post_id ) {
+		$post = get_post( $post_id );
+		if ( ! $post || self::CPT !== $post->post_type ) {
+			return new WP_Error( 'eg_invalid', 'Application not found.' );
+		}
+
 		if ( 'approved' === get_post_meta( $post_id, '_eg_app_status', true ) ) {
-			return;
+			$user_id = (int) get_post_meta( $post_id, '_eg_app_user_id', true );
+			return $user_id ? $user_id : new WP_Error( 'eg_already', 'Already approved, but user ID missing.' );
 		}
 
 		$type  = get_post_meta( $post_id, '_eg_app_type', true );
-		$email = get_post_meta( $post_id, '_eg_app_email', true );
+		$email = sanitize_email( (string) get_post_meta( $post_id, '_eg_app_email', true ) );
 		$data  = get_post_meta( $post_id, '_eg_app_data', true );
-		$user  = get_user_by( 'email', $email );
+		if ( ! is_array( $data ) ) {
+			$data = array();
+		}
 
+		if ( ! $email || ! is_email( $email ) ) {
+			return new WP_Error( 'eg_email', 'Application is missing a valid email address.' );
+		}
+
+		$user = get_user_by( 'email', $email );
 		if ( ! $user ) {
-			$password = wp_generate_password();
+			$password = wp_generate_password( 12, true );
+			$login    = self::unique_username_from_email( $email );
 			if ( function_exists( 'wc_create_new_customer' ) ) {
-				$user_id = wc_create_new_customer(
-					$email,
-					sanitize_user( current( explode( '@', $email ) ), true ),
-					$password
-				);
+				$user_id = wc_create_new_customer( $email, $login, $password );
 			} else {
-				$user_id = wp_create_user( sanitize_user( current( explode( '@', $email ) ), true ), $password, $email );
+				$user_id = wp_create_user( $login, $password, $email );
 			}
 			if ( is_wp_error( $user_id ) ) {
-				return;
+				return $user_id;
 			}
 			$user = get_user_by( 'id', $user_id );
-			if ( is_array( $data ) && ! empty( $data['full_name'] ) ) {
+			if ( ! empty( $data['full_name'] ) ) {
 				$parts = explode( ' ', $data['full_name'], 2 );
 				wp_update_user(
 					array(
-						'ID'         => $user_id,
-						'first_name' => $parts[0],
-						'last_name'  => isset( $parts[1] ) ? $parts[1] : '',
+						'ID'           => $user_id,
+						'first_name'   => $parts[0],
+						'last_name'    => isset( $parts[1] ) ? $parts[1] : '',
 						'display_name' => $data['full_name'],
 					)
 				);
 			}
+			// Send password setup email when possible.
+			if ( function_exists( 'wp_new_user_notification' ) ) {
+				wp_new_user_notification( $user_id, null, 'user' );
+			}
 		}
 
 		if ( ! $user ) {
-			return;
+			return new WP_Error( 'eg_user', 'Could not create or load the applicant user.' );
 		}
 
-		// Reset to a single program role.
 		foreach ( array_keys( EG_Roles::ROLES ) as $role ) {
 			$user->remove_role( $role );
 		}
@@ -403,6 +521,8 @@ class EG_Applications {
 			self::assign_affiliate_tag( $user->ID, 'seed-ambassador' );
 		} elseif ( 'wholesale' === $type ) {
 			$user->set_role( 'wholesale_starter' );
+		} else {
+			return new WP_Error( 'eg_type', 'Unknown application type: ' . $type );
 		}
 
 		update_post_meta( $post_id, '_eg_app_status', 'approved' );
@@ -413,6 +533,47 @@ class EG_Applications {
 				'post_status' => 'private',
 			)
 		);
+
+		return (int) $user->ID;
+	}
+
+	/**
+	 * @param string $email Email.
+	 * @return string
+	 */
+	private static function unique_username_from_email( $email ) {
+		$base = sanitize_user( current( explode( '@', $email ) ), true );
+		if ( strlen( $base ) < 3 ) {
+			$base = 'eguser';
+		}
+		$login = $base;
+		$i     = 1;
+		while ( username_exists( $login ) ) {
+			$login = $base . $i;
+			++$i;
+		}
+		return $login;
+	}
+
+	/**
+	 * Admin notices after approve redirect.
+	 */
+	public static function admin_notices() {
+		if ( empty( $_GET['eg_app_notice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+		$notice = sanitize_key( wp_unslash( $_GET['eg_app_notice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'approved' === $notice ) {
+			$user_id = isset( $_GET['eg_app_user'] ) ? absint( $_GET['eg_app_user'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			echo '<div class="notice notice-success is-dismissible"><p>Application approved successfully.';
+			if ( $user_id ) {
+				echo ' User ID: <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . (int) $user_id . '</a>.';
+			}
+			echo '</p></div>';
+		} elseif ( 'error' === $notice ) {
+			$msg = isset( $_GET['eg_app_msg'] ) ? sanitize_text_field( rawurldecode( wp_unslash( $_GET['eg_app_msg'] ) ) ) : 'Approval failed.'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html( $msg ) . '</p></div>';
+		}
 	}
 
 	/**
@@ -423,6 +584,18 @@ class EG_Applications {
 		if ( ! get_user_meta( $user_id, 'afwc_affiliate_since', true ) ) {
 			update_user_meta( $user_id, 'afwc_affiliate_since', current_time( 'mysql' ) );
 		}
+		// Keep AFWC affiliate role setting in sync when possible.
+		$affiliate_roles = get_option( 'affiliate_users_roles', array() );
+		if ( ! is_array( $affiliate_roles ) ) {
+			$affiliate_roles = array();
+		}
+		foreach ( array( 'affiliate_business_builder', 'ambassador' ) as $role ) {
+			if ( ! in_array( $role, $affiliate_roles, true ) ) {
+				$affiliate_roles[] = $role;
+			}
+		}
+		update_option( 'affiliate_users_roles', $affiliate_roles, false );
+
 		do_action( 'afwc_affiliate_approved', $user_id );
 	}
 
@@ -436,9 +609,15 @@ class EG_Applications {
 		}
 		$term = get_term_by( 'slug', $slug, 'afwc_user_tags' );
 		if ( ! $term ) {
-			return;
+			$created = wp_insert_term( ucwords( str_replace( '-', ' ', $slug ) ), 'afwc_user_tags', array( 'slug' => $slug ) );
+			if ( is_wp_error( $created ) ) {
+				return;
+			}
+			$term = get_term( (int) $created['term_id'], 'afwc_user_tags' );
 		}
-		wp_set_object_terms( $user_id, array( (int) $term->term_id ), 'afwc_user_tags', false );
+		if ( $term && ! is_wp_error( $term ) ) {
+			wp_set_object_terms( $user_id, array( (int) $term->term_id ), 'afwc_user_tags', false );
+		}
 	}
 
 	/**
