@@ -242,7 +242,6 @@ class EG_Applications {
 	 * @return string
 	 */
 	private static function render_form( $type, $fields ) {
-		// Ensure CSS loads even if page builder wraps shortcode oddly.
 		wp_enqueue_style(
 			'eg-applications',
 			self::asset_url( 'assets/eg-applications.css' ),
@@ -262,6 +261,17 @@ class EG_Applications {
 
 		ob_start();
 		?>
+		<style id="eg-application-inline-css">
+			.eg-application-wrap{display:block!important;width:100%!important;max-width:520px!important;margin:2rem auto 3rem!important;padding:1.75rem 1.5rem 2rem!important;background:#fff!important;border:1px solid rgba(0,0,0,.1)!important;border-radius:12px!important;box-sizing:border-box!important;float:none!important}
+			.eg-application-wrap .eg-app-notice{margin:0 0 1.25rem!important;padding:.85rem 1rem!important;border-radius:8px!important}
+			.eg-application-wrap .eg-app-success{background:#eef8f0!important;color:#1e5a2c!important;border:1px solid #b7dfc0!important}
+			.eg-application-wrap .eg-app-error{background:#fdf0f0!important;color:#8a1f1f!important;border:1px solid #efb4b4!important}
+			.eg-application-form .eg-field{margin:0 0 1.1rem!important}
+			.eg-application-form label{display:block!important;margin:0 0 .4rem!important;font-weight:600!important}
+			.eg-application-form input[type=text],.eg-application-form input[type=email],.eg-application-form input[type=tel],.eg-application-form input[type=url],.eg-application-form textarea{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:.7rem .85rem!important;border:1px solid #c9c4bc!important;border-radius:8px!important;font-size:1rem!important}
+			.eg-application-form textarea{min-height:110px!important}
+			.eg-application-form button[type=submit]{display:inline-block!important;width:100%!important;padding:.85rem 1.25rem!important;border:0!important;border-radius:8px!important;background:#5b3a6e!important;color:#fff!important;font-weight:600!important;cursor:pointer!important}
+		</style>
 		<div class="eg-application-wrap">
 			<?php echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<form class="eg-application-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">

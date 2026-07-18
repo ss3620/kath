@@ -1,102 +1,105 @@
-<?php
-/**
- * Frontend styles for EG application forms.
- */
+/* Earth Goddess AU – application form layout */
 
-.eg-application-wrap {
-	max-width: 560px;
-	margin: 2.5rem auto 3rem;
-	padding: 1.75rem 1.5rem 2rem;
-	background: #fff;
-	border: 1px solid rgba(0, 0, 0, 0.08);
-	border-radius: 12px;
-	box-sizing: border-box;
+body .eg-application-wrap,
+.entry-content .eg-application-wrap,
+.ast-container .eg-application-wrap,
+.elementor-widget-container .eg-application-wrap {
+	display: block !important;
+	width: 100% !important;
+	max-width: 520px !important;
+	margin: 2rem auto 3rem !important;
+	padding: 1.75rem 1.5rem 2rem !important;
+	background: #fff !important;
+	border: 1px solid rgba(0, 0, 0, 0.1) !important;
+	border-radius: 12px !important;
+	box-sizing: border-box !important;
+	float: none !important;
 }
 
-.eg-application-wrap .eg-app-notice {
-	margin: 0 0 1.25rem;
-	padding: 0.85rem 1rem;
-	border-radius: 8px;
+body .eg-application-wrap .eg-app-notice {
+	margin: 0 0 1.25rem !important;
+	padding: 0.85rem 1rem !important;
+	border-radius: 8px !important;
 }
 
-.eg-application-wrap .eg-app-success {
-	background: #eef8f0;
-	color: #1e5a2c;
-	border: 1px solid #b7dfc0;
+body .eg-application-wrap .eg-app-success {
+	background: #eef8f0 !important;
+	color: #1e5a2c !important;
+	border: 1px solid #b7dfc0 !important;
 }
 
-.eg-application-wrap .eg-app-error {
-	background: #fdf0f0;
-	color: #8a1f1f;
-	border: 1px solid #efb4b4;
+body .eg-application-wrap .eg-app-error {
+	background: #fdf0f0 !important;
+	color: #8a1f1f !important;
+	border: 1px solid #efb4b4 !important;
 }
 
-.eg-application-form {
-	width: 100%;
-	max-width: 100%;
-	margin: 0 auto;
+body .eg-application-form {
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
 }
 
-.eg-application-form .eg-field {
-	margin: 0 0 1.1rem;
+body .eg-application-form .eg-field {
+	margin: 0 0 1.1rem !important;
 }
 
-.eg-application-form label {
-	display: block;
-	margin: 0 0 0.4rem;
-	font-weight: 600;
-	font-size: 0.95rem;
+body .eg-application-form label {
+	display: block !important;
+	margin: 0 0 0.4rem !important;
+	font-weight: 600 !important;
+	font-size: 0.95rem !important;
 }
 
-.eg-application-form input[type="text"],
-.eg-application-form input[type="email"],
-.eg-application-form input[type="tel"],
-.eg-application-form input[type="url"],
-.eg-application-form textarea {
-	display: block;
-	width: 100%;
-	max-width: 100%;
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0.7rem 0.85rem;
-	border: 1px solid #c9c4bc;
-	border-radius: 8px;
-	background: #fff;
-	font-size: 1rem;
-	line-height: 1.4;
+body .eg-application-form input[type="text"],
+body .eg-application-form input[type="email"],
+body .eg-application-form input[type="tel"],
+body .eg-application-form input[type="url"],
+body .eg-application-form textarea {
+	display: block !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	box-sizing: border-box !important;
+	margin: 0 !important;
+	padding: 0.7rem 0.85rem !important;
+	border: 1px solid #c9c4bc !important;
+	border-radius: 8px !important;
+	background: #fff !important;
+	font-size: 1rem !important;
+	line-height: 1.4 !important;
 }
 
-.eg-application-form textarea {
-	min-height: 110px;
-	resize: vertical;
+body .eg-application-form textarea {
+	min-height: 110px !important;
+	resize: vertical !important;
 }
 
-.eg-application-form .eg-submit {
-	margin: 1.5rem 0 0;
+body .eg-application-form .eg-submit {
+	margin: 1.5rem 0 0 !important;
 }
 
-.eg-application-form button[type="submit"] {
-	display: inline-block;
-	width: 100%;
-	padding: 0.85rem 1.25rem;
-	border: 0;
-	border-radius: 8px;
-	background: #5b3a6e;
-	color: #fff;
-	font-size: 1rem;
-	font-weight: 600;
-	cursor: pointer;
+body .eg-application-form button[type="submit"] {
+	display: inline-block !important;
+	width: 100% !important;
+	padding: 0.85rem 1.25rem !important;
+	border: 0 !important;
+	border-radius: 8px !important;
+	background: #5b3a6e !important;
+	color: #fff !important;
+	font-size: 1rem !important;
+	font-weight: 600 !important;
+	cursor: pointer !important;
 }
 
-.eg-application-form button[type="submit"]:hover,
-.eg-application-form button[type="submit"]:focus {
-	background: #472c56;
+body .eg-application-form button[type="submit"]:hover,
+body .eg-application-form button[type="submit"]:focus {
+	background: #472c56 !important;
 }
 
 @media (max-width: 600px) {
-	.eg-application-wrap {
-		margin: 1.25rem 0 2rem;
-		padding: 1.25rem 1rem 1.5rem;
-		border-radius: 10px;
+	body .eg-application-wrap,
+	.entry-content .eg-application-wrap {
+		margin: 1.25rem auto 2rem !important;
+		padding: 1.25rem 1rem 1.5rem !important;
 	}
 }
