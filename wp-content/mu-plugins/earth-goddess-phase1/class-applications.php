@@ -393,18 +393,35 @@ class EG_Applications {
 	 * @param WP_Post $post Post.
 	 */
 	public static function render_meta_box( $post ) {
-		$type   = get_post_meta( $post->ID, '_eg_app_type', true );
-		$data   = get_post_meta( $post->ID, '_eg_app_data', true );
-		$status = get_post_meta( $post->ID, '_eg_app_status', true );
+		$type    = get_post_meta( $post->ID, '_eg_app_type', true );
+		$data    = get_post_meta( $post->ID, '_eg_app_data', true );
+		$status  = get_post_meta( $post->ID, '_eg_app_status', true );
 		$user_id = (int) get_post_meta( $post->ID, '_eg_app_user_id', true );
 		if ( ! is_array( $data ) ) {
 			$data = array();
 		}
+		if ( ! $status ) {
+			$status = 'pending';
+		}
+
+		$badge = ( 'approved' === $status )
+			? '<span style="display:inline-block;padding:4px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:700;">APPROVED</span>'
+			: '<span style="display:inline-block;padding:4px 10px;border-radius:999px;background:#fef3c7;color:#92400e;font-weight:700;">PENDING</span>';
 
 		echo '<p><strong>Type:</strong> ' . esc_html( (string) $type ) . '</p>';
-		echo '<p><strong>Status:</strong> ' . esc_html( $status ? $status : 'pending' ) . '</p>';
+		echo '<p><strong>Status:</strong> ' . $badge . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		if ( $user_id ) {
-			echo '<p><strong>User ID:</strong> <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . (int) $user_id . '</a></p>';
+			$user = get_user_by( 'id', $user_id );
+			echo '<p><strong>Linked user:</strong> <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">';
+			echo esc_html( $user ? $user->user_email : ( 'User #' . $user_id ) );
+			echo '</a></p>';
+			if ( $user && in_array( 'affiliate_business_builder', (array) $user->roles, true ) ) {
+				echo '<p><strong>Next:</strong> Ask them to log in → My Account → Affiliate dashboard → copy referral link.</p>';
+			} elseif ( $user && in_array( 'ambassador', (array) $user->roles, true ) ) {
+				echo '<p><strong>Next:</strong> Ask them to log in → My Account → Affiliate dashboard → copy referral link.</p>';
+			} elseif ( $user && EG_Roles::user_is_wholesale( $user ) ) {
+				echo '<p><strong>Next:</strong> Ask them to log in and place a wholesale order (≥ $250 for Starter).</p>';
+			}
 		}
 		echo '<table class="widefat striped"><tbody>';
 		foreach ( $data as $k => $v ) {
@@ -420,7 +437,7 @@ class EG_Applications {
 			echo '<p style="margin-top:16px"><a class="button button-primary button-hero" href="' . esc_url( $action_url ) . '">Approve Application</a></p>';
 			echo '<p class="description">Affiliate → role affiliate_business_builder + Clear Quartz tag. Ambassador → ambassador + Seed tag. Wholesale → wholesale_starter.</p>';
 		} else {
-			echo '<p><em>Already approved.</em></p>';
+			echo '<div class="notice notice-success inline" style="margin:16px 0 0"><p><strong>This application is approved.</strong> Status will also show as Approved in the EG Applications list.</p></div>';
 		}
 	}
 
@@ -537,10 +554,16 @@ class EG_Applications {
 
 		update_post_meta( $post_id, '_eg_app_status', 'approved' );
 		update_post_meta( $post_id, '_eg_app_user_id', $user->ID );
+
+		$title = (string) $post->post_title;
+		if ( 0 !== strpos( $title, '[Approved]' ) ) {
+			$title = '[Approved] ' . preg_replace( '/^\[Pending\]\s*/i', '', $title );
+		}
 		wp_update_post(
 			array(
 				'ID'          => $post_id,
 				'post_status' => 'private',
+				'post_title'  => $title,
 			)
 		);
 
@@ -575,11 +598,12 @@ class EG_Applications {
 		$notice = sanitize_key( wp_unslash( $_GET['eg_app_notice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'approved' === $notice ) {
 			$user_id = isset( $_GET['eg_app_user'] ) ? absint( $_GET['eg_app_user'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			echo '<div class="notice notice-success is-dismissible"><p>Application approved successfully.';
+			echo '<div class="notice notice-success is-dismissible"><p><strong>Application status: APPROVED.</strong>';
 			if ( $user_id ) {
-				echo ' User ID: <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . (int) $user_id . '</a>.';
+				echo ' Linked user: <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . (int) $user_id . '</a>.';
 			}
-			echo '</p></div>';
+			echo ' Status also shows as Approved in the EG Applications list.</p>';
+			echo '<p>Next: log in as the applicant → My Account → Affiliate dashboard → copy referral link → place a test order in Incognito via that link.</p></div>';
 		} elseif ( 'error' === $notice ) {
 			$msg = isset( $_GET['eg_app_msg'] ) ? sanitize_text_field( rawurldecode( wp_unslash( $_GET['eg_app_msg'] ) ) ) : 'Approval failed.'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html( $msg ) . '</p></div>';
@@ -649,7 +673,15 @@ class EG_Applications {
 		if ( 'eg_type' === $column ) {
 			echo esc_html( (string) get_post_meta( $post_id, '_eg_app_type', true ) );
 		} elseif ( 'eg_status' === $column ) {
-			echo esc_html( (string) get_post_meta( $post_id, '_eg_app_status', true ) );
+			$status = (string) get_post_meta( $post_id, '_eg_app_status', true );
+			if ( ! $status ) {
+				$status = 'pending';
+			}
+			if ( 'approved' === $status ) {
+				echo '<span style="display:inline-block;padding:2px 8px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:700;">Approved</span>';
+			} else {
+				echo '<span style="display:inline-block;padding:2px 8px;border-radius:999px;background:#fef3c7;color:#92400e;font-weight:700;">Pending</span>';
+			}
 		} elseif ( 'eg_email' === $column ) {
 			echo esc_html( (string) get_post_meta( $post_id, '_eg_app_email', true ) );
 		}
