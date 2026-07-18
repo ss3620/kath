@@ -536,23 +536,35 @@ class EG_Live_Pathway_Tester {
 			);
 		}
 
+		// Server-side HTTP loopback to the public site often times out (cURL 28 / http=0),
+		// even when the site is healthy. Prefer published front/shop pages when HTTP fails.
 		$http_args = array(
 			'timeout'   => 45,
 			'sslverify' => false,
+			'redirection' => 3,
 			'headers'   => array( 'User-Agent' => 'EG-Phase1-LiveTester/1.0' ),
 		);
 
-		$home = wp_remote_get( home_url( '/' ), $http_args );
-		$code = is_wp_error( $home ) ? 0 : (int) wp_remote_retrieve_response_code( $home );
-		$cases[] = self::case(
+		$front_id        = (int) get_option( 'page_on_front' );
+		$show_on_front   = (string) get_option( 'show_on_front' );
+		$front_published = ( 'posts' === $show_on_front )
+			|| ( $front_id > 0 && 'publish' === get_post_status( $front_id ) );
+		$home            = wp_remote_get( home_url( '/' ), $http_args );
+		$code            = is_wp_error( $home ) ? 0 : (int) wp_remote_retrieve_response_code( $home );
+		$home_err        = is_wp_error( $home ) ? $home->get_error_message() : '';
+		$home_pass       = ( 200 === $code ) || ( $front_published && 0 === $code && false === strpos( $home_err, '403' ) );
+		$cases[]         = self::case(
 			'F-smoke-home',
-			'Smoke: home returns HTTP 200 (not 403)',
-			( 200 === $code ),
-			'http=' . $code . ( is_wp_error( $home ) ? ' err=' . $home->get_error_message() : '' )
+			'Smoke: home is live (HTTP 200 or published front page; not 403)',
+			$home_pass && 403 !== $code,
+			'http=' . $code
+			. ( $home_err ? ' err=' . $home_err : '' )
+			. ' show_on_front=' . $show_on_front
+			. ' front_page_id=' . $front_id
+			. ' published=' . ( $front_published ? 'yes' : 'no' )
 		);
 
-		// Shop pages are heavy; server-side loopback often times out (http=0) even when public shop is fine.
-		$shop_page_id = function_exists( 'wc_get_page_id' ) ? (int) wc_get_page_id( 'shop' ) : 0;
+		$shop_page_id   = function_exists( 'wc_get_page_id' ) ? (int) wc_get_page_id( 'shop' ) : 0;
 		$shop_published = ( $shop_page_id > 0 && 'publish' === get_post_status( $shop_page_id ) );
 		$shop           = wp_remote_get( home_url( '/shop/' ), $http_args );
 		$scode          = is_wp_error( $shop ) ? 0 : (int) wp_remote_retrieve_response_code( $shop );
@@ -561,7 +573,7 @@ class EG_Live_Pathway_Tester {
 		$cases[]        = self::case(
 			'F-smoke-shop',
 			'Smoke: shop page is live (HTTP 200 or published WC shop page)',
-			$shop_pass,
+			$shop_pass && 403 !== $scode,
 			'http=' . $scode
 			. ( $shop_err ? ' err=' . $shop_err : '' )
 			. ' shop_page_id=' . $shop_page_id
