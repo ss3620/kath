@@ -18,6 +18,7 @@ require_once EG_PHASE1_PATH . '/class-vip-discounts.php';
 require_once EG_PHASE1_PATH . '/class-applications.php';
 require_once EG_PHASE1_PATH . '/class-setup-seeder.php';
 require_once EG_PHASE1_PATH . '/class-admin-sop.php';
+require_once EG_PHASE1_PATH . '/class-live-pathway-tester.php';
 
 EG_Roles::init();
 EG_Wholesale_Pricing::init();
@@ -25,3 +26,4 @@ EG_VIP_Discounts::init();
 EG_Applications::init();
 EG_Setup_Seeder::init();
 EG_Admin_SOP::init();
+EG_Live_Pathway_Tester::init();

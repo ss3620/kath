@@ -76,6 +76,8 @@ tmp/
 temp/
 
 # ------------------------------
-# Local planning docs
+# Local planning docs / QA evidence
 # ------------------------------
 plan.pdf
+eg-live-pathway-test-results.md
+eg-live-pathway-test-results.json

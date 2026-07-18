@@ -60,12 +60,19 @@ class EG_Admin_SOP {
 			<?php if ( ! empty( $_GET['eg_seeded'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 				<div class="notice notice-success"><p>Configuration seed completed.</p></div>
 			<?php endif; ?>
+			<?php if ( ! empty( $_GET['eg_tested'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+				<div class="notice notice-success"><p>Live pathway tests finished. Scroll to results below.</p></div>
+			<?php endif; ?>
 
 			<p>
 				<a class="button button-primary" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=eg_phase1_reseed' ), 'eg_phase1_reseed' ) ); ?>">
 					Re-run Phase 1 seeder (WPLoyalty + AFWC)
 				</a>
+				<a class="button button-secondary" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=eg_phase1_run_live_tests' ), 'eg_phase1_run_live_tests' ) ); ?>">
+					Run live pathway tests
+				</a>
 			</p>
+			<?php self::render_live_test_results(); ?>
 
 			<h2>Role counts</h2>
 			<table class="widefat striped" style="max-width:480px">
@@ -139,6 +146,40 @@ class EG_Admin_SOP {
 
 			<p><em>Phase 2/3 (auto rank, badges, gamification dashboard) are out of scope.</em></p>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Render last live pathway test run.
+	 */
+	private static function render_live_test_results() {
+		$results = get_option( EG_Live_Pathway_Tester::OPTION_RESULTS );
+		if ( empty( $results ) || empty( $results['cases'] ) ) {
+			return;
+		}
+		?>
+		<h2>Live pathway test results</h2>
+		<p>
+			Finished: <?php echo esc_html( (string) $results['finished'] ); ?>
+			| Pass: <strong><?php echo (int) $results['pass']; ?></strong>
+			| Fail: <strong><?php echo (int) $results['fail']; ?></strong>
+		</p>
+		<p class="description">QA password for created users: <code><?php echo esc_html( EG_Live_Pathway_Tester::PASSWORD ); ?></code></p>
+		<table class="widefat striped">
+			<thead>
+				<tr><th>ID</th><th>Result</th><th>Check</th><th>Actual</th></tr>
+			</thead>
+			<tbody>
+			<?php foreach ( $results['cases'] as $case ) : ?>
+				<tr>
+					<td><code><?php echo esc_html( $case['id'] ); ?></code></td>
+					<td><?php echo ! empty( $case['pass'] ) ? '<span style="color:green">PASS</span>' : '<span style="color:#b32d2e">FAIL</span>'; ?></td>
+					<td><?php echo esc_html( $case['title'] ); ?></td>
+					<td><?php echo esc_html( (string) $case['actual'] ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
 		<?php
 	}
 
