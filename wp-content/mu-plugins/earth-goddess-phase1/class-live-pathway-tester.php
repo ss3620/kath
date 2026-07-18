@@ -192,22 +192,27 @@ class EG_Live_Pathway_Tester {
 
 		wp_set_current_user( $user->ID );
 
+		// Prior runs leave completed QA orders (e.g. annual_spend=1010 → always Goddess 15%).
+		self::reset_qa_orders( $user->ID );
+
 		$pct_moon = EG_VIP_Discounts::get_discount_percent( $user->ID );
+		$spend_moon = EG_VIP_Discounts::get_annual_spend( $user->ID );
 		$cases[]  = self::case(
 			'A2-moon',
 			'VIP: Moon tier discount is 10% when spend < $500',
-			( abs( $pct_moon - 10.0 ) < 0.01 ),
-			'percent=' . $pct_moon . ' annual_spend=' . EG_VIP_Discounts::get_annual_spend( $user->ID )
+			( $spend_moon < 500 && abs( $pct_moon - 10.0 ) < 0.01 ),
+			'percent=' . $pct_moon . ' annual_spend=' . $spend_moon
 		);
 
-		// Simulate Star spend via a completed test order if WooCommerce available.
-		$star_ok = self::ensure_spend_at_least( $user->ID, 500 );
+		// Seed into Star band only ($500–$999), not past Goddess.
+		$star_ok  = self::ensure_spend_in_band( $user->ID, 500, 999 );
 		$pct_star = EG_VIP_Discounts::get_discount_percent( $user->ID );
+		$spend_star = EG_VIP_Discounts::get_annual_spend( $user->ID );
 		$cases[]  = self::case(
 			'A4-star',
 			'VIP: Star tier discount is 12% when spend >= $500',
 			$star_ok && abs( $pct_star - 12.0 ) < 0.01,
-			'percent=' . $pct_star . ' spend_ok=' . ( $star_ok ? 'yes' : 'no' )
+			'percent=' . $pct_star . ' annual_spend=' . $spend_star . ' spend_ok=' . ( $star_ok ? 'yes' : 'no' )
 		);
 
 		$goddess_ok = self::ensure_spend_at_least( $user->ID, 1000 );
@@ -216,7 +221,7 @@ class EG_Live_Pathway_Tester {
 			'A5-goddess',
 			'VIP: Goddess tier discount is 15% when spend >= $1000',
 			$goddess_ok && abs( $pct_g - 15.0 ) < 0.01,
-			'percent=' . $pct_g
+			'percent=' . $pct_g . ' annual_spend=' . EG_VIP_Discounts::get_annual_spend( $user->ID )
 		);
 
 		$ws = get_user_by( 'email', 'qa-ws-starter@earthgoddess.test' );
@@ -661,6 +666,61 @@ class EG_Live_Pathway_Tester {
 	}
 
 	/**
+	 * Cancel prior EG QA orders so annual-spend tiers can be re-tested cleanly.
+	 *
+	 * @param int $user_id User ID.
+	 */
+	private static function reset_qa_orders( $user_id ) {
+		if ( ! function_exists( 'wc_get_orders' ) ) {
+			return;
+		}
+		$user  = get_user_by( 'id', $user_id );
+		$email = $user ? (string) $user->user_email : '';
+		// Only wipe spend for disposable QA accounts.
+		if ( ! $email || false === strpos( $email, '@earthgoddess.test' ) ) {
+			return;
+		}
+		$orders = wc_get_orders(
+			array(
+				'customer_id' => $user_id,
+				'status'      => array( 'wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending' ),
+				'limit'       => -1,
+				'return'      => 'objects',
+			)
+		);
+		foreach ( $orders as $order ) {
+			if ( $order instanceof WC_Order ) {
+				$order->update_status( 'cancelled', 'EG QA reset spend' );
+			}
+		}
+	}
+
+	/**
+	 * Seed spend into [min, max] inclusive band.
+	 *
+	 * @param int   $user_id User ID.
+	 * @param float $min     Min spend.
+	 * @param float $max     Max spend.
+	 * @return bool
+	 */
+	private static function ensure_spend_in_band( $user_id, $min, $max ) {
+		$current = EG_VIP_Discounts::get_annual_spend( $user_id );
+		if ( $current >= $min && $current <= $max ) {
+			return true;
+		}
+		if ( $current > $max ) {
+			self::reset_qa_orders( $user_id );
+			$current = EG_VIP_Discounts::get_annual_spend( $user_id );
+		}
+		// Target midpoint of band so we don't overshoot into next tier.
+		$target = min( $max, max( $min, $min + 10 ) );
+		if ( $current >= $target && $current <= $max ) {
+			return true;
+		}
+		return self::ensure_spend_at_least( $user_id, $target ) && EG_VIP_Discounts::get_annual_spend( $user_id ) <= $max;
+	}
+
+	/**
 	 * Create completed orders until annual spend >= target.
 	 *
 	 * @param int   $user_id User ID.
@@ -686,6 +746,7 @@ class EG_Live_Pathway_Tester {
 		}
 		$qty = max( 1, (int) ceil( $need / max( 1, (float) $product->get_price() ) ) );
 		$order->add_product( $product, $qty );
+		// Force order total to the needed amount so tiers stay predictable.
 		$order->set_total( $need );
 		$order->update_status( 'completed', 'EG QA spend seed' );
 		return EG_VIP_Discounts::get_annual_spend( $user_id ) >= $target;
