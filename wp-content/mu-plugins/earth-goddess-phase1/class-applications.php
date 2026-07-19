@@ -28,6 +28,35 @@ class EG_Applications {
 		add_action( 'admin_notices', array( __CLASS__, 'admin_notices' ) );
 		add_action( 'admin_init', array( __CLASS__, 'maybe_create_pages' ) );
 		add_action( 'woocommerce_account_dashboard', array( __CLASS__, 'render_my_account_pathways' ), 5 );
+		add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
+	}
+
+	/**
+	 * Mark application pages for title/form alignment CSS.
+	 *
+	 * @param string[] $classes Body classes.
+	 * @return string[]
+	 */
+	public static function body_class( $classes ) {
+		if ( ! is_singular( 'page' ) ) {
+			return $classes;
+		}
+		$post = get_post();
+		if ( ! $post ) {
+			return $classes;
+		}
+		$slugs = array(
+			'affiliate-business-builder-application',
+			'ambassador-application',
+			'wholesale-partner-application',
+		);
+		$has_shortcode = has_shortcode( (string) $post->post_content, 'eg_affiliate_application' )
+			|| has_shortcode( (string) $post->post_content, 'eg_ambassador_application' )
+			|| has_shortcode( (string) $post->post_content, 'eg_wholesale_application' );
+		if ( $has_shortcode || in_array( $post->post_name, $slugs, true ) ) {
+			$classes[] = 'eg-application-page';
+		}
+		return $classes;
 	}
 
 	/**
@@ -269,10 +298,18 @@ class EG_Applications {
 			$prefill_name = (string) $current_user->display_name;
 		}
 
+		$titles = array(
+			'affiliate'  => __( 'Affiliate Business Builder Application', 'earth-goddess' ),
+			'ambassador' => __( 'Ambassador Application', 'earth-goddess' ),
+			'wholesale'  => __( 'Wholesale Partner Application', 'earth-goddess' ),
+		);
+		$form_title = isset( $titles[ $type ] ) ? $titles[ $type ] : __( 'Application', 'earth-goddess' );
+
 		ob_start();
 		?>
 		<style id="eg-application-inline-css">
 			.eg-application-wrap{display:block!important;width:100%!important;max-width:520px!important;margin:2rem auto 3rem!important;padding:1.75rem 1.5rem 2rem!important;background:#fff!important;border:1px solid rgba(0,0,0,.1)!important;border-radius:12px!important;box-sizing:border-box!important;float:none!important}
+			.eg-application-wrap .eg-app-title{margin:0 0 1rem!important;padding:0!important;text-align:center!important;font-size:1.5rem!important;line-height:1.3!important;font-weight:700!important;color:#3b1f4a!important}
 			.eg-application-wrap .eg-app-notice{margin:0 0 1.25rem!important;padding:.85rem 1rem!important;border-radius:8px!important}
 			.eg-application-wrap .eg-app-success{background:#eef8f0!important;color:#1e5a2c!important;border:1px solid #b7dfc0!important}
 			.eg-application-wrap .eg-app-error{background:#fdf0f0!important;color:#8a1f1f!important;border:1px solid #efb4b4!important}
@@ -281,9 +318,15 @@ class EG_Applications {
 			.eg-application-form input[type=text],.eg-application-form input[type=email],.eg-application-form input[type=tel],.eg-application-form input[type=url],.eg-application-form textarea{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:.7rem .85rem!important;border:1px solid #c9c4bc!important;border-radius:8px!important;font-size:1rem!important}
 			.eg-application-form textarea{min-height:110px!important}
 			.eg-application-form button[type=submit]{display:inline-block!important;width:100%!important;padding:.85rem 1.25rem!important;border:0!important;border-radius:8px!important;background:#5b3a6e!important;color:#fff!important;font-weight:600!important;cursor:pointer!important}
-			.eg-application-wrap .eg-app-hint{margin:0 0 1rem!important;font-size:.92rem!important;color:#555!important}
+			.eg-application-wrap .eg-app-hint{margin:0 0 1rem!important;font-size:.92rem!important;color:#555!important;text-align:left!important}
+			body.eg-application-page .entry-header,
+			body.eg-application-page .page-header,
+			body.eg-application-page .ast-page-title-custom,
+			body.eg-application-page h1.entry-title,
+			body.eg-application-page .entry-title{display:none!important}
 		</style>
 		<div class="eg-application-wrap">
+			<h1 class="eg-app-title"><?php echo esc_html( $form_title ); ?></h1>
 			<?php echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<p class="eg-app-hint"><?php esc_html_e( 'Use the email of an existing My Account login. Approval only adds the program role to that account — it does not create a new user.', 'earth-goddess' ); ?></p>
 			<form class="eg-application-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">

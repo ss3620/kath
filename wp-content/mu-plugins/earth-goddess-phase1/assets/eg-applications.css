@@ -103,3 +103,22 @@ body .eg-application-form button[type="submit"]:focus {
 		padding: 1.25rem 1rem 1.5rem !important;
 	}
 }
+
+/* Form title lives inside the card; hide theme page title to avoid double headings */
+body.eg-application-page .entry-header,
+body.eg-application-page .page-header,
+body.eg-application-page .ast-page-title-custom,
+body.eg-application-page h1.entry-title,
+body.eg-application-page .entry-title {
+	display: none !important;
+}
+
+body .eg-application-wrap .eg-app-title {
+	margin: 0 0 1rem !important;
+	padding: 0 !important;
+	text-align: center !important;
+	font-size: 1.5rem !important;
+	line-height: 1.3 !important;
+	font-weight: 700 !important;
+	color: #3b1f4a !important;
+}
