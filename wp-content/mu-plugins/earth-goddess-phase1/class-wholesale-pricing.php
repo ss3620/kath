@@ -21,6 +21,13 @@ class EG_Wholesale_Pricing {
 	const STARTER_MIN_OPENING = 250;
 
 	/**
+	 * Prevent recursive filter calls while reading raw product prices.
+	 *
+	 * @var bool
+	 */
+	private static $filtering = false;
+
+	/**
 	 * Bootstrap.
 	 */
 	public static function init() {
@@ -34,8 +41,8 @@ class EG_Wholesale_Pricing {
 	}
 
 	/**
-	 * @param mixed       $price   Price.
-	 * @param WC_Product  $product Product.
+	 * @param mixed      $price   Price.
+	 * @param WC_Product $product Product.
 	 * @return mixed
 	 */
 	public static function filter_price( $price, $product ) {
@@ -51,11 +58,12 @@ class EG_Wholesale_Pricing {
 	 * @return mixed
 	 */
 	public static function filter_sale_price( $price, $product ) {
-		if ( '' === $price || null === $price ) {
+		$discounted = self::maybe_discount( $price, $product );
+		if ( null === $discounted ) {
 			return $price;
 		}
-		$discounted = self::maybe_discount( $price, $product );
-		return ( null !== $discounted ) ? $discounted : $price;
+		// Always expose a sale price so catalogue shows RRP → wholesale.
+		return $discounted;
 	}
 
 	/**
@@ -71,11 +79,14 @@ class EG_Wholesale_Pricing {
 		if ( $regular <= 0 ) {
 			return $html;
 		}
-		$discounted = self::apply_role_discount( $regular );
+		$discounted = self::resolve_wholesale_price( $product );
 		if ( null === $discounted ) {
 			return $html;
 		}
-		return wc_format_sale_price( wc_get_price_to_display( $product, array( 'price' => $regular ) ), wc_get_price_to_display( $product, array( 'price' => $discounted ) ) ) . $product->get_price_suffix();
+		return wc_format_sale_price(
+			wc_get_price_to_display( $product, array( 'price' => $regular ) ),
+			wc_get_price_to_display( $product, array( 'price' => $discounted ) )
+		) . $product->get_price_suffix();
 	}
 
 	/**
@@ -84,23 +95,37 @@ class EG_Wholesale_Pricing {
 	 * @return float|null Null when no change.
 	 */
 	private static function maybe_discount( $price, $product ) {
-		if ( ! is_user_logged_in() || ! EG_Roles::user_is_wholesale() ) {
+		if ( self::$filtering || ! is_user_logged_in() || ! EG_Roles::user_is_wholesale() ) {
 			return null;
 		}
-		if ( '' === $price || null === $price ) {
+		if ( ! ( $product instanceof WC_Product ) ) {
 			return null;
 		}
-		$base = (float) $price;
+
+		self::$filtering = true;
+		try {
+			return self::resolve_wholesale_price( $product );
+		} finally {
+			self::$filtering = false;
+		}
+	}
+
+	/**
+	 * On sale: role % off the sale price. Not on sale: role % off regular RRP.
+	 *
+	 * @param WC_Product $product Product.
+	 * @return float|null
+	 */
+	private static function resolve_wholesale_price( $product ) {
+		$regular = (float) $product->get_regular_price( 'edit' );
+		$sale    = $product->get_sale_price( 'edit' );
+		$on_sale = ( '' !== $sale && null !== $sale && (float) $sale > 0 );
+
+		$base = $on_sale ? (float) $sale : $regular;
 		if ( $base <= 0 ) {
 			return null;
 		}
-		// Prefer regular RRP when available.
-		if ( $product instanceof WC_Product ) {
-			$regular = (float) $product->get_regular_price( 'edit' );
-			if ( $regular > 0 ) {
-				$base = $regular;
-			}
-		}
+
 		return self::apply_role_discount( $base );
 	}
 

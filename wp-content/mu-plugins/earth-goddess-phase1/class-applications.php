@@ -254,9 +254,19 @@ class EG_Applications {
 			$status = sanitize_text_field( wp_unslash( $_GET['eg_app'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( 'success' === $status ) {
 				$notice = '<p class="eg-app-notice eg-app-success">' . esc_html__( 'Thank you. Your application has been submitted for manual review.', 'earth-goddess' ) . '</p>';
+			} elseif ( 'no_account' === $status ) {
+				$my_account = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/my-account/' );
+				$notice     = '<p class="eg-app-notice eg-app-error">' . esc_html__( 'You must already have a shop account with this email. Please register or log in first, then submit the application.', 'earth-goddess' ) . ' <a href="' . esc_url( $my_account ) . '">' . esc_html__( 'Go to My Account', 'earth-goddess' ) . '</a></p>';
 			} elseif ( 'error' === $status ) {
 				$notice = '<p class="eg-app-notice eg-app-error">' . esc_html__( 'Please complete all required fields and try again.', 'earth-goddess' ) . '</p>';
 			}
+		}
+
+		$current_user  = wp_get_current_user();
+		$prefill_email = ( $current_user && $current_user->ID && is_email( $current_user->user_email ) ) ? $current_user->user_email : '';
+		$prefill_name  = ( $current_user && $current_user->ID ) ? trim( $current_user->first_name . ' ' . $current_user->last_name ) : '';
+		if ( '' === $prefill_name && $current_user && $current_user->ID ) {
+			$prefill_name = (string) $current_user->display_name;
 		}
 
 		ob_start();
@@ -271,20 +281,30 @@ class EG_Applications {
 			.eg-application-form input[type=text],.eg-application-form input[type=email],.eg-application-form input[type=tel],.eg-application-form input[type=url],.eg-application-form textarea{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:.7rem .85rem!important;border:1px solid #c9c4bc!important;border-radius:8px!important;font-size:1rem!important}
 			.eg-application-form textarea{min-height:110px!important}
 			.eg-application-form button[type=submit]{display:inline-block!important;width:100%!important;padding:.85rem 1.25rem!important;border:0!important;border-radius:8px!important;background:#5b3a6e!important;color:#fff!important;font-weight:600!important;cursor:pointer!important}
+			.eg-application-wrap .eg-app-hint{margin:0 0 1rem!important;font-size:.92rem!important;color:#555!important}
 		</style>
 		<div class="eg-application-wrap">
 			<?php echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<p class="eg-app-hint"><?php esc_html_e( 'Use the email of an existing My Account login. Approval only adds the program role to that account — it does not create a new user.', 'earth-goddess' ); ?></p>
 			<form class="eg-application-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="eg_submit_application" />
 				<input type="hidden" name="eg_app_type" value="<?php echo esc_attr( $type ); ?>" />
 				<?php wp_nonce_field( 'eg_submit_application_' . $type, 'eg_app_nonce' ); ?>
 				<?php foreach ( $fields as $name => $label ) : ?>
+					<?php
+					$value = '';
+					if ( 'email' === $name ) {
+						$value = $prefill_email;
+					} elseif ( in_array( $name, array( 'full_name', 'contact_person' ), true ) ) {
+						$value = $prefill_name;
+					}
+					?>
 					<div class="eg-field">
 						<label for="eg_<?php echo esc_attr( $name ); ?>"><?php echo esc_html( $label ); ?></label>
 						<?php if ( in_array( $name, array( 'why_join', 'why_partner', 'reason', 'social_links' ), true ) ) : ?>
 							<textarea id="eg_<?php echo esc_attr( $name ); ?>" name="<?php echo esc_attr( $name ); ?>" rows="4" required></textarea>
 						<?php else : ?>
-							<input id="eg_<?php echo esc_attr( $name ); ?>" type="<?php echo 'email' === $name ? 'email' : 'text'; ?>" name="<?php echo esc_attr( $name ); ?>" required />
+							<input id="eg_<?php echo esc_attr( $name ); ?>" type="<?php echo 'email' === $name ? 'email' : 'text'; ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ); ?>" required <?php echo ( 'email' === $name && $prefill_email ) ? 'readonly' : ''; ?> />
 						<?php endif; ?>
 					</div>
 				<?php endforeach; ?>
@@ -337,11 +357,17 @@ class EG_Applications {
 			self::redirect_back( $type, 'error' );
 		}
 
+		// Applications only attach a program role to an existing account.
+		$user = get_user_by( 'email', $email );
+		if ( ! $user ) {
+			self::redirect_back( $type, 'no_account' );
+		}
+
 		$post_id = wp_insert_post(
 			array(
 				'post_type'   => self::CPT,
-				'post_status' => 'pending',
-				'post_title'  => sprintf( '%s – %s', ucfirst( $type ), $name ),
+				'post_status' => 'publish',
+				'post_title'  => sprintf( '[Pending] %s – %s', ucfirst( $type ), $name ),
 			),
 			true
 		);
@@ -354,6 +380,7 @@ class EG_Applications {
 		update_post_meta( $post_id, '_eg_app_data', $data );
 		update_post_meta( $post_id, '_eg_app_email', sanitize_email( $email ) );
 		update_post_meta( $post_id, '_eg_app_status', 'pending' );
+		update_post_meta( $post_id, '_eg_app_user_id', (int) $user->ID );
 
 		$admins = get_option( 'admin_email' );
 		if ( $admins ) {
@@ -396,6 +423,7 @@ class EG_Applications {
 		$type    = get_post_meta( $post->ID, '_eg_app_type', true );
 		$data    = get_post_meta( $post->ID, '_eg_app_data', true );
 		$status  = get_post_meta( $post->ID, '_eg_app_status', true );
+		$email   = sanitize_email( (string) get_post_meta( $post->ID, '_eg_app_email', true ) );
 		$user_id = (int) get_post_meta( $post->ID, '_eg_app_user_id', true );
 		if ( ! is_array( $data ) ) {
 			$data = array();
@@ -404,25 +432,38 @@ class EG_Applications {
 			$status = 'pending';
 		}
 
+		$user = $user_id ? get_user_by( 'id', $user_id ) : false;
+		if ( ! $user && $email ) {
+			$user = get_user_by( 'email', $email );
+			if ( $user ) {
+				$user_id = (int) $user->ID;
+			}
+		}
+
 		$badge = ( 'approved' === $status )
 			? '<span style="display:inline-block;padding:4px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:700;">APPROVED</span>'
 			: '<span style="display:inline-block;padding:4px 10px;border-radius:999px;background:#fef3c7;color:#92400e;font-weight:700;">PENDING</span>';
 
 		echo '<p><strong>Type:</strong> ' . esc_html( (string) $type ) . '</p>';
 		echo '<p><strong>Status:</strong> ' . $badge . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		if ( $user_id ) {
-			$user = get_user_by( 'id', $user_id );
-			echo '<p><strong>Linked user:</strong> <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">';
-			echo esc_html( $user ? $user->user_email : ( 'User #' . $user_id ) );
+		echo '<p><strong>Applicant email:</strong> ' . esc_html( $email ? $email : '—' ) . '</p>';
+
+		if ( $user ) {
+			echo '<p><strong>Existing account:</strong> <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">';
+			echo esc_html( $user->user_email ) . ' (#' . (int) $user_id . ')';
 			echo '</a></p>';
-			if ( $user && in_array( 'affiliate_business_builder', (array) $user->roles, true ) ) {
-				echo '<p><strong>Next:</strong> Ask them to log in → My Account → Affiliate dashboard → copy referral link.</p>';
-			} elseif ( $user && in_array( 'ambassador', (array) $user->roles, true ) ) {
-				echo '<p><strong>Next:</strong> Ask them to log in → My Account → Affiliate dashboard → copy referral link.</p>';
-			} elseif ( $user && EG_Roles::user_is_wholesale( $user ) ) {
-				echo '<p><strong>Next:</strong> Ask them to log in and place a wholesale order (≥ $250 for Starter).</p>';
+			echo '<p><strong>Current roles:</strong> ' . esc_html( implode( ', ', (array) $user->roles ) ) . '</p>';
+			if ( 'approved' === $status ) {
+				if ( in_array( 'affiliate_business_builder', (array) $user->roles, true ) || in_array( 'ambassador', (array) $user->roles, true ) ) {
+					echo '<p><strong>Next:</strong> Log in as this user → My Account → Affiliate dashboard → copy referral link.</p>';
+				} elseif ( EG_Roles::user_is_wholesale( $user ) ) {
+					echo '<p><strong>Next:</strong> Log in as this user and place a wholesale order (≥ $250 for Starter).</p>';
+				}
 			}
+		} else {
+			echo '<div class="notice notice-error inline"><p><strong>No WordPress account found for this email.</strong> Ask the applicant to register at My Account with this email, then click Approve again.</p></div>';
 		}
+
 		echo '<table class="widefat striped"><tbody>';
 		foreach ( $data as $k => $v ) {
 			echo '<tr><th style="width:30%">' . esc_html( $k ) . '</th><td>' . esc_html( (string) $v ) . '</td></tr>';
@@ -430,14 +471,15 @@ class EG_Applications {
 		echo '</tbody></table>';
 
 		if ( 'approved' !== $status ) {
-			$action_url = wp_nonce_url(
-				admin_url( 'admin-post.php?action=eg_approve_application&application_id=' . (int) $post->ID ),
-				'eg_approve_application_' . (int) $post->ID
-			);
-			echo '<p style="margin-top:16px"><a class="button button-primary button-hero" href="' . esc_url( $action_url ) . '">Approve Application</a></p>';
-			echo '<p class="description">Affiliate → role affiliate_business_builder + Clear Quartz tag. Ambassador → ambassador + Seed tag. Wholesale → wholesale_starter.</p>';
+			echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="margin-top:16px">';
+			echo '<input type="hidden" name="action" value="eg_approve_application" />';
+			echo '<input type="hidden" name="application_id" value="' . (int) $post->ID . '" />';
+			wp_nonce_field( 'eg_approve_application_' . (int) $post->ID );
+			echo '<button type="submit" class="button button-primary button-hero"' . ( $user ? '' : ' disabled' ) . '>Approve Application</button>';
+			echo '</form>';
+			echo '<p class="description">Adds program role to the existing account only (does not create a new user). Affiliate → affiliate_business_builder + Clear Quartz. Ambassador → ambassador + Seed. Wholesale → wholesale_starter.</p>';
 		} else {
-			echo '<div class="notice notice-success inline" style="margin:16px 0 0"><p><strong>This application is approved.</strong> Status will also show as Approved in the EG Applications list.</p></div>';
+			echo '<div class="notice notice-success inline" style="margin:16px 0 0"><p><strong>This application is approved.</strong> Status also shows as Approved in the EG Applications list.</p></div>';
 		}
 	}
 
@@ -449,14 +491,22 @@ class EG_Applications {
 			wp_die( esc_html__( 'Forbidden', 'earth-goddess' ) );
 		}
 
-		$post_id = isset( $_GET['application_id'] ) ? absint( $_GET['application_id'] ) : 0;
-		if ( ! $post_id || empty( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'eg_approve_application_' . $post_id ) ) {
+		$post_id = 0;
+		if ( isset( $_POST['application_id'] ) ) {
+			$post_id = absint( $_POST['application_id'] );
+			$nonce   = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		} else {
+			$post_id = isset( $_GET['application_id'] ) ? absint( $_GET['application_id'] ) : 0;
+			$nonce   = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		}
+
+		if ( ! $post_id || ! $nonce || ! wp_verify_nonce( $nonce, 'eg_approve_application_' . $post_id ) ) {
 			wp_die( esc_html__( 'Invalid approval request.', 'earth-goddess' ) );
 		}
 
 		$result = self::approve_application( $post_id );
 		$args   = array(
-			'post' => $post_id,
+			'post'   => $post_id,
 			'action' => 'edit',
 		);
 		if ( is_wp_error( $result ) ) {
@@ -472,7 +522,7 @@ class EG_Applications {
 	}
 
 	/**
-	 * Approve application and assign role / affiliate flags.
+	 * Approve application and add program role to the existing user.
 	 *
 	 * @param int $post_id Application ID.
 	 * @return int|WP_Error User ID on success.
@@ -490,102 +540,74 @@ class EG_Applications {
 
 		$type  = get_post_meta( $post_id, '_eg_app_type', true );
 		$email = sanitize_email( (string) get_post_meta( $post_id, '_eg_app_email', true ) );
-		$data  = get_post_meta( $post_id, '_eg_app_data', true );
-		if ( ! is_array( $data ) ) {
-			$data = array();
-		}
 
 		if ( ! $email || ! is_email( $email ) ) {
 			return new WP_Error( 'eg_email', 'Application is missing a valid email address.' );
 		}
 
-		$user = get_user_by( 'email', $email );
+		$user_id = (int) get_post_meta( $post_id, '_eg_app_user_id', true );
+		$user    = $user_id ? get_user_by( 'id', $user_id ) : false;
 		if ( ! $user ) {
-			$password = wp_generate_password( 12, true );
-			$login    = self::unique_username_from_email( $email );
-			if ( function_exists( 'wc_create_new_customer' ) ) {
-				$user_id = wc_create_new_customer( $email, $login, $password );
-			} else {
-				$user_id = wp_create_user( $login, $password, $email );
-			}
-			if ( is_wp_error( $user_id ) ) {
-				return $user_id;
-			}
-			$user = get_user_by( 'id', $user_id );
-			if ( ! empty( $data['full_name'] ) ) {
-				$parts = explode( ' ', $data['full_name'], 2 );
-				wp_update_user(
-					array(
-						'ID'           => $user_id,
-						'first_name'   => $parts[0],
-						'last_name'    => isset( $parts[1] ) ? $parts[1] : '',
-						'display_name' => $data['full_name'],
-					)
-				);
-			}
-			// Send password setup email when possible.
-			if ( function_exists( 'wp_new_user_notification' ) ) {
-				wp_new_user_notification( $user_id, null, 'user' );
-			}
+			$user = get_user_by( 'email', $email );
 		}
 
 		if ( ! $user ) {
-			return new WP_Error( 'eg_user', 'Could not create or load the applicant user.' );
+			return new WP_Error(
+				'eg_no_user',
+				'No existing account for ' . $email . '. Ask the applicant to register at My Account with this email, then approve again.'
+			);
 		}
 
+		// Remove conflicting program roles, then ADD the approved role (keep customer etc.).
 		foreach ( array_keys( EG_Roles::ROLES ) as $role ) {
 			$user->remove_role( $role );
 		}
-		$user->remove_role( 'customer' );
 
 		if ( 'affiliate' === $type ) {
-			$user->set_role( 'affiliate_business_builder' );
+			$user->add_role( 'affiliate_business_builder' );
 			self::ensure_affiliate_record( $user->ID );
 			self::assign_affiliate_tag( $user->ID, 'clear-quartz-partner' );
 		} elseif ( 'ambassador' === $type ) {
-			$user->set_role( 'ambassador' );
+			$user->add_role( 'ambassador' );
 			self::ensure_affiliate_record( $user->ID );
 			self::assign_affiliate_tag( $user->ID, 'seed-ambassador' );
 		} elseif ( 'wholesale' === $type ) {
-			$user->set_role( 'wholesale_starter' );
+			$user->add_role( 'wholesale_starter' );
 		} else {
 			return new WP_Error( 'eg_type', 'Unknown application type: ' . $type );
 		}
 
+		// Re-load so role list is current.
+		$user = get_user_by( 'id', $user->ID );
+
 		update_post_meta( $post_id, '_eg_app_status', 'approved' );
 		update_post_meta( $post_id, '_eg_app_user_id', $user->ID );
+		update_post_meta( $post_id, '_eg_app_approved_at', current_time( 'mysql' ) );
 
 		$title = (string) $post->post_title;
+		$title = preg_replace( '/^\[Pending\]\s*/i', '', $title );
 		if ( 0 !== strpos( $title, '[Approved]' ) ) {
-			$title = '[Approved] ' . preg_replace( '/^\[Pending\]\s*/i', '', $title );
+			$title = '[Approved] ' . $title;
 		}
-		wp_update_post(
+
+		$updated = wp_update_post(
 			array(
 				'ID'          => $post_id,
-				'post_status' => 'private',
+				'post_status' => 'publish',
 				'post_title'  => $title,
-			)
+			),
+			true
 		);
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		// Confirm meta stuck (guards against save filters wiping it).
+		if ( 'approved' !== get_post_meta( $post_id, '_eg_app_status', true ) ) {
+			update_post_meta( $post_id, '_eg_app_status', 'approved' );
+		}
 
 		return (int) $user->ID;
-	}
-
-	/**
-	 * @param string $email Email.
-	 * @return string
-	 */
-	private static function unique_username_from_email( $email ) {
-		$base = sanitize_user( current( explode( '@', $email ) ), true );
-		if ( strlen( $base ) < 3 ) {
-			$base = 'eguser';
-		}
-		$login = $base;
-		$i     = 1;
-		while ( username_exists( $login ) ) {
-			$login = $base . $i;
-			++$i;
-		}
-		return $login;
 	}
 
 	/**
@@ -598,15 +620,15 @@ class EG_Applications {
 		$notice = sanitize_key( wp_unslash( $_GET['eg_app_notice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'approved' === $notice ) {
 			$user_id = isset( $_GET['eg_app_user'] ) ? absint( $_GET['eg_app_user'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			echo '<div class="notice notice-success is-dismissible"><p><strong>Application status: APPROVED.</strong>';
+			echo '<div class="notice notice-success is-dismissible"><p><strong>Application status: APPROVED.</strong> Program role was added to the existing account.';
 			if ( $user_id ) {
-				echo ' Linked user: <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . (int) $user_id . '</a>.';
+				echo ' User: <a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . (int) $user_id . '</a>.';
 			}
-			echo ' Status also shows as Approved in the EG Applications list.</p>';
+			echo '</p>';
 			echo '<p>Next: log in as the applicant → My Account → Affiliate dashboard → copy referral link → place a test order in Incognito via that link.</p></div>';
 		} elseif ( 'error' === $notice ) {
 			$msg = isset( $_GET['eg_app_msg'] ) ? sanitize_text_field( rawurldecode( wp_unslash( $_GET['eg_app_msg'] ) ) ) : 'Approval failed.'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html( $msg ) . '</p></div>';
+			echo '<div class="notice notice-error is-dismissible"><p><strong>Approval failed:</strong> ' . esc_html( $msg ) . '</p></div>';
 		}
 	}
 

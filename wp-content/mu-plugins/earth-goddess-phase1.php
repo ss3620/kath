@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'EG_PHASE1_VERSION', '1.0.3' );
+define( 'EG_PHASE1_VERSION', '1.0.6' );
 define( 'EG_PHASE1_PATH', __DIR__ . '/earth-goddess-phase1' );
 define( 'EG_PHASE1_OPTION_SEEDED', 'eg_phase1_seeded_v1' );
 
