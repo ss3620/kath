@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'EG_PHASE1_VERSION', '1.0.8' );
+define( 'EG_PHASE1_VERSION', '1.1.1' );
 define( 'EG_PHASE1_PATH', __DIR__ . '/earth-goddess-phase1' );
 define( 'EG_PHASE1_OPTION_SEEDED', 'eg_phase1_seeded_v1' );
 
@@ -19,6 +19,7 @@ require_once EG_PHASE1_PATH . '/class-applications.php';
 require_once EG_PHASE1_PATH . '/class-setup-seeder.php';
 require_once EG_PHASE1_PATH . '/class-admin-sop.php';
 require_once EG_PHASE1_PATH . '/class-live-pathway-tester.php';
+require_once EG_PHASE1_PATH . '/class-goaffpro-import.php';
 
 EG_Roles::init();
 EG_Wholesale_Pricing::init();
@@ -27,3 +28,4 @@ EG_Applications::init();
 EG_Setup_Seeder::init();
 EG_Admin_SOP::init();
 EG_Live_Pathway_Tester::init();
+EG_GoAffPro_Import::init();

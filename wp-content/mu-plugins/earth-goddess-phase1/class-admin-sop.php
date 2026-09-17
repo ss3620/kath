@@ -71,6 +71,9 @@ class EG_Admin_SOP {
 				<a class="button button-secondary" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=eg_phase1_run_live_tests' ), 'eg_phase1_run_live_tests' ) ); ?>">
 					Run live pathway tests
 				</a>
+				<a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=' . EG_GoAffPro_Import::PAGE_SLUG ) ); ?>">
+					GoAffPro import
+				</a>
 			</p>
 			<?php self::render_live_test_results(); ?>
 
