@@ -1,0 +1,45 @@
+/* phpcs:ignoreFile */
+.afwc-generate-referral-coupon #afwc_toggle_referral_coupon {
+	display: inline-flex;
+	gap: 0.25rem;
+	align-items: center;
+	align-content: center;
+	flex-wrap: wrap;
+}
+.afwc-generate-referral-coupon #afwc_toggle_referral_coupon:focus {
+	outline: none;
+}
+.afwc-generate-referral-coupon #afwc_toggle_referral_coupon svg {
+	height: 1.75rem;
+	width: 1.75rem;
+	transform: rotate(360deg);
+	transition: transform 0.4s ease;
+}
+.afwc-generate-referral-coupon #afwc_toggle_referral_coupon svg.rotated {
+	transform: rotate(180deg);
+}
+.afwc-generate-referral-coupon .afwc-referral-coupon-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}
+.afwc-generate-referral-coupon .afwc-referral-coupon-amount-row,
+.afwc-generate-referral-coupon .afwc-referral-coupon-code-row {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+}
+.afwc-generate-referral-coupon #afwc_referral_coupon_form label {
+	width: 20%;
+}
+.afwc-generate-referral-coupon #afwc_referral_coupon_form input {
+	width: 35%;
+}
+.afwc-generate-referral-coupon .afwc-referral-coupon-actions-row {
+	display: flex;
+	align-items: center;
+	gap: 0.75em;
+}
+.afwc-generate-referral-coupon #afwc_generate_coupon_loader img {
+	vertical-align: middle;
+}

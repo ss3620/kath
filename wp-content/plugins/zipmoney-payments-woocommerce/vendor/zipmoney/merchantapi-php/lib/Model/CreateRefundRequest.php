@@ -1,0 +1,358 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * CreateRefundRequest.
+ *
+ * @category Class
+ * @package  zipMoney
+ * @author   zipMoney Payments Pty Ltd
+ * @link     https://github.com/zipMoney/merchantapi-php
+ */
+
+namespace zipMoney\Model;
+
+use ArrayAccess;
+use zipMoney\ObjectSerializer;
+
+class CreateRefundRequest implements ArrayAccess, \Stringable
+{
+    public const DISCRIMINATOR = 'subclass';
+
+    /**
+     * The original name of the model.
+     *
+     * @var string
+     */
+    protected static $swaggerModelName = 'CreateRefundRequest';
+
+    /**
+     * Array of property to type mappings. Used for (de)serialization.
+     *
+     * @var string[]
+     */
+    protected static $zipTypes = [
+        'charge_id' => 'string',
+        'reason'    => 'string',
+        'amount'    => 'float',
+        'currency'  => 'string',
+        'metadata'  => 'object',
+    ];
+
+    public static function zipTypes()
+    {
+        return self::$zipTypes;
+    }
+
+    /**
+     * Array of attributes where the key is the local name, and the value is the original name.
+     *
+     * @var string[]
+     */
+    protected static $attributeMap = [
+        'charge_id' => 'charge_id',
+        'reason'    => 'reason',
+        'amount'    => 'amount',
+        'currency'  => 'currency',
+        'metadata'  => 'metadata',
+    ];
+
+    /**
+     * Array of attributes to setter functions (for deserialization of responses).
+     *
+     * @var string[]
+     */
+    protected static $setters = [
+        'charge_id' => 'setChargeId',
+        'reason'    => 'setReason',
+        'amount'    => 'setAmount',
+        'currency'  => 'setCurrency',
+        'metadata'  => 'setMetadata',
+    ];
+
+    /**
+     * Array of attributes to getter functions (for serialization of requests).
+     *
+     * @var string[]
+     */
+    protected static $getters = [
+        'charge_id' => 'getChargeId',
+        'reason'    => 'getReason',
+        'amount'    => 'getAmount',
+        'currency'  => 'getCurrency',
+        'metadata'  => 'getMetadata',
+    ];
+
+    public static function attributeMap()
+    {
+        return self::$attributeMap;
+    }
+
+    public static function setters()
+    {
+        return self::$setters;
+    }
+
+    public static function getters()
+    {
+        return self::$getters;
+    }
+
+    /**
+     * Associative array for storing property values.
+     *
+     * @var mixed[]
+     */
+    protected $container = [];
+
+    /**
+     * Constructor.
+     *
+     * @param mixed[] $data Associated array of property values initializing the model
+     */
+    public function __construct(?array $data = null)
+    {
+        $this->container['charge_id'] = $data['charge_id'] ?? null;
+        $this->container['reason'] = $data['reason'] ?? null;
+        $this->container['amount'] = $data['amount'] ?? null;
+        $this->container['currency'] = $data['currency'] ?? null;
+        $this->container['metadata'] = $data['metadata'] ?? null;
+    }
+
+    /**
+     * show all the invalid properties with reasons.
+     *
+     * @return array invalid properties with reasons
+     */
+    public function listInvalidProperties(): array
+    {
+        $invalid_properties = [];
+
+        if ($this->container['charge_id'] === null) {
+            $invalid_properties[] = "'charge_id' can't be null";
+        }
+        if ($this->container['reason'] === null) {
+            $invalid_properties[] = "'reason' can't be null";
+        }
+        if ($this->container['amount'] === null) {
+            $invalid_properties[] = "'amount' can't be null";
+        }
+        if ($this->container['currency'] === null) {
+            $invalid_properties[] = "'currency' can't be null";
+        }
+        if (($this->container['amount'] < 0)) {
+            $invalid_properties[] = "invalid value for 'amount', must be bigger than or equal to 0.";
+        }
+
+        return $invalid_properties;
+    }
+
+    /**
+     * validate all the properties in the model
+     * return true if all passed.
+     *
+     * @return bool True if all properties are valid
+     */
+    public function valid()
+    {
+        if ($this->container['charge_id'] === null) {
+            return false;
+        }
+        if ($this->container['reason'] === null) {
+            return false;
+        }
+        if ($this->container['amount'] === null) {
+            return false;
+        }
+        if ($this->container['currency'] === null) {
+            return false;
+        }
+
+        return $this->container['amount'] >= 0;
+    }
+
+    /**
+     * Gets currency.
+     *
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->container['currency'];
+    }
+
+    /**
+     * Sets currency.
+     *
+     * A refund has to name the currency it is in: a store selling in more than
+     * one currency cannot be refunded correctly from the amount alone.
+     *
+     * @param string $currency
+     *
+     * @return $this
+     */
+    public function setCurrency($currency): static
+    {
+        $this->container['currency'] = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Gets charge_id.
+     *
+     * @return string
+     */
+    public function getChargeId()
+    {
+        return $this->container['charge_id'];
+    }
+
+    /**
+     * Sets charge_id.
+     *
+     * @param string $charge_id The id relating to the original charge that is to be refunded
+     *
+     * @return $this
+     */
+    public function setChargeId($charge_id): static
+    {
+        $this->container['charge_id'] = $charge_id;
+
+        return $this;
+    }
+
+    /**
+     * Gets reason.
+     *
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->container['reason'];
+    }
+
+    /**
+     * Sets reason.
+     *
+     * @param string $reason The reason for the refund
+     *
+     * @return $this
+     */
+    public function setReason($reason): static
+    {
+        $this->container['reason'] = $reason;
+
+        return $this;
+    }
+
+    /**
+     * Gets amount.
+     *
+     * @return float
+     */
+    public function getAmount()
+    {
+        return $this->container['amount'];
+    }
+
+    /**
+     * Sets amount.
+     *
+     * @param float $amount The amount to refund, can be less than or equal to the previously captured amount
+     *
+     * @return $this
+     */
+    public function setAmount($amount): static
+    {
+        if (($amount < 0)) {
+            throw new \InvalidArgumentException('invalid value for $amount when calling CreateRefundRequest., must be bigger than or equal to 0.');
+        }
+
+        $this->container['amount'] = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Gets metadata.
+     *
+     * @return object
+     */
+    public function getMetadata()
+    {
+        return $this->container['metadata'];
+    }
+
+    /**
+     * Sets metadata.
+     *
+     * @param object $metadata Additional metadata if required
+     *
+     * @return $this
+     */
+    public function setMetadata($metadata): static
+    {
+        $this->container['metadata'] = $metadata;
+
+        return $this;
+    }
+
+    /**
+     * Returns true if offset exists. False otherwise.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetExists($offset): bool
+    {
+        return isset($this->container[$offset]);
+    }
+
+    /**
+     * Gets offset.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetGet($offset): mixed
+    {
+        return $this->container[$offset] ?? null;
+    }
+
+    /**
+     * Sets value based on offset.
+     *
+     * @param int   $offset Offset
+     * @param mixed $value  Value to be set
+     */
+    public function offsetSet($offset, mixed $value): void
+    {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+
+    /**
+     * Unsets offset.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetUnset($offset): void
+    {
+        unset($this->container[$offset]);
+    }
+
+    /**
+     * Gets the string presentation of the object.
+     */
+    public function __toString(): string
+    {
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return (string) json_encode(ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+        }
+
+        return (string) json_encode(ObjectSerializer::sanitizeForSerialization($this));
+    }
+}

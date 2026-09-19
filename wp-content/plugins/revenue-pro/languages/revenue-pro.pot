@@ -1,0 +1,289 @@
+# Copyright (C) 2026 WowRevenue
+# This file is distributed under the GPLv3.
+msgid ""
+msgstr ""
+"Project-Id-Version: WowRevenue Pro 2.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/revenue-pro\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-04-19T09:17:57+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: revenue-pro\n"
+
+#. Plugin Name of the plugin
+#: revenue-pro.php
+#: includes/class-revenue-pro-functions.php:10
+msgid "WowRevenue Pro"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: revenue-pro.php
+msgid "https://wordpress.org/plugins/revenue"
+msgstr ""
+
+#. Description of the plugin
+#: revenue-pro.php
+msgid "The Pro Version of WowRevenue - The most advanced WooCommerce plugin. Build powerful sales campaigns and deploy them on your online stores without limits."
+msgstr ""
+
+#. Author of the plugin
+#: revenue-pro.php
+msgid "WowRevenue"
+msgstr ""
+
+#. Author URI of the plugin
+#: revenue-pro.php
+msgid "https://wowrevenue.com/"
+msgstr ""
+
+#. translators: %s is the quantity of the product.
+#: includes/campaigns/class-revenue-double-order.php:368
+#, php-format
+msgid "Savings Applied for %sx Cart"
+msgstr ""
+
+#. translators: %1$s is the quantity and %2$s is the product name.
+#: includes/campaigns/class-revenue-double-order.php:419
+#, php-format
+msgid "Savings Applied for %1$dx %2$s"
+msgstr ""
+
+#. translators: %s is the remaining amount.
+#: includes/campaigns/class-revenue-spending-goal.php:164
+#, php-format
+msgid "Spend %s more to claim your gift!"
+msgstr ""
+
+#. translators: %1$s is the remaining amount and %2$d is the quantity.
+#: includes/campaigns/class-revenue-spending-goal.php:168
+#, php-format
+msgid "Spend %1$s more to get any %2$d item as a gift!"
+msgstr ""
+
+#. translators: %1$s is the remaining amount and %2$d is the quantity.
+#: includes/campaigns/class-revenue-spending-goal.php:172
+#, php-format
+msgid "Spend %1$s more to get any %2$d items as a gift!"
+msgstr ""
+
+#: includes/campaigns/class-revenue-spending-goal.php:176
+msgid "Congrats! Your gift is here!"
+msgstr ""
+
+#. translators: %d is the quantity.
+#: includes/campaigns/class-revenue-spending-goal.php:180
+#, php-format
+msgid "Congrats! Choose any %d item."
+msgstr ""
+
+#. translators: %d is the quantity.
+#: includes/campaigns/class-revenue-spending-goal.php:184
+#, php-format
+msgid "Congrats! Choose any %d items."
+msgstr ""
+
+#. translators: %s: error message
+#: includes/campaigns/class-revenue-spending-goal.php:761
+#, php-format
+msgid "Error adding gift product: %s"
+msgstr ""
+
+#: includes/campaigns/class-revenue-spending-goal.php:837
+msgid "WoW Revenue Free Shipping"
+msgstr ""
+
+#: includes/campaigns/class-revenue-spending-goal.php:953
+msgid "Free gift was removed because your cart no longer meets the required amount."
+msgstr ""
+
+#: includes/campaigns/class-revenue-spending-goal.php:994
+msgid "Spending Goal Discounts"
+msgstr ""
+
+#: includes/campaigns/views/double-order/inpage.php:30
+#: includes/campaigns/views/double-order/inpage.php:36
+#: includes/campaigns/views/double-order/template1.php:57
+#: includes/campaigns/views/double-order/template1.php:63
+msgid "Congrats! You saved {discount_value} on your order!"
+msgstr ""
+
+#: includes/campaigns/views/double-order/template1.php:28
+msgid "Hurry! Offer Ends in "
+msgstr ""
+
+#: includes/campaigns/views/frequently-bought-together/floating.php:333
+#: includes/campaigns/views/frequently-bought-together/floating.php:443
+#: includes/campaigns/views/frequently-bought-together/inpage.php:324
+#: includes/campaigns/views/frequently-bought-together/inpage.php:404
+#: includes/campaigns/views/frequently-bought-together/popup.php:334
+#: includes/campaigns/views/frequently-bought-together/popup.php:445
+#: includes/campaigns/views/mix-match/floating.php:141
+#: includes/campaigns/views/mix-match/inpage.php:143
+#: includes/campaigns/views/mix-match/popup.php:139
+#, php-format
+msgid "For <span class=\"revx-selected-product-count\"> %s</span> Items"
+msgstr ""
+
+#: includes/campaigns/views/frequently-bought-together/floating.php:433
+#: includes/campaigns/views/frequently-bought-together/inpage.php:394
+#: includes/campaigns/views/frequently-bought-together/popup.php:435
+msgid "Frequently Bought Together Heading"
+msgstr ""
+
+#: includes/campaigns/views/mix-match/floating.php:182
+#: includes/campaigns/views/mix-match/inpage.php:185
+#: includes/campaigns/views/mix-match/popup.php:183
+#, php-format
+msgid "%s Items"
+msgstr ""
+
+#: includes/campaigns/views/mix-match/floating.php:349
+#: includes/campaigns/views/mix-match/inpage.php:295
+#: includes/campaigns/views/mix-match/inpage.php:367
+#: includes/campaigns/views/mix-match/popup.php:288
+#: includes/campaigns/views/mix-match/popup.php:356
+msgid "Add"
+msgstr ""
+
+#: includes/campaigns/views/mix-match/floating.php:442
+#: includes/campaigns/views/mix-match/floating.php:587
+#: includes/campaigns/views/mix-match/inpage.php:461
+#: includes/campaigns/views/mix-match/inpage.php:605
+#: includes/campaigns/views/mix-match/popup.php:441
+#: includes/campaigns/views/mix-match/popup.php:580
+msgid "Please add product to proceed"
+msgstr ""
+
+#. translators: %s is discount value.
+#: includes/campaigns/views/mix-match/template1.php:313
+#, php-format
+msgid "%s%%"
+msgstr ""
+
+#: includes/campaigns/views/spending-goal/drawer.php:7
+#: includes/campaigns/views/spending-goal/hellobar.php:11
+#: includes/campaigns/views/spending-goal/inpage.php:12
+#: includes/campaigns/views/spending-goal/template1.php:89
+msgid "Free Shipping"
+msgstr ""
+
+#: includes/campaigns/views/spending-goal/drawer.php:8
+#: includes/campaigns/views/spending-goal/hellobar.php:12
+#: includes/campaigns/views/spending-goal/inpage.php:13
+#: includes/campaigns/views/spending-goal/template1.php:90
+msgid "Discount"
+msgstr ""
+
+#: includes/campaigns/views/spending-goal/drawer.php:9
+#: includes/campaigns/views/spending-goal/hellobar.php:13
+#: includes/campaigns/views/spending-goal/inpage.php:14
+#: includes/campaigns/views/spending-goal/template1.php:91
+msgid "Gift Items"
+msgstr ""
+
+#: includes/campaigns/views/spending-goal/drawer.php:482
+#: includes/campaigns/views/spending-goal/hellobar.php:414
+#: includes/campaigns/views/spending-goal/inpage.php:427
+msgid "Add to Cart"
+msgstr ""
+
+#: includes/class-revenue-pro-ajax.php:21
+msgid "You do not have sufficient permissions to activate plugins."
+msgstr ""
+
+#: includes/class-revenue-pro-ajax.php:35
+msgid "You do not have sufficient permissions to install plugins."
+msgstr ""
+
+#: includes/class-revenue-pro-ajax.php:79
+msgid "Plugin installation failed."
+msgstr ""
+
+#: includes/class-revenue-pro-notice.php:202
+msgid "Activate WowRevenue"
+msgstr ""
+
+#: includes/class-revenue-pro-notice.php:216
+#: includes/class-revenue-pro-notice.php:298
+msgid "Activating..."
+msgstr ""
+
+#: includes/class-revenue-pro-notice.php:272
+msgid "Install WowRevenue"
+msgstr ""
+
+#: includes/class-revenue-pro-notice.php:287
+msgid "Installing..."
+msgstr ""
+
+#: includes/class-revenue-pro.php:343
+msgid "Settings"
+msgstr ""
+
+#: includes/updater/EDD_SL_Plugin_Updater.php:263
+#, php-format
+msgid "There is a new version of %1$s available. %2$sView version %3$s details%4$s."
+msgstr ""
+
+#: includes/updater/EDD_SL_Plugin_Updater.php:271
+#, php-format
+msgid "There is a new version of %1$s available. %2$sView version %3$s details%4$s or %5$supdate now%6$s."
+msgstr ""
+
+#: includes/updater/EDD_SL_Plugin_Updater.php:515
+msgid "You do not have permission to install plugin updates"
+msgstr ""
+
+#: includes/updater/EDD_SL_Plugin_Updater.php:515
+msgid "Error"
+msgstr ""
+
+#: includes/updater/License.php:126
+#: includes/updater/License.php:156
+#: includes/updater/License.php:223
+#: includes/updater/License.php:253
+msgid "An error occurred, please try again."
+msgstr ""
+
+#: includes/updater/License.php:135
+#: includes/updater/License.php:232
+#, php-format
+msgid "Your license key expired on %s."
+msgstr ""
+
+#: includes/updater/License.php:140
+#: includes/updater/License.php:237
+msgid "Your license key has been disabled."
+msgstr ""
+
+#: includes/updater/License.php:143
+#: includes/updater/License.php:240
+msgid "Invalid license."
+msgstr ""
+
+#: includes/updater/License.php:147
+#: includes/updater/License.php:244
+msgid "Your license is not active for this URL."
+msgstr ""
+
+#: includes/updater/License.php:150
+#: includes/updater/License.php:247
+msgid "This appears to be an invalid license key."
+msgstr ""
+
+#: includes/updater/License.php:153
+#: includes/updater/License.php:250
+msgid "Your license key has reached its activation limit."
+msgstr ""
+
+#: includes/updater/License.php:163
+msgid "License Activated!"
+msgstr ""
+
+#: includes/updater/License.php:260
+msgid "License Deactivated."
+msgstr ""

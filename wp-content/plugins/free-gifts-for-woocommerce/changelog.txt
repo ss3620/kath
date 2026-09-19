@@ -1,0 +1,540 @@
+*** Free Gifts for WooCommerce ***
+
+2025-05-28 - version 12.1.0
+* Fix - Errors resulting from compatibility issues with the WooCommerce Points and Rewards plugin.
+
+2025-05-23 - version 12.0.0
+* New   - Manual and automatic gifting based on bulk pricing is supported
+* New   - Manual and automatic gifting based on bulk quantity is supported
+* New   - Manual and automatic gifting based on the cheapest price is supported
+* Tweak - Improvements have been implemented in the Buy Quantity Calculation criteria to refine its application within the Buy X Get Y gifting use case.
+* Dev   - Tested with WordPress v6.8.1
+* Dev   - Tested with WooCommerce 9.8.5 
+* Fix   - Gifts were not displayed in the Block-based Cart and Checkout.
+
+2025-02-24 - version 11.9.0
+ * Update  - Supported Eligibility Notice display for Buy X Get Y mode[Single Product and Product archive pages]
+ * Update  - Supported compatibility for built-in WooCommerce Brands
+ * Update  - Supported consideration of products that were private status as gift items[applicable where the private products were accessible]
+ * Dev     - Tested with WooCommerce 9.6.2 
+ * Dev     - Tested with WordPress v6.7.2
+
+2024-12-19 - version 11.8.0
+ * Tweak - Improvements made with PO translation[Loco Translate - Custom path usage case]
+ * Tweak - Tested with WooCommerce version 9.5.1
+ * Tweak - Tested with WordPress v6.7.1
+ * Fix   - Rule level coupon restriction is not working properly
+
+2024-11-13 - version 11.7.0
+ * Tweak - Eligibility Notice display improvement when the Funnel Kit builder plugin is enabled
+ * Fix   - Code optimization to restrict unnecessary initialization of coupons
+ * Fix   - Decimal separator-based conflict occurs when the price of a gift product is configured
+
+2024-10-24 - version 11.6.0
+ * Tweak - Supported Compatibility with WooCommerce Product Bundled plugin[Considering the child item which is added using Bundled Product is restricted for awarding gift products]
+ * Tweak - Tested with WooCommerce version 9.3.3
+ * Tweak - Tested with WordPress v6.6.2
+ * Fix   - Improvement in the variation name display on the gift selection section
+ * Fix   - Gift Products were not removed properly when the criteria didn't match with the criteria [Total-based repeat Gift option]
+ 
+2024-09-05 - version 11.5.0
+ * New   - Supported compatible with WooCommerce Smart Cart plugin[Gift Products update related]
+ * Tweak - Supported Time configuration in the rule validity configuration
+ * Tweak - Supported Total type selection in the Total based Repeat Gift functionality[Order Total, Sub-Total, Category Total and Brand Total]
+ * Tweak - Tested with WordPress 6.6.1
+ * Tweak - Tested with WooCommerce 9.2.3
+
+2024-07-01 - version 11.4.0
+ * Tweak - Plugin Settings and Rule Configuration Improvements
+ * Tweak - Tested with WordPress v6.5.5
+ * Tweak - Tested with WooCommerce v9.0.2
+ * Fix   - Error occurred when trying to duplicate the available rule
+ * Fix   - Unable to search Variable Product when trying to add it as a Gift item in the Manual Order Creation
+
+2024-06-07 - version 11.3.0
+ * New   - Added Cart Subtotal based repeat Free Gift type[Manual and Automatic]
+ * New   - Option added to restrict the Free Gift products based on the virtual products
+ * Tweak - Option added to award the same product as Gift Product when different products were selected in the Get product[Buy X Get Y Manual]
+ * Tweak - Brand-based Gifting supported in the Buy X Get Y and Subtotal-based repeat modes
+ * Tweak - Tested with WordPress v6.5.4
+ * Tweak - Tested with WooCommerce v8.9.2
+
+2024-05-18 - version 11.2.0
+ * Tweak - JS improvement[applicable for the Safari browser]
+ * Tweak - Tested with WordPress v6.5.3
+ * Tweak - Tested with WooCommerce v8.9.0
+ * Fix   - Redirection issue when the Gift Products added in the checkout page
+ * Fix   - Fatal error when displaying the Eligibility Notice using shortcode 
+ * Fix   - Gift Products display conflict after adding the First Gift product in the Pop-Up mode[Ajax Add to Gift enabled]
+
+2024-04-27 - version 11.1.0
+ * Tweak - Supported for Alia Currency Switcher plugin based compatible
+ * Tweak - Multiple Product selection supported in the Buy Product field[Buy X Get y mode]
+ * Tweak - Conditional option added to consider the Buy Product when multiple products were selected case
+ * Tweak - Additional option added to consider the Buy Quantity calculation[Product with Least Quantity will be considered]
+ * Tweak - Supported awarding the product as Free Gift when it is in the Backorder case
+ * Tweak - Tested with WordPress v6.5.2
+ * Tweak - Tested with WooCommerce v8.8.2
+
+2024-03-01 - version 11.0.0
+ * New   - Compatible given with Cart and Checkout Blocks
+ * Tweak - Performance related improvements made with the enqueue scripts
+
+2024-02-24 - version 10.9.0
+ * Fix - Compatible given with Cart and Checkout Blocks
+ * Fix - Conflict in the Carousel display mode when the criteria met without page refresh
+
+2024-02-22 - version 10.8.0
+ * Tweak - Products from selected Brands is supported in the Gift selection for Manual Gift configuration
+ * Tweak - Option added to consider the globally configured price value for the Gift Products[Legal and Payment Gateway purpose]
+ * Tweak - Supported ID attribute for the Gift Products wrapper in the Message section
+ * Tweak - Optimized query calls for categories[Mulitple time query call]
+ * Tweak - Improvements made in the Gift Products display in the Carousal[Gift Products Per Page - Desktop display related]
+ * Tweak - Tested with WordPress v6.4.3
+ * Tweak - Tested with WooCommerce v8.6.1
+ * Fix   - Gifts are not restricted after per Order count reached in manual rule
+
+2023-12-01 - version 10.7.0
+ * New   - Option added to configure the WooCommerce Coupon usage based Gift restriction under rule level
+ * Tweak - Supported WooCommerce Side Cart plugin related compatible
+ * Tweak - Supported the Funnelkit Cart for WooCommerce plugin related compatible
+ * Tweak - Tested with WordPress v6.4.1
+ * Tweak - Tested with WooCommerce v8.3.1
+
+2023-11-04 - version 10.6.0
+ * Tweak - Option added to display the product image in the select-box
+ * Tweak - Code improvements[Rule Handler class reset method and Enqueue carouse related]
+ * Tweak - Tested with WooCommerce v8.2.1
+ * Fix   - Error occurred in the Masterlog
+
+2023-10-11 - version 10.5.0
+ * Tweak - Respective variation image display supported in the gift selection section
+ * Tweak - Tested with WordPress v6.3.1
+ * Tweak - Tested with WooCommerce v8.2.0
+ * Fix   - Fatal Error occurred when placing the order using WooCommerce v6.1.1
+ * Fix   - WooCommerce Subscription based compatible related Error improvement[with PHP 8.2.0]
+ * Fix   - Product name display improvement while searching for it
+    
+2023-09-22 - version 10.4.0
+ * Tweak - Option added to include the Icon/Image in the Free Gift Eligibility Notice display
+ * Tweak - Validation improvement for the Maximum Gifts in an Order configuration
+ * Tweak - Tested with WooCommerce v8.1.1
+ * Fix   - Fatal Error improvement 
+
+2023-08-24 - version 10.3.0
+ * New   - Option added to allow the rule to be applied with other matching rules
+ * Tweak - Multiple Categories selection supported in the Buy Category field
+ * Tweak - Tested with WordPress v6.3.0
+ * Tweak - Tested with WooCommerce v8.0.2
+
+2023-08-08 - version 10.2.0
+ * Tweak - Tested with WooCommerce v7.9.0
+ * Fix   - Maximum Gift count not displayed properly in the Progress bar
+ * Fix   - Adding Multiple Quantities of Same Gift Product feature is not working properly 
+
+2023-07-17 - version 10.1.0
+ * New   - Added option to Allow/Restrict user(s) to remove the automatically added Gift Product(s)
+ * New   - Added option to Allow/Restrict user(s) to select the quantity for Manual Gift selection
+ * Tweak - Poly language plugin compatibility improvement[Custom Post types disabled case]
+ * Tweak - JS improvements for the plugin's settings display
+ * Tweak - Security improvements[adding more than the maximum gift limit]
+ * Tweak - Tested with WooCommerce v7.8.2
+ * Fix   - Free Gift(s) eligibility notice not displayed properly
+ * Fix   - Allow multiple quantity option not working properly
+
+2023-06-14 - version 10.0.0
+ * New   - Supported Manual gift selection mode in the Coupon based Free Gift type
+ * New   - Supported adding gift item(s) manually in the Edit Order page as well as in Manual Order creation
+ * Tweak - Supported duplication for the created rule(s)
+ * Tweak - Tested with WordPress v6.2.2
+ * Tweak - Tested with WooCommerce v7.8.0
+ * Fix   - Progress Bar data displayed wrongly
+
+2023-05-19 - version 9.9.0
+ * New   - Supported with High Performance Order Storage[HPOS]
+ * Tweak - Tested with WordPress v6.2.1
+ * Tweak - Tested with WooCommerce v7.7.0
+ * Fix   - Redirection improvement when the Gift Product(s) added automatically
+
+2023-05-09 - version 9.8.0
+ * New   - Added Progress bar to display the Gift selection info[Applicable for Manual Gifts]
+ * Tweak - Supported for the WooCommerce Subscription compatible[Charge fee in the renewal order(s) if the subscription product is selected as Free]
+ * Tweak - Added Shortcode to display the remaining gift count in the notice[Applicable for Manual Gifts]
+
+2023-04-27 - version 9.7.0
+ * Tweak - Criteria compatibility supported for WooCommerce Points and Rewards[Earned Points based criteria calculation]
+ * Tweak - Tested with WooCommerce v7.6.1
+ * Fix   - Tax configuration based improvement in the Category Total criteria calculation
+ * Fix   - Multiple notice display improvement[Astra Pro plugin activated case]
+
+2023-04-07 - version 9.6.0
+ * New   - Option added to select the rule status for Hiding the Gift Product
+ * Tweak - Option added to consider the WC coupon discount value for Calculation of Category Total Criteria
+ * Tweak - Tested with WordPress v6.2.0
+
+2023-03-25 - version 9.5.0
+ * Tweak - Supported multiple brands selection for Brand Total criteria
+ * Tweak - Tested with WooCommerce v7.5.1
+ * Fix   - Error occurring while saving the rule
+ * Fix   - Improvements in the Brand selection 
+
+2023-03-20 - version 9.4.0
+ * Tweak - Added Filter compatibility with WooCommerce Brands plugin
+ * Tweak - Conflict with Cart layout created by Fusion Builder[Avada Theme]
+ * Tweak - Tested with WooCommerce v7.5.0
+ * Fix   - Improvements in Custom Hook selection for Checkout Page Gift Product display
+
+2023-03-08 - version 9.3.0
+ * Tweak - Option added to display the Gift Products in Inline mode on the Checkout page
+ * Tweak - Hidden Gift Products added manually using the URL is restricted
+ * Tweak - Notice display improvement when Checkout WC is activated case
+ * Tweak - Tested with WooCommerce v7.4.1
+
+2022-12-23 - version 9.2.0
+ * New   - Filter compatibility with B2B plugin[User groups] 
+ * Tweak - Tested with WooCommerce v7.2.2
+
+2022-11-18 - version 9.1.0
+ * Fix   - Gift Product(s) display when the limit is reached[Buy X Get Y- Manual mode]
+ * Tweak - Tested with WordPress version 6.1.1
+
+2022-11-12 - version 9.0.0
+ * New   - Option added to consider the Sub-category product(s) in the Category Total criteria
+ * New   - Supported REST API for Free Gift rule(s)
+ * Tweak - Column added to display the rule description
+ * Tweak - Supported pagination through WordPress Screen Options
+ * Tweak - Tested with WooCommerce version 7.1.0
+ * Tweak - Tested with WordPress version 6.1.0
+
+2022-10-18 - version 8.8.0
+ * New   - Option added to award Gift Product(s) based on User's previously purchased order count
+ * Tweak - Hooks added to validate the Gift Product(s) added automatically to the cart
+ * Tweak - Tested with WooCommerce 7.0.0
+ * Tweak - Tested with WordPress 6.0.2
+ * Fix   - Get Product Quantity calculation improvement in the Buy X Get Y Manual mode
+ * Fix   - Error occurred when the rule is configured using Poly-Language
+
+2022-08-17 - version 8.7.0
+ * Tweak - Option added to delete the Master log entries after a specific duration
+ * Tweak - Tested with WooCommerce 6.8.0
+ * Fix   - Lower WordPress version compatibility improvement
+ * Fix   - Free Gift display conflict in the Checkout page(it is configured using Checkout WC)
+
+2022-08-06 - version 8.6.0
+ * New   - Criteria Compatibility added for WooCommerce Brands
+ * Tweak - Option included to set the Gifts Per Page display for multi-device
+
+2022-07-27 - version 8.5.0
+ * Tweak - Improvement in the multi-currency conflict with the CURCY-WooCommerce Multi-Currency plugin(by villatheme)
+ * Tweak - Tested with WooCommerce 6.7.0
+ * Tweak - Tested with WordPress 6.0.1
+
+2022-07-02 - version 8.4.0
+ * Tweak - Option added to Restrict the redirection when the Free Gifts are added
+ * Tweak - Tested with WooCommerce 6.6.1
+ * Fix   - Fatal Error when sending the Manual Gift Notifications
+
+2022-06-04 - version 8.3.0
+ * Tweak - Poly language plugin compatibility improvement
+ * Tweak - Code Improvements
+ * Tweak - Tested with WooCommerce 6.5.1
+ * Tweak - Tested with WordPress 6.0.0
+
+2022-04-26 - version 8.2.0
+ * Tweak - Improvement in the Mini-Cart display when using the Themify Ultra Theme
+ * Tweak - Code Improvements
+ * Tweak - Tested with WooCommerce 6.4.1
+
+2022-04-11 - version 8.1.0
+ * New - Minimum WordPress and WooCommerce version not met error Message
+ * Fix - Default values not working properly when the plugin is activated before WooCommerce activation
+
+2022-04-07 - version 8.0.0
+ * Tweak - Added option to restrict the Get Product's quantity in the Buy X Get Y Manual mode
+ * Tweak - Tested with WordPress 5.9.3
+ * Fix   - Warning message when WooCommerce plugin is deactivated
+
+2022-03-18 - version 7.9.0
+ * Tweak - Improvement in the Country based Currency Switcher plugin conflict
+ * Tweak - Improvement in the Buy X Get Y Automatic and Manual mode
+ * Tweak - Tested with WooCommerce v6.3.1
+ * Tweak - Tested with WordPress v5.9.2
+
+2022-03-07 - version 7.8.0
+ * Tweak - Added Shortcodes for Eligibility Notice display
+ * Tweak - Improvements in the rule validity
+ * Tweak - Improvements in the Message Settings
+ * Tweak - Tested with WooCommerce v6.2.1
+ * Tweak - Tested with WordPress v5.9.1
+ * Fix   - Error improvement with the Shortcode usage
+
+2022-02-15 - version 7.7.0
+ * Tweak - Improvements in the Coupon based Free Gift
+ * Tweak - Performance improvements in the Buy X Get Y mode
+ * Fix   - Buy X Get Y not working properly when purchasing the variable product that included in the Buy Category
+
+2022-02-02 - version 7.6.0
+ * Tweak - Improvements in the Buy X Get Y Manual mode
+ * Tweak - Improvement with the PayPal Payment conflict
+ * Tweak - Tested with WooCommerce v6.1.1
+ * Tweak - Tested with WordPress v5.9.0
+
+2022-01-13 - version 7.5.0 
+ * Tweak - Get Product(s) can be added manually in the Buy X Get Y mode
+ * Tweak - Tested with WooCommerce v6.1.0
+ * Tweak - Tested with WordPress v5.8.3 
+
+2021-12-03 - version 7.4.0
+ * Tweak - Rule Sorting related improvement
+ * Tweak - Product Search related improvement
+
+2021-11-18 - version 7.3.0
+ * Tweak - Time Zone related Improvement
+ * Tweak - Eligibility Notice related Improvement
+ * Tweak - Tested with WooCommerce v5.9.0
+ * Tweak - Tested with WordPress v5.8.2
+
+2021-10-27 - version 7.2.0
+ * Tweak - Hooks added for Coupon based Free Gifts mode
+ * Tweak - Category Filter Improvements
+ * Tweak - Variable Product(Product Level) can be selected as a Gift Product in the Buy X Get Y Mode
+ * Tweak - Tested with WooCommerce v5.8.0
+ * Tweak - Tested with WordPress v5.8.1
+
+2021-09-03 - version 7.1.0
+ * Tweak - Option added to enable Ajax Add to Cart for Manual Gift Products
+ * Tweak - Mini Cart display improvement
+ * Tweak - Gift Eligibility Notice Improvement
+ * Tweak - Tested with WooCommerce v5.6.0
+
+2021-07-21 - version 7.0.0
+ * Tweak - Short-code added to display the Gift Eligibility notice(s)
+ * Tweak - Woo Discount Rules plugin-based conflict improvement
+ * Tweak - Improvement in the Variable Gift display
+ * Tweak - Maximum Gift selection restriction improvement while using Multi tab
+ * Tweak - Hooks added
+ * Tweak - Tested with WooCommerce v5.5.1
+ * Tweak - Tested with WordPress v5.8.0
+
+2021-05-24 - version 6.9.0
+ * Tweak - Improvement in Hide Gift Product(s) feature
+ * Tweak - Tested with WooCommerce v5.3.0
+ * Tweak - Tested with WordPress v5.7.2
+
+2021-04-22 - version 6.8.0
+ * New   - Option added to restrict the Gift Product(s) from a rule based on the Number of Order(s) placed by Registered User(s)
+ * Tweak - Tested with WooCommerce v5.2.2
+
+2021-04-16 - version 6.7.0
+ * Tweak - Improvements in WPML Compatibility
+ * Tweak - Tested with WooCommerce v5.2.1
+ * Tweak - Tested with WordPress v5.7.1
+ * Fix   - Error occurred while saving the rule
+
+2021-04-03 - version 6.6.0
+ * Tweak - CSS Improvement.
+ * Fix   - Category Filter Improvement
+
+2021-03-29 - version 6.5.0
+ * Fix   - Improvement in the Manual Gift Email Notification
+
+2021-03-22 - version 6.4.0
+ * Tweak - Option added to delete the Master log entry
+ * Fix   - Fatal error occurred in Rest API
+
+2021-03-12 - version 6.3.0
+ * New   - Option added to award Free Gifts based on Minimum Quantity of the product(s) from the selected Categories
+ * Tweak - Variable Product(Product Level) can be selected as a Gift Product in Manual Gift Mode
+ * Tweak - Tested with WooCommerce v5.1.0
+ * Tweak - Tested with WordPress v5.7.0
+ * Fix   - Order Restriction usage calculation improvement
+ * Fix   - Coupon configuration improvements
+
+2021-03-01 - version 6.2.0
+ * Tweak - Tested with WooCommerce v5.0.0
+ * Tweak - Tested with WordPress v5.6.2
+ * Fix   - Pagination Improvements
+
+2021-01-15 - version 6.1.0
+ * Tweak - Manual Gift Product(s) Improvement
+ * Tweak - Hook added for Free Gift Product Price based
+ * Tweak - Tested with WooCommerce v4.9.0
+
+2020-12-26 - version 6.0.0
+ * New   - Added Coupon based Free Gift Type
+ * Tweak - Option added to display the Gift Product Name with Hyperlink to Product Page in Carousel mode
+ * Tweak - Option added to control the Shipping Cost for Free Gift Product(s)
+ * Tweak - Add to Cart related improvements for Gift Product(s)
+ * Tweak - Popup related Improvements.
+ * Tweak - Tested with WooCommerce v4.8.0 & WordPress 5.6.0
+
+2020-11-16 - version 5.9.0
+ * Tweak - Decimal/Fractional value support in the rule criteria
+ * Tweak - Code Improvements
+ * Tweak - Tested with WooCommerce v4.7.0
+
+2020-11-02 - version 5.8.0
+ * Tweak - Option added to display the Gift Product Name with Hyperlink to Product Page
+ * Tweak - Category Total based Shortcode added for Gift Eligible Notice display
+
+2020-10-26 - version 5.7.0
+ * Tweak - Option to change the Gift display position in the cart page
+ * Tweak - Tested with WooCommerce v4.6.1
+ * Fix   - Checkout Page not loading properly
+
+2020-09-19 - version 5.6.0
+ * Tweak - Option added to automatically add the selected Gift Product in the Select-Box Mode
+
+2020-09-04 - version 5.5.0
+ * Tweak - Priority-based Improvements.
+ * Tweak - Tested with WooCommerce version 4.4.1 and WordPress 5.5.1
+ * Fix   - Conflict with WooCommerce v3.4.x
+
+2020-07-31 - version 5.4.0 
+ * Tweak - Option added to Limit the Repeat feature of Buy X Get Y mode
+
+2020-07-23 - version 5.3.0
+ * Tweak - Buy X Get Y Quantity Restriction Improvements
+ * Tweak - Select Box Parameter added in the Short-code
+ * Tweak - Tested with WooCommerce v4.3.0
+
+2020-07-14 - version 5.2.0
+ * New - Select Box(Dropdown) Display Mode added for choosing Free Gifts in Cart & Checkout Page
+ * New - Gift Product(s) can be awarded on Specific Day(s) of the Week
+
+2020-06-29 - version 5.1.0
+ * Tweak - WooCommerce Product Search plugin based conflict improvement
+ * Fix   - Free Gift Notice display conflict improvement
+
+2020-06-27 - version 5.0.0
+ * New   - Free Gift(s) eligibility notice display in cart and checkout page
+ * New   - Gift product validation during rule configuration
+ * Tweak - Rule configuration page settings re-positioned into tabs
+ * Tweak - Plugin Settings Repositioning
+
+2020-06-26 - version 4.9.2
+ * Tweak  - Unwanted scripts call related improvement
+
+2020-06-20 - version 4.9.1
+ * Tweak - Troubleshoot option added to load Frontend Scripts
+
+2020-06-11 - version 4.9.0
+ * New - Option added to award Free Gifts based on Category Total
+
+2020-06-01 - version 4.8.0
+ * New   - Option to add the Gift Product(s) at the bottom
+ * New   - Shortcode section added
+ * Tweak - Option to display the Free Gift Notice
+
+2020-05-19 - version 4.7.0
+ * Tweak - Email notification improvements for Manually Gifted Product(s)
+ * Tweak - Removed the "Remove" button for automatically added Free Gift Product(s)
+ * Fix   - Include/Exclude Product filter improvements based on Variable Product selection
+
+2020-05-09 - version 4.6.0
+ * Tweak - Label Customization improvements
+
+2020-05-05 - version 4.5.0
+ * New   - Free Gift Products can be displayed in a Popup in Cart Page
+ * Tweak - Free Gift Products can be selected in the checkout using Popup
+ 
+2020-05-01 - version 4.4.0
+ * Tweak - Filter related improvements
+
+2020-04-27 - version 4.3.0
+ * Tweak - Show/Hide option added to control the Pagination display
+ * Tweak - Label Customization added
+ * Fix   - Maximum Number of Pages display improvements for Pagination
+
+2020-04-22 - version 4.2.0
+ * New - Number of Products can be added as rule criteria to award Gift Product(s)
+ * Fix - Repeat Gift option not saving Properly
+
+2020-04-21 - version 4.1.0
+ * New - Products can be selected by choosing a category in Buy X Get Y mode of Free Gift
+
+2020-04-16 - version 4.0.0
+ * New - Quantity can be set for Gift Product(s) in Automatic Gift Type
+
+2020-04-07 - version 3.9.0
+ * Tweak - Same Free Gift Product can be added to the cart from all the matching rules in Automatic Free Gift Mode
+ * Fix   - Product Exclusion Filter not working properly
+
+2020-04-01 - version 3.8.0
+ * Tweak - Ignoring Shipping cost for Free Gifts
+
+2020-03-27 - version 3.7.0
+ * New   - Option to strike and display the Free Gift Product's price in Cart and Checkout page
+ * Tweak - Validation when Free Gift Product's price is not set
+
+2020-03-20 - version 3.6.0
+ * New - Free Gift Products can be displayed in a Carousel
+
+2020-03-10 - version 3.5.0
+ * Fix - Conflict with SiteGround SG Optimizer plugin
+
+2020-02-29 - version 3.4.0
+ * Tweak - Improvements in Template Override
+
+2020-02-26 - version 3.3.0
+ * Fix - Free Gift Product Image not displaying for some themes
+
+2020-02-20 - version 3.2.0
+ * Tweak - Created Gift Rules not displaying properly
+ * Fix   - Plugin settings not visible for some Non-English WordPress Sites
+
+2020-02-18 - version 3.1.0
+ * Tweak - Translation Compatibility with Loco Translate Plugin
+
+2020-02-12 - version 3.0.0
+ * New   - Send Free Gifts in the form of Buy X Get Y
+ * Tweak - Inventory related Improvements for Free Gift Products
+ * Tweak - Master Log Display Improvements
+
+2020-01-30 - version 2.4.0
+ * New - Option added to Hide the Free Gift Product(s) in the site's Shop and Category Pages
+ * Fix - Error when used with SUMO Payment Plans Plugin
+
+2020-01-29 - version 2.3.0
+ * New - Free Gifts can be awarded based on the number of products purchased(Works only for Include Products)
+
+2020-01-23 - version 2.2.0
+ * Fix - Fatal Error in the cart if the configured Free Gift Product has been deleted from the site
+
+2020-01-01 - version 2.1.0
+ * New - Added additional Product/Category filter
+
+2019-12-04 - version 2.0.0
+ * New - Free Gifts can be awarded based on Order Total
+
+2019-11-27 - version 1.9.0
+ * New - Added option to display Free Gifts Notice in Checkout page if the user has not added their Free Gifts to their Cart
+
+2019-11-25 - version 1.8.0
+ * Tweak - Free Product(s) criteria calculation improvements
+
+2019-11-23 - version 1.7.0
+ * Tweak - Product price with tax will be considered for Gift Product criteria when price entered is inclusive of tax
+
+2019-11-22 - version 1.6.0
+ * New - Fatal error in frontend
+
+2019-11-22 - version 1.5.0
+ * New - Automatic Free Gifts Support
+
+2019-11-12 - version 1.4.0
+ * New - Custom CSS
+
+2019-11-01 - version 1.3.0
+ * Tweak - Pagination Improvements
+
+2019-10-31 - version 1.2.0
+ * New   - Maximum Gift Product Per Order Restriction can be configured within each rule
+ * Tweak - Translation Improvements
+
+2019-10-22 - version 1.1.0
+ * New - Supports Variable Products.
+ * Fix - Pagination related improvements
+
+2019-10-01 - version 1.0.0
+ * Initial Release

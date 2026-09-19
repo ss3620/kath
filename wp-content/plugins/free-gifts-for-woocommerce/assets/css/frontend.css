@@ -1,0 +1,348 @@
+.fgf_pagination{
+	cursor:pointer;
+}
+.fgf_gift_products_wrapper span.fgf_disable_links{
+	opacity: 0.5;
+	cursor:not-allowed;
+}
+.fgf_gift_products_wrapper span.fgf_disable_links a{
+	pointer-events: none;
+	cursor: default;
+	text-decoration: none;
+}
+.fgf_gift_products_table td img{
+	height: auto;
+	width:32px;
+}
+.fgf_hide{
+	display: none;
+}
+#lightcase-content {
+	border-radius:10px;
+}
+
+/* Progress bar  */
+
+.fgf-progress-bar-wrapper{
+	float:left;
+	width:100%;
+	margin:5px 0;
+	display: block;
+}
+
+.fgf-progress-bar-wrapper p.fgf-progress-bar-heading-label {
+	font-size: 22px;
+	width: 100%;
+	display: block;
+	color: #000;
+	margin-bottom: 10px;
+}
+
+.fgf-progress-bar-above-details-wrapper,
+.fgf-progress-bar-below-details-wrapper{
+	display: table;
+	width: 100%;
+	margin: 10px 0;
+}
+
+
+.fgf-progress-bar-start,
+.fgf-progress-bar-end {
+	width: auto;
+	padding:0;
+	margin:0;
+	color: #666;
+	font-size: 16px;
+}
+
+.fgf-progress-bar-start {
+	float: left;
+}
+
+.fgf-progress-bar-end {
+	float: right;
+
+}
+
+.fgf-progress-bar-outer-wrapper {
+	height: 15px;
+	border-radius: 5px;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	padding:0;
+	margin: 10px 0;
+	background:#f3efe6;
+}
+
+.fgf-progress-bar-outer-wrapper span {
+	display: block;
+	height: 100%;
+}
+
+
+.fgf-progress-bar-outer-wrapper span.fgf-progress-bar-fill {
+	background:#03dfb6;
+	-webkit-animation: currentpledgebar 2s ease-in-out;
+	-webkit-animation-fill-mode: both;
+	-moz-animation: currentpledgebar 2s ease-in-out;
+	animation-fill-mode: none;
+	-moz-animation-fill-mode: both;
+}
+
+/* Progress bar  */
+
+/* Notices */
+.fgf-notice {
+	padding: 15px !important;
+}
+
+.fgf-notice:before {
+	content: ' ' !important;
+
+}
+
+.fgf-notice-content-wrapper {
+	display: table;
+}
+
+.fgf-notice-content-wrapper .fgf-notice-icon {
+	padding: 5px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.fgf-notice-content-wrapper .fgf-notice-content {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.fgf-notice-content-wrapper .fgf-notice-content p {
+	margin: 0 !important;
+}
+
+.fgf-notice-content-wrapper .fgf-notice-icon img{
+	width: 16px;
+	height: auto;
+}
+
+/* Notices */
+
+/* Dropdown */
+.fgf-dropdown-wrapper {
+	position: relative;
+	float: left;
+	width: 70%;
+}
+
+.fgf-dropdown-wrapper .fgf-dropdown-default-option-wrapper {
+	border-radius: 2px;
+	border: solid 1px #ccc;
+	position: relative;
+	cursor: pointer;
+	background: rgb(238, 238, 238);
+
+}
+
+.fgf-dropdown-option-selected {
+	color: #000000;
+	display: block;
+	font-weight: bold;
+	overflow: hidden;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.fgf-dropdown-product-image {
+	float: left;
+	margin-right: 15px;
+	margin-left: 5px;
+}
+
+.fgf-pointer-down {
+	border: solid 5px transparent;
+	border-top-width: 5px;
+	border-top-style: solid;
+	border-top-color: transparent;
+	border-top: solid 5px #000;
+}
+
+.fgf-pointer {
+	width: 0;
+	height: 0;
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	margin-top: -3px;
+}
+
+ul.fgf-dropdown-options-wrapper {
+	border: solid 1px #ccc;
+	padding: 0 !important;
+	width: 100%;
+	border-top: none;
+	list-style: none;
+	box-shadow: 0px 1px 5px #ddd;
+	display: none;
+	position: absolute;
+	z-index: 2000;
+	margin: 0 !important;
+	box-sizing: border-box;
+	padding: 0;
+	background: #fff;
+	overflow: auto;
+	-webkit-transition: all 0.25s ease-in-out;
+	-moz-transition: all 0.25s ease-in-out;
+	-o-transition: all 0.25s ease-in-out;
+	-ms-transition: all 0.25s ease-in-out;
+}
+
+ul.fgf-dropdown-options-wrapper li {
+	margin: 0px !important;
+	list-style: none !important;
+}
+
+ul.fgf-dropdown-options-wrapper li:hover,
+ul.fgf-dropdown-options-wrapper li a:hover {
+	background: rgb(238, 238, 238);
+}
+
+ul li a.fgf-dropdown-option {
+	text-decoration: none;
+	display: block;
+	font-weight: bold;
+	overflow: hidden;
+	padding: 10px;
+	background: #fff;
+	box-sizing: border-box;
+	border-bottom: solid 1px #ddd;
+	cursor: pointer;
+	margin: 0 !important;
+}
+
+.fgf-dropdown-wrapper img {
+	width: 32px;
+	height: auto;
+}
+
+.fgf-dropdown-wrapper label {
+	font-size: 14px;
+	color: #000;
+	float: left;
+	margin-top: 7px;
+	cursor: pointer;
+}
+
+.fgf-add-gift-product {
+	background-color: #eeeeee;
+	border-color: #eeeeee;
+	color: #333333;
+	border-radius: 0;
+	cursor: pointer;
+	padding: .6180469716em 1.41575em;
+	text-decoration: none;
+	font-weight: 600;
+	text-shadow: none;
+	display: inline-block;
+	-webkit-appearance: none;
+	margin-left: 15px !important;
+}
+
+/* Dropdown */
+
+/* Mobile responsive */
+
+@media screen and (max-width: 768px) {
+	.fgf-frontend-table {
+		border: 1px solid #f1f1f1;
+	}
+
+	.fgf-frontend-table tbody tr {
+		display: block;
+	}
+
+	.fgf-frontend-table thead {
+		display: none;
+	}
+
+	.fgf-frontend-table tr td::before {
+		float: left;
+		content: attr(data-title) ": ";
+		font-weight: 700;
+	}
+	.fgf-frontend-table tfoot tr td {
+		border: none;
+		text-align: center !important;
+	}
+
+	.fgf-frontend-table tfoot tr td nav{
+		float: none;
+	}
+
+	.fgf-frontend-table tfoot tr td::before {
+		float: left;
+		content: " ";
+	}
+
+	.fgf-frontend-table tr td {
+		display: block;
+		border-right: 0;
+		border-bottom: 1px solid #f1f1f1;
+		text-align: right !important;
+	}
+
+	.fgf-frontend-table tbody td button {
+		float: none;
+	}
+
+	.fgf-dropdown-wrapper {
+		position: relative;
+		float: left;
+		width: 100%;
+	}
+
+	.fgf-add-gift-product {
+		background-color: #eeeeee;
+		border-color: #eeeeee;
+		color: #333333;
+		border-radius: 0;
+		cursor: pointer;
+		padding: .6180469716em 1.41575em;
+		text-decoration: none;
+		font-weight: 600;
+		text-shadow: none;
+		display: inline-block;
+		-webkit-appearance: none;
+		margin: 15px 0 15px 0;
+
+	}
+}
+
+@media only screen and (max-width: 640px){
+
+	/*  single product page popup mobile responsive*/
+
+	.fgf-popup-gift-products-wrapper {
+		float:left;
+		max-height:300px;
+		overflow-y: scroll;
+		background: #fff;
+		padding: 5px;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	.fgf_gift_products_wrapper h3,
+	.fgf_gift_products_wrapper table td,
+	.fgf_gift_products_wrapper h5 {
+		text-shadow:none !important;
+	}
+
+	.fgf_gift_products_wrapper h3,
+	.fgf_gift_products_wrapper h5{
+		color:#333 !important;
+	}
+
+}
+
+

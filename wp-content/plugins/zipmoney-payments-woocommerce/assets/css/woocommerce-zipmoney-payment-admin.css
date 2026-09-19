@@ -1,0 +1,75 @@
+.widefat .column-order_status mark.zip-pending:after{
+	content: "\e012" !important;
+	color: #ffba00  !important;
+	font-family: WooCommerce;
+	font-weight: 400;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	margin: 0;
+	text-indent: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+.widefat .column-order_status mark.zip-authorised:after{
+	content: "\e012" !important;
+	color: #0073aa  !important;
+	font-family: WooCommerce;
+	font-weight: 400;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	margin: 0;
+	text-indent: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+#woocommerce_zipmoney_sandbox_btn{
+	width: 300px !important;
+	background-color: #FE9258;
+	color: #ffffff;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+#woocommerce_zipmoney_check_credentials{
+	width: 300px !important;
+	background-color: #FE9258;
+	color: #ffffff;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+#woocommerce_zipmoney_prod_btn{
+	width: 300px !important;
+	background-color: #FE9258;
+	color: #ffffff;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.zip-spinner {
+	background: url(../img/loader.gif) no-repeat;
+	display: flex;
+	visibility: hidden;
+	vertical-align: middle;
+}
+
+.zip-spinner.is-active {
+	visibility: visible;
+	background-size: 413px 220px;
+	width: 413px;
+	height: 220px;
+	display: flex;
+}

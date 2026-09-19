@@ -1,0 +1,361 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * FlightadditionaldetailsPassengers.
+ *
+ * @category Class
+ * @package  zipMoney
+ * @author   zipMoney Payments Pty Ltd
+ * @link     https://github.com/zipMoney/merchantapi-php
+ */
+
+namespace zipMoney\Model;
+
+use ArrayAccess;
+use zipMoney\ObjectSerializer;
+
+class FlightadditionaldetailsPassengers implements ArrayAccess, \Stringable
+{
+    public const DISCRIMINATOR = 'subclass';
+
+    /**
+     * The original name of the model.
+     *
+     * @var string
+     */
+    protected static $swaggerModelName = 'flightadditionaldetails_passengers';
+
+    /**
+     * Array of property to type mappings. Used for (de)serialization.
+     *
+     * @var string[]
+     */
+    protected static $zipTypes = [
+        'title'         => 'string',
+        'first_name'    => 'string',
+        'last_name'     => 'string',
+        'gender'        => 'string',
+        'date_of_birth' => '\DateTime',
+        'seat_number'   => 'string',
+    ];
+
+    public static function zipTypes()
+    {
+        return self::$zipTypes;
+    }
+
+    /**
+     * Array of attributes where the key is the local name, and the value is the original name.
+     *
+     * @var string[]
+     */
+    protected static $attributeMap = [
+        'title'         => 'title',
+        'first_name'    => 'first_name',
+        'last_name'     => 'last_name',
+        'gender'        => 'gender',
+        'date_of_birth' => 'date_of_birth',
+        'seat_number'   => 'seat_number',
+    ];
+
+    /**
+     * Array of attributes to setter functions (for deserialization of responses).
+     *
+     * @var string[]
+     */
+    protected static $setters = [
+        'title'         => 'setTitle',
+        'first_name'    => 'setFirstName',
+        'last_name'     => 'setLastName',
+        'gender'        => 'setGender',
+        'date_of_birth' => 'setDateOfBirth',
+        'seat_number'   => 'setSeatNumber',
+    ];
+
+    /**
+     * Array of attributes to getter functions (for serialization of requests).
+     *
+     * @var string[]
+     */
+    protected static $getters = [
+        'title'         => 'getTitle',
+        'first_name'    => 'getFirstName',
+        'last_name'     => 'getLastName',
+        'gender'        => 'getGender',
+        'date_of_birth' => 'getDateOfBirth',
+        'seat_number'   => 'getSeatNumber',
+    ];
+
+    public static function attributeMap()
+    {
+        return self::$attributeMap;
+    }
+
+    public static function setters()
+    {
+        return self::$setters;
+    }
+
+    public static function getters()
+    {
+        return self::$getters;
+    }
+
+    /**
+     * Associative array for storing property values.
+     *
+     * @var mixed[]
+     */
+    protected $container = [];
+
+    /**
+     * Constructor.
+     *
+     * @param mixed[] $data Associated array of property values initializing the model
+     */
+    public function __construct(?array $data = null)
+    {
+        $this->container['title'] = $data['title'] ?? null;
+        $this->container['first_name'] = $data['first_name'] ?? null;
+        $this->container['last_name'] = $data['last_name'] ?? null;
+        $this->container['gender'] = $data['gender'] ?? null;
+        $this->container['date_of_birth'] = $data['date_of_birth'] ?? null;
+        $this->container['seat_number'] = $data['seat_number'] ?? null;
+    }
+
+    /**
+     * show all the invalid properties with reasons.
+     *
+     * @return array invalid properties with reasons
+     */
+    public function listInvalidProperties(): array
+    {
+        $invalid_properties = [];
+
+        if ($this->container['first_name'] === null) {
+            $invalid_properties[] = "'first_name' can't be null";
+        }
+        if ($this->container['last_name'] === null) {
+            $invalid_properties[] = "'last_name' can't be null";
+        }
+
+        return $invalid_properties;
+    }
+
+    /**
+     * validate all the properties in the model
+     * return true if all passed.
+     *
+     * @return bool True if all properties are valid
+     */
+    public function valid()
+    {
+        if ($this->container['first_name'] === null) {
+            return false;
+        }
+        return $this->container['last_name'] !== null;
+    }
+
+    /**
+     * Gets title.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->container['title'];
+    }
+
+    /**
+     * Sets title.
+     *
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title): static
+    {
+        $this->container['title'] = $title;
+
+        return $this;
+    }
+
+    /**
+     * Gets first_name.
+     *
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->container['first_name'];
+    }
+
+    /**
+     * Sets first_name.
+     *
+     * @param string $first_name
+     *
+     * @return $this
+     */
+    public function setFirstName($first_name): static
+    {
+        $this->container['first_name'] = $first_name;
+
+        return $this;
+    }
+
+    /**
+     * Gets last_name.
+     *
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->container['last_name'];
+    }
+
+    /**
+     * Sets last_name.
+     *
+     * @param string $last_name
+     *
+     * @return $this
+     */
+    public function setLastName($last_name): static
+    {
+        $this->container['last_name'] = $last_name;
+
+        return $this;
+    }
+
+    /**
+     * Gets gender.
+     *
+     * @return string
+     */
+    public function getGender()
+    {
+        return $this->container['gender'];
+    }
+
+    /**
+     * Sets gender.
+     *
+     * @param string $gender
+     *
+     * @return $this
+     */
+    public function setGender($gender): static
+    {
+        $this->container['gender'] = $gender;
+
+        return $this;
+    }
+
+    /**
+     * Gets date_of_birth.
+     *
+     * @return \DateTime
+     */
+    public function getDateOfBirth()
+    {
+        return $this->container['date_of_birth'];
+    }
+
+    /**
+     * Sets date_of_birth.
+     *
+     * @param \DateTime $date_of_birth
+     *
+     * @return $this
+     */
+    public function setDateOfBirth($date_of_birth): static
+    {
+        $this->container['date_of_birth'] = $date_of_birth;
+
+        return $this;
+    }
+
+    /**
+     * Gets seat_number.
+     *
+     * @return string
+     */
+    public function getSeatNumber()
+    {
+        return $this->container['seat_number'];
+    }
+
+    /**
+     * Sets seat_number.
+     *
+     * @param string $seat_number
+     *
+     * @return $this
+     */
+    public function setSeatNumber($seat_number): static
+    {
+        $this->container['seat_number'] = $seat_number;
+
+        return $this;
+    }
+
+    /**
+     * Returns true if offset exists. False otherwise.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetExists($offset): bool
+    {
+        return isset($this->container[$offset]);
+    }
+
+    /**
+     * Gets offset.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetGet($offset): mixed
+    {
+        return $this->container[$offset] ?? null;
+    }
+
+    /**
+     * Sets value based on offset.
+     *
+     * @param int   $offset Offset
+     * @param mixed $value  Value to be set
+     */
+    public function offsetSet($offset, mixed $value): void
+    {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+
+    /**
+     * Unsets offset.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetUnset($offset): void
+    {
+        unset($this->container[$offset]);
+    }
+
+    /**
+     * Gets the string presentation of the object.
+     */
+    public function __toString(): string
+    {
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return (string) json_encode(ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+        }
+
+        return (string) json_encode(ObjectSerializer::sanitizeForSerialization($this));
+    }
+}

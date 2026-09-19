@@ -1,0 +1,1433 @@
+/*
+=========== SCSS Table of Contents ===========
+> 1.x Root Variable
+> 2.x Plugins Body Style [Ok]
+> 3.x Button Style
+> 4.x Partial Payment
+> 5.x Variation Swatches
+> 6.x Editor Popup Style
+> 7.x Custom Font Style
+> 8.x Builder Enable Button
+=============================================
+*/
+
+/* ---------------------------
+------ 1.x Root Variable  ----
+------------------------------ */
+:root {
+    --wowstore-white-color: #ffffff;
+    --wowstore-dark-color: #000;
+    --wowstore-text-color: #3a3838;
+    --wowstore-border-color: #F4EBE9;
+    --wowstore-success-button-color: #73b81c;
+    --wowstore-success-button-hover-color: #619e14;
+    --wowstore-warning-button-color: #d88a02;
+    --wowstore-warning-button-hover-color: #d88a02;
+
+    --wowstore-text-size: 16px;
+    --wowstore-text-sm-size: 14px;
+    --wowstore-gutter-35: 35px;
+    --wowstore-gutter-15: 15px;
+    --wowstore-gutter-10: 10px;
+    --wowstore-gutter-5: 5px;
+    --wowstore-gutter-2: 2px;
+    --wowstore-transition-400: 400ms;
+    --wowstore-border-radius: 4px;
+
+    --wowstore-primary-color: #FF176B;
+    --wowstore-popbodyBg: #F3ECEE;
+    --wowstore-popbodyBgBold: #faf1f0;
+}
+
+
+/* ---------------------------
+--- 2.x Plugins body Style  --
+------------------------------ */
+.toplevel_page_wopb-settings #wpcontent,
+.toplevel_page_wopb-initial-setup-wizard #wpcontent {
+    padding-left: 0;
+}
+#toplevel_page_wopb-settings a[href="admin.php?page=go_productx_pro"],
+#toplevel_page_wopb-settings a[href="admin.php?page=go_productx_pro"]:hover {
+    color: var(--wowstore-success-button-color);
+}
+#toplevel_page_wopb-settings .wp-menu-image > img {
+    width: 20px;
+    padding-top: 5px;
+}
+.rotate {
+    animation: rotate 1.5s linear infinite;
+    -webkit-animation: rotate 1.5s linear infinite;
+}
+.wopb-d-none {
+    display: none;
+}
+.wopb-select2, .wopb-select2 .select2-container {
+    width: 100%;
+}
+
+#toplevel_page_wopb-settings .wp-submenu a[href*="wopb-pro"] {
+	display:none;
+}
+#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: white;
+	background-color: var(--wowstore-primary-color);
+	margin-inline: 10px;
+	border-radius: 6px;
+	margin-top: 6px;
+	padding-block: 6px;
+	box-shadow: none;
+	white-space: nowrap;
+	transition: background-color 200ms ease;
+}
+#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro:hover {
+	background-color: #dd1b63;
+	color: white;
+}
+
+
+/* ---------------------------
+------ 3.x Button Style  -----
+------------------------------ */
+button.wopb-btn {
+    box-shadow: none;
+    border: 0;
+}
+.wopb-btn {
+    font-size: var(--wowstore-text-size);
+    line-height: 1;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--wowstore-gutter-2);
+    transition: var(--wowstore-transition-400);
+    padding: var(--wowstore-gutter-15) var(--wowstore-gutter-35);
+    cursor: pointer;
+}
+.wopb-btn-sm {
+    padding: var(--wowstore-gutter-5) var(--wowstore-gutter-10);
+    font-size: var(--wowstore-text-sm-size);
+}
+.wopb-btn:focus {
+    box-shadow: none;
+    outline: 0;
+}
+.wopb-btn-primary {
+    background: #FF176B;
+    color: #fff;
+}
+.wopb-btn-primary:hover,
+.wopb-btn-primary:focus {
+    background: #db4736;
+    color: #fff;
+    box-shadow: none;
+    outline: 0;
+}
+.wopb-btn-warning {
+    color: var(--wowstore-white-color);
+    background: var(--wowstore-warning-button-color);
+}
+.wopb-btn-warning:hover,
+.wopb-btn-warning:focus {
+    color: var(--wowstore-white-color);
+    background: var(--wowstore-warning-button-hover-color);
+}
+.wopb-btn-success {
+    color: var(--wowstore-white-color);
+    background: var(--wowstore-success-button-color);
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.wopb-btn-success:hover,
+.wopb-btn-success:focus {
+    color: var(--wowstore-white-color);
+    background: var(--wowstore-success-button-hover-color);
+}
+.wopb-action-btn .wopb-btn {
+    display: flex;
+    align-items: center;
+}
+.wopb-builder-import,
+.wopb-action-btn .wopb-btn span {
+    height: auto;
+    font-size: 16px;
+}
+
+
+/* ---------------------------
+---- 4.x Partial Payment  ----
+------------------------------ */
+.productx_options a, .partial_payment_options a{
+    color: #3816bd;
+}
+
+
+/* ---------------------------
+-- 5.x Variation Swatches  ---
+------------------------------ */
+.wopb-attribute-swatch-color {
+    width: 37px;
+    height: 35px;
+}
+.wopb-attribute-swatch-image {
+    width: 60%;
+}
+.wopb-term-img-thumbnail img {
+    width: 20%;
+}
+
+/* ---------------------------
+--- 6.x Editor Popup Style ---
+------------------------------ */
+.wopb-popup-wrap {
+    margin: 50px auto 0;
+    height: 90%;
+    width: 100%;
+    max-width: 90%;
+    overflow-y: scroll!important;
+    position: relative;
+    background: var(--wowstore-popbodyBg);
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.wopb-popup-wrap::-webkit-scrollbar {
+    display: none;
+}
+/* Modal component for Design template start */
+.components-modal__content:has(.wopb-templatekit-design-template-container.wopb-predefined-patterns) {
+    margin: 0px;
+    padding: 0px;
+}
+.components-modal__header:has(~ div.wopb-templatekit-design-template-container.wopb-predefined-patterns) {
+    display: none !important;
+}
+.wopb-predefined-patterns .wopb-popup-filter-title {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.wopb-predefined-patterns .wopb-templatekit-content-designs {
+    margin-top: 20px;
+}
+.wopb-predefined-patterns .wopb-popup-header {
+    position: fixed;
+    width: 100%;
+    left: 0;
+}
+.wopb-predefined-patterns .wopb-popup-filter-sync-close {
+    gap: 20px;
+    margin-right: 40px;
+}
+/* Modal component for Design template end */
+.wopb-popup-header {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+}
+.wopb-popup-header .wopb-popup-filter {
+    padding: 30px 5px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.wopb-popup-filter-title {
+    position: relative;
+    padding: 0 30px;
+    background-color: var(--wowstore-popbodyBgBold);
+    display: flex;
+    justify-content: space-between;
+    max-height: 65px;
+}
+.wopb-popup-filter-title:not(:has(.wopb-popup-filter-nav)) {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.wopb-btn-close {
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    color: var(--wowstore-white-color);
+    background: var(--wowstore-dark-color);
+    transition: .3s;
+    position: absolute;
+    right: 0;
+    max-height: 65px;
+    height: 100%;
+    padding: 0;
+    width: 48px;
+}
+.wopb-btn-close:hover {
+    color: var(--wowstore-white-color);
+    background: #e51616;
+}
+.wopb-btn-close span {
+    font-size: 26px;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+}
+.wopb-btn-close:focus {
+    outline: 0;
+}
+.wopb-popup-filter-image-head {
+    display: flex;
+    align-items: center;
+}
+.wopb-popup-filter-image-head  img {
+    width: 35px;
+}
+.wopb-popup-filter-image-head  span {
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: 6px;
+    font-size: 15px;
+}
+.wopb-popup-filter-sync-close {
+    display: flex;
+    align-items: center;
+}
+.wopb-popup-filter-sync-close .wopb-popup-sync {
+    cursor: pointer;
+    margin-right: 50px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    transition: var(--wowstore-transition-400);
+}
+.wopb-popup-filter-nav {
+    text-align: center;
+}
+.wopb-popup-tab-title {
+    padding: 20px 25px;
+    display: inline-block;
+    font-family: Roboto;
+    font-size: 16px;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    color: #2B1506;
+}
+.wopb-popup-tab-title.wopb-active{
+    box-shadow: 0px 1px 0px var(--wowstore-white-color);
+    background-color: var(--wowstore-white-color);
+    border-left: 1px solid var(--wowstore-border-color);
+    border-right: 1px solid var(--wowstore-border-color);
+}
+.wopb-popup-tab-title:hover {
+    cursor: pointer;
+}
+/* Modal component for Design template start */
+.components-modal__content:has(.wopb-templatekit-design-template-container.wopb-predefined-patterns) {
+    margin: 0px;
+    padding: 0px;
+}
+.components-modal__header:has(~ div.wopb-templatekit-design-template-container.wopb-predefined-patterns) {
+    display: none !important;
+}
+
+.wopb-predefined-patterns .wopb-popup-filter-title {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.wopb-predefined-patterns .wopb-templatekit-content-designs {
+    margin-top: 20px;
+}
+.wopb-predefined-patterns .wopb-popup-header {
+    position: fixed;
+    width: 100%;
+    left: 0;
+}
+.wopb-predefined-patterns .wopb-popup-filter-sync-close {
+    gap: 20px;
+    margin-right: 40px;
+}
+/* Modal component for Design template end */
+
+/* ========== Premade Body Part ========== */
+.wopb-templatekit-premium-free-btn {
+    background: #005bd6 !important;
+    color: #fff !important;
+}
+.wopb-templatekit-premium-btn {
+    position: absolute;
+    z-index: 1;
+    background: #ff176b;
+    font-size: 12px;
+    color: var(--wowstore-white-color);
+    line-height: 17px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    top: 20px;
+    right: 22px;
+    text-transform: uppercase;
+    transition: .4s;
+    border-radius: 2px;
+    opacity: 0;
+}
+.wopb-item-list:hover .wopb-templatekit-premium-btn {
+    opacity: 1;
+}
+.wopb-templatekit-img {
+    display: block;
+    width: 100%;
+}
+.wopb-templatekit-title {
+    font-size: 14px;
+    color: var(--wowstore-dark-color);
+}
+.wopb-image-rotate {
+    text-align: center;
+    padding-top: 12%;
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+.wopb-image-rotate i {
+    font-size: 25px;
+    margin-left: 0;
+    width: auto;
+    height: auto;
+    color: var(--wowstore-primary-color);
+    border-radius: 100px;
+    margin-right: 5px;
+    background: -webkit-linear-gradient(#1ec7e2, var(--wowstore-primary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.wopb-popup-rotate {
+    animation: rotate 1s linear infinite;
+    -webkit-animation: rotate 1s linear infinite;
+}
+.wopb-templatekit-wrap {
+    display: flex;
+}
+.wopb-templatekit-wrap .wopb-templatekit-list-container {
+    width: -webkit-fill-available;
+    position: relative;
+}
+.wopb-templatekit-layout-search-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    border-bottom: 1px solid rgba(147, 42, 30, .08);
+    padding: 12px 40px;
+    background-color: var(--wowstore-white-color);
+}
+.wopb-templatekit-layout-search-container .wopb-design-search-wrapper {
+    margin-bottom: 0px;
+}
+.wopb-templatekit-search-container {
+    display: flex;
+    column-gap: 17px;
+    align-items: center;
+}
+.wopb-templatekit-search-container > span{
+    color: #575a5d;
+}
+.wopb-templatekit-search-container select {
+    max-width: 170px;
+    height: auto;
+    border: none;
+    box-shadow: none;
+    padding: 0 30px 0 16px;
+    color: #2B1506;
+}
+.wopb-templatekit-search-container select:focus {
+    box-shadow: none;
+}
+.wopb-templatekit-layout-container {
+    display: flex;
+    height: fit-content;
+    column-gap: 20px;
+    align-items: center;
+}
+.wopb-templatekit-layout-container > span,
+.wopb-predefined-patterns .wopb-popup-filter-sync-close > span {
+    line-height: 0;
+    padding: 7px;
+    border-radius: 2px;
+}
+.wopb-templatekit-layout-container span svg,
+.wopb-predefined-patterns .wopb-popup-filter-sync-close span svg {
+    fill: #404040;
+    cursor: pointer;
+}
+.wopb-templatekit-layout-container span.wopb-lay-active,
+.wopb-predefined-patterns .wopb-popup-filter-sync-close span.wopb-lay-active {
+    background: #404040;
+}
+.wopb-templatekit-layout-container span.wopb-lay-active svg,
+.wopb-predefined-patterns .wopb-popup-filter-sync-close span.wopb-lay-active svg {
+    fill: #ffffff;
+}
+.wopb-popup-wrap .wopb-templatekit-wrap .wopb-premade-grid {
+    padding: 40px;
+}
+.wopb-popup-wrap .wopb-premade-grid,
+.wopb-templatekit-design-template-container .wopb-premade-grid {
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.wopb-templatekit-list-container .wopb-premade-grid,
+.wopb-templatekit-design-template-container .wopb-premade-grid {
+    background: var(--wowstore-popbodyBg);
+    padding: 40px 0;
+    column-gap: 30px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block;
+}
+.wopb-templatekit-list-container .wopb-templatekit-col2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+.wopb-item-list img {
+    max-width: 100%;
+}
+.wopb-templatekit-list-container .wopb-premade-grid .wopb-item-list {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px 0 rgba(147, 42, 30, .08);;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 30px;
+    break-inside: avoid;
+}
+.wopb-templatekit-design-template-container {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: calc( 100% + 12px );
+    overflow: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    background: var(--wowstore-popbodyBg);
+    margin-top: -12px;
+    padding: 40px;
+}
+.wopb-templatekit-design-template-container::-webkit-scrollbar {
+    display: none;
+}
+#wopb-dashboard .wopb-templatekit-wrap .wopb-filter-sync,
+.wopb-templatekit-design-template-container .wopb-filter-sync {
+    border-left: 1px solid #707070;
+    padding-left: 20px;
+    line-height: normal;
+}
+.wopb-templatekit-design-template-container span.wopb-lay-active svg {
+    box-sizing: unset;
+}
+.wopb-templatekit-design-template-container .wopb-templatekit-content-designs {
+    padding: 40px 0 0 0;
+}
+.wopb-premade-wishlist-con {
+    display: flex;
+    border-left: 1px solid #707070;
+    padding-left: 20px;
+    line-height: normal;
+}
+.wopb-templatekit-design-template-modal-title {
+    display: inline-flex;
+    column-gap: 10px;
+    align-items: center;
+    text-transform: capitalize;
+}
+.wopb-templatekit-design-template-modal-title img {
+    width: 25px;
+}
+.wopb-item-list-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 3px;
+    align-items: center;
+    text-transform: capitalize;
+    padding: 10px 10px;
+}
+.wopb-item-list-info > span {
+    font-size: 16px;
+}
+.wopb-action-btn .wopb-btns {
+    text-decoration: none;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+
+}
+.wopb-action-btn .wopb-btn-import {
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #18dda0, transparent) #11a728;
+    transition: background-color 400ms;
+    white-space: nowrap;
+}
+.wopb-action-btn .wopb-btn-import:hover {
+    background-color: #18dda0;
+}
+.wopb-action-btn .wopbProBtn {
+    border-radius: 4px;
+    background: linear-gradient(180deg, #ff176b, transparent) #ff176b;
+    transition: background-color 400ms;
+    white-space: nowrap;
+}
+.wopb-action-btn .wopbProBtn:hover {
+    background-color: #ff176b;
+}
+.wopb-action-btn .wopb-btn-import svg {
+    height: 12px;
+    width: 12px;
+    fill: #fff;
+    margin-right: 6px;
+}
+.wopb-action-btn:has(.wopb-premade-wishlist) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+.wopb-premade-wishlist {
+    padding: 7px;
+    border-radius: 2px;
+    line-height: 0;
+}
+.wopb-premade-wishlist svg {
+    width: 20px;
+    height: 20px;
+}
+.wopb-premade-wishlist.wopb-wishlist-active {
+    background: #404040;
+}
+.wopb-premade-wishlist.wopb-wishlist-active svg {
+    fill: #fff !important;
+}
+.wopb-item-list-info .wopb-btn-success,
+.wopb-item-list-info .wopb-btn-warning {
+    white-space: nowrap;
+}
+.wopb-item-list-overlay {
+    cursor: pointer;
+    background: var(--wowstore-popbodyBg);
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+    line-height: 0;
+}
+.wopb-item-list:hover .wopb-list-dark-overlay {
+    background: rgba(0, 0, 0, 0.7);
+}
+.wopb-item-list:hover .wopb-overlay-view {
+    opacity: 1;
+}
+.wopb-list-dark-overlay {
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    position: absolute;
+    display: flex;
+    background: rgba(0, 0, 0, 0);
+    transition: var(--wowstore-transition-400);
+}
+.wopb-overlay-view {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: var(--wowstore-transition-400);
+}
+.wopb-overlay-view,
+.wopb-overlay-view:hover {
+    color: var(--wowstore-white-color);
+    text-decoration: none;
+}
+.wopb-overlay-view .dashicons {
+    font-size: 80px;
+    display: inline-table;
+    height: auto;
+    width: auto;
+    color: #fff;
+}
+.wopb-filter-sync {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.wopb-filter-sync .dashicons {
+    margin-right: 8px;
+    font-size: 22px;
+}
+.wopb-filter-sync:hover {
+    color: var(--wowstore-primary-color);
+}
+@media only screen and (max-width: 1024px) {
+    .wopb-templatekit-iconcol3 {
+        display: none;
+    }
+    .wopb-templatekit-list-container .wopb-templatekit-col3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media only screen and (max-width: 768px) {
+    .wopb-templatekit-wrap {
+        flex-direction: column;
+    }
+    .wopb-templatekit-list-container .wopb-templatekit-col3 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+.wopb-builder-modal-shadow {
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,.8);
+    z-index: 100000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+/* Premade Patterns */
+.wopb-templatekit-list-container .wopb-premade-grid.wopb-templatekit-pattern-designs {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    column-gap: 30px;
+    display: block;
+}
+.wopb-templatekit-list-container .wopb-premade-grid.wopb-templatekit-col3:not(.wopb-templatekit-pattern-designs) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.wopb-templatekit-list-container .wopb-premade-grid.wopb-templatekit-pattern-designs.wopb-templatekit-col3 {
+    column-count: 3;
+}
+.wopb-templatekit-list-container .wopb-premade-grid.wopb-templatekit-col2 {
+    column-count: 2;
+}
+.wopb-templatekit-list-container .wopb-premade-grid.wopb-templatekit-pattern-designs .wopb-item-list {
+    margin-bottom: 30px;
+    position: relative;
+    break-inside: avoid;
+    will-change: transform;
+}
+@media (max-width: 768px) {
+    .wopb-templatekit-list-container  .wopb-templatekit-pattern-designs {
+        column-count: 2 !important;
+    }
+}
+@media (max-width: 630px) {
+    .wopb-templatekit-list-container  .wopb-templatekit-pattern-designs {
+        column-count: 1 !important;
+    }
+}
+
+/* =========================
+	Templatekit Search Input
+============================ */
+.wopb-design-search-wrapper {
+    margin-bottom: 20px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+.wopb-design-search-wrapper .wopb-design-search-input {
+    color: #575a5d;
+    padding: 8px 15px;
+    min-width: 250px;
+    height: 36px;
+    font-size: 14px;
+    border-radius: 2px;
+    border: solid 1px rgba(147, 42, 30, .08);
+    background-color: #fff;
+}
+.wopb-design-search-wrapper .wopb-design-search-input:focus {
+    border: 1px solid var(--wowstore-primary-color);
+    box-shadow: unset;
+}
+.wopb-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.wopb-loading::after {
+    content: "\f531" !important;
+    font-family: 'dashicons' !important;
+    margin-left: 4px;
+    animation: rotate 1.2s linear infinite;
+    -webkit-animation: rotate 1.2s linear infinite;
+}
+
+
+/* ---------------------------
+--- 7.x Custom Font Style ----
+------------------------------ */
+#wopb-custom-font-id.postbox {
+    background: #fff;
+    border-radius: 4px;
+    border: none;
+    box-shadow: 0 1px 2px 0 rgba(8, 68, 129, 0.2);
+}
+#wopb-custom-font-id.postbox .postbox-header {
+    padding: 15px 20px;
+    border-color: #eaedf2;
+}
+#wopb-custom-font-id.postbox .inside {
+    padding: 0 20px 30px 20px;
+    margin: 0;
+}
+#wopb-custom-font-id.postbox .postbox-header h2 {
+    font-size: 16px;
+    color: #091f36;
+}
+.wopb-custom-font-copy {
+    display: none;
+}
+.wopb-custom-font {
+    margin-top: 20px;
+}
+.wopb-custom-font .wopb-custom-font-heading select {
+    margin-left: 15px;
+    border-color: #eaedf2;
+}
+.wopb-custom-font .wopb-custom-font-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+    border: solid 1px #f4ebe9;
+    background-color: var(--wowstore-popbodyBg);
+    padding: 13px 20px;
+}
+.wopb-custom-font .wopb-custom-font-heading .font-label {
+    font-size: 14px;
+    color: #091f36;
+}
+#wopb-custom-font-id .wopb-custom-font-close, #wopb-custom-font-id .wopb-custom-font-edit {
+    color: #091f36;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 7px 12px;
+    border-radius: 4px;
+    border: solid 1px rgba(255, 88, 69, 0.1);
+}
+#wopb-custom-font-id .wopb-custom-font-delete {
+    color: #091f36;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 7px 12px;
+    border-radius: 4px;
+    border: solid 1px rgba(255, 88, 69, 0.1);
+    background: linear-gradient(180deg, rgba(255, 88, 69, 0.16), transparent) rgba(255, 56, 163, 0.1);
+}
+#wopb-custom-font-id .wopb-font-upload {
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+    padding: 9px 12px;
+    border-radius: 4px;
+    background-color: #091f36;
+    line-height: normal;
+    border: none;
+    max-height: 38px;
+}
+#wopb-custom-font-id .wopb-font-upload .dashicons {
+    vertical-align: middle;
+    font-size: 14px;
+}
+.wopb-custom-font-content {
+    padding: 20px 20px 5px 20px;
+}
+.wopb-font-file-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+.wopb-font-file-list label {
+    font-size: 14px;
+    color: #091f36;
+    min-width: 70px;
+}
+.wopb-font-file-list input {
+    padding: 10px;
+    border-radius: 4px;
+    border: solid 1px #eaedf2;
+    background: #f7f9ff;
+    width: -webkit-fill-available;
+    line-height: normal;
+    color: #575a5d;
+    max-height: 38px;
+}
+.wopb-font-file-list input::placeholder {
+    opacity: 0.8;
+    font-size:13px;
+}
+#wopb-custom-font-id .dashicons {
+    line-height: 1;
+    margin-right: 5px;
+}
+.wopb-custom-font-delete {
+    margin-left: 12px;
+}
+.wopb-custom-font-container:not(.wopb-font-open) .wopb-custom-font-close,
+.wopb-custom-font-container:not(.wopb-font-open) .wopb-custom-font-content,
+.wopb-custom-font-container:not(.wopb-font-open) .wopb-custom-font-heading select[name="weight[]"] {
+    display: none;
+}
+.wopb-custom-font-container:is(.wopb-font-open) .wopb-custom-font-edit,
+.wopb-custom-font-container:is(.wopb-font-open) .wopb-custom-font-weight {
+    display: none;
+}
+.wopb-custom-font-preview {
+    font-size: 20px;
+    color: #575a5d;
+}
+th:has(.wopb-custom-font-preview-th) {
+    width: 30%;
+}
+#wopb-custom-font-id .wopb-font-variation-action {
+    color: #ffffff;
+    background: linear-gradient(180deg, #ff176b, transparent) #fd2560;
+    font-size: 14px;
+    line-height: normal;
+    padding: 10px 18px;
+    margin-top: 25px;
+    border: none;
+}
+#wopb-custom-font-id .wopb-font-variation-action:hover {
+    background-color: var(--wowstore-primary-color);
+}
+#productx-submenu-blocks {
+    border-bottom: 1px solid #565656;
+}
+#productx-submenu-revenue {
+    border-top: 1px solid #565656;
+}
+#productx-submenu-support {
+    color: #FFEBB8 !important;
+}
+@keyframes rotate {
+    to {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+    }
+}
+
+/* ---------------------------
+--- 8.x Builder Enable Button -
+------------------------------ */
+.wopb-single-product-meta-box {
+    display: inline-block;
+}
+.wopb-single-product-meta-box img {
+    width: 20px;
+    margin-right: 10px;
+}
+.wopb-single-product-meta-box span {
+    top: -4px;
+    position: relative;
+}
+.wopb-dash-builder-btn {
+    margin: 15px 0;
+    color: #ffffff;
+    padding: 10px;
+    font-size: 14px;
+    background: var(--wowstore-primary-color);
+    text-decoration: none;
+    display: block;
+    border-radius: 4px;
+    text-align: center;
+    box-sizing: border-box;
+}
+.wopb-dash-builder-btn:hover {
+    text-decoration: none;
+    color: #ffffff;
+}	
+
+/* Notice Css */
+.wopb-notice-section.notice {
+    background: unset;
+    border: unset !important;
+    box-shadow: unset;
+    padding: 0;
+    border: 1px solid #C3C4C7;
+    background: #FFF;
+}
+.wopb-notice-wrapper {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    /* height: 80px; */
+    padding: 10px 0px;
+    position: relative;
+    background-color: #fff;
+}
+/*.wrap .wopb-notice-wrapper {*/
+/*    width: 100%;*/
+/*}*/
+.wopb-notice-wrapper.notice.data_collection_notice {
+    background-color: #fff;
+}
+
+.wopb-notice-type-1 .wopb-notice-icon img,
+.wopb-notice-type-2 .wopb-notice-icon img,
+.wopb-notice-type-3 .wopb-notice-icon img,
+.data_collection_notice .wopb-notice-icon img
+ {
+    max-width: 72px;
+}
+
+.wopb-notice-type-4 .wopb-notice-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    margin-left: 10px;
+}
+.wopb-notice-type-4 .wopb-notice-content-wrapper {
+    margin-left: 10px;
+}
+
+.wopb-notice-type-4 img.wopb-notice-icon-img {
+    max-width: 33px;
+}
+
+.wopb-notice-type-4 img.wopb-notice-icon-text-img {
+    max-width: 54px;
+}
+
+.wopb-notice-type-5 .wopb-notice-content-wrapper {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+
+.wopb-notice-wrapper:not(:last-child) {
+    margin-bottom: 15px;
+}
+span.wopb-notice-close-icon.dashicons.dashicons-dismiss {
+    font-size: 14px;
+}
+
+a.wopb-notice-close {
+    position: absolute;
+    /* right: 8px;
+    top: 8px; */
+    right: 2px;
+    top: 5px;
+    text-decoration: unset;
+    color: #b6b6b6;
+    font-family: dashicons;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+a.wopb-notice-close:hover {
+    color: #b3b3b3;
+}
+
+.wopb-notice-wrapper.wopb-notice-type-1 {
+    border-left: 3px solid #C9C5C8;
+}
+.wopb-notice-wrapper.wopb-notice-type-2, 
+.wopb-notice-wrapper.wopb-notice-type-4,
+.wopb-notice-wrapper.wopb-notice-type-5,
+.wopb-notice-wrapper.data_collection_notice
+{
+    border-left: 3px solid #6C6CFF;
+}
+.wopb-notice-wrapper.wopb-notice-type-3{
+    border-left: 3px solid #2FBF3D;
+}
+.wopb-notice-wrapper.welcome_notice{
+    border-left: 3px solid #FF176B;
+}
+.wopb-notice-content-wrapper {
+    
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 20px;
+    margin-left: 15px;
+}
+
+.wopb-notice-icon {
+    margin-left: 15px;
+}
+
+.wopb-notice-close-icon:hover {
+    color: #706f6f;
+}
+
+.wopb-notice-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+a.wopb-notice-dont-save-money {
+    font-size: 12px;
+}
+/* Notice Css End */
+
+
+/* Name Your Price Addons START (Variable Product) */
+.woocommerce_variable_attributes .wopb-name-price-option {
+    clear: both;
+    width: 100%;
+    display: table;
+    border-radius: 4px;
+    border: 1px solid #8c8f94;
+    border-spacing: 12px;
+}
+.woocommerce_variable_attributes .wopb-name-price-option p{
+    display: table-row;
+}
+.woocommerce_variable_attributes .wopb-name-price-option label {
+    display: table-cell;
+    vertical-align: top;
+    min-width: 150px;
+}
+.woocommerce_variable_attributes .wopb-name-price-option .description {
+    line-height: 1.8;
+    padding-left: 5px;
+}
+/* Name Your Price Addons STOP */
+
+/* ----------------------------------------
+Product Video Addon [START]
+---------------------------------------- */
+.wopb-video-meta-fields .wopb-video-type-tabs {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.wopb-video-meta-fields .wopb-video-type-tab {
+    cursor: pointer;
+    padding-top: 5px;
+}
+.wopb-video-meta-fields .wopb-video-type-tab input[type=radio] {
+    display: none;
+}
+.wopb-video-meta-fields .wopb-video-type-tab.wopb-active {
+    border-bottom: 2px solid #046bd2;
+}
+.wopb-video-meta-fields input:focus {
+    box-shadow: none;;
+}
+.wopb-video-meta-fields input[type=checkbox] {
+    margin-left: 10px;
+}
+.wopb-input-media-group {
+    display: flex;
+}
+.wopb-open-media-btn:not(.wopb-d-none) {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: #FF176B;
+    border: none;
+    color: #fff;
+    border-radius: 0 4px 4px 0;
+    padding: 0 10px;
+    margin-left: -5px;
+}
+.wopb-video-meta-fields .wopb-video-note {
+    color: #646970;
+    font-style: italic;
+}
+.wopb-video-meta-fields .wopb-video-single-position {
+    width: 100%;
+    margin-top: 5px;
+}
+/* ----------------------------------------
+Product Video Addon [STOP]
+---------------------------------------- */
+
+/* ----------------------------------------
+Admin Product Tab [START]
+---------------------------------------- */
+#woocommerce-product-data ul.wc-tabs li.wopb_product_tab a {
+    display: flex;
+    align-items: center;
+}
+/* ----------------------------------------
+Admin Product Tab [STOP]
+---------------------------------------- */
+
+/* ----------------------------------------
+Size Chart Addon [START]
+---------------------------------------- */
+#woocommerce-product-data ul.wc-tabs li.wopb_size_chart_tab a::before {
+    width: 18px;
+    height: 18px;
+    background-size: 18px 18px;
+    display: inline-block;
+}
+#wopb_size_chart_tab_data {
+    padding: 15px;
+}
+#wopb_size_chart_tab_data .wopb-field-group {
+    display: flex;
+    align-items: center;
+}
+#wopb_size_chart_tab_data label {
+    margin: unset;
+}
+#wopb_size_chart_tab_data .wopb-field-group .select2-container {
+    min-width: 300px;
+}
+#wopb_size_chart_tab_data .wopb-chart-create-desc {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+#wopb_size_chart_tab_data .wopb-add-chart-btn {
+    text-decoration: none;
+    background: #007aff;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 4px;
+}
+.wopb-sc-table {
+    border-collapse: collapse;
+}
+.wopb-sc-table .wopb-sc-input-row .wopb-sc-control-row {
+    display:flex;
+    gap: 3px;
+}
+.wopb-sc-table .wopb-sc-control-col td, .wopb-sc-table .wopb-sc-input-row .wopb-sc-control-row {
+    text-align: center;
+    padding: 8px;
+}
+.wopb-sc-table .wopb-sc-head-col {
+    background: #EEEEEE;
+    font-weight: bold;
+}
+.wopb-sc-table .wopb-sc-input-col {
+    border: 1px solid #787878;
+    text-align: center;
+}
+.wopb-sc-table .wopb-sc-input-col input {
+    border: none;
+    text-align: center;
+    background: none;
+}
+.wopb-sc-table .wopb-sc-input-col input:focus {
+    outline: none;
+    box-shadow: unset;
+}
+.wopb-sc-table .wopb-sc-control-btn:not(.wopb-d-none), .wopb-sc-table .wopb-sc-control-btn .dashicons {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+.wopb-sc-table .wopb-sc-control-btn {
+    cursor: pointer;
+    text-decoration: none;
+    color: #ffff;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 4px;
+    width: 16px;
+    border-radius: 12px;
+    position: relative;
+}
+.wopb-sc-table .wopb-sc-control-btn .wopb-sc-tooltip {
+    position: absolute;
+    display: none;
+    top: -22px;
+    color: #2D2D2D;
+    background: #DDDDDD;
+    padding: 2px 6px;
+    text-wrap: nowrap;
+    border-radius: 4px;
+    z-index: 1;
+    font-weight: 400;
+    font-size: 12px;
+}
+.wopb-sc-table .wopb-sc-tooltip::before {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    transform: rotate(45deg);
+    width: 9px;
+    height: 9px;
+    background: #DDDDDD;
+    z-index: -1;
+    border-radius: 2px;
+}
+.wopb-sc-table .wopb-sc-control-btn:hover .wopb-sc-tooltip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.6s;
+}
+.wopb-sc-table .wopb-sc-control-btn .dashicons {
+    font-size: 16px;
+}
+.wopb-sc-control-btn.wopb-sc-add-item {
+    background-color: #FF176B;
+}
+.wopb-sc-control-btn.wopb-sc-del-item {
+    background-color: #9C9C9C;
+}
+#wopb-size-chart-table {
+    overflow: auto;
+}
+#wopb-size-chart-table .wopb-toogle-field-wrap {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+#wopb-size-chart-table .wopb-toogle-field-wrap .wopb-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #070707;
+}
+#wopb-size-chart-table .wopb-toggle-control {
+    display: flex;
+    gap: 7px;
+    font-size: 14px;
+}
+#wopb-size-chart-table .wopb-toogle-field-wrap input[type=checkbox] {
+    display: none;
+}
+#wopb-size-chart-table .wopb-toogle-field-wrap .wopb-toggle {
+    width: 32px;
+    height: 17px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 100px;
+    text-indent: -9999px;
+    background: #00A464;
+    opacity: 0.25;
+    position: relative;
+}
+#wopb-size-chart-table .wopb-toogle-field-wrap input[type=checkbox]:checked + .wopb-toggle {
+    position: relative;
+    opacity: 1;
+}
+#wopb-size-chart-table .wopb-toogle-field-wrap .wopb-toggle::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 90px;
+    background: var(--wowstore-white-color);
+    transition: 0.3s;
+}
+#wopb-size-chart-table input[type=checkbox]:checked + .wopb-toggle::after {
+    left: calc(100% - 3px);
+    transform: translateX(-100%);
+}
+#wopb-size-chart-assign .select2 {
+    width: 100% !important;
+}
+/* ----------------------------------------
+Size Chart Addon [STOP]
+---------------------------------------- */
+
+.wopb_plugin_action_links {
+    display: block;
+}
+td.plugin-title .wopb_plugin_action_links strong {
+    display: inline-block;
+}
+.wopb_plugin_action_links .wopb_get_pro {
+    color: #CE1F92;
+}
+#woocommerce-product-data ul.wc-tabs li.wopb_product_tab a::before {
+    content: "";
+    background-image: url("../../assets/img/logo-sm.svg");
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    background-size: 18px 18px;
+    display: inline-block;
+}
+
+/* ----------------------------------------
+Flip Image Addon [START]
+---------------------------------------- */
+#flipimage-feature-image .inside img {
+    width: 100% !important;
+    height: 100% !important;
+    margin-top: 7px;
+}
+#flipimage-feature-image img.hidden {
+    display: none;
+}
+
+/*revenue css*/
+
+#productx-submenu-revenue {
+    position: relative;
+}
+.toplevel_page_wopb-settings #productx-submenu-revenue .wopb-revenue-tag {
+    right: 55px;
+}
+#productx-submenu-revenue .wopb-revenue-tag {
+    top: 3px;
+    right: 50px;
+}
+.wopb-revenue-tag {
+    color: #FF176B;
+    font-size: 12px;
+    background-color: #FFEEF4;
+    padding: 0px 8px;
+    border: 1px solid #FF176B;
+    border-radius: 10px;
+    margin-left: 8px;
+    position: absolute;
+    transform: scale(0.8);
+}
+
+.form-field.wopb_video_autoplay_field a,
+.form-field.wopb_video_repeat_field a,
+.form-field.wopb_video_hover_field a {
+    color: #FF176B;
+}
+
+#wopb-size-chart-assign .wopb-sc-products > select, #wopb_sc_include_products {
+    min-width: auto !important;
+}

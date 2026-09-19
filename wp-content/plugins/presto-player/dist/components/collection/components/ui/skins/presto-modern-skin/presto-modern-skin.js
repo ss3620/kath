@@ -1,0 +1,1 @@
+import{Host,h}from"@stencil/core";export class PrestoModernSkin{render(){return h(Host,{key:"3de90d0ff956f7db15572fd5164b5678c8738855"},h("slot",{key:"fa484f5d48a9df089ab3d396d400c4516ea8c804"}))}static get is(){return"presto-modern-skin"}static get originalStyleUrls(){return{$:["presto-modern-skin.scss"]}}static get styleUrls(){return{$:["presto-modern-skin.css"]}}}

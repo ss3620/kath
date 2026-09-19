@@ -1,0 +1,124 @@
+/* Earth Goddess AU – application form layout */
+
+body .eg-application-wrap,
+.entry-content .eg-application-wrap,
+.ast-container .eg-application-wrap,
+.elementor-widget-container .eg-application-wrap {
+	display: block !important;
+	width: 100% !important;
+	max-width: 520px !important;
+	margin: 2rem auto 3rem !important;
+	padding: 1.75rem 1.5rem 2rem !important;
+	background: #fff !important;
+	border: 1px solid rgba(0, 0, 0, 0.1) !important;
+	border-radius: 12px !important;
+	box-sizing: border-box !important;
+	float: none !important;
+}
+
+body .eg-application-wrap .eg-app-notice {
+	margin: 0 0 1.25rem !important;
+	padding: 0.85rem 1rem !important;
+	border-radius: 8px !important;
+}
+
+body .eg-application-wrap .eg-app-success {
+	background: #eef8f0 !important;
+	color: #1e5a2c !important;
+	border: 1px solid #b7dfc0 !important;
+}
+
+body .eg-application-wrap .eg-app-error {
+	background: #fdf0f0 !important;
+	color: #8a1f1f !important;
+	border: 1px solid #efb4b4 !important;
+}
+
+body .eg-application-form {
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
+}
+
+body .eg-application-form .eg-field {
+	margin: 0 0 1.1rem !important;
+}
+
+body .eg-application-form label {
+	display: block !important;
+	margin: 0 0 0.4rem !important;
+	font-weight: 600 !important;
+	font-size: 0.95rem !important;
+}
+
+body .eg-application-form input[type="text"],
+body .eg-application-form input[type="email"],
+body .eg-application-form input[type="tel"],
+body .eg-application-form input[type="url"],
+body .eg-application-form textarea {
+	display: block !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	box-sizing: border-box !important;
+	margin: 0 !important;
+	padding: 0.7rem 0.85rem !important;
+	border: 1px solid #c9c4bc !important;
+	border-radius: 8px !important;
+	background: #fff !important;
+	font-size: 1rem !important;
+	line-height: 1.4 !important;
+}
+
+body .eg-application-form textarea {
+	min-height: 110px !important;
+	resize: vertical !important;
+}
+
+body .eg-application-form .eg-submit {
+	margin: 1.5rem 0 0 !important;
+}
+
+body .eg-application-form button[type="submit"] {
+	display: inline-block !important;
+	width: 100% !important;
+	padding: 0.85rem 1.25rem !important;
+	border: 0 !important;
+	border-radius: 8px !important;
+	background: #5b3a6e !important;
+	color: #fff !important;
+	font-size: 1rem !important;
+	font-weight: 600 !important;
+	cursor: pointer !important;
+}
+
+body .eg-application-form button[type="submit"]:hover,
+body .eg-application-form button[type="submit"]:focus {
+	background: #472c56 !important;
+}
+
+@media (max-width: 600px) {
+	body .eg-application-wrap,
+	.entry-content .eg-application-wrap {
+		margin: 1.25rem auto 2rem !important;
+		padding: 1.25rem 1rem 1.5rem !important;
+	}
+}
+
+/* Form title lives inside the card; hide theme page title to avoid double headings */
+body.eg-application-page .entry-header,
+body.eg-application-page .page-header,
+body.eg-application-page .ast-page-title-custom,
+body.eg-application-page h1.entry-title,
+body.eg-application-page .entry-title {
+	display: none !important;
+}
+
+body .eg-application-wrap .eg-app-title {
+	margin: 0 0 1rem !important;
+	padding: 0 !important;
+	text-align: center !important;
+	font-size: 1.5rem !important;
+	line-height: 1.3 !important;
+	font-weight: 700 !important;
+	color: #3b1f4a !important;
+}

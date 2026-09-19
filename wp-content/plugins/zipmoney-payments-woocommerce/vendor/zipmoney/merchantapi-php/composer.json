@@ -1,0 +1,61 @@
+{
+    "name": "zipmoney/merchantapi-php",
+    "version": "1.0.24",
+    "description": "",
+    "keywords": [
+        "zipmoney",
+        "zippay",
+        "zipcredit",
+        "merchantapi",
+        "php",
+        "sdk",
+        "api"
+    ],
+    "homepage": "http://zipmoney.com.au",
+    "license": "MIT",
+    "authors": [{
+        "name": "zipMoney Payments Pty Ltd.",
+        "homepage": "https://github.com/zipMoney/merchantapi-php"
+    }],
+    "scripts": {
+        "publish": "sh ./build/shell/publish.sh",
+        "rector": "rector process --dry-run",
+        "rector:fix": "rector process",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "php-cs-fixer fix",
+        "lint": [
+            "@cs",
+            "@rector"
+        ]
+    },
+    "require": {
+        "php": ">=8.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.0",
+        "phpunit/phpunit": "^10",
+        "rector/rector": "^1.2",
+        "friendsofphp/php-cs-fixer": "^3.64"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        },
+        "allow-plugins": {
+            "rector/extension-installer": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "zipMoney\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "zipMoney\\": "test/"
+        }
+    }
+}

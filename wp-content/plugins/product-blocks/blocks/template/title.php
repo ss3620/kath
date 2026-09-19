@@ -1,0 +1,9 @@
+<?php
+defined( 'ABSPATH' ) || exit;
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
+$title            = ( isset( $attr['titleLength'] ) && $attr['titleLength'] != 0 ) ? wp_trim_words( $title, $attr['titleLength'], '...' ) : $title;
+$attr['titleTag'] = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags() ) ? $attr['titleTag'] : 'h3';
+$title_data      .= '<' . esc_attr( $attr['titleTag'] ) . ' class="wopb-block-title"><a title="' . esc_attr( $title ) . '"  href="' . esc_url( $titlelink ) . '">' . wp_kses_post( $title ) . '</a></' . esc_attr( $attr['titleTag'] ) . '>';
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

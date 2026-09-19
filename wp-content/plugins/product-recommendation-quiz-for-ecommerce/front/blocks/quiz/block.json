@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "revenuehunt/product-recommendation-quiz-for-ecommerce",
+	"version": "2.4.0",
+	"title": "Product Recommendation Quiz",
+	"category": "widgets",
+	"icon": "format-chat",
+	"description": "Embed a RevenueHunt product recommendation quiz inline on this page.",
+	"textdomain": "product-recommendation-quiz-for-ecommerce",
+	"keywords": ["quiz", "recommendation", "revenuehunt", "product finder"],
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"attributes": {
+		"id": {
+			"type": "string",
+			"default": ""
+		},
+		"height": {
+			"type": "number",
+			"default": 600
+		},
+		"heightUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"fixedHeight": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoscroll": {
+			"type": "boolean",
+			"default": true
+		},
+		"fullWidth": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"editorScript": "product-recommendation-quiz-for-ecommerce-block-editor"
+}

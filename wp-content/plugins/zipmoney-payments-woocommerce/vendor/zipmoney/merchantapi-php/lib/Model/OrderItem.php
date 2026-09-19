@@ -1,0 +1,539 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * OrderItem.
+ *
+ * @category Class
+ * @package  zipMoney
+ * @author   zipMoney Payments Pty Ltd
+ * @link     https://github.com/zipMoney/merchantapi-php
+ */
+
+namespace zipMoney\Model;
+
+use ArrayAccess;
+use zipMoney\ObjectSerializer;
+
+class OrderItem implements ArrayAccess, \Stringable
+{
+    public const DISCRIMINATOR = 'subclass';
+
+    /**
+     * The original name of the model.
+     *
+     * @var string
+     */
+    protected static $swaggerModelName = 'OrderItem';
+
+    /**
+     * Array of property to type mappings. Used for (de)serialization.
+     *
+     * @var string[]
+     */
+    protected static $zipTypes = [
+        'name'               => 'string',
+        'amount'             => 'float',
+        'reference'          => 'string',
+        'description'        => 'string',
+        'quantity'           => 'float',
+        'type'               => 'string',
+        'image_uri'          => 'string',
+        'item_uri'           => 'string',
+        'product_code'       => 'string',
+        'additional_details' => '\zipMoney\Model\OrderItemAdditionalDetails[]',
+    ];
+
+    public static function zipTypes()
+    {
+        return self::$zipTypes;
+    }
+
+    /**
+     * Array of attributes where the key is the local name, and the value is the original name.
+     *
+     * @var string[]
+     */
+    protected static $attributeMap = [
+        'name'               => 'name',
+        'amount'             => 'amount',
+        'reference'          => 'reference',
+        'description'        => 'description',
+        'quantity'           => 'quantity',
+        'type'               => 'type',
+        'image_uri'          => 'image_uri',
+        'item_uri'           => 'item_uri',
+        'product_code'       => 'product_code',
+        'additional_details' => 'additional_details',
+    ];
+
+    /**
+     * Array of attributes to setter functions (for deserialization of responses).
+     *
+     * @var string[]
+     */
+    protected static $setters = [
+        'name'               => 'setName',
+        'amount'             => 'setAmount',
+        'reference'          => 'setReference',
+        'description'        => 'setDescription',
+        'quantity'           => 'setQuantity',
+        'type'               => 'setType',
+        'image_uri'          => 'setImageUri',
+        'item_uri'           => 'setItemUri',
+        'product_code'       => 'setProductCode',
+        'additional_details' => 'setAdditionalDetails',
+    ];
+
+    /**
+     * Array of attributes to getter functions (for serialization of requests).
+     *
+     * @var string[]
+     */
+    protected static $getters = [
+        'name'               => 'getName',
+        'amount'             => 'getAmount',
+        'reference'          => 'getReference',
+        'description'        => 'getDescription',
+        'quantity'           => 'getQuantity',
+        'type'               => 'getType',
+        'image_uri'          => 'getImageUri',
+        'item_uri'           => 'getItemUri',
+        'product_code'       => 'getProductCode',
+        'additional_details' => 'getAdditionalDetails',
+    ];
+
+    public static function attributeMap()
+    {
+        return self::$attributeMap;
+    }
+
+    public static function setters()
+    {
+        return self::$setters;
+    }
+
+    public static function getters()
+    {
+        return self::$getters;
+    }
+
+    public const TYPE_SKU = 'sku';
+    public const TYPE_TAX = 'tax';
+    public const TYPE_SHIPPING = 'shipping';
+    public const TYPE_DISCOUNT = 'discount';
+    public const TYPE_STORE_CREDIT = 'store_credit';
+
+    /**
+     * Gets allowable values of the enum.
+     *
+     * @return string[]
+     */
+    public function getTypeAllowableValues(): array
+    {
+        return [
+            self::TYPE_SKU,
+            self::TYPE_TAX,
+            self::TYPE_SHIPPING,
+            self::TYPE_DISCOUNT,
+            self::TYPE_STORE_CREDIT,
+        ];
+    }
+
+    /**
+     * Associative array for storing property values.
+     *
+     * @var mixed[]
+     */
+    protected $container = [];
+
+    /**
+     * Constructor.
+     *
+     * @param mixed[] $data Associated array of property values initializing the model
+     */
+    public function __construct(?array $data = null)
+    {
+        $this->container['name'] = $data['name'] ?? null;
+        $this->container['amount'] = $data['amount'] ?? null;
+        $this->container['reference'] = $data['reference'] ?? null;
+        $this->container['description'] = $data['description'] ?? null;
+        $this->container['quantity'] = $data['quantity'] ?? null;
+        $this->container['type'] = $data['type'] ?? null;
+        $this->container['image_uri'] = $data['image_uri'] ?? null;
+        $this->container['item_uri'] = $data['item_uri'] ?? null;
+        $this->container['product_code'] = $data['product_code'] ?? null;
+        $this->container['additional_details'] = $data['additional_details'] ?? null;
+    }
+
+    /**
+     * show all the invalid properties with reasons.
+     *
+     * @return array invalid properties with reasons
+     */
+    public function listInvalidProperties(): array
+    {
+        $invalid_properties = [];
+
+        if ($this->container['name'] === null) {
+            $invalid_properties[] = "'name' can't be null";
+        }
+        if ($this->container['amount'] === null) {
+            $invalid_properties[] = "'amount' can't be null";
+        }
+        if (!is_null($this->container['quantity']) && ($this->container['quantity'] <= 0)) {
+            $invalid_properties[] = "invalid value for 'quantity', must be bigger than 0.";
+        }
+
+        if ($this->container['type'] === null) {
+            $invalid_properties[] = "'type' can't be null";
+        }
+        $allowed_values = ['sku', 'tax', 'shipping', 'discount', 'store_credit'];
+        if (!in_array($this->container['type'], $allowed_values)) {
+            $invalid_properties[] = "invalid value for 'type', must be one of 'sku', 'tax', 'shipping', 'discount', 'store_credit'.";
+        }
+
+        if (!is_null($this->container['product_code']) && (strlen((string) $this->container['product_code']) > 200)) {
+            $invalid_properties[] = "invalid value for 'product_code', the character length must be smaller than or equal to 200.";
+        }
+
+        return $invalid_properties;
+    }
+
+    /**
+     * validate all the properties in the model
+     * return true if all passed.
+     *
+     * @return bool True if all properties are valid
+     */
+    public function valid()
+    {
+        if ($this->container['name'] === null) {
+            return false;
+        }
+        if ($this->container['amount'] === null) {
+            return false;
+        }
+        if ($this->container['quantity'] <= 0) {
+            return false;
+        }
+        if ($this->container['type'] === null) {
+            return false;
+        }
+        $allowed_values = ['sku', 'tax', 'shipping', 'discount', 'store_credit'];
+        if (!in_array($this->container['type'], $allowed_values)) {
+            return false;
+        }
+        return strlen((string) $this->container['product_code']) <= 200;
+    }
+
+    /**
+     * Gets name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->container['name'];
+    }
+
+    /**
+     * Sets name.
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name): static
+    {
+        $this->container['name'] = $name;
+
+        return $this;
+    }
+
+    /**
+     * Gets amount.
+     *
+     * @return float
+     */
+    public function getAmount()
+    {
+        return $this->container['amount'];
+    }
+
+    /**
+     * Sets amount.
+     *
+     * @param float $amount
+     *
+     * @return $this
+     */
+    public function setAmount($amount): static
+    {
+        $this->container['amount'] = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Gets reference.
+     *
+     * @return string
+     */
+    public function getReference()
+    {
+        return $this->container['reference'];
+    }
+
+    /**
+     * Sets reference.
+     *
+     * @param string $reference
+     *
+     * @return $this
+     */
+    public function setReference($reference): static
+    {
+        $this->container['reference'] = $reference;
+
+        return $this;
+    }
+
+    /**
+     * Gets description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->container['description'];
+    }
+
+    /**
+     * Sets description.
+     *
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription($description): static
+    {
+        $this->container['description'] = $description;
+
+        return $this;
+    }
+
+    /**
+     * Gets quantity.
+     *
+     * @return float
+     */
+    public function getQuantity()
+    {
+        return $this->container['quantity'];
+    }
+
+    /**
+     * Sets quantity.
+     *
+     * @param float $quantity
+     *
+     * @return $this
+     */
+    public function setQuantity($quantity): static
+    {
+        if (!is_null($quantity) && ($quantity <= 0)) {
+            throw new \InvalidArgumentException('invalid value for $quantity when calling OrderItem., must be bigger than 0.');
+        }
+
+        $this->container['quantity'] = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Gets type.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->container['type'];
+    }
+
+    /**
+     * Sets type.
+     *
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function setType($type): static
+    {
+        $allowed_values = ['sku', 'tax', 'shipping', 'discount', 'store_credit'];
+        if ((!in_array($type, $allowed_values))) {
+            throw new \InvalidArgumentException("Invalid value for 'type', must be one of 'sku', 'tax', 'shipping', 'discount', 'store_credit'");
+        }
+        $this->container['type'] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Gets image_uri.
+     *
+     * @return string
+     */
+    public function getImageUri()
+    {
+        return $this->container['image_uri'];
+    }
+
+    /**
+     * Sets image_uri.
+     *
+     * @param string $image_uri
+     *
+     * @return $this
+     */
+    public function setImageUri($image_uri): static
+    {
+        $this->container['image_uri'] = $image_uri;
+
+        return $this;
+    }
+
+    /**
+     * Gets item_uri.
+     *
+     * @return string
+     */
+    public function getItemUri()
+    {
+        return $this->container['item_uri'];
+    }
+
+    /**
+     * Sets item_uri.
+     *
+     * @param string $item_uri
+     *
+     * @return $this
+     */
+    public function setItemUri($item_uri): static
+    {
+        $this->container['item_uri'] = $item_uri;
+
+        return $this;
+    }
+
+    /**
+     * Gets product_code.
+     *
+     * @return string
+     */
+    public function getProductCode()
+    {
+        return $this->container['product_code'];
+    }
+
+    /**
+     * Sets product_code.
+     *
+     * @param string $product_code
+     *
+     * @return $this
+     */
+    public function setProductCode($product_code): static
+    {
+        if (!is_null($product_code) && (strlen((string) $product_code) > 200)) {
+            throw new \InvalidArgumentException('invalid length for $product_code when calling OrderItem., must be smaller than or equal to 200.');
+        }
+
+        $this->container['product_code'] = $product_code;
+
+        return $this;
+    }
+
+    /**
+     * Gets additional_details.
+     *
+     * @return OrderItemAdditionalDetails[]
+     */
+    public function getAdditionalDetails()
+    {
+        return $this->container['additional_details'];
+    }
+
+    /**
+     * Sets additional_details.
+     *
+     * @param OrderItemAdditionalDetails[] $additional_details
+     *
+     * @return $this
+     */
+    public function setAdditionalDetails($additional_details): static
+    {
+        $this->container['additional_details'] = $additional_details;
+
+        return $this;
+    }
+
+    /**
+     * Returns true if offset exists. False otherwise.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetExists($offset): bool
+    {
+        return isset($this->container[$offset]);
+    }
+
+    /**
+     * Gets offset.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetGet($offset): mixed
+    {
+        return $this->container[$offset] ?? null;
+    }
+
+    /**
+     * Sets value based on offset.
+     *
+     * @param int   $offset Offset
+     * @param mixed $value  Value to be set
+     */
+    public function offsetSet($offset, mixed $value): void
+    {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+
+    /**
+     * Unsets offset.
+     *
+     * @param int $offset Offset
+     */
+    public function offsetUnset($offset): void
+    {
+        unset($this->container[$offset]);
+    }
+
+    /**
+     * Gets the string presentation of the object.
+     */
+    public function __toString(): string
+    {
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return (string) json_encode(ObjectSerializer::sanitizeForSerialization($this), JSON_PRETTY_PRINT);
+        }
+
+        return (string) json_encode(ObjectSerializer::sanitizeForSerialization($this));
+    }
+}

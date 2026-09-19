@@ -1,0 +1,44 @@
+{
+    "name": "saminyaser\/boxpackerlite",
+    "description": "An implementation of the 3D (actually 4D) bin packing\/knapsack problem (aka creating parcels by putting items into boxes)",
+    "keywords": [
+        "packing",
+        "binpacking",
+        "bin packing",
+        "knapsack",
+        "box",
+        "boxpacking",
+        "parcel",
+        "parcelpacking",
+        "shipping",
+        "packaging",
+        "boxes",
+        "container"
+    ],
+    "type": "library",
+    "homepage": "https:\/\/yaser.com.bd\/",
+    "authors": [
+        {
+            "name": "Samin Yaser",
+            "role": "Developer"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.4",
+        "ext-json": "*"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "bin-compat": "full",
+        "optimize-autoloader": true
+    },
+    "autoload": {
+        "psr-4": {
+            "WTRS_Vendor\\SaminYaser\\BoxPackerLite\\": "src\/"
+        }
+    }
+}

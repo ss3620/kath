@@ -1,0 +1,205 @@
+<?php
+/**
+ * Handles divi integration related functionality.
+ *
+ * @package presto-player
+ */
+
+namespace PrestoPlayer\Integrations\Divi;
+
+use PrestoPlayer\Models\ReusableVideo;
+use PrestoPlayer\Models\Post;
+
+/**
+ * Handles divi-related functionality
+ */
+class Divi {
+
+	/**
+	 * Registers the Divi integration.
+	 */
+	public function register() {
+		add_action( 'divi_module_library_modules_dependency_tree', array( $this, 'register_d5_modules' ) );
+		add_action( 'et_fb_framework_loaded', array( $this, 'register_d5_builder_assets' ) );
+		add_action( 'divi_extensions_init', array( $this, 'init' ) );
+		add_action( 'wp_ajax_presto_get_media_attributes', array( $this, 'getMediaItemAttributes' ) );
+	}
+
+	/**
+	 * Registers D5 module dependencies with the Divi module library.
+	 *
+	 * @param object $tree The Divi module dependency tree.
+	 * @return void
+	 */
+	public function register_d5_modules( $tree ) {
+		$tree->add_dependency( new D5\PrestoVideoModule() );
+	}
+
+	/**
+	 * Registers and enqueues the D5 builder script package.
+	 *
+	 * @return void
+	 */
+	public function register_d5_builder_assets() {
+		if ( ! class_exists( 'ET\\Builder\\VisualBuilder\\Assets\\PackageBuildManager' ) ) {
+			return;
+		}
+		$asset_file = PRESTO_PLAYER_PLUGIN_DIR . 'dist/divi-d5.asset.php';
+		if ( ! file_exists( $asset_file ) ) {
+			return;
+		}
+		$asset = include $asset_file;
+		if ( ! is_array( $asset ) || empty( $asset['version'] ) || ! isset( $asset['dependencies'] ) ) {
+			return;
+		}
+		$data  = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'wp_rest' ),
+		);
+		// PackageBuildManager localizes data_top_window/data_app_window under a global named
+		// pascal_case( name . 'Data' ) — so 'presto-player-divi-d5' exposes window.PrestoPlayerDiviD5Data,
+		// which is exactly what MediaHubField.jsx / PlayerEdit.jsx read. Keep the name in sync with that.
+		\ET\Builder\VisualBuilder\Assets\PackageBuildManager::register_package_build(
+			array(
+				'name'    => 'presto-player-divi-d5',
+				'version' => $asset['version'],
+				'script'  => array(
+					'src'                => PRESTO_PLAYER_PLUGIN_URL . 'dist/divi-d5.js',
+					'deps'               => array_merge( $asset['dependencies'], array( 'divi-module-library' ) ),
+					'args'               => array( 'in_footer' => true ),
+					'enqueue_top_window' => true,
+					'enqueue_app_window' => true,
+					'data_top_window'    => $data,
+					'data_app_window'    => $data,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Initializes the Divi integration.
+	 */
+	public function init() {
+		// require our module.
+		include_once 'includes/PrestoDiviExtension.php';
+
+		// enqueue the scripts.
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueueScripts' ) );
+
+		// fix rankmath conflict.
+		add_filter( 'script_loader_tag', array( $this, 'rankMathFix' ), 11, 3 );
+
+		// parse the divi block to get the inner media hub block.
+		add_filter( 'presto_player_get_block_from_content', array( $this, 'getInnerBlockFromDiviContent' ) );
+	}
+
+	/**
+	 * Gets the inner media hub block from the divi content for lessons and topics.
+	 *
+	 * @param array $block the Divi block array.
+	 *
+	 * @return array $block the filtered media hub inner block array.
+	 */
+	public function getInnerBlockFromDiviContent( $block ) {
+		// bail if block is empty.
+		if ( empty( $block ) ) {
+			return $block;
+		}
+
+		$pattern  = get_shortcode_regex( array( 'prpl_presto_player' ) );
+		$block_id = false;
+		if ( $block['innerHTML'] && preg_match( "/$pattern/", $block['innerHTML'], $matches ) ) {
+			$shortcode = $matches[0] ?? '';
+			if ( ! empty( $shortcode ) ) {
+				$atts     = shortcode_parse_atts( $shortcode );
+				$block_id = isset( $atts['video_id'] ) ? (int) $atts['video_id'] : false;
+			}
+		}
+		if ( ! empty( $block_id ) ) {
+			// getMediaHubBlockFromPost() resolves the post itself, so don't build a Post
+			// model here - get_post() returns null for a deleted media hub item and the
+			// constructor is typed \WP_Post, which fataled the whole page.
+			$inner_block = Post::getMediaHubBlockFromPost( $block_id );
+			if ( ! empty( $inner_block ) ) {
+				return $inner_block;
+			}
+		}
+		return $block;
+	}
+
+	/**
+	 * Fixes rankmath excluding wp-i18n script from iframe.
+	 *
+	 * @param string $tag    The <script> tag for the enqueued script.
+	 * @param string $handle The script's registered handle.
+	 * @param string $src    The script's source URL.
+	 *
+	 * @return string
+	 */
+	public function rankMathFix( $tag, $handle, $src ) {
+		if ( 'wp-i18n' === $handle ) {
+            return '<script type="text/javascript" src="' . $src . '"></script>' . "\n"; // phpcs:ignore
+		}
+		return $tag;
+	}
+
+	/**
+	 * Get attributes to inject into JSX component.
+	 *
+	 * AJAX callback (wp_ajax_presto_get_media_attributes); reads the id from $_POST
+	 * and always responds via wp_send_json_*.
+	 *
+	 * @return void
+	 */
+	public function getMediaItemAttributes() {
+		// D4 sends et_admin_load_nonce; D5 sends wp_rest nonce via prestoPlayer.nonce.
+		// wp_rest is a broad, shared nonce, so the current_user_can() check below is the real
+		// authorization gate here — don't drop it assuming the nonce alone scopes access.
+		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		$valid = wp_verify_nonce( $nonce, 'et_admin_load_nonce' )
+			|| wp_verify_nonce( $nonce, 'wp_rest' );
+		if ( ! $valid ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'presto-player' ) ), 403 );
+		}
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'You are not allowed to do this.', 'presto-player' ) ), 403 );
+		}
+
+		$id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
+
+		if ( ! $id ) {
+			wp_send_json_error( array( 'message' => __( 'You must provide an id.', 'presto-player' ) ), 400 );
+		}
+
+		$video = new ReusableVideo( $id );
+		if ( ! $video->post || 'pp_video_block' !== $video->post->post_type ) {
+			wp_send_json_error( array( 'message' => __( 'Video not found.', 'presto-player' ) ), 404 );
+		}
+
+		wp_send_json_success( $video->getAttributes() );
+	}
+
+	/**
+	 * Enqueues scripts for Divi integration.
+	 */
+	public function enqueueScripts() {
+		if ( ! et_core_is_fb_enabled() ) {
+			return;
+		}
+
+		$assets = include trailingslashit( PRESTO_PLAYER_PLUGIN_DIR ) . 'dist/divi.asset.php';
+		wp_enqueue_script(
+			'surecart/divi/admin',
+			trailingslashit( PRESTO_PLAYER_PLUGIN_URL ) . 'dist/divi.js',
+			array_merge( array( 'react-dom', 'jquery', 'hls.js' ), $assets['dependencies'] ),
+			$assets['version'],
+			true
+		);
+		wp_enqueue_style( 'surecart/divi/admin', trailingslashit( PRESTO_PLAYER_PLUGIN_URL ) . 'dist/divi.css', array(), $assets['version'] );
+
+		if ( function_exists( 'wp_set_script_translations' ) ) {
+			wp_set_script_translations( 'surecart/divi/admin', 'presto-player' );
+		}
+	}
+}

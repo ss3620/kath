@@ -1,0 +1,172 @@
+= 2.0.6 – 19 November 2025 =
+* New: Added full RTL (Right-to-Left) layout support.
+* New: Enhanced responsiveness across the builder and all other pages.
+* Fix: Resolved the opacity slider issue in the color picker.
+* Fix: Fixed checkbox and tier styling issues, including conflicts with “Most Popular” tags.
+* Improvement: Improved touch event handling for better mobile interaction.
+* Improvement: Improved price updates and dynamic interactions for campaign popups and floating views.
+* Improvement: Better theme compatibility — refined styles to work smoothly with popular themes including the Twenty Twenty-Five theme.
+
+= 2.0.5 – 16 November 2025 =
+* Fix: Resolved the issue occurring in the Buy X Get Y campaign.
+* Fix: Corrected multiple campaign rendering issues on the cart page.
+* Improvement: Ensured campaign heading toggle works consistently across all campaigns.
+* Improvement: Updated campaign heading on/off functionality for improved usability.
+
+= 2.0.4 – 13 November 2025 =
+* Improvement: Updated Free Shipping Upsell product display — now shows both regular (strikethrough) and discounted prices in the cart.
+* Improvement: Refactored Free Shipping campaign code for cleaner and more maintainable structure.
+
+= 2.0.3 – 11 November 2025 =
+* Fix: Added mini cart support for upsell offer product pricing.
+* Improvement: Resolved data escaping issue.
+
+= 2.0.2 – 02 November 2025 =
+* Fix: Resolved variation selection issue for variable products.
+* Fix: Corrected variation handling when trigger products are filtered by category.
+* Improvement: Enhanced bundle pricing logic to update total price and savings badge text dynamically.
+* Improvement: Readme Content Updated.
+
+= 2.0.1 – 29 October 2025 =
+* Fix: Synced variation values in variable products to match WooCommerce variable product data.
+* Fix: Corrected regular and sale price handling for “Frequently Bought Together” variation products.
+* Fix: Improved toggle styling logic — added a custom class for active/inactive button states, removed unnecessary focus styles, and integrated showTemplateSelection state into the builder header.
+* Improvement: Enhanced builder dropdown functionality by resolving outside click event handling.
+* Improvement: Updated Contents in builder.
+
+= 2.0.0 – 20 October 2025 =
+* New: Grid and List for better discount showcasing. 
+* New: Builder restructure and redesign.
+* New: Overall plugin performance optimization.
+* New: Template system created and added for all campaigns.
+* New: New discount styling system for discount campaigns. 
+* New: Preset color palette added as style settings. 
+* New: New templates can be created and saved for discount campaigns.
+* New: Device-wise typography setup.
+* New: Device-wise campaign appearance customization.
+* New: Campaign visibility options added for different devices (Laptop, Tablet, Mobile).
+* New: Campaign Grid option for product visibility. 
+* New: Added Variable Product Support.
+* New: Given Support for in-page, floating, and pop-up design dynamically.
+
+= 1.2.3 – 19 May 2025 =
+* New: Next Order Coupon Campaign Added
+
+= 1.2.2 – 08 May 2025 =
+* New: Added support for WooCommerce Shop Manager role.
+* New: Introduced "Fixed Price" as a discount type in volume discount campaigns.
+
+= 1.2.1 – 05 May 2025 =
+* New: Countdown Timer Campaign Added
+
+= 1.2.0 – 24 April 2025 =
+* New: Stock Scarcity Campaign Added
+* Fix: Mix & Match Grid View error issue
+* Fix: Buy X Get Y not working when X and Y are same
+
+= 1.1.10 – 16 April 2025 =
+* Fix: Bundle Product Not Create Automatically After Deleted Issue Fixed.
+
+= 1.1.9 – 11 March 2025 =
+* Fix: Double Order Animated Row and Countdown Timer Hidden Issue Fixed
+
+= 1.1.8 – 4 March 2025 =
+* Fix: Woodmart Minicart Compatibility Added
+
+= 1.1.7 – 27 February 2025 =
+* Update: Some content improvement.
+
+= 1.1.6 – 26 February 2025 =
+* New: Free Shipping Campaign Added.
+
+= 1.1.5 – 20 February 2025 =
+* Fix: Accidentally marked all campaigns as Pro.
+
+= 1.1.4 – 19 February 2025 =
+* Update: Compatibility Added With WooCommerce Subscriptions, YITH WooCommerce Subscription, YayCurrency, FOX – Currency Switcher Professional for WooCommerce
+* Fix: Spending Goal Right Slider Icon Color Not Working issue Fixed.
+* Fix: Bundle Discount Campaign Minicart Not Updated on Ajax Issue Fixed.
+
+= 1.1.3 – 4 February 2025 =
+* New: Spending Goal Campaign Added.
+* Fix: Double Order Plus Not working on product variation issue fixed
+
+= 1.1.2 – 27 January 2025 =
+* Update: Improved content and messaging on the Campaign Page.
+* Fix: Resolved issue with double order session persistence after cart update.
+* Fix: Addressed validation issue for Mix and Match and Frequently Bought Together campaigns.
+* Fix: Clear the selections for Mix and Match and Frequently Bought Together after adding to cart.
+* Fix: Added compatibility for the Currency Switcher.
+* Fix: Fixed issue with the "Add to Cart" animation not working on the Checkout button.
+* Fix: Resolved issue where the Checkout button wasn't redirecting to the checkout page.
+
+= 1.1.1 – 14 January 2025 =
+* New: Double Order Plus Campaign Added.
+
+= 1.1.0 – 12 January 2025 =
+* Update: Added new hooks to make extensibility for third party integreation.
+
+= 1.0.11 – 18 December 2024 =
+* Fix: Japanese language pricing translation issue fixed
+* Fix: Upgrade Pro blank page issue fixed
+
+= 1.0.10 – 11 December 2024 =
+* Update: Made all strings translatable and updated the POT file.
+
+= 1.0.9 – 28 November 2024 =
+* Update: Compatibility with Fly Cart Plugin.
+* Update: In-page position uncheck option added.
+* Fix: Variable product volume discount price and attribute hidden issue fixed.
+* Fix: Variable product volume discount save tag issue on frontend fixed.
+* Fix: WooCommerce HPOS backward compatibility added.
+* Fix: Campaign list does not show on older installations of WooCommerce issue fixed.
+
+= 1.0.8 – 14 November 2024 =
+* Fix: Notice issue fixed
+
+= 1.0.7 – 14 November 2024 =
+* Update: WordPress 6.7 Compatibility Added
+* Fix: Some analytics issue fixed
+
+= 1.0.6 – 7 November 2024 =
+* Fix: Cart Subtotal Tax Not showing properly issue fixed
+
+= 1.0.5 – 6 November 2024 =
+* New: Minicart/Sidecart Compatibility added
+* Fix: Bundle Discount Child items not removed on minicart/sidecart after removing parent
+* Fix: Backend Pricing Currency Symbol Issue Fixed
+* Fix: Campaign Schedule End time toggle button not working issue fixed
+* Fix: Countdown timer prefix not changed issue fixed
+* Fix: Campaign trigger product not showing when trigger type is category issue fixed
+
+= 1.0.4 – 16 October 2024 =
+* Fix: WowRevenue Submenu Hidden Issue Fixed
+
+= 1.0.3 – 15 October 2024 =
+* Fix: Campaign Skeleton Issue Fixed
+
+= 1.0.2 - 15 October 2024 =
+* New: Campaign Editor UI Improvement
+* New: Campaign Multipage Support Added
+* New: Offered Product Already On Cart action settings added
+* New: Pagination Added on Dashboard Most Performing Campaigns
+* Fix: Order History Analytics Data Not properly Issue Fixed
+* Fix: Multiples Bundle Product Create Issue Fixed
+* Fix: Attribute search not working Issue Fixed
+
+= 1.0.1 - 9 October 2024 =
+* Fix: Animated Add to cart not working on Bundle Discount.
+* Fix: Fixed price not working on Buy X Get y.
+* Fix: Resolved the server-dependent parse error in the Product Mix & Match Campaign.
+* Fix: Resolved the trigger product auto required issue on Frequently Bought Together Campaign.
+* Fix: Resolved the conflict between server timezone and end user timezone for the countdown timer.
+* Fix: Automatically hide the countdown timer once it reaches zero.
+* Fix: Tooltip not visible perfectly issue
+* New: Offered Product Already On Cart action settings added
+* New: Pagination Added on Dashboard Most Performing Campaigns
+* Fix: Order History Analytics Data Not properly Issue Fixed
+* Fix: Multiples Bundle Product Create Issue Fixed
+* Fix: Attribute search not working Issue Fixed
+
+= 1.0.0 - 26 September 2024 =
+* New: Stable Release

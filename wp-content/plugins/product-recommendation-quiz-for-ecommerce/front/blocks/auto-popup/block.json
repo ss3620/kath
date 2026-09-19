@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "revenuehunt/auto-popup-quiz",
+	"version": "2.5.0",
+	"title": "Auto Popup Quiz",
+	"category": "widgets",
+	"icon": "external",
+	"description": "Open a RevenueHunt quiz automatically in a popup on pages using this template.",
+	"textdomain": "product-recommendation-quiz-for-ecommerce",
+	"keywords": ["quiz", "popup", "revenuehunt", "product finder"],
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"attributes": {
+		"quizId": {
+			"type": "string",
+			"default": ""
+		},
+		"timeout": {
+			"type": "number",
+			"default": 5
+		},
+		"exitIntent": {
+			"type": "boolean",
+			"default": false
+		},
+		"aggressive": {
+			"type": "boolean",
+			"default": false
+		},
+		"popupWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"popupHeight": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"editorScript": "product-recommendation-quiz-for-ecommerce-embed-blocks-editor"
+}

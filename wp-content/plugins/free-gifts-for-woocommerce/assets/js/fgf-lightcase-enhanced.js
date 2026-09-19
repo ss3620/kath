@@ -1,0 +1,43 @@
+
+jQuery(function ($) {
+	'use strict';
+	try {
+
+		$(document.body).on('fgf-enhanced-lightcase', function ( ) {
+
+			var lightcases = $('.fgf-popup-gift-products');
+			if (!lightcases.length) {
+				return;
+			}
+
+			$('.fgf-popup-gift-products').lightcase({
+				href: '#fgf_gift_products_modal',
+				onFinish: {
+					foo: function () {
+						$('.fgf-owl-carousel-items').closest('#fgf_gift_products_modal').find('.owl-nav').remove();
+						$('.fgf-owl-carousel-items').closest('#fgf_gift_products_modal').find('.owl-dots').remove();
+						lightcase.resize();
+						$(document.body).trigger('fgf-enhanced-carousel');
+						$(document.body).trigger('fgf_lightcase_finished');
+					}
+				},
+			});
+
+		});
+
+		// Initialize carousel when cart updated.
+		$(document.body).on('updated_wc_div', function ( ) {
+			$(document.body).trigger('fgf-enhanced-lightcase');
+		});
+
+		// Initialize carousel when checkout updated.
+		$(document.body).on('updated_checkout', function ( ) {
+			$(document.body).trigger('fgf-enhanced-lightcase');
+		});
+
+		$(document.body).trigger('fgf-enhanced-lightcase');
+	} catch (err) {
+		window.console.log(err);
+	}
+
+});

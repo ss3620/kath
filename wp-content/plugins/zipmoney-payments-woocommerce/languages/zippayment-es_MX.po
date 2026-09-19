@@ -1,0 +1,426 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-10-01 12:30+1000\n"
+"PO-Revision-Date: 2021-10-01 13:43+1000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_MX\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"X-Poedit-Basepath: ../includes\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: api/class-wc-zipmoney-payment-gateway-api-charge.php:348
+#: class-wc-zipmoney-payment-gateway.php:400
+msgid "Payment error:"
+msgstr "Error en el pago:"
+
+#: class-wc-zipmoney-payment-gateway-config.php:162
+msgid "Active"
+msgstr "Activa o Activo"
+
+#: class-wc-zipmoney-payment-gateway-config.php:163
+msgid "Enable Zip payment"
+msgstr "Habilitar pago Zip"
+
+#: class-wc-zipmoney-payment-gateway-config.php:170
+msgid "Environment"
+msgstr "Ambiente"
+
+#: class-wc-zipmoney-payment-gateway-config.php:171
+msgid "Enable sandbox mode"
+msgstr "Habilitar modo sandbox"
+
+#: class-wc-zipmoney-payment-gateway-config.php:174
+msgid "ONLY use sandbox mode in conjunction with sandbox Zip credentials."
+msgstr ""
+"ÚNICAMENTE usa el modo sandbox junto con las credenciales de sandbox Zip"
+
+#: class-wc-zipmoney-payment-gateway-config.php:178
+msgid "Sandbox public key"
+msgstr "Clave pública de sandbox"
+
+#: class-wc-zipmoney-payment-gateway-config.php:181
+msgid "Please contact integrations@zip.co to request your Sandbox Public key."
+msgstr ""
+"Favor de ponerte en contacto con integrations@zip.co para solicitar tu clave "
+"pública de Sandbox"
+
+#: class-wc-zipmoney-payment-gateway-config.php:182
+#: class-wc-zipmoney-payment-gateway-config.php:198
+msgid "Required for Australia only."
+msgstr "Requerido solo para Australia."
+
+#: class-wc-zipmoney-payment-gateway-config.php:186
+msgid "Sandbox private key"
+msgstr "Clave privada de sandbox"
+
+#: class-wc-zipmoney-payment-gateway-config.php:189
+msgid "Please contact integrations@zip.co to request your Sandbox API key."
+msgstr ""
+"Favor de ponerte en contacto con integrations@zip.co para solicitar tu clave "
+"API de Sandbox"
+
+#: class-wc-zipmoney-payment-gateway-config.php:190
+msgid "Please contact integrations@zip.co to request Sandbox API key."
+msgstr ""
+"Favor de ponerte en contacto con integrations@zip.co para solicitar tu clave "
+"API de Sandbox"
+
+#: class-wc-zipmoney-payment-gateway-config.php:194
+msgid "Public key"
+msgstr "Clave pública o Llave pública"
+
+#: class-wc-zipmoney-payment-gateway-config.php:197
+msgid ""
+"Please contact integrations@zip.co to request your production public key.."
+msgstr ""
+"Favor de ponerte en contacto con integrations@zip.co para solicitar tu clave "
+"pública de producción"
+
+#: class-wc-zipmoney-payment-gateway-config.php:202
+msgid "Private key"
+msgstr "Clave privada o Llave privada"
+
+#: class-wc-zipmoney-payment-gateway-config.php:205
+msgid "Please contact integrations@zip.co to request your product API key."
+msgstr ""
+"Favor de ponerte en contacto con integrations@zip.co para solicitar tu clave "
+"API de producto"
+
+#: class-wc-zipmoney-payment-gateway-config.php:206
+msgid "Please contact integrations@zip.co to request your API key."
+msgstr ""
+"Favor de ponerte en contacto con integrations@zip.co para solicitar tu clave "
+"API"
+
+#: class-wc-zipmoney-payment-gateway-config.php:217
+msgid "Capture method"
+msgstr "Método de captura  "
+
+#: class-wc-zipmoney-payment-gateway-config.php:219
+msgid ""
+"Set to \"Immediate capture\" unless directed by Zip. Immedate capture = "
+"automatically capture funds when order approved by Zip. Authorise & capture "
+"= initially authorise the funds on the customers account and manually "
+"capture at a later time."
+msgstr ""
+"Configura en “Captura inmediata” a menos que te lo indique Zip. Captura "
+"inmediata = captura fondos automáticamente cuando el pedido lo aprueba Zip. "
+"Autorizar y capturar = autorizar inicialmente los fondos en la cuenta del "
+"cliente y capturarlos manualmente en un momento posterior"
+
+#: class-wc-zipmoney-payment-gateway-config.php:222
+msgid "Immediate capture"
+msgstr "Captura inmediata"
+
+#: class-wc-zipmoney-payment-gateway-config.php:223
+msgid "Authorise & capture"
+msgstr "Autorizar y capturar o Autoriza y Captura"
+
+#: class-wc-zipmoney-payment-gateway-config.php:227
+msgid "Log setting"
+msgstr "Configuración de registro"
+
+#: class-wc-zipmoney-payment-gateway-config.php:228
+msgid ""
+"So Zip can assist with troubleshooting any potential issues, we recommend "
+"configuring Log Setting to \"ALL\""
+msgstr ""
+"Para que Zip pueda ayudarte a solucionar cualquier problema potencial, "
+"recomendamos configurar la Configuración de registro en “TODOS”"
+
+#: class-wc-zipmoney-payment-gateway-config.php:232
+msgid "All messages"
+msgstr "Todos los mensajes"
+
+#: class-wc-zipmoney-payment-gateway-config.php:233
+msgid "Debug (and above)"
+msgstr "Depurar (y lo de arriba)"
+
+#: class-wc-zipmoney-payment-gateway-config.php:234
+msgid "Info (and above)"
+msgstr "Información (y lo de arriba)"
+
+#: class-wc-zipmoney-payment-gateway-config.php:235
+msgid "Warn (and above)"
+msgstr "Advertir (y lo de arriba)"
+
+#: class-wc-zipmoney-payment-gateway-config.php:236
+msgid "Error (and above)"
+msgstr "Error (y lo de arriba)"
+
+#: class-wc-zipmoney-payment-gateway-config.php:237
+msgid "Fatal (and above)"
+msgstr "Fatal (y lo de arriba)"
+
+#: class-wc-zipmoney-payment-gateway-config.php:238
+msgid "Off (No message will be logged)"
+msgstr "Apagado(No se registrará ningún mensaje)"
+
+#: class-wc-zipmoney-payment-gateway-config.php:242
+msgid "In-context checkout"
+msgstr "Pago en contexto"
+
+#: class-wc-zipmoney-payment-gateway-config.php:243
+msgid "Enable in-context checkout flow"
+msgstr "Habilitar el flujo de pago en contexto"
+
+#: class-wc-zipmoney-payment-gateway-config.php:245
+msgid ""
+"Enable to offer your customers an iframe checkout experience without being "
+"redirected away from your website. But this feature only work for AU region. "
+"Other region customer will redirect to zip for payment."
+msgstr ""
+"Habilitar para ofrecer a tus clientes una experiencia de pago con iframe sin "
+"ser redirigidos fuera de tu sitio web. Pero esta característica solo "
+"funciona para la región de AU. El cliente de otra región te redireccionará a "
+"Zip para el pago."
+
+#: class-wc-zipmoney-payment-gateway-config.php:246
+msgid ""
+"Iframe zip checkout only work for AU region. Other region customer will "
+"redirect to zip for payment. "
+msgstr ""
+"El pago de Iframe Zip solo funciona para la región de AU. El cliente de otra "
+"región te redireccionará a Zip para el pago."
+
+#: class-wc-zipmoney-payment-gateway-config.php:250
+msgid "Minimum order value"
+msgstr "Valor mínimo de pedido"
+
+#: class-wc-zipmoney-payment-gateway-config.php:252
+msgid "Set the minimum shopping cart value that Zip will be available for use."
+msgstr ""
+"Establece el valor mínimo del carrito de compras que Zip tendrá disponible "
+"para su uso"
+
+#: class-wc-zipmoney-payment-gateway-config.php:256
+msgid "Maximum order value"
+msgstr "Valor máximo de pedido"
+
+#: class-wc-zipmoney-payment-gateway-config.php:258
+msgid "Set the maximum shopping cart value that Zip will be available for use."
+msgstr ""
+"Establece el valor máximo del carrito de compras que Zip tendrá disponible "
+"para su uso"
+
+#: class-wc-zipmoney-payment-gateway-config.php:262
+msgid "Widget Region"
+msgstr "Región de widget"
+
+#: class-wc-zipmoney-payment-gateway-config.php:264
+msgid ""
+"Select Region to show proper zip widget in product, cart and checkout page"
+msgstr ""
+"Selecciona región para mostrar el widget de Zip adecuado en el producto, el "
+"carrito y la página de pago"
+
+#: class-wc-zipmoney-payment-gateway-config.php:276
+msgid "Display Widget Mode"
+msgstr "Mostrar modo de Widget"
+
+#: class-wc-zipmoney-payment-gateway-config.php:278
+msgid "Select Display widget mode for Zip widget"
+msgstr "Selecciona el modo de widget de visualización para el widget Zip"
+
+#: class-wc-zipmoney-payment-gateway-config.php:281
+msgid "iframe"
+msgstr "iframe"
+
+#: class-wc-zipmoney-payment-gateway-config.php:282
+msgid "inline"
+msgstr "inline"
+
+#: class-wc-zipmoney-payment-gateway-config.php:286
+msgid "Marketing widgets"
+msgstr "Widgets de marketing"
+
+#: class-wc-zipmoney-payment-gateway-config.php:287
+#: class-wc-zipmoney-payment-gateway-config.php:300
+#: class-wc-zipmoney-payment-gateway-config.php:326
+msgid "Display on product page"
+msgstr "Mostrar en la página del producto"
+
+#: class-wc-zipmoney-payment-gateway-config.php:289
+msgid ""
+"Enable to display the Zip widget below the add to cart button on the product "
+"page."
+msgstr ""
+"Habilita para mostrar el widget Zip debajo del botón agregar al carrito en "
+"la página del producto."
+
+#: class-wc-zipmoney-payment-gateway-config.php:293
+#: class-wc-zipmoney-payment-gateway-config.php:306
+msgid "Display on cart page"
+msgstr "Mostrar en el carrito de la página"
+
+#: class-wc-zipmoney-payment-gateway-config.php:295
+msgid ""
+"Enable to display the Zip widget below the checkout button on the cart page."
+msgstr ""
+"Habilita para mostrar el widget Zip debajo del botón de pago en la página "
+"del carrito."
+
+#: class-wc-zipmoney-payment-gateway-config.php:299
+msgid "Marketing taglines"
+msgstr "Eslogans de marketing"
+
+#: class-wc-zipmoney-payment-gateway-config.php:301
+msgid ""
+"Enable to display the Zip tagline widget below the price on the product page."
+msgstr ""
+"Habilita para mostrar el widget de eslogan Zip debajo del precio en la "
+"página del producto."
+
+#: class-wc-zipmoney-payment-gateway-config.php:307
+msgid ""
+"Enable to display the Zip tagline widget below the total price on the cart "
+"page."
+msgstr ""
+"Habilita para mostrar el widget de eslogan Zip debajo del precio total en la "
+"página del carrito."
+
+#: class-wc-zipmoney-payment-gateway-config.php:312
+msgid "Marketing banners"
+msgstr "Banners de marketing"
+
+#: class-wc-zipmoney-payment-gateway-config.php:313
+msgid "Display marketing banners"
+msgstr "Mostrar banners de marketing"
+
+#: class-wc-zipmoney-payment-gateway-config.php:316
+msgid "Enable to display the Zip strip banners on the pages outlined below."
+msgstr ""
+"Habilita para mostrar los banners de la banda de Zip en las páginas que se "
+"describen a continuación."
+
+#: class-wc-zipmoney-payment-gateway-config.php:320
+msgid "Display on shop"
+msgstr "Mostrar en tienda"
+
+#: class-wc-zipmoney-payment-gateway-config.php:332
+msgid "Display on category cage"
+msgstr "Mostrar en jaula de categoría"
+
+#: class-wc-zipmoney-payment-gateway-config.php:338
+msgid "Display on cart"
+msgstr "Mostrar en el carrito"
+
+#: class-wc-zipmoney-payment-gateway.php:87
+msgid "Error:"
+msgstr "Error:"
+
+#: class-wc-zipmoney-payment-gateway.php:87
+msgid " Zip private key is invalid."
+msgstr "La clave privada de Zip no es válida."
+
+#: class-wc-zipmoney-payment-gateway.php:94
+#: class-wc-zipmoney-payment-gateway.php:96
+#: class-wc-zipmoney-payment-gateway.php:103
+msgid "Zip now, pay later"
+msgstr "Zip - Compra ahora, paga despues"
+
+#: class-wc-zipmoney-payment-gateway.php:230
+msgid " private key is valid for "
+msgstr "La clave privada de Zip es válida para"
+
+#: class-wc-zipmoney-payment-gateway.php:235
+msgid "key is valid for below regions "
+msgstr "la clave es válida para las siguientes regiones"
+
+#: class-wc-zipmoney-payment-gateway.php:248
+msgid " private key valid for Australia region."
+msgstr "clave privada válida para la región de Australia."
+
+#: class-wc-zipmoney-payment-gateway.php:258
+msgid "Invalid Zip private key. Please check with Zip."
+msgstr "Clave privada Zip no válida. Consulta con Zip."
+
+#: class-wc-zipmoney-payment-gateway.php:266
+msgid "Connection error. Please try later."
+msgstr "Error de conexión. Por favor intentalo mas tarde."
+
+#: class-wc-zipmoney-payment-gateway.php:324
+#, php-format
+msgid ""
+"ZipMoney Error: ZipMoney requires PHP 5.3.0 and above. You are using version "
+"%s."
+msgstr ""
+"Error de ZipMoney: ZipMoney requiere PHP 5.3.0 y superior. Estás usando la "
+"versión %s."
+
+#: class-wc-zipmoney-payment-gateway.php:327
+#, php-format
+msgid ""
+"WARN: ZipMoney is enabled, but the <a href=\"%s\">force SSL option</a> is "
+"disabled; your checkout may not be secure! Please enable SSL and ensure your "
+"server has a valid SSL certificate - ZipMoney will only work in sandbox mode."
+msgstr ""
+"ADVERTENCIA: ZipMoney está habilitado, pero la <a href=\"%s\"> opción forzar "
+"SSL </a> está inhabilitada; ¡Es posible que tu pago no sea seguro! Habilita "
+"SSL y asegúrate de que tu servidor tenga un certificado SSL válido; ZipMoney "
+"solo funcionará en modo sandbox."
+
+#: class-wc-zipmoney-payment-gateway.php:415
+msgid "Payment error: "
+msgstr "Error de pago:"
+
+#: compatibility/class-wc-core-compatibility.php:227
+msgid "WooCommerce"
+msgstr "WooCommerce"
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:23
+#: controller/class-wc-zipmoney-payment-charge-controller.php:102
+msgid "The payment has been cancelled."
+msgstr "El pago ha sido cancelado"
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:76
+#: controller/class-wc-zipmoney-payment-charge-controller.php:112
+msgid "An error occurred while processing payment"
+msgstr "Ocurrió un error al procesar el pago"
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:82
+msgid "Could not find the order, please try again later."
+msgstr "No se pudo encontrar el pedido. Vuelve a intentarlo más tarde."
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:88
+msgid ""
+"Payment pending, your application is currently under review and will be "
+"processed shortly."
+msgstr ""
+"Pago pendiente, su solicitud se encuentra actualmente en revisión y se "
+"procesará en breve."
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:95
+msgid ""
+"Your application has been declined. Please contact Zip Co for further "
+"information."
+msgstr ""
+"Tu solicitud ha sido rechazada. Comunícate con Zip Co para obtener más "
+"información."
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:129
+#: controller/class-wc-zipmoney-payment-charge-controller.php:163
+msgid "Unable to find order by id: "
+msgstr "No se puede encontrar el pedido por identificación:"
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:144
+msgid "The zipMoney payment has been cancelled."
+msgstr "El pago de zipMoney ha sido cancelado."
+
+#: controller/class-wc-zipmoney-payment-charge-controller.php:146
+msgid "Unable to cancel payment."
+msgstr "No se puede cancelar el pago."
+
+#: controller/class-wc-zipmoney-payment-checkout-controller.php:53
+msgid "An error occurred while getting the redirect url from Zip."
+msgstr "Se produjo un error al obtener la URL de redireccionamiento de Zip."
+
+#~ msgid "Zip - Own it now, pay later"
+#~ msgstr "Zip - Cómpralo ahora, paga después"

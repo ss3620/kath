@@ -1,0 +1,65 @@
+{
+    "packages": [
+        {
+            "name": "saminyaser\/boxpackerlite",
+            "version": "v1.0.3",
+            "version_normalized": "1.0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/SaminYaser-work\/BoxPackerLite.git",
+                "reference": "d2a5a0a80262cbdb107a15c770d570c34761658d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/SaminYaser-work\/BoxPackerLite\/zipball\/d2a5a0a80262cbdb107a15c770d570c34761658d",
+                "reference": "d2a5a0a80262cbdb107a15c770d570c34761658d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.4"
+            },
+            "time": "2026-03-05T05:29:08+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "WTRS_Vendor\\SaminYaser\\BoxPackerLite\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Samin Yaser",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An implementation of the 3D (actually 4D) bin packing\/knapsack problem (aka creating parcels by putting items into boxes)",
+            "homepage": "https:\/\/yaser.com.bd\/",
+            "keywords": [
+                "bin packing",
+                "binpacking",
+                "box",
+                "boxes",
+                "boxpacking",
+                "container",
+                "knapsack",
+                "packaging",
+                "packing",
+                "parcel",
+                "parcelpacking",
+                "shipping"
+            ],
+            "support": {
+                "issues": "https:\/\/github.com\/SaminYaser-work\/BoxPackerLite\/issues",
+                "source": "https:\/\/github.com\/SaminYaser-work\/BoxPackerLite\/tree\/v1.0.3"
+            },
+            "install-path": "..\/saminyaser\/boxpackerlite"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}

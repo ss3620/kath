@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "revenuehunt/chat-button-quiz",
+	"version": "2.5.0",
+	"title": "Chat Button Quiz",
+	"category": "widgets",
+	"icon": "format-chat",
+	"description": "Show a floating chat button that opens a RevenueHunt quiz on pages using this template.",
+	"textdomain": "product-recommendation-quiz-for-ecommerce",
+	"keywords": ["quiz", "chat", "revenuehunt", "product finder"],
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"attributes": {
+		"quizId": {
+			"type": "string",
+			"default": ""
+		},
+		"color": {
+			"type": "string",
+			"default": ""
+		},
+		"dot": {
+			"type": "boolean",
+			"default": false
+		},
+		"hide": {
+			"type": "boolean",
+			"default": false
+		},
+		"greeting": {
+			"type": "string",
+			"default": ""
+		},
+		"popupWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"popupHeight": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"editorScript": "product-recommendation-quiz-for-ecommerce-embed-blocks-editor"
+}

@@ -1,0 +1,46 @@
+/* phpcs:ignoreFile */
+/* Changes for WooCommerce 9.9+ - Start */
+.woocommerce_page_wc-settings-affiliate-for-woocommerce-settings #wpbody-content {
+	padding-bottom: 65px !important;
+	background: inherit !important;
+}
+/* Changes for WooCommerce 9.9+ - End */
+#wpfooter {
+	display: block !important;
+	border-top: 1px solid #d4d4d4;
+}
+#wpfooter .afwc-footer-left,
+#wpfooter .afwc-footer-right {
+	font-family: monospace
+}
+#wpfooter .afwc-footer-left-top {
+	font-weight: 600;
+}
+#wpfooter .afwc-heart {
+	color: #e11d48;
+}
+#wpfooter .afwc-brand {
+	color: #5254E4;
+}
+#wpfooter .afwc-separator {
+	margin: 0 0.25rem;
+}
+#wpfooter .afwc-footer-right {
+	float: right;
+	text-align: right;
+}
+#wpfooter a {
+	text-decoration: none;
+	outline: none;
+}
+#wpfooter a:hover {
+	text-decoration: underline;
+}
+#wpfooter .afwc-star {
+	color: #eab308;
+}
+@media screen and (max-width: 853px) {
+	#wpfooter {
+		display: none !important;
+	}
+}
