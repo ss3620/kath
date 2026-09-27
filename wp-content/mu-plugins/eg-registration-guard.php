@@ -49,7 +49,10 @@ class EG_Registration_Guard {
 	}
 
 	/**
-	 * Google reCAPTCHA v2 ("I'm not a robot") credentials, set in wp-config.php:
+	 * Google reCAPTCHA v2 ("I'm not a robot") credentials.
+	 *
+	 * Prefers wp-config.php constants, then the keys saved in
+	 * Elementor → Settings → Integrations → reCAPTCHA.
 	 *
 	 *   define( 'EG_RECAPTCHA_SITE_KEY', '6Lc...' );
 	 *   define( 'EG_RECAPTCHA_SECRET_KEY', '6Lc...' );
@@ -57,17 +60,21 @@ class EG_Registration_Guard {
 	 * @return array{site:string,secret:string}|null
 	 */
 	private static function recaptcha_keys() {
-		if ( ! defined( 'EG_RECAPTCHA_SITE_KEY' ) || ! defined( 'EG_RECAPTCHA_SECRET_KEY' ) ) {
-			return null;
+		$site   = defined( 'EG_RECAPTCHA_SITE_KEY' ) ? EG_RECAPTCHA_SITE_KEY : '';
+		$secret = defined( 'EG_RECAPTCHA_SECRET_KEY' ) ? EG_RECAPTCHA_SECRET_KEY : '';
+
+		if ( ! $site || ! $secret ) {
+			$site   = (string) get_option( 'pro_recaptcha_site_key' );
+			$secret = (string) get_option( 'pro_recaptcha_secret_key' );
 		}
 
-		if ( ! EG_RECAPTCHA_SITE_KEY || ! EG_RECAPTCHA_SECRET_KEY ) {
+		if ( ! $site || ! $secret ) {
 			return null;
 		}
 
 		return array(
-			'site'   => EG_RECAPTCHA_SITE_KEY,
-			'secret' => EG_RECAPTCHA_SECRET_KEY,
+			'site'   => $site,
+			'secret' => $secret,
 		);
 	}
 
