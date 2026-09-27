@@ -49,7 +49,7 @@ class EG_Registration_Guard {
 	}
 
 	/**
-	 * Google reCAPTCHA v3 credentials, set in wp-config.php:
+	 * Google reCAPTCHA v2 ("I'm not a robot") credentials, set in wp-config.php:
 	 *
 	 *   define( 'EG_RECAPTCHA_SITE_KEY', '6Lc...' );
 	 *   define( 'EG_RECAPTCHA_SECRET_KEY', '6Lc...' );
@@ -72,17 +72,7 @@ class EG_Registration_Guard {
 	}
 
 	/**
-	 * Score below which a submission is treated as automated. 1.0 is certainly human,
-	 * 0.0 certainly a bot. Override with EG_RECAPTCHA_THRESHOLD in wp-config.php.
-	 *
-	 * @return float
-	 */
-	private static function recaptcha_threshold() {
-		return defined( 'EG_RECAPTCHA_THRESHOLD' ) ? (float) EG_RECAPTCHA_THRESHOLD : 0.5;
-	}
-
-	/**
-	 * v3 scores in the background, so the register form keeps its single email field.
+	 * Renders the "I'm not a robot" checkbox inside the form.
 	 */
 	public static function render_recaptcha() {
 		$keys = self::recaptcha_keys();
@@ -92,41 +82,15 @@ class EG_Registration_Guard {
 
 		wp_enqueue_script(
 			'google-recaptcha',
-			'https://www.google.com/recaptcha/api.js?render=' . rawurlencode( $keys['site'] ),
+			'https://www.google.com/recaptcha/api.js',
 			array(),
 			null,
 			true
 		);
 
-		echo '<input type="hidden" name="eg_recaptcha_token" value="" />';
-
-		wp_add_inline_script( 'google-recaptcha', self::recaptcha_inline_script( $keys['site'] ) );
-	}
-
-	/**
-	 * Tokens expire after two minutes, so one is fetched on submit rather than on page
-	 * load. Programmatic submit() drops the button's own name/value, which both
-	 * WooCommerce and wp-login.php check for, hence the replacement hidden input.
-	 *
-	 * @param string $site_key Site key.
-	 * @return string
-	 */
-	private static function recaptcha_inline_script( $site_key ) {
-		return sprintf(
-			'document.addEventListener("submit",function(e){' .
-			'var f=e.target;' .
-			'if(!f||!f.querySelector)return;' .
-			'var t=f.querySelector(\'input[name="eg_recaptcha_token"]\');' .
-			'if(!t||t.value)return;' .
-			'if(typeof grecaptcha==="undefined")return;' .
-			'e.preventDefault();' .
-			'var b=f.querySelector(\'[type="submit"][name]\');' .
-			'if(b){var h=document.createElement("input");h.type="hidden";h.name=b.name;h.value=b.value||"1";f.appendChild(h);}' .
-			'grecaptcha.ready(function(){' .
-			'grecaptcha.execute("%s",{action:"register"}).then(function(k){t.value=k;f.submit();},function(){f.submit();});' .
-			'});' .
-			'},true);',
-			esc_js( $site_key )
+		printf(
+			'<p class="form-row form-row-wide"><div class="g-recaptcha" data-sitekey="%s"></div></p>',
+			esc_attr( $keys['site'] )
 		);
 	}
 
@@ -144,12 +108,12 @@ class EG_Registration_Guard {
 			return $errors;
 		}
 
-		$token = isset( $_POST['eg_recaptcha_token'] )
-			? sanitize_text_field( wp_unslash( $_POST['eg_recaptcha_token'] ) )
+		$token = isset( $_POST['g-recaptcha-response'] )
+			? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) )
 			: '';
 
 		if ( '' === $token ) {
-			$errors->add( 'eg_recaptcha_missing', __( 'Please wait a moment and try again.', 'earth-goddess' ) );
+			$errors->add( 'eg_recaptcha_missing', __( 'Please confirm you are not a robot.', 'earth-goddess' ) );
 			return $errors;
 		}
 
@@ -173,13 +137,6 @@ class EG_Registration_Guard {
 
 		if ( empty( $body['success'] ) ) {
 			$errors->add( 'eg_recaptcha_failed', __( 'We could not verify that request. Please try again.', 'earth-goddess' ) );
-			return $errors;
-		}
-
-		$score = isset( $body['score'] ) ? (float) $body['score'] : 1.0;
-
-		if ( $score < self::recaptcha_threshold() ) {
-			$errors->add( 'eg_recaptcha_score', __( 'We could not verify that request. Please try again.', 'earth-goddess' ) );
 		}
 
 		return $errors;
