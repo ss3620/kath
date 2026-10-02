@@ -39,13 +39,11 @@ class EG_Registration_Guard {
 
 		add_action( 'user_register', array( __CLASS__, 'count_signup' ) );
 
-		if ( self::recaptcha_keys() ) {
-			add_action( 'woocommerce_register_form', array( __CLASS__, 'render_recaptcha' ) );
-			add_filter( 'woocommerce_registration_errors', array( __CLASS__, 'verify_recaptcha' ), 20, 3 );
+		add_action( 'woocommerce_register_form', array( __CLASS__, 'render_recaptcha' ) );
+		add_filter( 'woocommerce_registration_errors', array( __CLASS__, 'verify_recaptcha' ), 20, 3 );
 
-			add_action( 'register_form', array( __CLASS__, 'render_recaptcha' ) );
-			add_filter( 'registration_errors', array( __CLASS__, 'verify_recaptcha' ), 20, 3 );
-		}
+		add_action( 'register_form', array( __CLASS__, 'render_recaptcha' ) );
+		add_filter( 'registration_errors', array( __CLASS__, 'verify_recaptcha' ), 20, 3 );
 	}
 
 	/**
@@ -64,8 +62,8 @@ class EG_Registration_Guard {
 		$secret = defined( 'EG_RECAPTCHA_SECRET_KEY' ) ? EG_RECAPTCHA_SECRET_KEY : '';
 
 		if ( ! $site || ! $secret ) {
-			$site   = (string) get_option( 'pro_recaptcha_site_key' );
-			$secret = (string) get_option( 'pro_recaptcha_secret_key' );
+			$site   = (string) get_option( 'elementor_pro_recaptcha_site_key' );
+			$secret = (string) get_option( 'elementor_pro_recaptcha_secret_key' );
 		}
 
 		if ( ! $site || ! $secret ) {

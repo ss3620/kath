@@ -31,10 +31,149 @@ class EG_Roles {
 	}
 
 	/**
+	 * Starting rank tag for each program role.
+	 * Higher ranks are assigned later by hand and are never replaced.
+	 *
+	 * @var array<string,string>
+	 */
+	const DEFAULT_RANK_TAGS = array(
+		'affiliate_business_builder' => 'clear-quartz-partner',
+		'ambassador'                 => 'seed-ambassador',
+	);
+
+	/**
+	 * Rank tags that mean a program rank is already set.
+	 *
+	 * @var array<string,string[]>
+	 */
+	const RANK_TAGS = array(
+		'affiliate_business_builder' => array(
+			'clear-quartz-partner',
+			'amethyst-partner',
+			'green-aventurine-partner',
+			'moonstone-partner',
+		),
+		'ambassador'                 => array(
+			'seed-ambassador',
+			'bloom-ambassador',
+			'goddess-ambassador',
+		),
+	);
+
+	/**
 	 * Bootstrap.
 	 */
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_roles' ), 5 );
+		add_action( 'add_user_role', array( __CLASS__, 'assign_default_rank' ), 10, 2 );
+		add_action( 'set_user_role', array( __CLASS__, 'assign_default_rank' ), 10, 2 );
+		add_action( 'admin_init', array( __CLASS__, 'backfill_default_ranks' ) );
+	}
+
+	/**
+	 * Give a new Affiliate Business Builder or Ambassador their starting rank.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $role    Role just added.
+	 */
+	public static function assign_default_rank( $user_id, $role ) {
+		if ( ! isset( self::DEFAULT_RANK_TAGS[ $role ] ) ) {
+			return;
+		}
+
+		self::ensure_rank_tag( (int) $user_id, $role );
+	}
+
+	/**
+	 * People given the role before this hook existed (including test affiliates)
+	 * never received a rank tag, so their commission plan never matched.
+	 */
+	public static function backfill_default_ranks() {
+		if ( get_option( 'eg_default_rank_tags_v1' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		foreach ( array_keys( self::DEFAULT_RANK_TAGS ) as $role ) {
+			$users = get_users(
+				array(
+					'role'   => $role,
+					'fields' => array( 'ID' ),
+				)
+			);
+			foreach ( $users as $user ) {
+				self::ensure_rank_tag( (int) $user->ID, $role );
+			}
+		}
+
+		update_option( 'eg_default_rank_tags_v1', '1', false );
+	}
+
+	/**
+	 * Attach the starting rank unless this user already has a rank in that program.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $role    Program role.
+	 */
+	private static function ensure_rank_tag( $user_id, $role ) {
+		if ( ! $user_id || empty( self::DEFAULT_RANK_TAGS[ $role ] ) ) {
+			return;
+		}
+
+		self::register_tag_taxonomy();
+
+		$existing = wp_get_object_terms( $user_id, 'afwc_user_tags', array( 'fields' => 'slugs' ) );
+		if ( is_wp_error( $existing ) ) {
+			$existing = array();
+		}
+
+		$ranks = isset( self::RANK_TAGS[ $role ] ) ? self::RANK_TAGS[ $role ] : array();
+		if ( array_intersect( $ranks, $existing ) ) {
+			return;
+		}
+
+		$slug = self::DEFAULT_RANK_TAGS[ $role ];
+		$term = get_term_by( 'slug', $slug, 'afwc_user_tags' );
+		if ( ! $term ) {
+			$created = wp_insert_term(
+				ucwords( str_replace( '-', ' ', $slug ) ),
+				'afwc_user_tags',
+				array( 'slug' => $slug )
+			);
+			if ( is_wp_error( $created ) ) {
+				return;
+			}
+			$term = get_term( (int) $created['term_id'], 'afwc_user_tags' );
+		}
+
+		if ( $term && ! is_wp_error( $term ) ) {
+			wp_set_object_terms( $user_id, array( (int) $term->term_id ), 'afwc_user_tags', true );
+		}
+
+		if ( '' === (string) get_user_meta( $user_id, 'afwc_is_affiliate', true ) ) {
+			update_user_meta( $user_id, 'afwc_is_affiliate', 'yes' );
+		}
+	}
+
+	/**
+	 * Affiliate for WooCommerce registers this taxonomy. Create it if that plugin
+	 * has not loaded yet so the tag can still be stored.
+	 */
+	private static function register_tag_taxonomy() {
+		if ( taxonomy_exists( 'afwc_user_tags' ) ) {
+			return;
+		}
+
+		register_taxonomy(
+			'afwc_user_tags',
+			'user',
+			array(
+				'public' => false,
+				'labels' => array( 'name' => 'Affiliate Tags' ),
+			)
+		);
 	}
 
 	/**
