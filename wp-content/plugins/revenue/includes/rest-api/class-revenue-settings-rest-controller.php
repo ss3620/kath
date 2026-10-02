@@ -7,6 +7,8 @@
 
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 use WP_REST_Controller;
 use WP_REST_Server;
 use WP_Error;
@@ -46,7 +48,7 @@ class Revenue_Settings_REST_Controller extends WP_REST_Controller {
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_settings' ),
-				'permission_callback' => array( $this, 'get_settings_permission_check' ), // Provide a permission callback or remove if not needed.
+				'permission_callback' => array( $this, 'get_settings_permission_check' ),
 			)
 		);
 
@@ -67,7 +69,7 @@ class Revenue_Settings_REST_Controller extends WP_REST_Controller {
 	 * @return bool
 	 */
 	public function get_settings_permission_check() {
-		return current_user_can( 'read' );
+		return $this->get_update_setting_permission_check();
 	}
 
 	/**
@@ -84,10 +86,36 @@ class Revenue_Settings_REST_Controller extends WP_REST_Controller {
 	/**
 	 * Get all settings.
 	 *
-	 * @return WP_REST_Response
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @return WP_REST_Response|WP_Error
 	 */
-	public function get_settings() {
+	public function get_settings( $request ) {
+		$nonce_check = $this->verify_nonce( $request );
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
+
 		return rest_ensure_response( revenue()->get_setting() );
+	}
+
+	/**
+	 * Verify the dashboard nonce sent with the request.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @return true|WP_Error
+	 */
+	protected function verify_nonce( $request ) {
+		$nonce = '';
+		if ( isset( $request['security'] ) ) {
+			$nonce = sanitize_key( $request['security'] );
+		}
+		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
+			return new WP_Error( 'revenue_rest_nonce_error', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
+		}
+
+		return true;
 	}
 
 	/**
@@ -98,6 +126,11 @@ class Revenue_Settings_REST_Controller extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function update_setting( $request ) {
+		$nonce_check = $this->verify_nonce( $request );
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
+
 		$key   = $request->get_param( 'key' );
 		$value = $request->get_param( 'value' );
 
@@ -119,5 +152,4 @@ class Revenue_Settings_REST_Controller extends WP_REST_Controller {
 			return new WP_Error( 'update_failed', 'Failed to update setting', array( 'status' => 500 ) );
 		}
 	}
-
 }

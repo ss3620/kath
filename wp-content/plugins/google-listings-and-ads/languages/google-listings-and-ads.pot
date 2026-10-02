@@ -2,16 +2,16 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: Google for WooCommerce 3.9.2\n"
+"Project-Id-Version: Google for WooCommerce 3.9.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/google-listings-and-ads\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-01T15:02:34+00:00\n"
+"POT-Creation-Date: 2026-09-29T16:31:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.13.0-alpha\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: google-listings-and-ads\n"
 
 #. Plugin Name of the plugin
@@ -52,7 +52,7 @@ msgstr ""
 
 #: src/Admin/Admin.php:358
 #: src/Menu/Settings.php:25
-#: js/build/commons.js:66
+#: js/build/commons.js:11
 #: js/build/index.js:19
 msgid "Settings"
 msgstr ""
@@ -259,266 +259,266 @@ msgid "The cut of the item. Recommended for apparel items."
 msgstr ""
 
 #. translators: 1: is a numeric account ID
-#: src/Ads/AccountService.php:112
+#: src/Ads/AccountService.php:113
 #, php-format
 msgid "Ads account %1$d already connected."
 msgstr ""
 
 #. translators: 1: is a string representing an unknown step name
-#: src/Ads/AccountService.php:189
+#: src/Ads/AccountService.php:190
 #, php-format
 msgid "Unknown ads account creation step %1$s"
 msgstr ""
 
-#: src/Ads/AccountService.php:273
+#: src/Ads/AccountService.php:274
 msgid "Account must be accepted before completing setup."
 msgstr ""
 
-#: src/Ads/AccountService.php:355
+#: src/Ads/AccountService.php:356
 msgid "Billing setup must be completed."
 msgstr ""
 
-#: src/Ads/AdsAssetGenerationService.php:114
-#: src/Ads/AdsAssetGenerationService.php:180
+#: src/Ads/AdsAssetGenerationService.php:115
+#: src/Ads/AdsAssetGenerationService.php:181
 msgid "Ads account ID is required."
 msgstr ""
 
 #. translators: %s Error message
-#: src/Ads/AdsAssetGenerationService.php:157
+#: src/Ads/AdsAssetGenerationService.php:158
 #, php-format
 msgid "Unable to generate text assets: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/Ads/AdsAssetGenerationService.php:226
+#: src/Ads/AdsAssetGenerationService.php:227
 #, php-format
 msgid "Unable to generate image assets: %s"
 msgstr ""
 
-#: src/Ads/AdsRecommendationsService.php:253
+#: src/Ads/AdsRecommendationsService.php:254
 #: src/API/Google/BudgetRecommendations.php:174
-#: js/build/commons.js:62
+#: js/build/commons.js:41
 #: js/build/price-benchmark.js:1
 msgid "Low"
 msgstr ""
 
-#: src/Ads/AdsRecommendationsService.php:256
-#: js/build/commons.js:62
+#: src/Ads/AdsRecommendationsService.php:257
+#: js/build/commons.js:41
 msgid "Current"
 msgstr ""
 
-#: src/Ads/AdsRecommendationsService.php:258
+#: src/Ads/AdsRecommendationsService.php:259
 #: src/API/Google/BudgetRecommendations.php:168
 #: src/API/Site/Controllers/Ads/BudgetRecommendationController.php:200
-#: js/build/commons.js:1
-#: js/build/commons.js:62
+#: js/build/commons.js:11
+#: js/build/commons.js:41
 msgid "Recommended"
 msgstr ""
 
-#: src/Ads/AdsRecommendationsService.php:260
+#: src/Ads/AdsRecommendationsService.php:261
 #: src/API/Google/BudgetRecommendations.php:171
-#: js/build/commons.js:62
+#: js/build/commons.js:41
 #: js/build/price-benchmark.js:1
 msgid "High"
 msgstr ""
 
-#: src/Ads/AdsRecommendationsService.php:313
+#: src/Ads/AdsRecommendationsService.php:314
 msgid "Unable to retrieve Google Ads recommendations."
 msgstr ""
 
 #. translators: 1: is an integer representing an unknown Term ID
-#: src/Ads/AssetSuggestionsService.php:173
+#: src/Ads/AssetSuggestionsService.php:174
 #, php-format
 msgid "Invalid Term ID or Post ID or site url %1$d"
 msgstr ""
 
-#: src/Ads/AssetSuggestionsService.php:242
 #: src/Ads/AssetSuggestionsService.php:243
 #: src/Ads/AssetSuggestionsService.php:244
-#: src/Ads/AssetSuggestionsService.php:721
+#: src/Ads/AssetSuggestionsService.php:245
+#: src/Ads/AssetSuggestionsService.php:722
 msgid "Homepage"
 msgstr ""
 
 #. translators: 1: is an integer representing an unknown Post ID
-#: src/Ads/AssetSuggestionsService.php:266
+#: src/Ads/AssetSuggestionsService.php:267
 #, php-format
 msgid "Invalid Post ID %1$d"
 msgstr ""
 
 #. translators: 1: is an integer representing an unknown Term ID
-#: src/Ads/AssetSuggestionsService.php:315
+#: src/Ads/AssetSuggestionsService.php:316
 #, php-format
 msgid "Invalid Term ID %1$d"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/Ads.php:85
+#: src/API/Google/Ads.php:86
 #, php-format
 msgid "Error retrieving accounts: %s"
 msgstr ""
 
-#: src/API/Google/Ads.php:354
+#: src/API/Google/Ads.php:355
 msgid "Unable to find the pending approval link sent from the Merchant Center account"
 msgstr ""
 
 #. translators: %s: current date time.
-#: src/API/Google/AdsAssetGroup.php:114
+#: src/API/Google/AdsAssetGroup.php:115
 #, php-format
 msgid "PMax %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsAssetGroup.php:130
+#: src/API/Google/AdsAssetGroup.php:131
 #, php-format
 msgid "Error creating asset group: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsAssetGroup.php:334
+#: src/API/Google/AdsAssetGroup.php:335
 #, php-format
 msgid "Error retrieving asset groups: %s"
 msgstr ""
 
-#: src/API/Google/AdsAssetGroup.php:467
+#: src/API/Google/AdsAssetGroup.php:468
 msgid "Each image type (landscape, square, portrait or logo) cannot contain duplicated images."
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsAssetGroup.php:473
+#: src/API/Google/AdsAssetGroup.php:474
 #, php-format
 msgid "Error editing asset group: %s"
 msgstr ""
 
-#: src/API/Google/AdsAssetGroup.php:562
+#: src/API/Google/AdsAssetGroup.php:563
 msgid "Invalid asset group ID"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsAssetGroupAsset.php:141
+#: src/API/Google/AdsAssetGroupAsset.php:142
 #, php-format
 msgid "Error retrieving asset groups assets: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsAssetGroupAsset.php:213
+#: src/API/Google/AdsAssetGroupAsset.php:214
 #, php-format
 msgid "Error retrieving asset groups assets by final url: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsCampaign.php:186
+#: src/API/Google/AdsCampaign.php:187
 #, php-format
 msgid "Error retrieving campaigns: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsCampaign.php:232
+#: src/API/Google/AdsCampaign.php:233
 #, php-format
 msgid "Error retrieving campaigns missing EU political declaration: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsCampaign.php:278
+#: src/API/Google/AdsCampaign.php:279
 #, php-format
 msgid "Error retrieving campaign: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsCampaign.php:382
+#: src/API/Google/AdsCampaign.php:383
 #, php-format
 msgid "Error creating campaign: %s"
 msgstr ""
 
-#: src/API/Google/AdsCampaign.php:385
+#: src/API/Google/AdsCampaign.php:386
 msgid "A campaign with this name already exists"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsCampaign.php:446
+#: src/API/Google/AdsCampaign.php:447
 #, php-format
 msgid "Error editing campaign: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsCampaign.php:490
+#: src/API/Google/AdsCampaign.php:491
 #, php-format
 msgid "Error updating EU political advertising flag: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsCampaign.php:552
+#: src/API/Google/AdsCampaign.php:553
 #, php-format
 msgid "Error deleting campaign: %s"
 msgstr ""
 
-#: src/API/Google/AdsCampaign.php:555
+#: src/API/Google/AdsCampaign.php:556
 msgid "This campaign has already been deleted"
 msgstr ""
 
-#: src/API/Google/AdsCampaign.php:933
+#: src/API/Google/AdsCampaign.php:934
 msgid "Invalid campaign ID"
 msgstr ""
 
-#: src/API/Google/AdsCampaign.php:1168
+#: src/API/Google/AdsCampaign.php:1169
 msgid "Invalid geo target location ID"
 msgstr ""
 
 #. translators: %d Campaign ID
-#: src/API/Google/AdsCampaignBudget.php:131
+#: src/API/Google/AdsCampaignBudget.php:132
 #, php-format
 msgid "No budget found for campaign %d"
 msgstr ""
 
-#: src/API/Google/AdsCampaignBudget.php:147
+#: src/API/Google/AdsCampaignBudget.php:148
 msgid "Invalid campaign budget ID"
 msgstr ""
 
 #. translators: %1 is a random 4-digit string
-#: src/API/Google/AdsConversionAction.php:70
+#: src/API/Google/AdsConversionAction.php:71
 #, php-format
 msgid "[%1$s] Google for WooCommerce purchase action"
 msgstr ""
 
-#: src/API/Google/AdsConversionAction.php:107
+#: src/API/Google/AdsConversionAction.php:108
 msgid "A conversion action with this name already exists"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsConversionAction.php:116
+#: src/API/Google/AdsConversionAction.php:117
 #, php-format
 msgid "Error creating conversion action: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsConversionAction.php:157
+#: src/API/Google/AdsConversionAction.php:158
 #, php-format
 msgid "Error retrieving conversion action: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsIncentives.php:207
+#: src/API/Google/AdsIncentives.php:208
 #, php-format
 msgid "Error applying incentive: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/AdsReport.php:175
+#: src/API/Google/AdsReport.php:176
 #, php-format
 msgid "Unable to retrieve report data: %s"
 msgstr ""
 
-#: src/API/Google/Connection.php:68
-#: src/API/Google/Connection.php:72
+#: src/API/Google/Connection.php:69
+#: src/API/Google/Connection.php:73
 msgid "Unable to connect Google account"
 msgstr ""
 
-#: src/API/Google/Connection.php:123
-#: src/API/YouTube/Connection.php:111
+#: src/API/Google/Connection.php:124
+#: src/API/YouTube/Connection.php:112
 msgid "Invalid response when retrieving status"
 msgstr ""
 
-#: src/API/Google/Connection.php:128
-#: src/API/YouTube/Connection.php:116
+#: src/API/Google/Connection.php:129
+#: src/API/YouTube/Connection.php:117
 msgid "Error retrieving status"
 msgstr ""
 
@@ -526,164 +526,164 @@ msgstr ""
 msgid "An unknown error occurred in the Shopping Content Service."
 msgstr ""
 
-#: src/API/Google/Merchant.php:119
+#: src/API/Google/Merchant.php:120
 msgid "Website already claimed, use overwrite to complete the process."
 msgstr ""
 
-#: src/API/Google/Merchant.php:125
+#: src/API/Google/Merchant.php:126
 msgid "Unable to claim website."
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/Merchant.php:245
+#: src/API/Google/Merchant.php:246
 #, php-format
 msgid "Unable to retrieve Merchant Center account: %s"
 msgstr ""
 
-#: src/API/Google/Merchant.php:297
+#: src/API/Google/Merchant.php:298
 msgid "Unable to retrieve Merchant Center account status."
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/Merchant.php:320
+#: src/API/Google/Merchant.php:321
 #, php-format
 msgid "Unable to update Merchant Center account: %s"
 msgstr ""
 
-#: src/API/Google/MerchantPriceBenchmarks.php:75
+#: src/API/Google/MerchantPriceBenchmarks.php:76
 msgid "Unable to retrieve price benchmark data"
 msgstr ""
 
-#: src/API/Google/MerchantPriceBenchmarks.php:120
+#: src/API/Google/MerchantPriceBenchmarks.php:121
 msgid "Unable to retrieve price insights data"
 msgstr ""
 
-#: src/API/Google/MerchantPriceBenchmarks.php:165
+#: src/API/Google/MerchantPriceBenchmarks.php:166
 msgid "Unable to retrieve product metrics data"
 msgstr ""
 
-#: src/API/Google/MerchantReport.php:109
+#: src/API/Google/MerchantReport.php:114
 msgid "Unable to retrieve Product View Report."
 msgstr ""
 
-#: src/API/Google/MerchantReport.php:196
+#: src/API/Google/MerchantReport.php:190
 msgid "Unable to retrieve report data."
 msgstr ""
 
-#: src/API/Google/Middleware.php:78
+#: src/API/Google/Middleware.php:79
 msgid "Error retrieving accounts"
 msgstr ""
 
-#: src/API/Google/Middleware.php:95
-#: src/API/Google/Middleware.php:330
+#: src/API/Google/Middleware.php:96
+#: src/API/Google/Middleware.php:331
 msgid "Unable to log accepted TOS"
 msgstr ""
 
-#: src/API/Google/Middleware.php:100
-#: src/API/Google/SiteVerification.php:59
-#: src/MerchantCenter/AccountService.php:471
+#: src/API/Google/Middleware.php:101
+#: src/API/Google/SiteVerification.php:60
+#: src/MerchantCenter/AccountService.php:472
 msgid "Invalid site URL."
 msgstr ""
 
-#: src/API/Google/Middleware.php:165
-#: src/API/Google/Middleware.php:370
+#: src/API/Google/Middleware.php:166
+#: src/API/Google/Middleware.php:371
 msgid "Invalid response when creating account"
 msgstr ""
 
-#: src/API/Google/Middleware.php:168
-#: src/API/Google/Middleware.php:376
+#: src/API/Google/Middleware.php:169
+#: src/API/Google/Middleware.php:377
 msgid "Error creating account"
 msgstr ""
 
-#: src/API/Google/Middleware.php:238
+#: src/API/Google/Middleware.php:239
 msgid "Invalid response when linking merchant to MCA"
 msgstr ""
 
-#: src/API/Google/Middleware.php:242
+#: src/API/Google/Middleware.php:243
 msgid "Error linking merchant to MCA"
 msgstr ""
 
-#: src/API/Google/Middleware.php:281
+#: src/API/Google/Middleware.php:282
 msgid "Invalid response when claiming website"
 msgstr ""
 
-#: src/API/Google/Middleware.php:292
-#: src/API/Google/Middleware.php:305
+#: src/API/Google/Middleware.php:293
+#: src/API/Google/Middleware.php:306
 msgid "Error claiming website"
 msgstr ""
 
-#: src/API/Google/Middleware.php:324
+#: src/API/Google/Middleware.php:325
 msgid "Store country is not supported"
 msgstr ""
 
-#: src/API/Google/Middleware.php:420
+#: src/API/Google/Middleware.php:421
 msgid "Invalid response when linking account"
 msgstr ""
 
-#: src/API/Google/Middleware.php:429
+#: src/API/Google/Middleware.php:430
 msgid "Error linking ads account"
 msgstr ""
 
-#: src/API/Google/Middleware.php:440
+#: src/API/Google/Middleware.php:441
 msgid "Error linking account"
 msgstr ""
 
-#: src/API/Google/Middleware.php:601
+#: src/API/Google/Middleware.php:602
 msgid "Merchant ID must be set before updating in SDI."
 msgstr ""
 
-#: src/API/Google/Middleware.php:624
+#: src/API/Google/Middleware.php:625
 msgid "Invalid response when updating merchant account in Google Partner APP."
 msgstr ""
 
-#: src/API/Google/Middleware.php:632
+#: src/API/Google/Middleware.php:633
 msgid "Error updating merchant account in Google Partner APP."
 msgstr ""
 
-#: src/API/Google/Middleware.php:729
+#: src/API/Google/Middleware.php:730
 msgid "Invalid response authenticating partner app."
 msgstr ""
 
-#: src/API/Google/Middleware.php:739
+#: src/API/Google/Middleware.php:740
 msgid "Error authenticating Google Partner APP."
 msgstr ""
 
-#: src/API/Google/Middleware.php:774
+#: src/API/Google/Middleware.php:775
 msgid "Invalid response when fetching incentive credits."
 msgstr ""
 
-#: src/API/Google/Middleware.php:815
+#: src/API/Google/Middleware.php:816
 msgid "Error fetching incentive credits."
 msgstr ""
 
-#: src/API/Google/Middleware.php:836
-#: src/API/Google/Middleware.php:853
+#: src/API/Google/Middleware.php:837
+#: src/API/Google/Middleware.php:854
 msgid "Invalid response when retrieving MCA ID from WooCommerce Connect Server."
 msgstr ""
 
-#: src/API/Google/Middleware.php:863
+#: src/API/Google/Middleware.php:864
 msgid "Error retrieving MCA ID from WooCommerce Connect Server"
 msgstr ""
 
-#: src/API/Google/Query/AdsQuery.php:81
+#: src/API/Google/Query/AdsQuery.php:82
 msgid "No result from query"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/SiteVerification.php:126
+#: src/API/Google/SiteVerification.php:127
 #, php-format
 msgid "Unable to retrieve site verification token: %s"
 msgstr ""
 
 #. translators: %s Error message
-#: src/API/Google/SiteVerification.php:168
+#: src/API/Google/SiteVerification.php:169
 #, php-format
 msgid "Unable to insert site verification: %s"
 msgstr ""
 
 #: src/API/Site/Controllers/Ads/AccountController.php:161
-#: src/API/Site/Controllers/Google/AccountController.php:154
-#: src/API/Site/Controllers/Jetpack/AccountController.php:174
+#: src/API/Site/Controllers/Google/AccountController.php:158
+#: src/API/Site/Controllers/Jetpack/AccountController.php:178
 #: src/API/Site/Controllers/YouTube/AccountController.php:120
 msgid "Successfully disconnected."
 msgstr ""
@@ -773,7 +773,7 @@ msgstr ""
 
 #: src/API/Site/Controllers/Ads/AssetGroupController.php:226
 #: src/API/Site/Controllers/Ads/CampaignController.php:494
-#: js/build/commons.js:66
+#: js/build/commons.js:1
 msgid "Final URL"
 msgstr ""
 
@@ -1290,15 +1290,15 @@ msgstr ""
 msgid "Country is not supported"
 msgstr ""
 
-#: src/API/Site/Controllers/Google/AccountController.php:129
+#: src/API/Site/Controllers/Google/AccountController.php:133
 msgid "Indicates the next page name mapped to the redirect URL when back from Google authorization."
 msgstr ""
 
-#: src/API/Site/Controllers/Google/AccountController.php:136
+#: src/API/Site/Controllers/Google/AccountController.php:140
 msgid "Indicate the Google account to suggest for authorization."
 msgstr ""
 
-#: src/API/Site/Controllers/Google/AccountController.php:209
+#: src/API/Site/Controllers/Google/AccountController.php:213
 msgid "The URL for making a connection to Google."
 msgstr ""
 
@@ -1310,11 +1310,11 @@ msgstr ""
 msgid "GTIN Migration successfully started."
 msgstr ""
 
-#: src/API/Site/Controllers/Jetpack/AccountController.php:152
+#: src/API/Site/Controllers/Jetpack/AccountController.php:156
 msgid "Indicates the next page name mapped to the redirect URL when back from Jetpack authorization."
 msgstr ""
 
-#: src/API/Site/Controllers/Jetpack/AccountController.php:273
+#: src/API/Site/Controllers/Jetpack/AccountController.php:277
 msgid "The URL for making a connection to Jetpack (wordpress.com)."
 msgstr ""
 
@@ -1761,31 +1761,31 @@ msgstr ""
 msgid "New Visibility status for the specified products."
 msgstr ""
 
-#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:125
+#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:126
 msgid "Your account is not eligible for a new review request."
 msgstr ""
 
-#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:137
+#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:138
 msgid "This review request must be completed in Merchant Center."
 msgstr ""
 
-#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:200
+#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:201
 msgid "The status of the last review."
 msgstr ""
 
-#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:206
+#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:207
 msgid "The issues related to the Merchant Center to be reviewed and addressed before approval."
 msgstr ""
 
-#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:215
+#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:216
 msgid "The account-review action to request a new review, or null when none is available."
 msgstr ""
 
-#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:224
+#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:225
 msgid "Merchant Center URL for the redirect action; absent for in-app actions."
 msgstr ""
 
-#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:342
+#: src/API/Site/Controllers/MerchantCenter/RequestReviewController.php:343
 msgid "Error getting account review status."
 msgstr ""
 
@@ -1942,20 +1942,28 @@ msgstr ""
 msgid "Successfully deleted onboarding completion status."
 msgstr ""
 
-#: src/API/Site/Controllers/RestAPI/AuthController.php:152
+#: src/API/Site/Controllers/ReferrerParamsTrait.php:28
+msgid "Indicates the type of referrer that initiated this connection, to preserve attribution across the OAuth redirect."
+msgstr ""
+
+#: src/API/Site/Controllers/ReferrerParamsTrait.php:34
+msgid "Indicates the ID of the referrer that initiated this connection, to preserve attribution across the OAuth redirect."
+msgstr ""
+
+#: src/API/Site/Controllers/RestAPI/AuthController.php:158
 msgid "Indicates the next page name mapped to the redirect URL when redirected back from Google WPCOM App authorization."
 msgstr ""
 
-#: src/API/Site/Controllers/RestAPI/AuthController.php:169
-#: src/API/Site/Controllers/RestAPI/AuthController.php:198
+#: src/API/Site/Controllers/RestAPI/AuthController.php:175
+#: src/API/Site/Controllers/RestAPI/AuthController.php:204
 msgid "The status of the merchant granting access to Google's WPCOM app"
 msgstr ""
 
-#: src/API/Site/Controllers/RestAPI/AuthController.php:176
+#: src/API/Site/Controllers/RestAPI/AuthController.php:182
 msgid "The nonce provided by Google in the URL query parameter when Google redirects back to merchant's site"
 msgstr ""
 
-#: src/API/Site/Controllers/RestAPI/AuthController.php:193
+#: src/API/Site/Controllers/RestAPI/AuthController.php:199
 msgid "The authorization URL for granting access to Google WPCOM App."
 msgstr ""
 
@@ -2002,8 +2010,8 @@ msgid "Successfully completed YouTube setup."
 msgstr ""
 
 #: src/API/Site/Controllers/YouTube/AccountController.php:206
-#: src/API/YouTube/Connection.php:191
-#: src/API/YouTube/Connection.php:198
+#: src/API/YouTube/Connection.php:192
+#: src/API/YouTube/Connection.php:199
 msgid "Unable to complete YouTube setup."
 msgstr ""
 
@@ -2011,38 +2019,38 @@ msgstr ""
 msgid "The URL for making a connection to YouTube."
 msgstr ""
 
-#: src/API/YouTube/Connection.php:61
-#: src/API/YouTube/Connection.php:65
+#: src/API/YouTube/Connection.php:62
+#: src/API/YouTube/Connection.php:66
 msgid "Unable to connect YouTube account"
 msgstr ""
 
-#: src/API/YouTube/Connection.php:139
+#: src/API/YouTube/Connection.php:140
 msgid "Invalid response when retrieving channels"
 msgstr ""
 
-#: src/API/YouTube/Connection.php:144
+#: src/API/YouTube/Connection.php:145
 msgid "Error retrieving channels"
 msgstr ""
 
-#: src/API/YouTube/Connection.php:160
+#: src/API/YouTube/Connection.php:161
 msgid "Merchant Center account is not configured."
 msgstr ""
 
 #. translators: %s: file path
-#: src/API/YouTube/Connection.php:278
+#: src/API/YouTube/Connection.php:279
 #, php-format
 msgid "Unable to read file: %s"
 msgstr ""
 
 #. translators: 1: file path, 2: HTTP status code
-#: src/API/YouTube/Connection.php:305
+#: src/API/YouTube/Connection.php:306
 #, php-format
 msgid "Upload failed for %1$s: HTTP %2$s"
 msgstr ""
 
 #. translators: 1: file path, 2: error message
-#: src/API/YouTube/Connection.php:315
-#: src/API/YouTube/Connection.php:325
+#: src/API/YouTube/Connection.php:316
+#: src/API/YouTube/Connection.php:326
 #, php-format
 msgid "Error uploading %1$s: %2$s"
 msgstr ""
@@ -2057,12 +2065,12 @@ msgstr ""
 msgid "Your installation of Google for WooCommerce is incomplete. If you installed from GitHub, %1$splease refer to this document%2$s to set up your development environment."
 msgstr ""
 
-#: src/Coupon/CouponSyncer.php:522
-#: src/Product/ProductSyncer.php:594
+#: src/Coupon/CouponSyncer.php:523
+#: src/Product/ProductSyncer.php:602
 msgid "Google Merchant Center has not been set up correctly. Please review your configuration."
 msgstr ""
 
-#: src/Coupon/CouponSyncer.php:537
+#: src/Coupon/CouponSyncer.php:538
 msgid "Pushing coupons will not run if the store is not ready for syncing."
 msgstr ""
 
@@ -2200,7 +2208,7 @@ msgid "Attribute Mapping"
 msgstr ""
 
 #: src/Menu/ProductFeed.php:25
-#: js/build/commons.js:66
+#: js/build/commons.js:11
 #: js/build/index.js:19
 #: js/build/product-feed.js:10
 #: js/build/reports.js:1
@@ -2209,7 +2217,7 @@ msgid "Product Feed"
 msgstr ""
 
 #: src/Menu/Reports.php:25
-#: js/build/commons.js:66
+#: js/build/commons.js:11
 #: js/build/index.js:19
 msgid "Reports"
 msgstr ""
@@ -2222,77 +2230,77 @@ msgstr ""
 msgid "MC Setup Wizard"
 msgstr ""
 
-#: src/MerchantCenter/AccountService.php:195
+#: src/MerchantCenter/AccountService.php:196
 msgid "Attempting invalid URL switch."
 msgstr ""
 
-#: src/MerchantCenter/AccountService.php:218
+#: src/MerchantCenter/AccountService.php:219
 msgid "Attempting invalid claim overwrite."
 msgstr ""
 
 #. translators: 1: is a string representing an unknown step name
-#: src/MerchantCenter/AccountService.php:386
+#: src/MerchantCenter/AccountService.php:387
 #, php-format
 msgid "Unknown merchant account creation step %1$s"
 msgstr ""
 
-#: src/MerchantCenter/AccountService.php:418
+#: src/MerchantCenter/AccountService.php:419
 msgid "Unable to claim website URL with this Merchant Center Account."
 msgstr ""
 
 #. translators: 1: is a numeric account ID
-#: src/MerchantCenter/AccountService.php:450
+#: src/MerchantCenter/AccountService.php:451
 #, php-format
 msgid "Merchant Center account already connected: %d"
 msgstr ""
 
 #. translators: 1: is a website URL (without the protocol)
-#: src/MerchantCenter/AccountService.php:499
+#: src/MerchantCenter/AccountService.php:500
 #, php-format
 msgid "This Merchant Center account already has a verified and claimed URL, %1$s"
 msgstr ""
 
-#: src/MerchantCenter/AccountService.php:614
+#: src/MerchantCenter/AccountService.php:615
 msgid "No stored nonce found in the database, skip updating auth status."
 msgstr ""
 
-#: src/MerchantCenter/AccountService.php:620
+#: src/MerchantCenter/AccountService.php:621
 msgid "Nonce is not provided, skip updating auth status."
 msgstr ""
 
-#: src/MerchantCenter/AccountService.php:627
+#: src/MerchantCenter/AccountService.php:628
 msgid "Nonces mismatch, skip updating auth status."
 msgstr ""
 
-#: src/MerchantCenter/MarketService.php:474
+#: src/MerchantCenter/MarketService.php:475
 msgid "Primary Market"
 msgstr ""
 
-#: src/MerchantCenter/MerchantCenterService.php:288
+#: src/MerchantCenter/MerchantCenterService.php:324
 msgid "No contact information."
 msgstr ""
 
-#: src/MerchantCenter/MerchantCenterService.php:289
+#: src/MerchantCenter/MerchantCenterService.php:325
 msgid "Add store contact information"
 msgstr ""
 
-#: src/MerchantCenter/MerchantStatuses.php:148
+#: src/MerchantCenter/MerchantStatuses.php:149
 msgid "The scheduled job has been paused due to a high failure rate."
 msgstr ""
 
-#: src/MerchantCenter/MerchantStatuses.php:277
+#: src/MerchantCenter/MerchantStatuses.php:278
 msgid "Google account is not connected."
 msgstr ""
 
-#: src/MerchantCenter/MerchantStatuses.php:280
+#: src/MerchantCenter/MerchantStatuses.php:281
 msgid "Merchant Center account is not set up."
 msgstr ""
 
-#: src/MerchantCenter/MerchantStatuses.php:522
+#: src/MerchantCenter/MerchantStatuses.php:527
 msgid "All products"
 msgstr ""
 
-#: src/MerchantCenter/MerchantStatuses.php:673
+#: src/MerchantCenter/MerchantStatuses.php:744
 msgid "Update this attribute in your product data"
 msgstr ""
 
@@ -2324,15 +2332,15 @@ msgstr ""
 msgid "Leave a review"
 msgstr ""
 
-#: src/Notes/ReconnectWordPress.php:59
+#: src/Notes/ReconnectWordPress.php:61
 msgid "Re-connect your store to Google for WooCommerce"
 msgstr ""
 
-#: src/Notes/ReconnectWordPress.php:62
+#: src/Notes/ReconnectWordPress.php:64
 msgid "Your WordPress.com account has been disconnected from Google for WooCommerce. Connect your WordPress.com account again to ensure your products stay listed on Google through the Google for WooCommerce extension.<br/><br/>If you do not re-connect, any existing listings may be removed from Google."
 msgstr ""
 
-#: src/Notes/ReconnectWordPress.php:70
+#: src/Notes/ReconnectWordPress.php:72
 msgid "Go to Google for WooCommerce"
 msgstr ""
 
@@ -2379,10 +2387,10 @@ msgid "Complete Setup"
 msgstr ""
 
 #: src/Notes/SetupCampaign.php:81
-#: js/build/commons.js:35
-#: js/build/commons.js:56
-#: js/build/commons.js:59
-#: js/build/commons.js:62
+#: js/build/commons.js:10
+#: js/build/commons.js:14
+#: js/build/commons.js:17
+#: js/build/commons.js:20
 #: js/build/markets.js:1
 #: js/build/product-feed.js:1
 #: js/build/settings.js:2
@@ -2608,7 +2616,7 @@ msgstr ""
 msgid "Size Type"
 msgstr ""
 
-#: src/Product/ProductSyncer.php:605
+#: src/Product/ProductSyncer.php:613
 msgid "Pushing products will not run if the store is not ready for syncing."
 msgstr ""
 
@@ -2644,13 +2652,13 @@ msgid_plural "%1$d GTIN were migrated in %2$d seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Value/ChannelVisibility.php:74
+#: src/Value/ChannelVisibility.php:75
 #: js/build/product-feed.js:4
 #: js/build/product-feed.js:10
 msgid "Sync and show"
 msgstr ""
 
-#: src/Value/ChannelVisibility.php:75
+#: src/Value/ChannelVisibility.php:76
 msgid "Don't Sync and show"
 msgstr ""
 
@@ -2765,11 +2773,11 @@ msgid "Create your campaign"
 msgstr ""
 
 #: js/build/ads-onboarding.js:1
-#: js/build/commons.js:62
-#: js/build/dashboard.js:1
+#: js/build/commons.js:20
 #: js/build/dashboard.js:7
+#: js/build/dashboard.js:13
 #: js/build/google-ads-promo.js:1
-#: js/build/product-feed.js:1
+#: js/build/product-feed.js:16
 msgid "Create campaign"
 msgstr ""
 
@@ -2887,7 +2895,7 @@ msgid "Create attribute rule"
 msgstr ""
 
 #: js/build/attribute-mapping.js:10
-#: js/build/commons.js:62
+#: js/build/commons.js:38
 #: js/build/dashboard.js:13
 #: js/build/markets.js:7
 #: js/build/markets.js:16
@@ -2980,7 +2988,7 @@ msgid "Attribute Mapping configuration"
 msgstr ""
 
 #: js/build/attribute-mapping.js:10
-#: js/build/commons.js:32
+#: js/build/commons.js:7
 #: js/build/dashboard.js:1
 #: js/build/markets.js:33
 #: js/build/onboarding.js:23
@@ -3013,15 +3021,15 @@ msgstr ""
 #: js/build/channel-visibility-google-ads-promo.js:1
 #: js/build/commons.js:1
 #: js/build/commons.js:66
-#: js/build/dashboard.js:1
+#: js/build/dashboard.js:13
 #: js/build/google-ads-promo.js:1
 #: js/build/notifications-system.js:19
-#: js/build/product-feed.js:1
+#: js/build/product-feed.js:16
 msgid "Google Logo"
 msgstr ""
 
 #: js/build/channel-visibility-google-ads-promo.js:1
-#: js/build/commons.js:66
+#: js/build/commons.js:1
 msgid "Google"
 msgstr ""
 
@@ -3047,57 +3055,15 @@ msgid "Sync your products to reach customers when they’re searching for produc
 msgstr ""
 
 #: js/build/commons.js:1
-msgid "Google Ads Creation Failed"
+msgid "Google Merchant Center Logo"
 msgstr ""
 
 #: js/build/commons.js:1
-msgid "Where do you want to sell your products?"
+msgid "Google Ads Logo"
 msgstr ""
 
 #: js/build/commons.js:1
-msgid "Your store should already have the appropriate shipping and tax rates (if required) for potential customers in your selected location(s)."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Your listings will be shown in all supported countries."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Where do you want to advertise your services?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Where do you offer your services?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Your ad will be shown in all supported countries."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/markets.js:1
-msgid "Audience"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Location"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Selected countries only"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Can’t find a country? Only supported countries can be selected."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/commons.js:72
-msgid "All countries"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Google Shopping Logo"
+msgid "WordPress.com Logo"
 msgstr ""
 
 #: js/build/commons.js:1
@@ -3106,443 +3072,41 @@ msgid "YouTube Logo"
 msgstr ""
 
 #: js/build/commons.js:1
-msgid "LEARN MORE"
+msgid "Final URL icon"
 msgstr ""
 
 #: js/build/commons.js:1
-msgid "Gmail Logo"
+#: js/build/reports.js:1
+msgid "Google Merchant Center"
 msgstr ""
 
 #: js/build/commons.js:1
-msgid "Simulated the info and close buttons at the corner of a Google ad"
+msgid "Required to sync products and list on Google."
 msgstr ""
 
 #: js/build/commons.js:1
-msgctxt "A sample product title for demonstrating the paid ads shown on Google services."
-msgid "White tee"
+#: js/build/dashboard.js:1
+msgid "Google Ads"
 msgstr ""
 
 #: js/build/commons.js:1
-msgctxt "A sample product price for demonstrating the paid ads shown on Google services."
-msgid "$10.00"
+msgid "Required to set up conversion measurement and create campaigns."
 msgstr ""
 
 #: js/build/commons.js:1
-msgctxt "A sample name of an online shop for demonstrating the paid ads shown on Google services."
-msgid "Colleen's Tee Store"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Preview product ad"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Each of your product variants will have its own ad. Previews shown here are examples and don't include all possible formats."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Ad Preview"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Previews shown here are examples and don't include all possible formats."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "To comply with EU political ads rules, you can’t create or edit campaigns in this account until the required declarations are added."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "You can't edit your campaigns until you complete the EU political ads declaration in Google Ads."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Missing EU ads declaration"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Go to Google Ads"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Or, connect to a different Google Ads account"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Claim your new Google Ads account to complete this setup."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:7
-msgid "Claim your Google Ads account"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:7
-msgid "Claim account in Google Ads"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Claiming your account lets you access Google Ads and sets up conversion measurement. You must claim your account in the next 20 days."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "When you claim your account, you’ll be asked to set up billing. This step is optional and you only need to complete it if you want to create Google Ads campaigns. If you don’t want to set up billing, close the window after you’ve clicked ‘Continue’ on the next page."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:1
-msgid "Create Google Ads Account"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:23
-msgid "Create account"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "By creating a Google Ads account, you agree to the following terms and conditions:"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "You agree to comply with Google’s terms and policies, including <policylink>Shopping ads policies</policylink> and <termslink>Google Ads Terms and Conditions</termslink>."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:23
-msgid "I have read and accept these terms"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:1
-#: js/build/onboarding.js:7
-#: js/build/onboarding.js:23
-msgid "Creating…"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Updating…"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Claim Account"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Or, use your existing Google Ads account"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/commons.js:66
-#: js/build/onboarding.js:1
-#: js/build/onboarding.js:23
 #: js/build/settings.js:2
-msgid "Connect"
+msgid "Store address"
 msgstr ""
 
 #: js/build/commons.js:1
-msgid "Connect to an existing account"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "If you manage multiple sub-accounts in Google Ads, please connect the relevant sub-account, not a manager account. <link>Learn more</link>"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:1
-#: js/build/onboarding.js:23
-msgid "Connecting…"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Unable to connect your Google Ads account. Please try again later."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:1
-msgid "Or, create a new Google Ads account"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Unable to get Google authorization page. Please try again later."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/commons.js:66
-msgid "Allow full access"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Conversion measurement has been set up. You can create a campaign later."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Successfully connected through Jetpack"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Pencil icon"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Note: The currency set in your Google Ads account is <adsCurrency />, which is different from your store currency, <storeCurrency />. <readMoreLink>Read more</readMoreLink>"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Add campaign"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Same Day"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/commons.js:62
-#: js/build/markets.js:16
-msgid "day"
-msgid_plural "days"
-msgstr[0] ""
-msgstr[1] ""
-
-#: js/build/commons.js:1
-msgid "Increment"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Decrement"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "to"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Help"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Unable to complete your Google Ads account setup. Please try again later."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "You do not have billing information set up in your Google Ads account. Once you have set up billing, you can start running ads."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "You will be directed to Google Ads for this step. In case your browser is unable to open the pop-up, <link>click here instead <icon /></link>."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Set up billing"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Billing method for Google Ads added successfully"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:23
-msgid "Set your budget"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "With Performance Max campaigns, you can set your own budget and Google’s Smart Bidding technology will serve the most appropriate ad, with the optimal bid, to maximize campaign performance. You only pay when people click on your ads, and you can start or stop your campaign whenever you want."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Average daily budget"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "These values are based on your settings and the budgets of similar advertisers."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "We recommend running campaigns at least 1 month so it can learn to optimize for your business."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "How does Google Ads work?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Google Ads works by displaying your ad when people search online for the products and services you offer. By leveraging smart technology, Google Ads helps get your ads in front of potential customers at just the moment they’re ready to take action."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "What is a product feed?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Your product feed is the central data source that contains a list of products you want to advertise through Merchant Center. By default, Google syncs all active products from your WooCommerce inventory. You can choose to exclude products later after this setup."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "How much does Google Ads cost?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "With Google Ads, you decide how much to spend. There’s no minimum spend, and no time commitment. Your costs may vary from day to day, but you won’t be charged more than your daily budget times the number of days in a month. You pay only for the actual clicks and calls that your ad receives."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/get-started-page.js:1
-msgid "Where will my products appear?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "If you’re selling in the US, then eligible product feed can appear in search results across Google Search, Google Images, and the Google Shopping tab. If you’re selling outside the US, product feed will appear on the Shopping tab."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "If you’re running a Performance Max Campaign, your approved products can appear on Google Search, Google Maps, the Shopping tab, Gmail, Youtube, the Google Display Network, and Discover feed."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "How long until I see results with Google Ads?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Google’s Performance Max campaigns are powered by machine learning models. These models train and adapt based on the data you provide in your campaign. This means performance optimization can take time. Typically, this learning process takes 1—2 weeks."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Where will my services appear?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "If you’re running a Performance Max Campaign, your services can appear on Google Search, Google Maps, Gmail, Youtube, the Google Display Network, and Discover feed. This will only be applicable in the locations your services are offered."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "What is a PMax campaign for services?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "PMax campaign for services uses your website's landing pages and creative assets (images, videos, text) to find leads across Search, YouTube, Display, and Maps."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "I don't have physical products. Can I still use this?"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Yes! It’s designed specifically for service providers ({give_examples}, etc.). It treats your \"Services\" as the offer and optimizes for leads or appointments."
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/commons.js:56
-msgid "What makes these ads different from product ads?"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/commons.js:56
-msgid "Product ads are focused on a tangible product being sold. These ads are for services-based businesses largely for lead generation (i.e. appointment booking). Online sales (non-feed) is also a possible objective."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Performance Max puts your products in front of active customers on Search, Shopping, YouTube, and more."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "By combining your unique business insights with Google AI, you'll capture high-value customers by reaching the right audience at the right time—while staying perfectly aligned with your budget and goals."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Performance Max uses the best of Google’s AI to show the most impactful ads for your products at the right time and place."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Google will use your product data to create ads for this campaign."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Performance Max campaign"
-msgstr ""
-
-#: js/build/commons.js:1
-#: js/build/onboarding.js:23
-msgid "Learn more about Performance Max"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Grow your business and connect with high-intent shoppers across Google—all from a single campaign."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "EU political content"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "My ads include political content as defined by Google's <link>EU political content policy</link>."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "If selected, your ads will not run in the EU unless you complete Google's political advertiser verification."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Your ads will not run in the EU"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "EU regulations"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Advertisers must confirm whether their ads include political content."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Ads credit offer"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "New advertisers are eligible for free Google Ads credits."
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Choose a sign-up offer to jumpstart your first campaign"
-msgstr ""
-
-#: js/build/commons.js:1
-msgid "Select an offer that fits your monthly budget. New advertisers will receive an ad credit after meeting the minimum spend requirement for the selected offer. <link>Terms and conditions apply</link>."
-msgstr ""
-
-#. translators: %s: amount in users' currency
-#: js/build/commons.js:2
-#, js-format
-msgid "Get <strong>%s</strong>"
-msgstr ""
-
-#. translators: %s: amount in users' currency
-#: js/build/commons.js:3
-#, js-format
-msgid "Spend %s with Google Ads in the first 60 days to unlock the credit."
-msgstr ""
-
-#: js/build/commons.js:3
-msgid "Performance Max campaigns are automatically optimized for you by Google. <link>See what your ads will look like.</link>"
-msgstr ""
-
-#: js/build/commons.js:3
-msgid "services"
-msgstr ""
-
-#: js/build/commons.js:3
-msgid "products"
-msgstr ""
-
-#. translators: %s: products or services
-#: js/build/commons.js:4
-#, js-format
-msgid "You’re ready to set up a Performance Max campaign to drive more sales with ads. Your %s will be included in the campaign after they’re approved."
+#: js/build/settings.js:2
+msgid "YouTube"
 msgstr ""
 
 #. translators: 1: account domain, 2: account ID.
 #. translators: 1: website URL, 2: account ID.
 #. translators: 1: the new URL, 2: account ID.
-#: js/build/commons.js:7
+#: js/build/commons.js:4
 #: js/build/onboarding.js:13
 #: js/build/onboarding.js:16
 #: js/build/onboarding.js:19
@@ -3550,449 +3114,952 @@ msgstr ""
 msgid "%1$s (%2$s)"
 msgstr ""
 
+#. translators: 1: number of character count. 2: the maximum number of character count.
 #: js/build/commons.js:7
-msgid "Unable to complete your ads setup. Please try again later."
-msgstr ""
-
-#. translators: %1$s: minimum daily budget
-#: js/build/commons.js:8
 #, js-format
-msgid "Please make sure daily average cost is at least %s"
+msgid "%1$d/%2$d characters"
 msgstr ""
 
-#: js/build/commons.js:8
-msgid "Please make sure daily average cost is greater than 0."
-msgstr ""
-
-#. translators: 1: The minimal number of this item. 2: Asset field name.
-#: js/build/commons.js:11
-#, js-format
-msgid "Add at least %1$d %2$s image"
-msgid_plural "Add at least %1$d %2$s images"
-msgstr[0] ""
-msgstr[1] ""
-
-#. translators: Asset field name.
-#: js/build/commons.js:14
-#, js-format
-msgid "The %s in the first field is required"
-msgstr ""
-
-#. translators: 1: Asset field name.
-#: js/build/commons.js:17
-#, js-format
-msgid "The %1$s is required"
-msgstr ""
-
-#. translators: 1: Asset field name. 2: The minimal number of this item.
-#: js/build/commons.js:20
-#, js-format
-msgid "Add at least %2$d %1$s"
-msgstr ""
-
-#. translators: Asset field name.
-#: js/build/commons.js:23
-#, js-format
-msgid "%s are identical"
-msgstr ""
-
-#: js/build/commons.js:23
-msgid "Character limit exceeded"
-msgstr ""
-
-#. translators: 1: Asset field name. 2: The sequential number of the asset field.
-#: js/build/commons.js:26
-#, js-format
-msgid "%1$s %2$d: Character limit exceeded"
-msgstr ""
-
-#. translators: Asset field name.
-#: js/build/commons.js:29
-#, js-format
-msgid "%s is incomplete"
-msgstr ""
-
-#. translators: Asset field name.
-#: js/build/commons.js:32
-#, js-format
-msgid "%s: Character limit exceeded"
-msgstr ""
-
-#: js/build/commons.js:32
-msgid "Unable to generate AI suggested assets."
-msgstr ""
-
-#: js/build/commons.js:32
-msgid "Unable to load assets data."
-msgstr ""
-
-#: js/build/commons.js:32
-#: js/build/commons.js:35
+#: js/build/commons.js:7
 #: js/build/dashboard.js:7
 #: js/build/markets.js:7
 msgid "Loading…"
 msgstr ""
 
-#: js/build/commons.js:32
+#: js/build/commons.js:7
+#: js/build/settings.js:1
+msgid "Connected"
+msgstr ""
+
+#: js/build/commons.js:7
 msgctxt "The field name of the address line in store address"
 msgid "address line"
 msgstr ""
 
-#: js/build/commons.js:32
+#: js/build/commons.js:7
 msgctxt "The field name of the city in store address"
 msgid "city"
 msgstr ""
 
-#: js/build/commons.js:32
+#: js/build/commons.js:7
 msgctxt "The field name of the country in store address"
 msgid "country/state"
 msgstr ""
 
-#: js/build/commons.js:32
+#: js/build/commons.js:7
 msgctxt "The field name of the postcode in store address"
 msgid "postcode/zip"
 msgstr ""
 
 #. translators: %s: The missing field name of store address.
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 #, js-format
 msgid "The %s of store address is required."
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Update store address"
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "We’re using your store address for Google verification. This information won’t be public. Edit in <link>WooCommerce settings</link> if needed and update to review the changes."
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Your store address is required by Google for verification. This information won’t be public. Complete that in <link>WooCommerce settings</link> and update to review the changes."
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Please add your store address"
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Google requires the store address for all stores using Google Merchant Center. "
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Your contact information is required for verification by Google."
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "It would be shared with Google Merchant Center for store verification and would not be displayed to customers."
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Contact information"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading Google account access info."
+#: js/build/commons.js:10
+msgid "Same Day"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading Google Merchant Center contact information."
+#: js/build/commons.js:10
+#: js/build/commons.js:41
+#: js/build/markets.js:16
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: js/build/commons.js:10
+msgid "Increment"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading supported country details."
+#: js/build/commons.js:10
+msgid "Decrement"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading ads campaigns."
+#: js/build/commons.js:10
+msgid "to"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading campaigns missing EU political declaration."
+#: js/build/commons.js:10
+msgid "Pencil icon"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading the assets of the campaign."
+#: js/build/commons.js:10
+msgid "Note: The currency set in your Google Ads account is <adsCurrency />, which is different from your store currency, <storeCurrency />. <readMoreLink>Read more</readMoreLink>"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading your merchant center product statistics."
+#: js/build/commons.js:10
+msgid "To comply with EU political ads rules, you can’t create or edit campaigns in this account until the required declarations are added."
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading your merchant center product review request status."
+#: js/build/commons.js:10
+msgid "You can't edit your campaigns until you complete the EU political ads declaration in Google Ads."
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading issues to resolve."
+#: js/build/commons.js:10
+msgid "Missing EU ads declaration"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading product feed."
+#: js/build/commons.js:10
+msgid "Go to Google Ads"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading report."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading the mapping attributes."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading the mapping sources for the selected attribute."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading the mapping rules."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the store categories."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the tours."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the budget recommendation."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the budget metrics."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the GTIN Migration Status."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the enhanced conversions status."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the ads settings."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the price benchmark summary."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the price benchmark suggestions."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the Ads recommendations."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the CYO incentives."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading supported languages and currencies."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/index.js:1
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading notifications."
-msgstr ""
-
-#: js/build/commons.js:35
-#: js/build/settings.js:1
-msgid "Connected"
-msgstr ""
-
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Thanks for letting us know!"
 msgstr ""
 
-#: js/build/commons.js:35
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
+#: js/build/commons.js:10
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
 msgid "Maybe later"
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Rate us"
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "If you have a minute, we'd appreciate it if you could leave us a rating. Your review will help other store owners find this extension."
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "How was your experience with Google for WooCommerce?"
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Good"
 msgstr ""
 
-#: js/build/commons.js:35
+#: js/build/commons.js:10
 msgid "Need help"
 msgstr ""
 
-#: js/build/commons.js:35
-msgid "The language on your ad's landing page isn't supported for AI-generated assets."
+#. translators: 1: current page number 2: total number of pages
+#: js/build/commons.js:11
+msgid "Frequently asked questions"
 msgstr ""
 
-#: js/build/commons.js:35
-msgid "Google AI isn't able to generate text assets for this page."
+#: js/build/commons.js:11
+msgid "Where do you want to sell your products?"
 msgstr ""
 
-#: js/build/commons.js:35
-msgid "Google AI isn't able to generate media assets for this page."
+#: js/build/commons.js:11
+msgid "Your store should already have the appropriate shipping and tax rates (if required) for potential customers in your selected location(s)."
 msgstr ""
 
-#: js/build/commons.js:35
-msgid "Google AI isn't able to generate assets for this page."
+#: js/build/commons.js:11
+msgid "Your listings will be shown in all supported countries."
 msgstr ""
 
-#: js/build/commons.js:35
-msgid "An unexpected error occurred."
+#: js/build/commons.js:11
+msgid "Where do you want to advertise your services?"
 msgstr ""
 
-#. translators: 1: number of character count. 2: the maximum number of character count.
-#: js/build/commons.js:38
-#, js-format
-msgid "%1$d/%2$d characters"
+#: js/build/commons.js:11
+msgid "Where do you offer your services?"
 msgstr ""
 
-#: js/build/commons.js:38
-msgid "New name, same great solution"
+#: js/build/commons.js:11
+msgid "Your ad will be shown in all supported countries."
 msgstr ""
 
-#: js/build/commons.js:38
-msgid "Google Listings & Ads is now <strong>Google for WooCommerce</strong>."
+#: js/build/commons.js:11
+#: js/build/markets.js:1
+msgid "Audience"
 msgstr ""
 
-#: js/build/commons.js:38
-msgid "Shipping rates"
+#: js/build/commons.js:11
+msgid "Location"
 msgstr ""
 
-#: js/build/commons.js:38
-msgid "Your estimated shipping rates and times will be shown to potential customers on Google."
+#: js/build/commons.js:11
+msgid "Selected countries only"
 msgstr ""
 
-#: js/build/commons.js:38
-#: js/build/onboarding.js:29
-#: js/build/settings.js:1
-#: js/build/settings.js:2
-msgid "Read more"
+#: js/build/commons.js:11
+msgid "Can’t find a country? Only supported countries can be selected."
 msgstr ""
 
-#: js/build/commons.js:38
-msgid "Automatically sync my store’s shipping settings to Google."
+#: js/build/commons.js:11
+#: js/build/commons.js:72
+msgid "All countries"
 msgstr ""
 
-#: js/build/commons.js:38
-msgid "My current settings and any future changes to my store’s shipping rates and classes will be automatically synced to Google Merchant Center."
-msgstr ""
-
-#: js/build/commons.js:38
-msgid "My shipping settings are simple. I can manually estimate flat shipping rates."
-msgstr ""
-
-#: js/build/commons.js:38
-msgid "My shipping settings are complex. I will enter my shipping rates and times manually in Google Merchant Center."
-msgstr ""
-
-#: js/build/commons.js:38
-msgid "I understand that if I don’t set this up manually in <link>Google Merchant Center</link>, my products will be disapproved by Google."
-msgstr ""
-
-#: js/build/commons.js:38
+#: js/build/commons.js:11
 msgid "Free shipping over a specific order value"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:11
 msgid "Cost"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:11
+msgid "Unable to connect your Google account. Please try again later."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "<alert>Uh-oh!</alert> You did not allow WooCommerce sufficient access to your Google account. You must allow all required permissions in the Google authorization page to proceed. <link>Read more</link>"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Allow full access"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:23
+msgid "Or, connect to a different Google account"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Connecting to a different Google account, please wait…"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Unable to connect to a different Google account. Please try again later."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:1
+msgid "Required to sync with Google Ads."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:1
+msgid "Required to sync with Google Merchant Center and Google Ads."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:1
+msgid "You will be prompted to give WooCommerce access to your Google account. Please check all the checkboxes to give WooCommerce all required permissions. <link>Read more</link>"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/commons.js:72
+#: js/build/onboarding.js:1
+#: js/build/onboarding.js:23
+#: js/build/settings.js:2
+msgid "Connect"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Or, connect to a different Google Ads account"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Claim your new Google Ads account to complete this setup."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:7
+msgid "Claim your Google Ads account"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:7
+msgid "Claim account in Google Ads"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Claiming your account lets you access Google Ads and sets up conversion measurement. You must claim your account in the next 20 days."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "When you claim your account, you’ll be asked to set up billing. This step is optional and you only need to complete it if you want to create Google Ads campaigns. If you don’t want to set up billing, close the window after you’ve clicked ‘Continue’ on the next page."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:1
+msgid "Create Google Ads Account"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:23
+msgid "Create account"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "By creating a Google Ads account, you agree to the following terms and conditions:"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "You agree to comply with Google’s terms and policies, including <policylink>Shopping ads policies</policylink> and <termslink>Google Ads Terms and Conditions</termslink>."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:23
+msgid "I have read and accept these terms"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:1
+#: js/build/onboarding.js:7
+#: js/build/onboarding.js:23
+msgid "Creating…"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Updating…"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Claim Account"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Or, use your existing Google Ads account"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Connect to an existing account"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "If you manage multiple sub-accounts in Google Ads, please connect the relevant sub-account, not a manager account. <link>Learn more</link>"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:1
+#: js/build/onboarding.js:23
+msgid "Connecting…"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Unable to connect your Google Ads account. Please try again later."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:1
+msgid "Or, create a new Google Ads account"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Unable to get Google authorization page. Please try again later."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Conversion measurement has been set up. You can create a campaign later."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Help"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Open popover"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Before you start the migration…"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Never mind"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "GTIN Migration was successfully scheduled."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Unable to start GTIN Migration."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Start migration"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "This migration will copy all GTIN numbers set in the Google for WooCommerce Product tab into the new GTIN field under the Product Inventory tab. If you have already set GTIN numbers in some of your products' Inventory tab, they will not be overridden. The GTIN numbers in the Google for WooCommerce tab will not be removed. The migration will run in the background and is not reversible. You can check the migration process on the <link>WooCommerce Scheduled Actions page</link>."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "The GTIN field managed by WooCommerce in the Product's inventory section, will now be used by Google for WooCommerce. It will continue to support the previous field and any mapping rules you have setup for the GTIN field. If you would like to migrate the data <link>click here</link>."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Your GTIN Migration is now running in the background. You can check the migration process on the <link>WooCommerce Scheduled Actions page</link>"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/index.js:19
+msgid "Dashboard"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/index.js:19
+msgid "Price Benchmark"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Attributes"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/index.js:19
+#: js/build/markets.js:7
+msgid "Markets"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Add campaign"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Unable to complete your Google Ads account setup. Please try again later."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "You do not have billing information set up in your Google Ads account. Once you have set up billing, you can start running ads."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "You will be directed to Google Ads for this step. In case your browser is unable to open the pop-up, <link>click here instead <icon /></link>."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Set up billing"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Billing method for Google Ads added successfully"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:23
+msgid "Set your budget"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "With Performance Max campaigns, you can set your own budget and Google’s Smart Bidding technology will serve the most appropriate ad, with the optimal bid, to maximize campaign performance. You only pay when people click on your ads, and you can start or stop your campaign whenever you want."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Average daily budget"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "These values are based on your settings and the budgets of similar advertisers."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "We recommend running campaigns at least 1 month so it can learn to optimize for your business."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "How does Google Ads work?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Google Ads works by displaying your ad when people search online for the products and services you offer. By leveraging smart technology, Google Ads helps get your ads in front of potential customers at just the moment they’re ready to take action."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "What is a product feed?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Your product feed is the central data source that contains a list of products you want to advertise through Merchant Center. By default, Google syncs all active products from your WooCommerce inventory. You can choose to exclude products later after this setup."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "How much does Google Ads cost?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "With Google Ads, you decide how much to spend. There’s no minimum spend, and no time commitment. Your costs may vary from day to day, but you won’t be charged more than your daily budget times the number of days in a month. You pay only for the actual clicks and calls that your ad receives."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/get-started-page.js:1
+msgid "Where will my products appear?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "If you’re selling in the US, then eligible product feed can appear in search results across Google Search, Google Images, and the Google Shopping tab. If you’re selling outside the US, product feed will appear on the Shopping tab."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "If you’re running a Performance Max Campaign, your approved products can appear on Google Search, Google Maps, the Shopping tab, Gmail, Youtube, the Google Display Network, and Discover feed."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "How long until I see results with Google Ads?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Google’s Performance Max campaigns are powered by machine learning models. These models train and adapt based on the data you provide in your campaign. This means performance optimization can take time. Typically, this learning process takes 1—2 weeks."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Where will my services appear?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "If you’re running a Performance Max Campaign, your services can appear on Google Search, Google Maps, Gmail, Youtube, the Google Display Network, and Discover feed. This will only be applicable in the locations your services are offered."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "What is a PMax campaign for services?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "PMax campaign for services uses your website's landing pages and creative assets (images, videos, text) to find leads across Search, YouTube, Display, and Maps."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "I don't have physical products. Can I still use this?"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Yes! It’s designed specifically for service providers ({give_examples}, etc.). It treats your \"Services\" as the offer and optimizes for leads or appointments."
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/commons.js:14
+msgid "What makes these ads different from product ads?"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/commons.js:14
+msgid "Product ads are focused on a tangible product being sold. These ads are for services-based businesses largely for lead generation (i.e. appointment booking). Online sales (non-feed) is also a possible objective."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Performance Max puts your products in front of active customers on Search, Shopping, YouTube, and more."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "By combining your unique business insights with Google AI, you'll capture high-value customers by reaching the right audience at the right time—while staying perfectly aligned with your budget and goals."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Performance Max uses the best of Google’s AI to show the most impactful ads for your products at the right time and place."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Google will use your product data to create ads for this campaign."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Performance Max campaign"
+msgstr ""
+
+#: js/build/commons.js:11
+#: js/build/onboarding.js:23
+msgid "Learn more about Performance Max"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Grow your business and connect with high-intent shoppers across Google—all from a single campaign."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "EU political content"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "My ads include political content as defined by Google's <link>EU political content policy</link>."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "If selected, your ads will not run in the EU unless you complete Google's political advertiser verification."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Your ads will not run in the EU"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "EU regulations"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Advertisers must confirm whether their ads include political content."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Ads credit offer"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "New advertisers are eligible for free Google Ads credits."
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Choose a sign-up offer to jumpstart your first campaign"
+msgstr ""
+
+#: js/build/commons.js:11
+msgid "Select an offer that fits your monthly budget. New advertisers will receive an ad credit after meeting the minimum spend requirement for the selected offer. <link>Terms and conditions apply</link>."
+msgstr ""
+
+#. translators: %s: amount in users' currency
+#: js/build/commons.js:12
+#, js-format
+msgid "Get <strong>%s</strong>"
+msgstr ""
+
+#. translators: %s: amount in users' currency
+#: js/build/commons.js:13
+#, js-format
+msgid "Spend %s with Google Ads in the first 60 days to unlock the credit."
+msgstr ""
+
+#: js/build/commons.js:13
+msgid "Performance Max campaigns are automatically optimized for you by Google. <link>See what your ads will look like.</link>"
+msgstr ""
+
+#: js/build/commons.js:13
+msgid "services"
+msgstr ""
+
+#: js/build/commons.js:13
+msgid "products"
+msgstr ""
+
+#. translators: %s: products or services
+#: js/build/commons.js:14
+#, js-format
+msgid "You’re ready to set up a Performance Max campaign to drive more sales with ads. Your %s will be included in the campaign after they’re approved."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "What will my ads look like?"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Google will generate text ads and responsive display ads in various combinations and formats from the headlines, images, and descriptions you add. Your ads will automatically adjust their size, appearance, and format to fit available ad spaces. <link>See common ad formats</link>"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Text and image assets can elevate your campaign by offering a variety of ad combinations that capture your audience's attention and generate maximum engagement. By leveraging Google's asset-mixing technology, your ads can be optimized to deliver the right message, to the right people, at the right time."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Compared to product ads—which showcase individual products and are designed to drive direct sales and revenue— ads with creative assets are typically used to highlight your business, generate interest, and attract new customers. While both types of ads can drive conversions, using them together can generate even greater results."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Select final URL"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Search page"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "SUGGESTIONS"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "No matching results"
+msgstr ""
+
+#: js/build/commons.js:14
+#: js/build/commons.js:17
+msgid "Select"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Choose a page that you want people to reach after clicking your ad. This might be your homepage, or a more specific page."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Or, select a different Final URL"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Review Your AI Suggestions"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Google AI analyzed your campaign’s URL to automatically generate your ad assets. Please review the suggested text and images below to ensure they align with your brand."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Text assets were auto-populated with Google AI"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Google's Gen AI illustration"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Skip"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Generating assets"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Google AI is analyzing your campaign’s URL to automatically generate your ad assets"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Add additional assets <optional>(Optional)</optional>"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Add assets"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Upload text and image assets to effectively reach and engage your target customers. Google will mix and match your assets, continually testing combinations to create a personalized and optimal experience."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "We've used your final URL to auto-populate some assets for you. For the best results, we recommend that you add more assets."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Remove text"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Add text"
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "No texts were generated. Please try again."
+msgstr ""
+
+#: js/build/commons.js:14
+msgid "Something went wrong while generating texts. Please try again."
+msgstr ""
+
+#. translators: %d: number of issues in an asset field.
+#: js/build/commons.js:17
+#, js-format
+msgid "%d issue"
+msgid_plural "%d issues"
+msgstr[0] ""
+msgstr[1] ""
+
+#: js/build/commons.js:17
+msgctxt "A label behind the heading to indicate a field is optional"
+msgid "(Optional)"
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "Toggle asset"
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "Text"
+msgstr ""
+
+#: js/build/commons.js:17
+#: js/build/commons.js:20
+msgid "The minimum requirements:"
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "3x Headlines "
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "1x Long headline"
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "2x Descriptions"
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "Call to action"
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "Select a call to action that aligns with your goals, or use automated call to action which allows Google to automatically choose the most relevant call to action for you."
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "Display URL path"
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "The display URL gives potential customers a clear idea of what webpage they'll reach once they click your ad, so your path text should describe your ad's landing page."
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "To create your display URL, Google Ads will combine the domain (for example, \"www.google.com\" in www.google.com/nonprofits) from your final URL and the path text (for example, \"nonprofits\" in www.google.com/nonprofits)."
+msgstr ""
+
+#: js/build/commons.js:17
+msgid "Select or upload image"
+msgstr ""
+
+#. translators: 1: Minimum width, 2: Minimum height.
+#: js/build/commons.js:20
+#, js-format
+msgid "Image size needs to be at least %1$d x %2$d"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Selected file type is not supported"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Replace image"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "View video"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "YouTube icon"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Remove media"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "AI-generated images"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Select to add these images to this set for your product."
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Select this image"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Add selected images"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Add image"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Something went wrong while generating images. Please try again."
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Images"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "1x marketing image"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "1x square marketing image"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "1x logo"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "We've used your final URL to auto-populate images…"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Select YouTube video URL"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Invalid YouTube URL"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Failed to get the video ID from the URL."
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Add Video"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Add YouTube video"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Videos"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Recommended but optional"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "For best results, we recommend adding 1 video."
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "You can add up to a maximum of 5 YouTube video assets."
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Only valid YouTube URLs are accepted, such as:"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Clicking a video thumbnail will open a preview in a new browser tab."
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "To remove a video, hover over the thumbnail and click the \"X\" icon."
+msgstr ""
+
+#: js/build/commons.js:20
+#: js/build/dashboard.js:1
+#: js/build/dashboard.js:7
+msgid "Optimize your campaign"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Drive greater performance by adding text, image, and video assets to create more personalized and engaging ads."
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Skip this step"
+msgstr ""
+
+#: js/build/commons.js:20
+msgid "Save changes"
+msgstr ""
+
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4000,7 +4067,7 @@ msgctxt "Capitalized asset field name as the start of an error message"
 msgid "The first display URL path"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4008,7 +4075,7 @@ msgctxt "Capitalized asset field name as the start of an error message"
 msgid "The second display URL path"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4016,14 +4083,14 @@ msgctxt "Plural asset field name as the heading"
 msgid "Landscape images"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "We recommend adding at least 4 landscape images. A single image is required."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4031,7 +4098,7 @@ msgctxt "Asset field name with its aspect ratio as the subheading within a help 
 msgid "Landscape image (1.91:1)"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4039,14 +4106,14 @@ msgctxt "Lowercase asset field name"
 msgid "landscape"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate landscape images"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4054,14 +4121,14 @@ msgctxt "Plural asset field name as the heading"
 msgid "Square images"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "We recommend adding at least 4 square images. A single image is required."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4069,7 +4136,7 @@ msgctxt "Asset field name with its aspect ratio as the subheading within a help 
 msgid "Square image (1:1)"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4077,14 +4144,14 @@ msgctxt "Lowercase asset field name"
 msgid "square"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate square images"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4092,14 +4159,14 @@ msgctxt "Plural asset field name as the heading"
 msgid "Portrait images"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Improve campaign performance with at least 2 portrait images."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4107,7 +4174,7 @@ msgctxt "Asset field name with its aspect ratio as the subheading within a help 
 msgid "Portrait image (4:5)"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4115,14 +4182,14 @@ msgctxt "Lowercase asset field name"
 msgid "portrait"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate portrait images"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4130,14 +4197,14 @@ msgctxt "Plural asset field name as the heading"
 msgid "Logo"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "At least 1 version of your logo is required."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4145,7 +4212,7 @@ msgctxt "Asset field name with its aspect ratio as the subheading within a help 
 msgid "Logo (1:1)"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4153,7 +4220,7 @@ msgctxt "Lowercase asset field name"
 msgid "logo"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4161,7 +4228,7 @@ msgctxt "Plural asset field name as the heading"
 msgid "Business name"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4169,7 +4236,7 @@ msgctxt "Capitalized asset field name as the placeholder or the start of an erro
 msgid "Business name"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4177,14 +4244,14 @@ msgctxt "Singular and lowercase asset field name"
 msgid "business name"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "The business name is the name of your business or brand. In certain layouts, it may appear in the text of your ad."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4192,28 +4259,28 @@ msgctxt "Plural asset field name as the heading"
 msgid "Headlines"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "For the best results, add at least 5 headlines. A minimum of 3 are required."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Learn how to write effective ads"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Add headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4221,7 +4288,7 @@ msgctxt "Capitalized asset field name as the placeholder or the start of an erro
 msgid "Headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4229,7 +4296,7 @@ msgctxt "Singular and lowercase asset field name"
 msgid "headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4237,28 +4304,28 @@ msgctxt "Plural and lowercase asset field name"
 msgid "headlines"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "The headline is the first line of your ad and is most likely the first thing people notice, so consider including words that people may have entered in their Google search."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate headlines"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4266,21 +4333,21 @@ msgctxt "Plural asset field name as the heading"
 msgid "Long headlines"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "We recommend using 5 long headlines. A single long headline is required."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Add long headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4288,7 +4355,7 @@ msgctxt "Capitalized asset field name as the placeholder or the start of an erro
 msgid "Long headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4296,7 +4363,7 @@ msgctxt "Singular and lowercase asset field name"
 msgid "long headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4304,35 +4371,35 @@ msgctxt "Plural and lowercase asset field name"
 msgid "long headlines"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "The long headline is the first line of your ad, and appears instead of your short headline in larger ads. Long headlines can be up to 90 characters, and may appear with or without your description."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "The length of the rendered headline will depend on the site it appears on. If shortened, it will end with an ellipsis(…)."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate long headlines"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate long headline"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4340,21 +4407,21 @@ msgctxt "Plural asset field name as the heading"
 msgid "Descriptions"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "We recommend adding at least 5 different descriptions. At least 2 are required."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Add description"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4362,7 +4429,7 @@ msgctxt "Capitalized asset field name as the placeholder or the start of an erro
 msgid "Description"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4370,7 +4437,7 @@ msgctxt "Singular and lowercase asset field name"
 msgid "description"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4378,35 +4445,35 @@ msgctxt "Plural and lowercase asset field name"
 msgid "descriptions"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "The description adds to the headline and provides additional context or details. It can be up to 90 characters, and may appear after the headline."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "The length of the rendered description will depend on the site it appears on. If it's shortened, it will end with an ellipsis(…). The description doesn't show in all sizes and formats."
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate descriptions"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
 msgid "Generate description"
 msgstr ""
 
-#: js/build/commons.js:38
+#: js/build/commons.js:20
 #: js/build/index.js:1
 #: js/build/notifications-system.js:1
 #: js/build/woo-marketing-notifications-slot.js:1
@@ -4415,7 +4482,7 @@ msgid ", "
 msgstr ""
 
 #. translators: 1: Concatenated text for the types of assets except for the last one. 2: The last type of assets.
-#: js/build/commons.js:41
+#: js/build/commons.js:23
 #: js/build/index.js:4
 #: js/build/notifications-system.js:4
 #: js/build/woo-marketing-notifications-slot.js:4
@@ -4424,7 +4491,7 @@ msgid "%1$s and %2$s"
 msgstr ""
 
 #. translators: 1: Recommended width. 2: Recommended height. 3: Minimal width. 4: Minimal height.
-#: js/build/commons.js:44
+#: js/build/commons.js:26
 #: js/build/index.js:7
 #: js/build/notifications-system.js:7
 #: js/build/woo-marketing-notifications-slot.js:7
@@ -4433,7 +4500,7 @@ msgid "<listItem>Recommended size: %1$d x %2$d</listItem><listItem>Min. size: %3
 msgstr ""
 
 #. translators: 1: The maximum number of this image assets. 2: Text for the types of image assets.
-#: js/build/commons.js:47
+#: js/build/commons.js:29
 #: js/build/index.js:10
 #: js/build/notifications-system.js:10
 #: js/build/woo-marketing-notifications-slot.js:10
@@ -4441,7 +4508,7 @@ msgstr ""
 msgid "You can add up to a maximum of %1$d image assets, which can be a combination of %2$s images."
 msgstr ""
 
-#: js/build/commons.js:47
+#: js/build/commons.js:29
 #: js/build/index.js:10
 #: js/build/notifications-system.js:10
 #: js/build/woo-marketing-notifications-slot.js:10
@@ -4449,7 +4516,7 @@ msgid "Add images that meet or can be cropped to the recommended sizes. Note: Th
 msgstr ""
 
 #. translators: The shared maximum number of the grouped types of image assets.
-#: js/build/commons.js:50
+#: js/build/commons.js:32
 #: js/build/index.js:13
 #: js/build/notifications-system.js:13
 #: js/build/woo-marketing-notifications-slot.js:13
@@ -4458,7 +4525,7 @@ msgid "The maximum number of images that can be uploaded is %d."
 msgstr ""
 
 #. translators: 1: The minimum number of this asset field. 2: Asset field name.
-#: js/build/commons.js:53
+#: js/build/commons.js:35
 #: js/build/index.js:16
 #: js/build/notifications-system.js:16
 #: js/build/woo-marketing-notifications-slot.js:16
@@ -4467,7 +4534,7 @@ msgid "%1$d %2$s"
 msgstr ""
 
 #. translators: 1: The shared maximum number of the grouped types of image assets. 2: Text for the minimum number and type of each image asset.
-#: js/build/commons.js:56
+#: js/build/commons.js:38
 #: js/build/index.js:19
 #: js/build/notifications-system.js:19
 #: js/build/woo-marketing-notifications-slot.js:19
@@ -4475,753 +4542,220 @@ msgstr ""
 msgid "Maximum %1$d images can be uploaded, with a minimum of %2$s image."
 msgstr ""
 
-#: js/build/commons.js:56
-msgid "What will my ads look like?"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Google will generate text ads and responsive display ads in various combinations and formats from the headlines, images, and descriptions you add. Your ads will automatically adjust their size, appearance, and format to fit available ad spaces. <link>See common ad formats</link>"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Text and image assets can elevate your campaign by offering a variety of ad combinations that capture your audience's attention and generate maximum engagement. By leveraging Google's asset-mixing technology, your ads can be optimized to deliver the right message, to the right people, at the right time."
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Compared to product ads—which showcase individual products and are designed to drive direct sales and revenue— ads with creative assets are typically used to highlight your business, generate interest, and attract new customers. While both types of ads can drive conversions, using them together can generate even greater results."
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Select final URL"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Search page"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "SUGGESTIONS"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "No matching results"
-msgstr ""
-
-#: js/build/commons.js:56
-#: js/build/commons.js:59
-msgid "Select"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Choose a page that you want people to reach after clicking your ad. This might be your homepage, or a more specific page."
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Or, select a different Final URL"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Review Your AI Suggestions"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Google AI analyzed your campaign’s URL to automatically generate your ad assets. Please review the suggested text and images below to ensure they align with your brand."
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Text assets were auto-populated with Google AI"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Google's Gen AI illustration"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Skip"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Generating assets"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Google AI is analyzing your campaign’s URL to automatically generate your ad assets"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Add additional assets <optional>(Optional)</optional>"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Add assets"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Upload text and image assets to effectively reach and engage your target customers. Google will mix and match your assets, continually testing combinations to create a personalized and optimal experience."
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "We've used your final URL to auto-populate some assets for you. For the best results, we recommend that you add more assets."
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Remove text"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Add text"
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "No texts were generated. Please try again."
-msgstr ""
-
-#: js/build/commons.js:56
-msgid "Something went wrong while generating texts. Please try again."
-msgstr ""
-
-#. translators: %d: number of issues in an asset field.
-#: js/build/commons.js:59
-#, js-format
-msgid "%d issue"
-msgid_plural "%d issues"
-msgstr[0] ""
-msgstr[1] ""
-
-#: js/build/commons.js:59
-msgctxt "A label behind the heading to indicate a field is optional"
-msgid "(Optional)"
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "Toggle asset"
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "Text"
-msgstr ""
-
-#: js/build/commons.js:59
-#: js/build/commons.js:62
-msgid "The minimum requirements:"
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "3x Headlines "
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "1x Long headline"
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "2x Descriptions"
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "Call to action"
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "Select a call to action that aligns with your goals, or use automated call to action which allows Google to automatically choose the most relevant call to action for you."
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "Display URL path"
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "The display URL gives potential customers a clear idea of what webpage they'll reach once they click your ad, so your path text should describe your ad's landing page."
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "To create your display URL, Google Ads will combine the domain (for example, \"www.google.com\" in www.google.com/nonprofits) from your final URL and the path text (for example, \"nonprofits\" in www.google.com/nonprofits)."
-msgstr ""
-
-#: js/build/commons.js:59
-msgid "Select or upload image"
-msgstr ""
-
-#. translators: 1: Minimum width, 2: Minimum height.
-#: js/build/commons.js:62
-#, js-format
-msgid "Image size needs to be at least %1$d x %2$d"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Selected file type is not supported"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Replace image"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "View video"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "YouTube icon"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Remove media"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "AI-generated images"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Select to add these images to this set for your product."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Select this image"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Add selected images"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Add image"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Something went wrong while generating images. Please try again."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Images"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "1x marketing image"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "1x square marketing image"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "1x logo"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "We've used your final URL to auto-populate images…"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Select YouTube video URL"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Invalid YouTube URL"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Failed to get the video ID from the URL."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Add Video"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Add YouTube video"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Videos"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Recommended but optional"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "For best results, we recommend adding 1 video."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "You can add up to a maximum of 5 YouTube video assets."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Only valid YouTube URLs are accepted, such as:"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Clicking a video thumbnail will open a preview in a new browser tab."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "To remove a video, hover over the thumbnail and click the \"X\" icon."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/dashboard.js:1
-#: js/build/dashboard.js:7
-msgid "Optimize your campaign"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Drive greater performance by adding text, image, and video assets to create more personalized and engaging ads."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Skip this step"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Save changes"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Open popover"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Free shipping for all orders"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Weekly conversions"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "The estimated number of conversions (unit sales) for a typical week. This number may vary based on change in your weekly spend."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Weekly conv. value"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "The estimated total value of all the conversions (sales volume) your campaign will generate in a week."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Learn more."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Weekly cost"
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "This is the estimated average amount you'll spend weekly during the month. Some weeks you may spend less than this amount or up to 2 times this amount."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Your budget is lower than other advertisers' budgets, which may affect performance. For best results, we recommend at least <amount /> per day."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Set custom budget"
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading shipping rates."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading shipping times."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading merchant center settings."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error completing onboarding."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading Jetpack account info."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading Google account info."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading Google Merchant Center account info."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting your Google Merchant Center accounts."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading Google Ads account info."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "Unable to disconnect your Google account."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "Unable to disconnect your Google Ads account."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "Unable to disconnect all your accounts."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the billing status of your Google Ads account."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting your Google Ads accounts."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "Unable to update your Google Merchant Center contact information."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading target audience."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error updating the enhanced conversions status."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error creating the assets of the campaign."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error updating the assets of the campaign."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading your merchant center setup status."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "Unable to update the channel visibility of products."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error creating the rule."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error updating the rule."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error deleting the rule."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error updating the tour."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error getting the status of your Google Ads account."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error loading YouTube account info."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "Unable to disconnect your YouTube account."
-msgstr ""
-
-#: js/build/commons.js:62
-#: js/build/index.js:19
-#: js/build/notifications-system.js:19
-#: js/build/woo-marketing-notifications-slot.js:19
-msgid "There was an error dismissing the notification."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "An unknown error occurred."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "An unrecognised error response was received."
-msgstr ""
-
-#: js/build/commons.js:62
-msgid "Error parsing response."
-msgstr ""
-
-#: js/build/commons.js:62
+#: js/build/commons.js:38
 msgid "This offer won’t last long!"
 msgstr ""
 
-#: js/build/commons.js:62
+#: js/build/commons.js:38
 msgid "Change budget"
 msgstr ""
 
 #. translators: The recommended amount in currency format.
-#: js/build/commons.js:65
+#: js/build/commons.js:41
 #, js-format
 msgid "Increase your budget to %s and get it all back in FREE AD CREDIT*!"
 msgstr ""
 
-#: js/build/commons.js:65
+#: js/build/commons.js:41
 msgid "You have 60 days."
 msgstr ""
 
-#: js/build/commons.js:65
+#: js/build/commons.js:41
 msgid "Terms and Conditions"
 msgstr ""
 
-#. translators: 1: current page number 2: total number of pages
+#: js/build/commons.js:41
+msgid "Weekly conversions"
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "The estimated number of conversions (unit sales) for a typical week. This number may vary based on change in your weekly spend."
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "Weekly conv. value"
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "The estimated total value of all the conversions (sales volume) your campaign will generate in a week."
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "Learn more."
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "Weekly cost"
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "This is the estimated average amount you'll spend weekly during the month. Some weeks you may spend less than this amount or up to 2 times this amount."
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "Your budget is lower than other advertisers' budgets, which may affect performance. For best results, we recommend at least <amount /> per day."
+msgstr ""
+
+#: js/build/commons.js:41
+msgid "Set custom budget"
+msgstr ""
+
+#. translators: %1$s: minimum daily budget
+#: js/build/commons.js:42
+#, js-format
+msgid "Please make sure daily average cost is at least %s"
+msgstr ""
+
+#: js/build/commons.js:42
+msgid "Please make sure daily average cost is greater than 0."
+msgstr ""
+
+#. translators: 1: The minimal number of this item. 2: Asset field name.
+#: js/build/commons.js:45
+#, js-format
+msgid "Add at least %1$d %2$s image"
+msgid_plural "Add at least %1$d %2$s images"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: Asset field name.
+#: js/build/commons.js:48
+#, js-format
+msgid "The %s in the first field is required"
+msgstr ""
+
+#. translators: 1: Asset field name.
+#: js/build/commons.js:51
+#, js-format
+msgid "The %1$s is required"
+msgstr ""
+
+#. translators: 1: Asset field name. 2: The minimal number of this item.
+#: js/build/commons.js:54
+#, js-format
+msgid "Add at least %2$d %1$s"
+msgstr ""
+
+#. translators: Asset field name.
+#: js/build/commons.js:57
+#, js-format
+msgid "%s are identical"
+msgstr ""
+
+#: js/build/commons.js:57
+msgid "Character limit exceeded"
+msgstr ""
+
+#. translators: 1: Asset field name. 2: The sequential number of the asset field.
+#: js/build/commons.js:60
+#, js-format
+msgid "%1$s %2$d: Character limit exceeded"
+msgstr ""
+
+#. translators: Asset field name.
+#: js/build/commons.js:63
+#, js-format
+msgid "%s is incomplete"
+msgstr ""
+
+#. translators: Asset field name.
 #: js/build/commons.js:66
-msgid "Unable to connect your Google account. Please try again later."
+#, js-format
+msgid "%s: Character limit exceeded"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "<alert>Uh-oh!</alert> You did not allow WooCommerce sufficient access to your Google account. You must allow all required permissions in the Google authorization page to proceed. <link>Read more</link>"
+msgid "Unable to generate AI suggested assets."
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/onboarding.js:23
-msgid "Or, connect to a different Google account"
+msgid "Unable to load assets data."
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Connecting to a different Google account, please wait…"
+msgid "Google Shopping Logo"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Unable to connect to a different Google account. Please try again later."
+msgid "LEARN MORE"
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/onboarding.js:1
-msgid "Required to sync with Google Ads."
+msgid "Gmail Logo"
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/onboarding.js:1
-msgid "Required to sync with Google Merchant Center and Google Ads."
+msgid "Simulated the info and close buttons at the corner of a Google ad"
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/onboarding.js:1
-msgid "You will be prompted to give WooCommerce access to your Google account. Please check all the checkboxes to give WooCommerce all required permissions. <link>Read more</link>"
+msgctxt "A sample product title for demonstrating the paid ads shown on Google services."
+msgid "White tee"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Required to connect with Google"
+msgctxt "A sample product price for demonstrating the paid ads shown on Google services."
+msgid "$10.00"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Unable to connect your WordPress.com account. Please try again later."
+msgctxt "A sample name of an online shop for demonstrating the paid ads shown on Google services."
+msgid "Colleen's Tee Store"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Google Merchant Center Logo"
+msgid "Preview product ad"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Google Ads Logo"
+msgid "Each of your product variants will have its own ad. Previews shown here are examples and don't include all possible formats."
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "WordPress.com Logo"
+msgid "Ad Preview"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Final URL icon"
+msgid "Previews shown here are examples and don't include all possible formats."
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/reports.js:1
-msgid "Google Merchant Center"
+msgid "Free shipping for all orders"
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Required to sync products and list on Google."
+msgid "Shipping rates"
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/dashboard.js:1
-msgid "Google Ads"
+msgid "Your estimated shipping rates and times will be shown to potential customers on Google."
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Required to set up conversion measurement and create campaigns."
-msgstr ""
-
-#: js/build/commons.js:66
+#: js/build/onboarding.js:29
+#: js/build/settings.js:1
 #: js/build/settings.js:2
-msgid "Store address"
+msgid "Read more"
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/settings.js:2
-msgid "YouTube"
+msgid "Automatically sync my store’s shipping settings to Google."
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/index.js:19
-#: js/build/notifications-system.js:1
-#: js/build/woo-marketing-notifications-slot.js:1
-msgid "Unknown error occurred."
+msgid "My current settings and any future changes to my store’s shipping rates and classes will be automatically synced to Google Merchant Center."
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/index.js:19
-#: js/build/notifications-system.js:1
-#: js/build/woo-marketing-notifications-slot.js:1
-msgctxt "The spacing between sentences. It's a space in English. Please use an empty string if no spacing is needed in that language."
-msgid " "
+msgid "My shipping settings are simple. I can manually estimate flat shipping rates."
 msgstr ""
 
 #: js/build/commons.js:66
-#: js/build/index.js:19
-msgid "Unknown Error"
+msgid "My shipping settings are complex. I will enter my shipping rates and times manually in Google Merchant Center."
 msgstr ""
 
 #: js/build/commons.js:66
-msgid "Frequently asked questions"
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "Before you start the migration…"
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "Never mind"
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "GTIN Migration was successfully scheduled."
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "Unable to start GTIN Migration."
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "Start migration"
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "This migration will copy all GTIN numbers set in the Google for WooCommerce Product tab into the new GTIN field under the Product Inventory tab. If you have already set GTIN numbers in some of your products' Inventory tab, they will not be overridden. The GTIN numbers in the Google for WooCommerce tab will not be removed. The migration will run in the background and is not reversible. You can check the migration process on the <link>WooCommerce Scheduled Actions page</link>."
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "The GTIN field managed by WooCommerce in the Product's inventory section, will now be used by Google for WooCommerce. It will continue to support the previous field and any mapping rules you have setup for the GTIN field. If you would like to migrate the data <link>click here</link>."
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "Your GTIN Migration is now running in the background. You can check the migration process on the <link>WooCommerce Scheduled Actions page</link>"
-msgstr ""
-
-#: js/build/commons.js:66
-#: js/build/index.js:19
-msgid "Dashboard"
-msgstr ""
-
-#: js/build/commons.js:66
-#: js/build/index.js:19
-msgid "Price Benchmark"
-msgstr ""
-
-#: js/build/commons.js:66
-msgid "Attributes"
-msgstr ""
-
-#: js/build/commons.js:66
-#: js/build/index.js:19
-#: js/build/markets.js:7
-msgid "Markets"
+msgid "I understand that if I don’t set this up manually in <link>Google Merchant Center</link>, my products will be disapproved by Google."
 msgstr ""
 
 #. translators: 1: Tag Label, 2: Current Tag index, 3: Total amount of tags.
@@ -5239,74 +4773,468 @@ msgstr ""
 msgid "Start typing to filter countries…"
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "WooCommerce Logo"
+#: js/build/commons.js:72
+msgid "Required to connect with Google"
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "You’ve successfully set up Google for WooCommerce! 🎉"
+#: js/build/commons.js:72
+msgid "Unable to connect your WordPress.com account. Please try again later."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "Your products are being synced and reviewed. Google reviews product listings in 3-5 days."
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading shipping rates."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "No ads will launch yet and you won’t be charged until Google approves your listings. Updates are available in your WooCommerce dashboard."
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading shipping times."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "<productFeedLink>Manage and edit your product feed in WooCommerce.</productFeedLink> We will also notify you of any product feed issues to ensure your products get approved and perform well on Google."
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading merchant center settings."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "View product feed"
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error completing onboarding."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "Improve conversion tracking accuracy to improve campaign performance"
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading Jetpack account info."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "Set up Enhanced Conversions, a feature designed to improve your measurement accuracy by collecting privacy-conscious data without the need for third-party cookies."
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading Google account info."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "<link>Learn more</link> about Enhanced Conversions."
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading Google Merchant Center account info."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "Set up Enhanced Conversions"
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting your Google Merchant Center accounts."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "Spend $500 to get $500 in Google Ads credits"
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading Google Ads account info."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "New to Google Ads? Get $500 in ad credit when you spend $500 within your first 60 days* You can edit or cancel your campaign at any time."
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "Unable to disconnect your Google account."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "*Full terms and conditions <link>here</link>."
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "Unable to disconnect your Google Ads account."
 msgstr ""
 
-#: js/build/dashboard.js:1
-#: js/build/product-feed.js:1
-msgid "Back"
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "Unable to disconnect all your accounts."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the billing status of your Google Ads account."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting your Google Ads accounts."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "Unable to update your Google Merchant Center contact information."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading target audience."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error updating the enhanced conversions status."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error creating the assets of the campaign."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error updating the assets of the campaign."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading your merchant center setup status."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "Unable to update the channel visibility of products."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error creating the rule."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error updating the rule."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error deleting the rule."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error updating the tour."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the status of your Google Ads account."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading YouTube account info."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "Unable to disconnect your YouTube account."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error dismissing the notification."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading Google account access info."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading Google Merchant Center contact information."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading supported country details."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading ads campaigns."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading campaigns missing EU political declaration."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading the assets of the campaign."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading your merchant center product statistics."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading your merchant center product review request status."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading issues to resolve."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading product feed."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading report."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading the mapping attributes."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading the mapping sources for the selected attribute."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading the mapping rules."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the store categories."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the tours."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the budget recommendation."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the budget metrics."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the GTIN Migration Status."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the enhanced conversions status."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the ads settings."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the price benchmark summary."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the price benchmark suggestions."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the Ads recommendations."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error getting the CYO incentives."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading supported languages and currencies."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:19
+#: js/build/woo-marketing-notifications-slot.js:19
+msgid "There was an error loading notifications."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "Unable to complete your ads setup. Please try again later."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "The language on your ad's landing page isn't supported for AI-generated assets."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "Google AI isn't able to generate text assets for this page."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "Google AI isn't able to generate media assets for this page."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "Google AI isn't able to generate assets for this page."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "An unexpected error occurred."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "Google Ads Creation Failed"
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "An unknown error occurred."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "An unrecognised error response was received."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "Error parsing response."
+msgstr ""
+
+#: js/build/commons.js:72
+msgid "Successfully connected through Jetpack"
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:1
+#: js/build/woo-marketing-notifications-slot.js:1
+msgid "Unknown error occurred."
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+#: js/build/notifications-system.js:1
+#: js/build/woo-marketing-notifications-slot.js:1
+msgctxt "The spacing between sentences. It's a space in English. Please use an empty string if no spacing is needed in that language."
+msgid " "
+msgstr ""
+
+#: js/build/commons.js:72
+#: js/build/index.js:19
+msgid "Unknown Error"
 msgstr ""
 
 #: js/build/dashboard.js:1
@@ -5609,6 +5537,76 @@ msgstr ""
 
 #: js/build/dashboard.js:13
 msgid "How easy was it to understand the requirements for the Google Ad campaign creation?"
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "WooCommerce Logo"
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "You’ve successfully set up Google for WooCommerce! 🎉"
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "Your products are being synced and reviewed. Google reviews product listings in 3-5 days."
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "No ads will launch yet and you won’t be charged until Google approves your listings. Updates are available in your WooCommerce dashboard."
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "<productFeedLink>Manage and edit your product feed in WooCommerce.</productFeedLink> We will also notify you of any product feed issues to ensure your products get approved and perform well on Google."
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "View product feed"
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "Improve conversion tracking accuracy to improve campaign performance"
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "Set up Enhanced Conversions, a feature designed to improve your measurement accuracy by collecting privacy-conscious data without the need for third-party cookies."
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "<link>Learn more</link> about Enhanced Conversions."
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "Set up Enhanced Conversions"
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "Spend $500 to get $500 in Google Ads credits"
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "New to Google Ads? Get $500 in ad credit when you spend $500 within your first 60 days* You can edit or cancel your campaign at any time."
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "*Full terms and conditions <link>here</link>."
+msgstr ""
+
+#: js/build/dashboard.js:13
+#: js/build/product-feed.js:16
+msgid "Back"
 msgstr ""
 
 #: js/build/get-started-page.js:1

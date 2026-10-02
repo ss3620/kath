@@ -2,6 +2,8 @@
 
 namespace RevenuePro;
 
+defined( 'ABSPATH' ) || exit;
+
 use Revenue;
 
 /**
@@ -56,15 +58,12 @@ class Revenue_Double_Order {
 	public function init() {
 		add_action( 'wp_ajax_revenue_double_order_multiplier', array( $this, 'double_order_multiplier' ) );
 		add_action( 'wp_ajax_nopriv_revenue_double_order_multiplier', array( $this, 'double_order_multiplier' ) );
-		// add_action('woocommerce_cart_calculate_fees', [$this, 'apply_discount']);
 
 		add_action( 'template_redirect', array( $this, 'check_cart_for_double_order' ) );
 
 		add_action( 'woocommerce_new_order', array( $this, 'reset_session_on_order_complete' ) );
 
 		add_action( 'woocommerce_cart_calculate_fees', array( $this, 'apply_discount' ) );
-
-		// add_action( 'woocommerce_cart_updated', array( $this, 'update_cart_action' ) );
 	}
 
 	public function update_cart_action() {
@@ -97,7 +96,7 @@ class Revenue_Double_Order {
 			if ( ! isset( $session_data[ $campaign_id ] ) ) {
 				foreach ( WC()->cart->get_cart() as $key => $item ) {
 					// Check if the item is from the current campaign and is a custom-added item
-					if ( isset( $item['revx_campaign_type'] ) && $item['revx_campaign_type'] === 'double_order' &&
+					if ( isset( $item['revx_campaign_type'] ) && 'double_order' === $item['revx_campaign_type'] &&
 						isset( $item['revx_campaign_id'] ) && $item['revx_campaign_id'] === $campaign_id ) {
 						WC()->cart->remove_cart_item( $key );
 					}
@@ -304,6 +303,7 @@ class Revenue_Double_Order {
 	 * @return void
 	 */
 	public function double_order_multiplier() {
+		check_ajax_referer( 'revenue-add-to-cart' );
 		if ( ! WC()->session ) {
 			wp_send_json_error( array( 'message' => 'Session not initialized' ) );
 		}
@@ -311,8 +311,8 @@ class Revenue_Double_Order {
 		$multiplier  = isset( $_POST['multiplier'] ) ? absint( $_POST['multiplier'] ) : 0;
 		$campaign_id = isset( $_POST['campaign_id'] ) ? absint( $_POST['campaign_id'] ) : 0;
 		$index       = isset( $_POST['index'] ) ? absint( $_POST['index'] ) : 0;
-		$is_checked  = isset( $_POST['is_checked'] ) ? sanitize_text_field( $_POST['is_checked'] ) : 'no';
-		$product_ids = isset( $_POST['product_ids'] ) ? $_POST['product_ids'] : array();
+		$is_checked  = isset( $_POST['is_checked'] ) ? sanitize_text_field( wp_unslash( $_POST['is_checked'] ) ) : 'no';
+		$product_ids = isset( $_POST['product_ids'] ) && is_array( $_POST['product_ids'] ) ? array_map( 'absint', wp_unslash( $_POST['product_ids'] ) ) : array();
 
 		$campaign = revenue()->get_campaign_data( $campaign_id );
 
@@ -389,8 +389,8 @@ class Revenue_Double_Order {
 							$item['variation_id'],
 							$variation_attributes,
 							array(
-								'revx_campaign_type'             => 'double_order',
-								'revx_campaign_id'               => $campaign_id,
+								'revx_campaign_type' => 'double_order',
+								'revx_campaign_id'   => $campaign_id,
 								'revx_double_order_parent_token' => $parent_token,
 							)
 						);
@@ -403,7 +403,7 @@ class Revenue_Double_Order {
 
 				$pid = $item['variation_id'] ? $item['variation_id'] : $item['product_id'];
 
-				if ( in_array( $pid, $product_ids ) ) { //phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+				if ( in_array( absint( $pid ), $product_ids, true ) ) {
 					if ( 'yes' == $is_checked ) {
 						// For variation products, WooCommerce already stores attributes in $item['variation']
 						$variation_attributes = ! empty( $item['variation'] ) ? $item['variation'] : array();
@@ -421,8 +421,8 @@ class Revenue_Double_Order {
 							$item['variation_id'],
 							$variation_attributes,
 							array(
-								'revx_campaign_type'             => 'double_order',
-								'revx_campaign_id'               => $campaign_id,
+								'revx_campaign_type' => 'double_order',
+								'revx_campaign_id'   => $campaign_id,
 								'revx_double_order_parent_token' => $parent_token,
 							)
 						);
@@ -554,7 +554,7 @@ class Revenue_Double_Order {
 
 			$saved_index = $session_data[ $campaign_id ]['index'];
 
-			if ( $saved_index !== -1 && is_numeric( $saved_index ) ) {
+			if ( -1 !== $saved_index && is_numeric( $saved_index ) ) {
 				$offers = revenue()->get_campaign_meta( $campaign_id, 'offers', true );
 				if ( ! isset( $offers[ $saved_index ] ) ) {
 					continue;
@@ -631,7 +631,7 @@ class Revenue_Double_Order {
 				} else {
 
 					// Get selected products from session.
-					$product_ids     = $session_data[ $campaign_id ]['products'];
+					$product_ids     = array_map( 'absint', $session_data[ $campaign_id ]['products'] );
 					$discount_amount = 0;
 
 					// Track products that will get discounts.
@@ -642,7 +642,7 @@ class Revenue_Double_Order {
 						$_id = $cart_item['variation_id'] ? $cart_item['variation_id'] : $cart_item['product_id'];
 
 						// Check if this product should get discount.
-						if ( in_array( $_id, $product_ids ) ) {
+						if ( in_array( absint( $_id ), $product_ids, true ) ) {
 
 							/*
 							 * SECURITY: enforce the double-order minimum quantity. If the

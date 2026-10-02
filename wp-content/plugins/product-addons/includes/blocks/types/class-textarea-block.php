@@ -32,7 +32,7 @@ class Textarea_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 		if ( empty( $options ) ) {
 			return '';
 		}
@@ -67,14 +67,13 @@ class Textarea_Block extends Abstract_Block {
 	/**
 	 * Render header section with title and price
 	 *
-	 * @param object $item Textarea item
-	 * @param array  $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_header( array $price_info ): string {
 		$hide = $this->get_property( 'hide', false );
 
-		if ( $hide && $price_info['type'] === 'no_cost' ) {
+		if ( $hide && 'no_cost' === $price_info['type'] ) {
 			return '';
 		}
 
@@ -94,7 +93,7 @@ class Textarea_Block extends Abstract_Block {
 	/**
 	 * Render textarea element
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_textarea( array $price_info ): string {
@@ -105,7 +104,7 @@ class Textarea_Block extends Abstract_Block {
 		$rows        = $this->get_property( 'step', 1 );
 		$value       = $this->get_property( 'value', '' );
 
-		// Build dynamic inline styles
+		// Build dynamic inline styles.
 		$styles = $this->build_textarea_styles();
 
 		$textarea_attributes = array(
@@ -118,7 +117,7 @@ class Textarea_Block extends Abstract_Block {
 			'data-val'    => $price_info['price'],
 		);
 
-		// Add style attribute if styles exist
+		// Add style attribute if styles exist.
 		if ( ! empty( $styles ) ) {
 			$textarea_attributes['style'] = $styles;
 		}
@@ -143,7 +142,7 @@ class Textarea_Block extends Abstract_Block {
 
 		$html .= '</div>';
 
-		// Price beside textarea
+		// Price beside textarea.
 		if ( $this->should_show_price_beside_field( $price_info ) ) {
 			$html .= $this->render_price_html( $price_info, 'beside' );
 		}
@@ -161,9 +160,9 @@ class Textarea_Block extends Abstract_Block {
 	private function build_textarea_styles(): string {
 		$style_properties = array();
 
-		// Text transform
+		// Text transform.
 		$text_transform = $this->get_property( 'textTransform', 'none' );
-		if ( $text_transform && $text_transform !== 'none' ) {
+		if ( $text_transform && 'none' !== $text_transform ) {
 			$style_properties[] = sprintf( 'text-transform: %s', esc_attr( $text_transform ) );
 		}
 

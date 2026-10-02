@@ -4,7 +4,7 @@
  *
  * @package   affiliate-for-woocommerce/includes/commission-payouts/
  * @since     8.0.0
- * @version   1.1.2
+ * @version   1.1.3
  */
 
 // Exit if accessed directly.
@@ -88,7 +88,7 @@ if ( ! class_exists( 'AFWC_Commission_Payouts' ) ) {
 
 			$minimum_payout_amount = get_option( 'afwc_minimum_commission_balance', 50 );
 			$maximum_payout_amount = get_option( 'afwc_maximum_commission_balance', 0 );
-			$refund_period_window  = get_option( 'afwc_order_refund_period_in_days', 30 );
+			$refund_period_window  = afwc_get_order_refund_period_in_days();
 
 			global $wpdb;
 

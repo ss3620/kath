@@ -40,7 +40,6 @@ class CartPage {
 		$this->price_handler  = new PriceHandler();
 		add_filter( 'woocommerce_add_cart_item_data', array( $this, 'save_custom_meta_to_cart' ), 10, 4 );
 		add_filter( 'woocommerce_get_item_data', array( $this, 'display_custom_meta_in_cart' ), 10, 2 );
-		// add_action( 'woocommerce_add_order_item_meta', array( $this, 'save_custom_meta_to_order' ), 10, 2 );.
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'woocommerce_before_calculate_totals' ), 999999, 1 );
 		add_action( 'woocommerce_add_to_cart', array( $this, 'prad_add_option_product_to_cart' ), 10, 6 );
 
@@ -71,6 +70,12 @@ class CartPage {
 		WC()->cart->calculate_totals();
 	}
 
+	/**
+	 * Recalculates the WooCommerce cart totals before the mini cart contents render,
+	 * for AJAX requests when not on the Cart or Checkout pages.
+	 *
+	 * @return void
+	 */
 	public function prad_before_mini_cart_contents() {
 		if ( is_cart() || is_checkout() || ! wp_doing_ajax() ) {
 			return;
@@ -117,11 +122,6 @@ class CartPage {
 		if ( is_admin() && ! wp_doing_ajax() ) {
 			return;
 		}
-
-		// NOTE: Compatibilit issue with 'Tiered Pricing Table for WooCommerce' plugin. As this hook recalculating cart totals in mini cart, this condition is restricting recalculating the price.
-		// if ( did_action( 'woocommerce_before_calculate_totals' ) > 1 ) {
-		// 	return;
-		// }
 
 		foreach ( $cart->get_cart() as $cart_item ) {
 			if ( ! empty( $cart_item['prad_selection']['price'] ) ) {
@@ -184,10 +184,9 @@ class CartPage {
 	 * @return object
 	 */
 	public function save_custom_meta_to_cart( $cart_item_data, $product_id, $variation_id ) {
-		$prad_selection = isset( $_POST['prad_selection'] ) ? product_addons()->sanitize_rest_params( $_POST['prad_selection'] ) : ''; //phpcs:ignore
-		$option_ids     = isset( $_POST['prad_option_published_ids'] ) ? product_addons()->sanitize_rest_params( json_decode( wp_unslash( $_POST['prad_option_published_ids'] ), true ) ) : array();//phpcs:ignore
-		$prad_products_selection = isset( $_POST['prad_products_selection'] ) ? product_addons()->sanitize_rest_params( $_POST['prad_products_selection'] ) : ''; // phpcs:ignore
-		$prad_products_selection = json_decode( product_addons()->safe_stripslashes( $prad_products_selection ), true );
+		$prad_selection          = $this->parse_prad_selection();
+		$option_ids              = isset( $_POST['prad_option_published_ids'] ) ? $this->sanitize_option_ids( sanitize_text_field( wp_unslash( $_POST['prad_option_published_ids'] ) ), $product_id ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$prad_products_selection = $this->get_posted_json( 'prad_products_selection', array( $this, 'sanitize_products_selection' ) );
 
 		$_POST['prad_selection']            = '';
 		$_POST['prad_option_published_ids'] = '';
@@ -201,7 +200,7 @@ class CartPage {
 		if ( ! empty( $prad_selection ) ) {
 			$data = $this->price_handler->calculate_option_price( $prad_selection, $product_id, $option_ids, ! empty( $variation_id ) ? $variation_id : '', isset( $_POST['quantity'] ) ? absint( wp_unslash( $_POST['quantity'] ) ) : 1 ); // phpcs:ignore WordPress.Security.NonceVerification
 
-			$cart_item_data['prad_selection']            = $data; // This will be used in checkout order create and others order area
+			$cart_item_data['prad_selection']            = $data; // This will be used in checkout order create and others order area.
 			$cart_item_data['prad_products_selection']   = $prad_products_selection;
 			$cart_item_data['prad_selection_base_price'] = apply_filters(
 				'prad_cart_checkout_page_price',
@@ -211,6 +210,34 @@ class CartPage {
 			$cart_item_data['prad_option_published_ids'] = $option_ids;
 		}
 		return $cart_item_data;
+	}
+
+	/**
+	 * Sanitize and validate the posted option IDs.
+	 *
+	 * Decodes the JSON list, casts every entry to a positive integer and keeps
+	 * only IDs that are published addon options assigned to the product.
+	 *
+	 * @param string $raw_ids    JSON-encoded list of option IDs.
+	 * @param int    $product_id Product ID the item is being added for.
+	 *
+	 * @return array
+	 */
+	private function sanitize_option_ids( $raw_ids, $product_id ) {
+		$decoded = json_decode( $raw_ids, true );
+		if ( ! is_array( $decoded ) ) {
+			return array();
+		}
+
+		$option_ids = array_filter( array_unique( array_map( 'absint', $decoded ) ) );
+		if ( empty( $option_ids ) ) {
+			return array();
+		}
+
+		$blocks_data   = $this->blocks_service->get_product_blocks( absint( $product_id ) );
+		$published_ids = array_map( 'absint', $blocks_data['published_ids'] ?? array() );
+
+		return array_values( array_intersect( $option_ids, $published_ids ) );
 	}
 
 	/**
@@ -230,13 +257,6 @@ class CartPage {
 		// approach 1.
 		if ( isset( $cart_item['prad_selection_raw'] ) ) {
 			$data = $this->price_handler->calculate_option_price( $cart_item['prad_selection_raw'], $cart_item['product_id'], $cart_item['prad_option_published_ids'], $cart_item['variation_id'], $cart_item['quantity'] );
-			// if ( $_GET['hello'] === 'yes') {
-			// 	echo "<pre>";
-			// 	echo "result==================<br>";
-			// 	print_r($data);
-			// 	echo "<br>result end==================<br>";
-			// 	echo "</pre>";
-			// }
 			if ( isset( $data['extra_data'] ) ) {
 				product_addons()->enqueue_style( 'prad-cart-style', 'wowcart' );
 
@@ -256,44 +276,8 @@ class CartPage {
 			}
 		}
 
-		/*
-		$prad_products_selection = $cart_item['prad_products_selection'];
-		if ( is_array( $prad_products_selection ) ) {
-		foreach ( $prad_products_selection as $item ) {
-			$_id    = isset( $item['id'] ) ? (int) $item['id'] : '';
-			$_count = isset( $item['count'] ) ? (int) $item['count'] : 1;
-			if ( $_id ) {
-				WC()->cart->add_to_cart( $_id, $_count );
-			}
-		}
-		}
-
-		if ( isset( $cart_item['prad_selection']['extra_data'] ) ) {
-		wp_enqueue_style( 'prad-cart-style', PRAD_URL . 'assets/css/wowcart.css', array(), PRAD_VER );
-		wp_enqueue_script( 'prad-cart-script', PRAD_URL . 'assets/js/wowcart.js', array( 'jquery' ), PRAD_VER, true );
-		$item_data = array_merge( $item_data, $cart_item['prad_selection']['extra_data'] );
-		}
-		*/
 		return $item_data;
 	}
-
-	/**
-	 * Display Option Meta in cart Data
-	 *
-	 *  @param string $item_id ID of item.
-	 *  @param array  $values selected.
-	 *
-	 * @return void
-	 */
-	public function save_custom_meta_to_order( $item_id, $values ) {
-
-		if ( isset( $values['prad_selection']['extra_data'] ) ) {
-			foreach ( $values['prad_selection']['extra_data'] as $val ) {
-				wc_add_order_item_meta( $item_id, $val['name'], $val['value'] );
-			}
-		}
-	}
-
 	/**
 	 * Validates required fields before adding product to cart.
 	 *
@@ -375,7 +359,7 @@ class CartPage {
 	private function collect_required_fields_from_db_meta( $db_ids_with_meta ) {
 		$required = array();
 
-		foreach ( $db_ids_with_meta as $option_id => $meta ) {
+		foreach ( $db_ids_with_meta as $meta ) {
 			foreach ( $meta as $field ) {
 				$block_id   = array_key_first( $field );
 				$required[] = array(
@@ -427,15 +411,58 @@ class CartPage {
 	/**
 	 * Parses the prad_selection field from the POST request.
 	 *
-	 * Decodes the JSON string sent by the frontend into an associative array.
+	 * Decodes the JSON string sent by the frontend and sanitizes every value.
 	 * Returns an empty array when the field is absent or the JSON is invalid.
 	 *
-	 * @return array Decoded selection data, or an empty array on failure.
+	 * @return array Sanitized selection data, or an empty array on failure.
 	 */
 	private function parse_prad_selection() {
-		$raw = isset( $_POST['prad_selection'] ) ? product_addons()->sanitize_rest_params( $_POST['prad_selection'] ) : ''; //phpcs:ignore
-		$decoded = json_decode( product_addons()->safe_stripslashes( $raw ), true );
-		return is_array( $decoded ) && ! empty( $decoded ) ? $decoded : array();
+		return $this->get_posted_json( 'prad_selection', array( product_addons(), 'sanitize_selection_data' ) );
+	}
+
+	/**
+	 * Decode a JSON-encoded field from the POST request and sanitize it.
+	 *
+	 * The decoded array is passed straight to the given sanitizer, so raw
+	 * values never leave this method.
+	 *
+	 * @param string   $key       POST field name.
+	 * @param callable $sanitizer Callback that sanitizes the decoded array.
+	 * @return array Sanitized data, or an empty array when absent or invalid.
+	 */
+	private function get_posted_json( $key, $sanitizer ) {
+		if ( ! isset( $_POST[ $key ] ) || ! is_string( $_POST[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return array();
+		}
+
+		$decoded = json_decode( wp_unslash( $_POST[ $key ] ), true ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON string; the decoded array is sanitized on the next line.
+		$clean   = is_array( $decoded ) ? call_user_func( $sanitizer, $decoded ) : array();
+
+		return is_array( $clean ) ? $clean : array();
+	}
+
+	/**
+	 * Sanitize the add-on products chosen in a Products field.
+	 *
+	 * Keeps only entries with a positive product ID and a quantity of at least 1.
+	 *
+	 * @param array $items Decoded list of { id, count } entries.
+	 * @return array
+	 */
+	private function sanitize_products_selection( $items ) {
+		$clean = array();
+		foreach ( $items as $item ) {
+			$product_id = is_array( $item ) && isset( $item['id'] ) && is_scalar( $item['id'] ) ? absint( $item['id'] ) : 0;
+			if ( ! $product_id ) {
+				continue;
+			}
+			$count   = isset( $item['count'] ) && is_scalar( $item['count'] ) ? absint( $item['count'] ) : 1;
+			$clean[] = array(
+				'id'    => $product_id,
+				'count' => max( 1, $count ),
+			);
+		}
+		return $clean;
 	}
 
 	/**
@@ -451,23 +478,16 @@ class CartPage {
 			return false;
 		}
 
-		$submitted_ids = array_keys( $prad_selection );
-
-		foreach ( $prad_selection as $value ) {
-			if ( ! isset( $value['repeatedValues'] ) || ! is_array( $value['repeatedValues'] ) ) {
-				continue;
-			}
-			foreach ( $value['repeatedValues'] as $instance ) {
-				if ( ! isset( $instance['selectedFields'] ) || ! is_array( $instance['selectedFields'] ) ) {
-					continue;
-				}
-				foreach ( array_keys( $instance['selectedFields'] ) as $field_id ) {
-					$submitted_ids[] = $field_id;
-				}
-			}
-		}
-
-		$submitted_ids = array_unique( $submitted_ids );
+		/**
+		 * Filters the IDs of the fields that have a value in the submitted selection, e.g. to
+		 * add fields another plugin nests inside a field's value.
+		 *
+		 * @since 1.8.3
+		 *
+		 * @param array $submitted_ids  Block IDs of the submitted fields.
+		 * @param array $prad_selection The submitted selection.
+		 */
+		$submitted_ids = array_unique( (array) apply_filters( 'prad_submitted_field_ids', array_keys( $prad_selection ), $prad_selection ) );
 
 		foreach ( $required_fields as $field ) {
 			if ( ! in_array( $field['block_id'], $submitted_ids, true ) ) {

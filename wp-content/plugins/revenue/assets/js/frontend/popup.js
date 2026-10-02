@@ -302,16 +302,8 @@ jQuery(document).ready(function ($) {
 		).each(function () {
 			initializeSlider($(this), 'bundle_discount');
 		});
-		$(
-			'.revx-popup__content.revx-frequently-bought-together-grid .revx-slider-container'
-		).each(function () {
-			initializeSlider($(this), 'fbt');
-		});
-		$(
-			'.revx-popup__content.revx-mix-match-grid .revx-slider-container'
-		).each(function () {
-			initializeSlider($(this), 'mix-match');
-		});
+		// Campaign types owned by other plugins initialise their own sliders.
+		$(document).trigger('revx-campaign-popup-opened');
 
 		buxXGetYSlider();
 

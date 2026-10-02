@@ -32,7 +32,7 @@ class Url_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 
 		if ( empty( $options ) ) {
 			return '';
@@ -67,8 +67,7 @@ class Url_Block extends Abstract_Block {
 	/**
 	 * Render URL input section
 	 *
-	 * @param object $item URL item
-	 * @param array  $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_url_input( array $price_info ): string {
@@ -78,7 +77,7 @@ class Url_Block extends Abstract_Block {
 
 		$html = '<div class="prad-d-flex prad-item-center prad-gap-12 prad-mb-12">';
 
-		// URL input
+		// URL input.
 		$input_attributes = array(
 			'class'       => 'prad-w-full prad-block-input prad-input',
 			'type'        => 'url',

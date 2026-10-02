@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/integration/woocommerce-smart-coupons/
  * @since       4.12.0
- * @version     1.2.0
+ * @version     1.3.1
  */
 
 // Exit if accessed directly.
@@ -47,6 +47,8 @@ if ( ! class_exists( 'WSC_AFWC_Compatibility' ) ) {
 
 			// Filter to set coupon visibility for coupons generated for payout via coupons.
 			add_filter( 'afwc_coupon_payouts_custom_meta', array( $this, 'custom_coupon_meta' ), 10, 1 );
+
+			add_filter( 'afwc_coupon_shareable_link_is_available', '__return_true' );
 		}
 
 		/**
@@ -190,7 +192,11 @@ if ( ! class_exists( 'WSC_AFWC_Compatibility' ) ) {
 				return $link;
 			}
 
-			$args     = array( 'coupon-code' => $code );
+			// Since SC version 9.82.0, pass false to sc-page param to prevent inclusion of it in affiliate coupon URL.
+			$args     = array(
+				'coupon-code' => $code,
+				'sc-page'     => false,
+			);
 			$base_url = home_url( '/' );
 
 			// SC added function from version 9.12.0. So first check if the method exists.

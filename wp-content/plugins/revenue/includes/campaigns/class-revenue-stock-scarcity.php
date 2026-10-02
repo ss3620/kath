@@ -5,10 +5,9 @@
 
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 use Revenue\Services\Revenue_Product_Context;
-
-//phpcs:disable WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.PHP.StrictComparisons.LooseComparison
-
 
 /**
  * WowRevenue Campaign: Stock Scarcity
@@ -43,33 +42,8 @@ class Revenue_Stock_Scarcity {
 		add_action( 'wp', array( $this, 'wsx_get_product_id_after_everything_loaded' ) );
 		add_filter( 'woocommerce_add_cart_item_data', array( $this, 'wsx_store_campaign_data_for_cart' ), 10, 2 );
 		add_action( 'wp_footer', array( $this, 'rvex_add_hidden_page_type_field' ) );
-		add_action( 'wp_ajax_update_product_views', array( $this, 'update_product_views_ajax' ) );
-		add_action( 'wp_ajax_nopriv_update_product_views', array( $this, 'update_product_views_ajax' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_single_product_view_script' ) );
-		// add_action( 'woocommerce_order_status_completed', array( $this, 'update_user_purchase_count' ) );
-		// add_action( 'woocommerce_order_status_processing', array( $this, 'update_user_purchase_count' ) );
-		// add_action( 'woocommerce_order_status_on-hold', array( $this, 'update_user_purchase_count' ) );
-		// add_action( 'woocommerce_order_status_cancelled', array( $this, 'decrease_user_purchase_count' ) );
-	}
-
-	/**
-	 * Enqueue the single product view script.
-	 *
-	 * @return void
-	 */
-	public function enqueue_single_product_view_script() {
-		if ( is_product() ) {
-			// wp_enqueue_script( 'single-product-view', plugin_dir_url( __FILE__ ) . 'ajax-single-product-view.js', array( 'jquery' ), null, true );
-			// wp_localize_script(
-			// 	'single-product-view',
-			// 	'single_product_data',
-			// 	array(
-			// 		'ajax_url'    => admin_url( 'admin-ajax.php' ),
-			// 		'product_id'  => 0,
-			// 		'campaign_id' => 0,
-			// 	)
-			// );
-		}
+		add_action( 'wp_ajax_revenue_update_product_views', array( $this, 'update_product_views_ajax' ) );
+		add_action( 'wp_ajax_nopriv_revenue_update_product_views', array( $this, 'update_product_views_ajax' ) );
 	}
 
 	/**
@@ -78,23 +52,32 @@ class Revenue_Stock_Scarcity {
 	 * @return void
 	 */
 	public function update_product_views_ajax() {
+		check_ajax_referer( 'revenue-add-to-cart', 'security' );
 		if ( ! isset( $_POST['product_id'], $_POST['campaign_id'] ) ) {
-			wp_send_json_error( 'Missing parameters' );
+			wp_send_json_error( 'Missing parameters', 400 );
 			return;
 		}
 
-		$product_id  = intval( $_POST['product_id'] );
-		$campaign_id = sanitize_text_field( $_POST['campaign_id'] );
+		$validation  = array( 'options' => array( 'min_range' => 1 ) );
+		$product_id  = filter_var( wp_unslash( $_POST['product_id'] ), FILTER_VALIDATE_INT, $validation );
+		$campaign_id = filter_var( wp_unslash( $_POST['campaign_id'] ), FILTER_VALIDATE_INT, $validation );
 
 		if ( ! $product_id || empty( $campaign_id ) ) {
-			wp_send_json_error( 'Invalid data' );
+			wp_send_json_error( 'Invalid data', 400 );
 			return;
 		}
 
+		$campaign = revenue()->get_raw_campaign( $campaign_id );
+		if ( ! $campaign || 'publish' !== $campaign->campaign_status || 'stock_scarcity' !== $campaign->campaign_type ) {
+			wp_send_json_error( 'Campaign not found', 404 );
+			return;
+		}
+
+		// Public tracking must not mutate private product metadata.
 		// Load the product object.
 		$product = wc_get_product( $product_id );
-		if ( ! $product ) {
-			wp_send_json_error( 'Product not found' );
+		if ( ! $product || 'publish' !== $product->get_status() ) {
+			wp_send_json_error( 'Product not found', 404 );
 			return;
 		}
 
@@ -141,6 +124,8 @@ class Revenue_Stock_Scarcity {
 			'shop_loop_item_title',
 		);
 		// check current page is shop page or product page and cart page.
+		// Public cart context hint; campaign eligibility is computed server-side below.
+		$posted_page  = isset( $_POST['wsx_current_page'] ) ? sanitize_key( wp_unslash( $_POST['wsx_current_page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce public add-to-cart context, not privileged form data.
 		$current_page = '';
 		if ( is_product() ) {
 			$current_page = 'product_page';
@@ -148,8 +133,8 @@ class Revenue_Stock_Scarcity {
 			$current_page = 'shop_page';
 		} elseif ( is_cart() ) {
 			$current_page = 'cart_page';
-		} elseif ( ! empty( $_POST['wsx_current_page'] ) ) {
-			$current_page = sanitize_text_field( $_POST['wsx_current_page'] );
+		} elseif ( in_array( $posted_page, array( 'product_page', 'shop_page', 'cart_page' ), true ) ) {
+			$current_page = $posted_page;
 		} else {
 			$current_page = 'shop_page';
 		}
@@ -204,7 +189,7 @@ class Revenue_Stock_Scarcity {
 						false,
 						'stock_scarcity'
 					);
-					$product = wc_get_product( $product_id );
+					$product   = wc_get_product( $product_id );
 					if ( ! empty( $campaigns ) && $product->get_stock_quantity() > 0 ) {
 						add_filter( 'woocommerce_get_stock_html', fn( $html, $product ) => '', 10, 2 );
 					}
@@ -256,14 +241,9 @@ class Revenue_Stock_Scarcity {
 
 			$campaign = $campaigns[0];
 
-			if ( revenue()->is_for_new_builder( $campaign ) ) {
-				wp_enqueue_script( 'revenue-campaign-stock-scarcity' );
-				wp_enqueue_style( 'revenue-campaign-stock-scarcity' );
-				wp_enqueue_script( 'single-product-view' );
-			} else {
-				wp_enqueue_script( 'revenue-v1-campaign-stock-scarcity' );
-				wp_enqueue_style( 'revenue-v1-campaign-stock-scarcity' );
-			}
+			wp_enqueue_script( 'revenue-campaign-stock-scarcity' );
+			wp_enqueue_style( 'revenue-campaign-stock-scarcity' );
+
 			revenue()->update_campaign_impression( $campaign['id'] );
 			$output = '';
 
@@ -273,67 +253,16 @@ class Revenue_Stock_Scarcity {
 			$file_path = apply_filters( 'revenue_campaign_view_path', $file_path, 'stock_scarcity', 'inpage', $campaign );
 			if ( file_exists( $file_path ) ) {
 				do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-				extract($data); //phpcs:ignore
+				// Template vars supplied by the caller (no extract()).
+				$display_type = $data['display_type'] ?? '';
+				$placement    = $data['placement'] ?? '';
+				$position     = $data['position'] ?? '';
 				include $file_path;
 			}
 		}
 	}
 
-	/**
-	 * Localize data for countdown timer using Hiding File .
-	 *
-	 * @param array $campaign The campaign data.
-	 *
-	 * @return array
-	 */
-	public function stock_scarcity_hidden_data( $campaign = array() ) {
-		$product = Revenue_Product_Context::get_product_context();
-		$stock_quantity = null;
-		if ( $product && is_a( $product, 'WC_Product' ) ) {
-			$stock_quantity = $product->get_stock_quantity();
-			// echo 'Available Stock: ' . ( $stock_quantity !== null ? $stock_quantity : 'Out of Stock' );
-		}
 
-		$message_type         = $campaign['stock_scarcity_message_type'] ?? 'generalMessage';
-		$general_settings     = $campaign['stock_scarcity_general_message_settings'] ?? array();
-		$in_stock_message     = $general_settings['in_stock_message'] ?? '';
-		$low_stock_message    = $general_settings['low_stock_message'] ?? '';
-		$urgent_stock_message = $general_settings['urgent_stock_message'] ?? '';
-		$is_low_stock         = $general_settings['isLowStockChecked'] ?? 'no';
-		$is_urgent_stock      = $general_settings['isUrgentStockChecked'] ?? 'no';
-		$enable_stock_bar     = $general_settings['enable_stock_bar'] ?? 'no';
-		$enable_fake_stock    = $general_settings['enable_fake_stock'] ?? 'no';
-		$repeat_interval      = $general_settings['repeat_interval'] ?? 'no';
-		$low_stock_amount     = $general_settings['low_stock_amount'] ?? 0;
-		$urgent_stock_amount  = $general_settings['urgent_stock_amount'] ?? 0;
-		$in_stock_fake_amount = $general_settings['in_stock_fake_amount'] ?? 0;
-		$low_fake_amount      = $general_settings['low_fake_amount'] ?? 0;
-		$urgent_fake_amount   = $general_settings['urgent_fake_amount'] ?? 0;
-
-		$flip_settings      = $campaign['stock_scarcity_flip_message_settings'] ?? array();
-		$animation_settings = $campaign['stock_scarcity_animation_settings'] ?? array();
-		$data               = array(
-			'message_type'         => $message_type,
-			'in_stock_message'     => $in_stock_message,
-			'low_stock_message'    => $low_stock_message,
-			'urgent_stock_message' => $urgent_stock_message,
-			'is_low_stock'         => $is_low_stock,
-			'is_urgent_stock'      => $is_urgent_stock,
-			'enable_stock_bar'     => $enable_stock_bar,
-			'enable_fake_stock'    => $enable_fake_stock,
-			'repeat_interval'      => $repeat_interval,
-			'low_stock_amount'     => $low_stock_amount,
-			'urgent_stock_amount'  => $urgent_stock_amount,
-			'in_stock_fake_amount' => $in_stock_fake_amount,
-			'low_fake_amount'      => $low_fake_amount,
-			'urgent_fake_amount'   => $urgent_fake_amount,
-			'flip_settings'        => $flip_settings,
-			'animation_settings'   => $animation_settings,
-			'stock_quantity'       => $stock_quantity,
-		);
-
-		return $data;
-	}
 
 	/**
 	 * Get distinct user count by product ID.
@@ -385,7 +314,6 @@ class Revenue_Stock_Scarcity {
 			return;
 		}
 		if ( is_product() ) {
-
 
 			$this->run_shortcode(
 				$campaign,
@@ -440,38 +368,21 @@ class Revenue_Stock_Scarcity {
 	 * @return mixed
 	 */
 	public function run_shortcode( $campaign, $data = array() ) {
-		if(revenue()->is_for_new_builder( $campaign )) {
-			wp_enqueue_style( 'revenue-campaign' );
-			wp_enqueue_style( 'revenue-campaign-buyx_gety' );
-			wp_enqueue_style( 'revenue-campaign-volume' );
-			wp_enqueue_style( 'revenue-campaign-double_order' );
-			wp_enqueue_style( 'revenue-campaign-fbt' );
-			wp_enqueue_style( 'revenue-campaign-mix_match' );
-			wp_enqueue_style( 'revenue-utility' );
-			wp_enqueue_style( 'revenue-responsive' );
-			wp_enqueue_script( 'revenue-campaign' );
-			wp_enqueue_script( 'revenue-slider' );
-			wp_enqueue_script( 'revenue-add-to-cart' );
-			wp_enqueue_script( 'revenue-variation-product-selection' );
-			wp_enqueue_script( 'revenue-checkbox-handler' );
-			wp_enqueue_script( 'revenue-double-order' );
-			wp_enqueue_script( 'revenue-campaign-total' );
-			wp_enqueue_script( 'revenue-countdown' );
-			wp_enqueue_script( 'revenue-animated-add-to-cart' );
-			wp_enqueue_style( 'revenue-animated-add-to-cart' );
-		} else {
-			wp_enqueue_style( 'revenue-v1-campaign' );
-			wp_enqueue_style( 'revenue-v1-campaign-buyx_gety' );
-			wp_enqueue_style( 'revenue-v1-campaign-double_order' );
-			wp_enqueue_style( 'revenue-v1-campaign-fbt' );
-			wp_enqueue_style( 'revenue-v1-campaign-mix_match' );
-			wp_enqueue_style( 'revenue-v1-utility' );
-			wp_enqueue_style( 'revenue-v1-responsive' );
-			wp_enqueue_script( 'revenue-v1-campaign' );
-			wp_enqueue_script( 'revenue-v1-add-to-cart' );
-			wp_enqueue_script( 'revenue-v1-animated-add-to-cart' );
-			wp_enqueue_style( 'revenue-v1-animated-add-to-cart' );
-		}
+		wp_enqueue_style( 'revenue-campaign' );
+		wp_enqueue_style( 'revenue-campaign-buyx_gety' );
+		wp_enqueue_style( 'revenue-campaign-volume' );
+		do_action( 'revenue_enqueue_campaign_assets', $campaign['campaign_type'] );
+		wp_enqueue_style( 'revenue-utility' );
+		wp_enqueue_style( 'revenue-responsive' );
+		wp_enqueue_script( 'revenue-campaign' );
+		wp_enqueue_script( 'revenue-slider' );
+		wp_enqueue_script( 'revenue-add-to-cart' );
+		wp_enqueue_script( 'revenue-variation-product-selection' );
+		wp_enqueue_script( 'revenue-checkbox-handler' );
+		wp_enqueue_script( 'revenue-campaign-total' );
+		wp_enqueue_script( 'revenue-countdown' );
+		wp_enqueue_script( 'revenue-animated-add-to-cart' );
+		wp_enqueue_style( 'revenue-animated-add-to-cart' );
 
 		$file_path_prefix = apply_filters( 'revenue_campaign_file_path', REVENUE_PATH, $campaign['campaign_type'], $campaign );
 
@@ -485,7 +396,6 @@ class Revenue_Stock_Scarcity {
 				case 'inpage':
 				case 'multiple':
 					$file_path = revenue()->get_campaign_path( $campaign, 'inpage', $campaign_type );
-					// $file_path = $file_path_prefix . "includes/campaigns/views/{$campaign_type}/inpage.php";
 					break;
 				case 'popup':
 					$file_path = revenue()->get_campaign_path( $campaign, 'popup', $campaign_type );
@@ -504,7 +414,10 @@ class Revenue_Stock_Scarcity {
 		ob_start();
 		if ( file_exists( $file_path ) ) {
 			do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-			extract($data); //phpcs:ignore
+			// Template vars supplied by the caller (no extract()).
+			$display_type = $data['display_type'] ?? '';
+			$placement    = $data['placement'] ?? '';
+			$position     = $data['position'] ?? '';
 			?>
 				<div class="revenue-campaign-shortcode">
 					<?php
@@ -526,7 +439,7 @@ class Revenue_Stock_Scarcity {
 		if ( $is_rest_api_request ) {
 			return $output;
 		} else {
-			echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wp_kses( $output, revenue()->get_allowed_tag() );
 		}
 	}
 }

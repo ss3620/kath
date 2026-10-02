@@ -34,10 +34,10 @@
 			$button.text( newText );
 
 			$.ajax( {
-				url: '/?wc-ajax=revenue_add_to_cart',
+				url: revenue_campaign.ajax,
 				type: 'POST',
 				data: {
-					// action: 'revenue_add_to_cart',
+					action: 'revenue_add_to_cart',
 					productId,
 					campaignId,
 					_wpnonce: revenue_campaign.nonce,

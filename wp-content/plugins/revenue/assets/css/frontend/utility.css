@@ -336,7 +336,7 @@ input[data-name="revx_quantity"] {
 	width: -webkit-fill-available; /* Safari and WebKit-based browsers */
 	width: -moz-available; /* Firefox */
 	width: fill-available; /* Standard, but limited browser support
-    /* width: 100%; conflict with mix match add to cart button  */
+	/* A forced width conflicts with full-width add-to-cart buttons. */
 	text-align: center;
 }
 
@@ -650,9 +650,6 @@ input[data-name="revx_quantity"] {
 /* .revx-container.before_single_product_summary {
     width: 50%;
 } */
-/* .revx-container.before_single_product_summary:has(.revx-frequently-bought-together-grid) {
-    width: 50%;
-} */
 .before_single_product_summary
 	.revx-bxgy-trigger-items
 	.revx-builder-sticky-offer,
@@ -739,9 +736,6 @@ Button Size
     position: unset;
 }
 
-.revx-mix-match .revx-campaign-item__regular-price {
-    display: none;
-}
 /* For New Builder Campaigns */
 .revx-campaign-icon {
 	height: var(--revx-icon-size);

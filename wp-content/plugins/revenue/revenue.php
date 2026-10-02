@@ -1,15 +1,16 @@
 <?php
 /**
- * Plugin Name: WowRevenue
+ * Plugin Name: WowRevenue - Product Bundles & Bulk Discounts
  * Plugin URI: https://www.wowrevenue.com/
  * Description: WowRevenue is a product bundles plugin with various discount campaigns, allowing you to create enticing offers and encourage shoppers to make more purchases. As a result, your average order value and overall revenue will be increased.
- * Version: 2.2.13
+ * Version: 2.3.2
  * Author: WowRevenue
  * Author URI: https://wowrevenue.com/
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: revenue
  * Domain Path: /languages
+ * Requires Plugins: woocommerce
  *
  * @package          Revenue
  */
@@ -30,11 +31,8 @@ if ( ! defined( 'REVENUE_URL' ) ) {
 }
 
 if ( ! defined( 'REVENUE_VER' ) ) {
-	define( 'REVENUE_VER', '2.2.13' );
+	define( 'REVENUE_VER', '2.3.2' );
 }
-
-// // Auto-generate translation files from .po files
-// require_once REVENUE_PATH . 'language-tools/auto-generate-translations.php';
 
 // Include the main Revenue class.
 if ( ! class_exists( 'Revenue', false ) ) {
@@ -50,10 +48,6 @@ if ( ! class_exists( '\Revenue\Revenue_Functions', false ) ) {
 	require_once REVENUE_PATH . '/includes/class-revenue-functions.php';
 }
 
-// Include Wow Shipping Promotion.
-if ( ! class_exists( '\Revenue\WowShippingPromotion', false ) ) {
-	require_once REVENUE_PATH . '/includes/class-wow-shipping-promotion.php';
-}
 if ( ! function_exists( 'revenue' ) ) {
 
 	/**
@@ -86,7 +80,6 @@ if ( ! function_exists( 'revenue_run' ) ) {
 	 * @return Revenue Instance of Revenue.
 	 */
 	function revenue_run() {
-		new \Revenue\WowShippingPromotion();
 		return Revenue::init();
 	}
 }

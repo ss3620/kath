@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/admin/
  * @since       8.0.0
- * @version     1.0.5
+ * @version     1.0.6
  */
 
 // Exit if accessed directly.
@@ -208,15 +208,19 @@ if ( ! class_exists( 'AFWC_Pending_Payout_Dashboard' ) ) {
 				}
 
 				// Affiliate details - name and email.
-				$affiliate_data           = new AFWC_Admin_Affiliates( $affiliate_id );
-				$details                  = is_callable( array( $affiliate_data, 'get_affiliates_details' ) ) ? $affiliate_data->get_affiliates_details() : array();
-				$name                     = ( ! empty( $details ) && is_array( $details ) && ! empty( $details[ $affiliate_id ]['name'] ) ) ? $details[ $affiliate_id ]['name'] : 'N/A';
-				$email                    = ( ! empty( $details ) && is_array( $details ) && ! empty( $details[ $affiliate_id ]['email'] ) ) ? $details[ $affiliate_id ]['email'] : 'N/A';
+				$affiliate_data = new AFWC_Admin_Affiliates( $affiliate_id );
+				$details        = is_callable( array( $affiliate_data, 'get_affiliates_details' ) ) ? $affiliate_data->get_affiliates_details() : array();
+				// Affiliate user is treated as deleted only when no user record is found, not when their name is empty.
+				$affiliate                = ( ! empty( $details ) && is_array( $details ) && ! empty( $details[ $affiliate_id ] ) ) ? $details[ $affiliate_id ] : array();
+				$is_deleted               = empty( $affiliate );
+				$email                    = ( ! $is_deleted && ! empty( $affiliate['email'] ) ) ? $affiliate['email'] : '';
+				$name                     = $is_deleted ? _x( 'Deleted affiliate', 'Affiliate name shown in pending payouts when the affiliate user account no longer exists', 'affiliate-for-woocommerce' ) : ( ! empty( $affiliate['name'] ) ? $affiliate['name'] : $email );
 				$payout_method            = get_user_meta( $affiliate_id, 'afwc_payout_method', true );
 				$affiliate_payout_details = array(
 					'affiliate_id'    => $affiliate_id,
 					'affiliate_name'  => $name,
 					'affiliate_email' => $email,
+					'is_deleted'      => $is_deleted,
 					'unpaid_amount'   => afwc_format_number( $affiliate_payout_details['total_commission_amount'] ),
 					'payout_method'   => ! empty( $payout_method ) ? afwc_get_payout_methods( $payout_method ) : '',
 				);

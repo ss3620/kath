@@ -4,26 +4,25 @@ Tags: product addons, woocommerce product addons, extra product options, product
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.7.0
+Stable tag: 1.8.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-
-Product addons for WooCommerce is the ultimate plugin that lets you add extra product options, product fields, and WooCommerce product fields.
+ 
+Product addons for WooCommerce is the ultimate plugin that lets you add extra product options and fields in your product pages.
 
 == Description == 
 
 🥇 The Ultimate **Product Addons** Plugin - With **UX That Wows**. 
 💲  Other Plugins Add Options. We Add **Revenue**.
-💞 A WPXPO Plugin **Trusted by 60K+** Businesses.
-🤝 Backed by a Dedicated Support Team with **4.9/5** [Trustpilot Rating](https://uk.trustpilot.com/review/wpxpo.com).
+💞 A WPXPO Plugin **Trusted by 65K+** Businesses.
 
-😲[View Demo](https://wowaddons.wpxpo.com/) | 🔥[WowAddons Pro](https://www.wpxpo.com/product/wowaddons/) | 📃[Documentation](https://wpxpo.com/docs/wowaddons/)
+😲[View Demo](https://demo.wpxpo.com/wowaddons/) | 🔥[WowAddons Pro](https://www.wpxpo.com/product/wowaddons/) | 📃[Documentation](https://wpxpo.com/docs/wowaddons/)
 
-Simplify product customization with our WooCommerce Custom Fields plugin! Build extra product options, including swatches, radio buttons, file uploads, sliders, date, time, and more with our state-of-the-art product addons customizer.
+Simplify product customization with our product addons plugin for WooCommerce! Build extra product options, including radio buttons, checkboxes, dropdowns, file uploads, sliders, date, time, and more with our state-of-the-art product addons customizer.
 
-Allow customers to purchase items tailored to their needs while upselling through priced product addons. With advanced conditional logic and a lightweight design, this custom fields plugin is perfect for upselling and cross-selling. Try the WowAddons Product Fields now and create a standout shopping experience! 
+Allow customers to purchase items tailored to their needs while upselling through priced product addons. With advanced conditional logic and a lightweight design, our options plugin is perfect for upselling and cross-selling. Try the WowAddons now and create a standout shopping experience! 
 
-## Check Out the Promo Video - Know the Power of WowAddons! ##
+## Watch the Plugin in Action - Know the Power of WowAddons! ##
 
 [youtube https://www.youtube.com/watch?v=riSx5n8ae8k]
 
@@ -31,67 +30,104 @@ Allow customers to purchase items tailored to their needs while upselling throug
 
 Buyers want freedom of choice - they want product options that work for them. WowAddons helps you achieve this goal. 
 
-With the 25+ custom WooCommerce product fields and a state-of-the-art product customizer, you can offer any type of product to your customers. Using the powerful image and color swatches, range slider, radio buttons, date, time, and text fields, you can share your offerings with your customers. 
-
-And if it’s too advanced, don’t worry. The custom product options logic settings will help you make personal adjustments, helping you to offer products to buyers without hassle! Whether it’s designing based on uploaded images, getting item numbers, or delivery dates, custom selections, etc. WowAddons is the ultimate product fields solution for WooCommerce! 
-
-## Curious about what WowAddons can do? Watch the video below to see its features in action! ##
-
-[youtube https://www.youtube.com/watch?v=9kyPFC7SuG4]
+With the advanced custom product fields, you can offer any type of personalized product to your customers. Also, the conditional logic settings will help you make personal adjustments, helping you offer products to buyers without hassle! 
 
 ## Learn how easy it is to add custom product add-ons to your WooCommerce store! ##
 
 [youtube https://www.youtube.com/watch?v=CKehwKhcXtI]
  
 
-## Features of WowAddons - The Ultimate WooCommerce Product Addons Plugin! ##
+## Free Product Addon Fields in WowAddons ##
 
-WowAddons is a powerful WooCommerce product options plugin, offering dynamic custom fields and extra product options. 
+WowAddons includes a wide range of product addons in the free version. You can use these fields to collect customer input, create selectable product options, organize addon layouts, and add custom content to WooCommerce product pages.
 
-Its intuitive UI simplifies creating personalized product experiences. Easily add WooCommerce Custom Fields, swatches, date, time, slider, ranges, and more with core components, allowing you to offer more variations of your offerings to customers.
+✅ **Text Field:** Collect short text input from customers.
 
-## Here's another great video on the ins-and-outs of the features of WowAddons. It's going to give you a 360-degree view of the WowAddons custom product fields for WooCommerce: ##
+✅ **Number:** Let customers enter numeric values.
 
-[youtube https://www.youtube.com/watch?v=xgiXz1IaGOc]
+✅ **Text Area:** Collect longer text or custom instructions.
 
-Here are the core custom fields of WowAddons: 
+✅ **Email:** Add a field for customer email addresses.
 
-✅ **Radio Button and Checkboxes:** Use radio buttons and checkboxes to offer pricing for different product options. 
-✅ **Switches and Dropdowns:** Let users look through and buy from different variations of your offerings using custom switches and dropdowns. 
-✅ **File Uploads:** Let users upload design files - allow them to buy custom-designed t-shirts, mugs, and more from your store. 
-✅ **Button:** Buyers can make educated choices using custom buttons you create with WowAddons. 
-✅ **Image and Color Swatches:** Give the option to browse through image and color options of your products - offer extra product options to buyers. 
-✅ **Products:** Add additional products as cross-sell subitems to the main products, allowing you to increase the average order value.
-✅ **Custom Color Picker:** Create color choices for your products and let users get the color they want. 
-✅ **Date and Time:** Offer ‘on-time’ delivery by getting the date and time from the customers. 
-✅ **Range Slider:** Buyers can select products within certain ranges with the slider. 
-✅ **URL/Link:** Sending something to a customer online? Collect the link from them using the URL addon. 
-✅ **Mail:** Collect emails from users to send them their order details. 
-✅ **Number:** Let users select the number of products (or anything else) with the number block. 
-✅ **Telephone:** Collect a user’s telephone number - offer them details of their purchases. 
-✅ **Text Area:** Collect user information using the text area field. 
-✅ **Heading and Section:** Use custom headings and sections in the product customizer on your WooCommerce store. 
-✅ **Short Code:** Use shortcodes to offer extra product options on your store. 
-✅ **Separator and Spacer:** Use spacers and separators to personalize your product customizer with WowAddons. 
+✅ **Telephone:** Collect phone numbers with a dedicated telephone field.
+
+✅ **Range Slider:** Let customers select a value from a defined range.
+
+✅ **Radio:** Create single-choice product options.
+
+✅ **Checkbox:** Allow customers to select one or multiple options.
+
+✅ **Switch:** Add toggle-style product options.
+
+✅ **Dropdown:** Display product choices in a dropdown menu.
+
+✅ **Color Picker:** Let customers choose a custom color.
+
+✅ **Upload:** Allow customers to upload images, documents, or other supported files.
+
+✅ **Content:** Add custom content within your product addon layout.
+
+✅ **Date & Time:** Let customers select dates and times.
+
+✅ **Popup:** Display additional content inside a popup.
+
+✅ **Section:** Organize addon fields into sections.
+
+✅ **Separator:** Visually separate different groups of product options.
+
+✅ **Spacer:** Add spacing between addon fields and sections.
+
+✅ **URL / Link:** Collect URLs or links from customers.
+
+✅ **Shortcode:** Display shortcode-generated content within the addon layout.
+
+## Pro Product Addon Fields in WowAddons ##
+
+WowAddons Pro adds additional fields for more advanced product customization and pricing requirements.
+
+⭐ **Font Picker:** Let customers choose from available font options.
+
+⭐ **Advanced Formula:** Calculate addon pricing or values using custom formulas.
 
 
-## Why Use WowAddons WooCommerce Custom Product Options Plugin? ##
+## Advanced Features from WowAddons Pro ##
+
+WowAddons Pro adds advanced controls to product addon fields, giving you more flexibility over pricing, option presentation, customer input, and field behavior.
+
+⭐ **Formula Value:** Calculate a field's price using your own custom formula.
+
+⭐ **Same Price:** Apply the same price to every option in a field at once.
+
+⭐ **Option Images:** Add thumbnail images to individual options so customers can see what they are selecting.
+
+⭐ **Sale Price:** Set discounted prices for individual product addon options.
+
+⭐ **Option Descriptions:** Add short descriptions or tooltips to individual addons.
+
+⭐ **Quantity Selector:** Let customers choose a quantity for a product addon.
+
+⭐ **URL Key:** Pre-fill supported product addon fields directly through the product URL.
+
+⭐ **Disable Next N Days:** Prevent customers from selecting upcoming dates within a specified number of days.
+
+⭐ **Repeatable Section:** Let customers repeat the same group of product addon fields multiple times.
+
+⭐ **Image Preview:** Show a live image preview when customers select supported product options.
+
+
+## Why Use WowAddons Product Options Plugin for WooCommerce? ##
 
 **Show Options - for Any or All Products**
 
-Assign Extra Product Options to specific products, categories, or all products instantly with WowRevenue’s flexible product customizer. 
+Assign extra product options to specific products, categories, or all products instantly with WowAddons' flexible product customizer. 
 
 **It’s a Next-Gen Product Customizer**
 
-WowAddons intuitive builder simplifies adding WooCommerce Product Options. Drag and drop components to create custom WooCommerce Product Fields effortlessly.
+WowAddons' intuitive builder simplifies adding product options in WooCommerce. Choose  components from the addon picker view to create custom WooCommerce Product Fields effortlessly.
 
 **Dynamic Price Adjustments**
 
-Charge for WooCommerce Product Options with regular or sale prices. Product pricing changes dynamically based on the option selection. 
-
-**Features Advanced Color/Image Swatches**
-
-Transform variations into vibrant swatch buttons for colors and images, with flexible pricing for each. These extra product fields can improve the user experience greatly! 
+Charge for WooCommerce product options with regular or sale prices. Product pricing changes dynamically based on the selections. 
 
 **Custom File and Image Uploads**
  
@@ -99,17 +135,12 @@ Enable customers to upload images or files - if you’re running a printing busi
 
 **Create Fields with Advanced Conditional Logic**
 
-Show or hide fields based on selections! Creating dynamic, engaging WooCommerce Product Fields for shoppers is super easy with WowAddons.
+Show or hide fields based on selections! Creating dynamic, engaging product fields for shoppers is super easy with WowAddons.
 
-## Find out how to create custom product fields for WooCommerce - watch the video ##
+## Here's another great video on the ins-and-outs of the features of WowAddons. It's going to give you a 360-degree view of the custom product fields offered by WowAddons: ##
 
-[youtube https://www.youtube.com/watch?v=t0CptTWgooo]
+[youtube https://www.youtube.com/watch?v=xgiXz1IaGOc]
 
-
-## Explore More WPXPO Plugins! ##
-
-
-Thank you for choosing WowAddons, a leading WooCommerce Product Addons plugin. Discover our other powerful plugins designed to elevate your business:
 
 ## More Wow Plugins by WPXPO!
 
@@ -121,7 +152,7 @@ Thank you for considering WowAddons. We have more plugins that can be beneficial
 
 💝 [**WowStore:**](https://wordpress.org/plugins/product-blocks/) The ultimate WooCommerce solution for building and managing eCommerce sites. Packed with features to enhance conversions and boost sales, it streamlines your store’s performance.
 
-💸 [**WowRevenue:**](https://wordpress.org/plugins/revenue/) The premier WooCommerce plugin for discounts, offering product bundles, BOGO deals, bulk discounts, and more. Increase order value and revenue with seamless WooCommerce Product Options.
+💸 [**WowRevenue:**](https://wordpress.org/plugins/revenue/) The premier WooCommerce plugin for discounts, offering product bundles, BOGO deals, bulk discounts, and more. Increase order value and revenue with seamless bundle offers.
 
 🧲 [**WowOptin:**](https://wordpress.org/plugins/optin/) A cutting-edge plugin for creating opt-ins and popups to capture leads and drive sales. It's Canva-like builder ensures quick, customized designs to meet your goals.
 
@@ -132,6 +163,14 @@ Thank you for considering WowAddons. We have more plugins that can be beneficial
 
 = Author =
 Developed by [WPXPO](https://www.wpxpo.com). [Contribute to Product Addons on Bitbucket](https://bitbucket.org/wpstabon/product-addons/) and join the party.
+
+= Source Code =
+
+The JavaScript and CSS files in the plugin's `assets` folder are compiled and minified. The human-readable source (React and SCSS, in the `src` folder) is publicly available at [bitbucket.org/wpstabon/product-addons](https://bitbucket.org/wpstabon/product-addons/).
+ 
+To build the assets from source, run `npm install` and then `npm run build-cross` in the plugin folder. The build uses `@wordpress/scripts` (webpack).
+ 
+Licenses and copyright notices for the third-party libraries bundled in the compiled JavaScript are listed in `third-party-licenses.txt`.
 
 == Installation ==
 
@@ -190,17 +229,56 @@ Yes, you can assign extra options to specific products or products from specific
 
 No, for some product fields like Headings, Texts, advanced custom logic options are not available. But it’s available for other addon options. 
 
+== External services ==
+
+= YouTube videos =
+
+Clicking a tutorial play button loads an embedded video from YouTube (Google). YouTube receives your IP, requested video ID, and browser metadata, and may use cookies under its policies. Viewing is optional and requires no account in this plugin. [Terms](https://www.youtube.com/t/terms) and [Privacy](https://policies.google.com/privacy).
+
 == Screenshots ==
 
 1. Next Gen Addons Builder
 2. Dynamic Pricing (GIF)
 3. Advanced Logic Builder
 4. Editable Custom Fields (Addon blocks)
-5. Image and Color Swatches
-6. Smart Upselling
-7. Strategic Cross-selling 
 
 == Changelog ==
+= 1.8.4 – 30th September 2026 =
+* Fix: Performance improvements.
+
+= 1.8.3 – 27th September 2026 =
+* Update: The license page, the license expiry notice, the custom fonts page, the Advanced Formula and Font Picker fields, URL Key, the image preview of Radio, Checkbox and Switch options, and the builder controls for Pro settings are removed from the plugin. They are provided by the Pro plugin.
+* Update: Button, Image Swatches, Color Swatches and Products fields are no longer limited in how many options or products they show.
+* Update: Options that were hidden in the builder show a button to show them again.
+* Update: The builder and product page scripts have extension points (filters, actions and slots) that other plugins use to add settings, field types, dashboard pages and dashboard menu entries.
+* Update: The quantity input, formula values, category exclusions, repeatable sections and the Advanced Formula product values are removed from the plugin. They are provided by the Pro plugin.
+* Update: The deprecated Button, Image Swatches, Color Swatches and Products fields show a deprecation notice in the builder on every site. Fields made with the Pro plugin's "Advanced" versions of these fields are only shown while the Pro plugin is active.
+* Update: The plugin's admin script loads only on its own dashboard, and its product page styles no longer change the box sizing of the theme's elements.
+
+= 1.8.2 – 26th September 2026 =
+* Update: Premade templates are removed from the plugin.
+* Update: Assigning add-ons by specific tag or brand, Same Price, Option Descriptions, Term Exclusion, sale prices on options, the "disable next N days" date setting, and per unit, per word and per character (no space) pricing are now provided by the Pro plugin.
+* Update: The custom font endpoints and the Fonts menu entry moved to the Pro plugin, and Pro-only fields are no longer listed in the free builder's field picker.
+* Fix: The Pro link text and URL shown in the plugin action links and the Pro submenu item are now escaped.
+* Fix: The assignment endpoint now rejects assignment types the plugin does not support before saving anything.
+
+= 1.8.1 – 24th September 2026 =
+* Fix: Custom font uploads are now checked to be genuine WOFF, WOFF2 or TTF files before they are saved.
+* Fix: Add-on option IDs submitted when adding a product to the cart are now sanitized and validated against the product's published add-ons.
+* Fix: Add-on selections, add-on product choices and image uploads submitted from the product page are now sanitized and validated.
+* Fix: Option sets, global styles, settings and assignment data saved from the admin editor are now sanitized field by field.
+
+= 1.8.0 – 20th September 2026 =
+* Update: Compliance and code-quality updates to align with the WordPress.org plugin guidelines.
+* Fix: The upload cleanup schedule is now created on activation and removed on deactivation.
+
+= 1.7.2 – 9th September 2026 =
+* Fix: Minor bug fixes and performance improved.
+
+= 1.7.1 – 6th September 2026 =
+* Update: Polish to the Addons Builder — improved responsiveness, refined confirmation and onboarding modals and a unified template picker experience.
+* Fix: Date field's Year dropdown could show years outside the configured minimum/maximum date range.
+
 = 1.7.0 – 1st September 2026 =
 * Update: Redesigned the Addons Builder with a new field list view — drag and drop fields to reorder, move in and out of sections, checkbox multi-select, and quick edit/duplicate/delete actions.
 

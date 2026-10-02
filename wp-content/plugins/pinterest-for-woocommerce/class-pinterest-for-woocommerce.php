@@ -27,6 +27,7 @@ use Automattic\WooCommerce\Pinterest\ProductFeedStatus;
 use Automattic\WooCommerce\Pinterest\Tracking;
 use Automattic\WooCommerce\Pinterest\Tracking\Conversions;
 use Automattic\WooCommerce\Pinterest\Tracking\Data\User;
+use Automattic\WooCommerce\Pinterest\Tracking\PageVisit;
 use Automattic\WooCommerce\Pinterest\Tracking\Tag;
 use Automattic\WooCommerce\Pinterest\Utilities\Tracks;
 
@@ -74,8 +75,8 @@ if ( ! class_exists( 'Pinterest_For_Woocommerce' ) ) :
 		 */
 		const PLUGIN_REQUIREMENTS = array(
 			'php_version'      => '7.4',
-			'wp_version'       => '5.6',
-			'wc_version'       => '7.0',
+			'wp_version'       => '6.9',
+			'wc_version'       => '10.9.0',
 			'action_scheduler' => '3.3.0',
 		);
 
@@ -275,6 +276,7 @@ if ( ! class_exists( 'Pinterest_For_Woocommerce' ) ) :
 			add_action( 'wp', array( Pinterest\SaveToPinterest::class, 'maybe_init' ) );
 
 			add_action( 'init', array( $this, 'init' ), 0 );
+			PageVisit::init_hooks();
 
 			// ActionScheduler is activated on init 1 so lets make sure we are updating after that.
 			add_action( 'init', array( $this, 'maybe_update_plugin' ), 5 );

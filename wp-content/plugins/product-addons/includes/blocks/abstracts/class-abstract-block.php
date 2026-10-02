@@ -44,13 +44,6 @@ abstract class Abstract_Block implements Block_Interface {
 	protected array $allowed_html_tags;
 
 	/**
-	 * Cached same price info.
-	 *
-	 * @var array
-	 */
-	protected array $same_price_info = array();
-
-	/**
 	 * Constructor
 	 *
 	 * @param array $data Block configuration data.
@@ -83,18 +76,50 @@ abstract class Abstract_Block implements Block_Interface {
 	}
 
 	/**
-	 * Get property from block data
+	 * Get the block's options.
 	 *
-	 * @param mixed $handle_pro Whether to handle pro features.
+	 * The free blocks call this without an argument and get the options minus the
+	 * ones the user has switched off. The Pro blocks pass `true` and get every option.
+	 *
+	 * @param bool $return_all Return every option, hidden or not.
 	 * @return array
 	 */
-	protected function get_field_options( $handle_pro = false ) {
+	protected function get_field_options( $return_all = false ) {
 		$options = $this->get_property( '_options', array() );
 
-		if ( $handle_pro && ! product_addons()->is_pro_feature_available() && is_array( $options ) && count( $options ) > 3 ) {
-			$options = array_slice( $options, 0, 3 );
+		return $return_all ? $options : $this->filter_visible_options( $options );
+	}
+
+	/**
+	 * Whether an option/product entry has been switched off with its "visible" toggle.
+	 *
+	 * @param mixed $item Option entry from the block data.
+	 * @return bool
+	 */
+	protected function is_option_hidden( $item ): bool {
+		return is_array( $item ) && false === ( $item['visible'] ?? true );
+	}
+
+	/**
+	 * Drop options the user has hidden.
+	 *
+	 * Array keys are preserved so an option keeps the index it was saved with — that
+	 * index is what the front end submits and the cart looks up.
+	 *
+	 * @param mixed $options Option entries from the block data.
+	 * @return mixed
+	 */
+	protected function filter_visible_options( $options ) {
+		if ( ! is_array( $options ) ) {
+			return $options;
 		}
-		return $options;
+
+		return array_filter(
+			$options,
+			function ( $item ) {
+				return ! $this->is_option_hidden( $item );
+			}
+		);
 	}
 
 	/**
@@ -107,12 +132,15 @@ abstract class Abstract_Block implements Block_Interface {
 	}
 
 	/**
-	 * Is formula value enabled.
+	 * Kept only so WowAddons Pro 1.2.1 and older, whose block classes still call it, keep
+	 * working. This plugin doesn't use it, and it always returns an empty value.
 	 *
-	 * @return bool
+	 * @deprecated 1.8.3
+	 *
+	 * @return string
 	 */
 	protected function is_formula_value_enabled(): string {
-		return $this->get_property( 'enableFormulaVal', false );
+		return '';
 	}
 
 	/**
@@ -213,16 +241,14 @@ abstract class Abstract_Block implements Block_Interface {
 	}
 
 	/**
-	 * Get the URL query key used to pre-select this block's options.
+	 * Extra data attributes for the block wrapper.
 	 *
-	 * When set, the frontend looks this key up in the product page query
-	 * string (e.g. `?color=green`) and pre-selects the matching option(s),
-	 * overriding `defval`. An empty key opts the field out entirely.
+	 * Extension point: none in the free plugin. product-addons-pro overrides it.
 	 *
-	 * @return string
+	 * @return array Keys become data-* attributes; empty values are skipped.
 	 */
-	protected function get_url_key(): string {
-		return trim( (string) $this->get_property( 'urlKey', '' ) );
+	protected function get_extra_data_attributes(): array {
+		return array();
 	}
 
 	/**
@@ -248,8 +274,8 @@ abstract class Abstract_Block implements Block_Interface {
 			'required'        => $this->is_required() ? 'yes' : 'no',
 			'fieldconditions' => $this->get_field_conditions(),
 			'defval'          => $this->get_property( 'defval', null ),
-			'urlkey'          => $this->get_url_key(),
 		);
+		$data_attributes = array_merge( $this->get_extra_data_attributes(), $data_attributes );
 
 		return array_merge(
 			array(
@@ -319,112 +345,114 @@ abstract class Abstract_Block implements Block_Interface {
 	}
 
 	/**
-	 * Field types able to show the option description inside the image preview tooltip.
+	 * Render the option description of a single option.
 	 *
-	 * @var array
-	 */
-	const OPTION_DESC_TOOLTIP_TYPES = array( 'img_switch' );
-
-	/**
-	 * Get the option description settings of the block.
-	 *
-	 * @return array
-	 */
-	protected function get_option_desc_settings(): array {
-		$settings = $this->get_property( 'optionDesc', array() );
-		return is_array( $settings ) ? $settings : array();
-	}
-
-	/**
-	 * Whether option descriptions are enabled for this block.
-	 *
-	 * @return boolean
-	 */
-	protected function is_option_desc_enabled(): bool {
-		$settings = $this->get_option_desc_settings();
-		return ! empty( $settings['enabled'] );
-	}
-
-	/**
-	 * Resolve the effective option description position.
-	 *
-	 * Tooltip is only available on fields rendering an image preview, so every
-	 * other field falls back to rendering below the option title.
-	 *
-	 * @return string Either `tooltip` or `belowTitle`.
-	 */
-	protected function get_option_desc_position(): string {
-		$settings = $this->get_option_desc_settings();
-
-		if ( in_array( $this->get_type(), self::OPTION_DESC_TOOLTIP_TYPES, true )
-			&& isset( $settings['position'] ) && 'tooltip' === $settings['position'] ) {
-			return 'tooltip';
-		}
-
-		return 'belowTitle';
-	}
-
-	/**
-	 * Whether the option description renders inside the image preview tooltip.
-	 *
-	 * The tooltip only exists while the image preview is enabled, so nothing is
-	 * rendered when that setting is turned off.
-	 *
-	 * @return boolean
-	 */
-	protected function is_option_desc_in_tooltip(): bool {
-		return $this->is_option_desc_enabled()
-			&& $this->get_property( 'enableImagePreview', false )
-			&& 'tooltip' === $this->get_option_desc_position()
-			&& product_addons()->is_pro_feature_available();
-	}
-
-	/**
-	 * Get the option description of a single option, when it should render
-	 * below the option title.
-	 *
-	 * @param array $item Option item.
-	 * @return string
-	 */
-	protected function get_option_description( $item ): string {
-		if ( ! $this->is_option_desc_enabled() || 'belowTitle' !== $this->get_option_desc_position() || ! product_addons()->is_pro_feature_available() ) {
-			return '';
-		}
-
-		return isset( $item['optionDesc'] ) ? (string) $item['optionDesc'] : '';
-	}
-
-	/**
-	 * Render the option description below an option title.
+	 * Extension point: the free plugin renders nothing. product-addons-pro overrides it.
 	 *
 	 * @param array $item Option item.
 	 * @return string
 	 */
 	protected function render_option_description( $item ): string {
-		$description = $this->get_option_description( $item );
+		return '';
+	}
 
-		if ( '' === $description ) {
-			return '';
-		}
-
-		return sprintf(
-			'<div class="prad-option-description">%s</div>',
-			wp_kses( $description, $this->allowed_html_tags )
-		);
+	/**
+	 * Render the image preview tooltip for the block's option images.
+	 *
+	 * Extension point: the free plugin renders nothing. product-addons-pro overrides it.
+	 *
+	 * @return string
+	 */
+	protected function render_image_preview(): string {
+		return '';
 	}
 
 	/**
 	 * Get the option description used as an image preview tooltip.
 	 *
+	 * Extension point: the free plugin has none. product-addons-pro overrides it.
+	 *
 	 * @param array $item Option item.
 	 * @return string
 	 */
-	protected function get_option_tooltip_description( $item ): string {
-		if ( ! $this->is_option_desc_in_tooltip() ) {
-			return '';
-		}
+	public function get_option_tooltip_description( $item ): string {
+		return '';
+	}
 
-		return isset( $item['optionDesc'] ) ? (string) $item['optionDesc'] : '';
+	/**
+	 * Whether one shared price replaces the per-option prices of this block.
+	 *
+	 * Extension point: always false in the free plugin. product-addons-pro overrides it.
+	 *
+	 * @return boolean
+	 */
+	protected function has_shared_price(): bool {
+		return false;
+	}
+
+	/**
+	 * Extra data attributes for the block wrapper that describe a shared price.
+	 *
+	 * Extension point: none in the free plugin. product-addons-pro overrides it.
+	 *
+	 * @return array
+	 */
+	protected function get_same_price_attributes(): array {
+		return array();
+	}
+
+	/**
+	 * Extra attributes for the input of one option.
+	 *
+	 * Extension point: none in the free plugin. product-addons-pro overrides it.
+	 *
+	 * @since 1.8.3
+	 *
+	 * @param array      $item  Option item.
+	 * @param int|string $index Option index, or '' for a block with a single option.
+	 * @return array Attribute name => value.
+	 */
+	protected function get_option_extra_attributes( $item, $index ): array {
+		return array();
+	}
+
+	/**
+	 * Whether the block shows an input next to each option.
+	 *
+	 * Extension point: always false in the free plugin. product-addons-pro overrides it.
+	 *
+	 * @since 1.8.3
+	 *
+	 * @return boolean
+	 */
+	protected function has_option_input(): bool {
+		return false;
+	}
+
+	/**
+	 * Render the input shown next to one option.
+	 *
+	 * Extension point: the free plugin renders nothing. product-addons-pro overrides it.
+	 *
+	 * @since 1.8.3
+	 *
+	 * @param int|string $index      Option index, or '' for a block with a single option.
+	 * @param boolean    $full_width Whether the input spans the option's width (swatch-style options).
+	 * @return string
+	 */
+	protected function render_option_input( $index, bool $full_width = false ): string {
+		return '';
+	}
+
+	/**
+	 * Render the block heading (title and description).
+	 *
+	 * Extension point: product-addons-pro overrides it to show the shared price next to the title.
+	 *
+	 * @return string
+	 */
+	protected function render_block_heading() {
+		return $this->render_title_description_noprice();
 	}
 
 	/**
@@ -546,23 +574,6 @@ abstract class Abstract_Block implements Block_Interface {
 
 		return $html;
 	}
-
-	/**
-	 * Render block description
-	 *
-	 * @return string
-	 */
-	protected function render_description(): string {
-		if ( $this->is_title_hidden() || ! $this->get_description() ) {
-			return '';
-		}
-
-		return sprintf(
-			'<div class="prad-block-description prad-mb-12">%s</div>',
-			wp_kses( $this->get_description(), $this->allowed_html_tags )
-		);
-	}
-
 	/**
 	 * Get block configuration
 	 *
@@ -571,70 +582,6 @@ abstract class Abstract_Block implements Block_Interface {
 	public function get_config(): array {
 		return $this->data;
 	}
-
-	/**
-	 * Check if block should be displayed based on conditions
-	 *
-	 * @return bool
-	 */
-	public function should_display(): bool {
-		// Basic display logic - override in child classes for specific conditions.
-		if ( $this->is_title_hidden() ) {
-			return false;
-		}
-
-		// Add logic evaluation here if needed.
-		if ( $this->is_logic_enabled() && ! empty( $this->get_field_conditions() ) ) {
-			return $this->evaluate_field_conditions();
-		}
-
-		return true;
-	}
-
-	/**
-	 * Evaluate field conditions for conditional display
-	 *
-	 * @return bool
-	 */
-	protected function evaluate_field_conditions(): bool {
-		// Implement conditional logic evaluation
-		// This would need to be implemented based on your specific requirements.
-		return true;
-	}
-
-	/**
-	 * Basic validation - override in specific blocks
-	 *
-	 * @return bool
-	 */
-	public function validate(): bool {
-		if ( $this->is_required() ) {
-			$value = $this->get_property( 'value' );
-			if ( empty( $value ) && '0' !== $value && 0 !== $value ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Get price for this block
-	 *
-	 * @return float
-	 */
-	public function get_price(): float {
-		$options = $this->get_property( '_options', array() );
-		if ( ! empty( $options ) && isset( $options[0] ) ) {
-			$item = $options[0];
-			if ( isset( $item->regular ) ) {
-				return (float) $item->regular;
-			}
-		}
-
-		return 0.0;
-	}
-
 	/**
 	 * Render block content using common template
 	 *
@@ -642,14 +589,10 @@ abstract class Abstract_Block implements Block_Interface {
 	 * @param integer $index Item index.
 	 * @param array   $price_info Price information.
 	 * @param string  $variation_html Optional variation HTML.
-	 * @param boolean $suppress_count Suppress the quantity input even when enabled.
+	 * @param boolean $suppress_input Leave out the option input that render_option_input() adds.
 	 * @return string Rendered content
 	 */
-	protected function render_block_content( $item, int $index, array $price_info, string $variation_html = '', bool $suppress_count = false ): string {
-		$blockid      = $this->get_block_id();
-		$enable_count = $this->get_property( 'enableCount', false ) && ! $suppress_count;
-		$min          = $this->get_property( 'min', 1 );
-		$max          = $this->get_property( 'max', 100 );
+	protected function render_block_content( $item, int $index, array $price_info, string $variation_html = '', bool $suppress_input = false ): string {
 		$allowed_tags = $this->allowed_html_tags;
 
 		$p_url = isset( $item->url ) ? $item->url : '';
@@ -658,10 +601,11 @@ abstract class Abstract_Block implements Block_Interface {
 		?>
 		<div class="prad-d-flex prad-flex-column prad-item-center prad-gap-2 prad-text-center prad-mt-8 prad-block-content-wrapper prad-effect-container">
 			<div>
-				<div title="<?php echo wp_kses( $item->value, $allowed_tags ); ?>" class="prad-block-content prad-ellipsis-2<?php echo $p_url ? ' prad-cursor-pointer prad-product-link' : ''; ?>" data-phref="<?php echo esc_url( $p_url ); ?>">
+				<?php // The title tooltip repeats the visible label below, so it uses the same wp_kses() allow-list as that content. ?>
+				<div title="<?php echo wp_kses( $item->value, $allowed_tags ); ?>" class="prad-block-content prad-ellipsis-2<?php echo esc_attr( $p_url ? ' prad-cursor-pointer prad-product-link' : '' ); ?>" data-phref="<?php echo esc_url( $p_url ); ?>">
 					<?php echo wp_kses( $item->value, $allowed_tags ); ?>
 				</div>
-				<?php echo $this->render_option_description( (array) $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php echo wp_kses( $this->render_option_description( (array) $item ), $allowed_tags ); ?>
 				<?php if ( 'no_cost' !== $item->type ) : ?>
 					<div class="prad-block-price prad-text-upper">
 						<?php echo wp_kses( $price_info['html'], $allowed_tags ); ?>
@@ -673,53 +617,11 @@ abstract class Abstract_Block implements Block_Interface {
 				echo wp_kses( $variation_html, $allowed_tags );
 			endif;
 			?>
-			<?php if ( $enable_count && product_addons()->is_pro_feature_available() ) : ?>
-				<input
-					id="prad_quantity_<?php echo esc_attr( $blockid . $index ); ?>"
-					name="prad_quantity_<?php echo esc_attr( $blockid . $index ); ?>"
-					type="number"
-					placeholder="<?php echo esc_attr( $min ); ?>"
-					value="<?php echo esc_attr( $min ); ?>"
-					min="<?php echo esc_attr( $min ); ?>"
-					max="<?php echo esc_attr( $max ); ?>"
-					class="prad-block-input prad-quantity-input switcher-count prad-input prad-w-full"
-					data-counter="<?php echo esc_attr( $blockid . $index ); ?>-switcher-count"
-				/>
+			<?php if ( ! $suppress_input ) : ?>
+				<?php echo wp_kses( $this->render_option_input( $index, true ), $allowed_tags ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
 		return ob_get_clean();
-	}
-
-	/**
-	 * Get same price information
-	 *
-	 * @return array
-	 */
-	public function get_same_price_info(): array {
-		$same_price_data = $this->get_property( 'samePrice', array() );
-		return array_merge(
-			$same_price_data,
-			$this->get_price_info( $same_price_data )
-		);
-	}
-
-	/**
-	 * Get same price attributes
-	 *
-	 * @return array
-	 */
-	protected function get_same_price_attributes(): array {
-		$this->same_price_info = $this->get_same_price_info();
-		$attr                  = array();
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$attr = array(
-				'data-same-price-enabled' => 'yes',
-				'data-same-price'         => $this->same_price_info['price'],
-				'data-same-price-ptype'   => $this->same_price_info['type'],
-			);
-		}
-
-		return $attr;
 	}
 }

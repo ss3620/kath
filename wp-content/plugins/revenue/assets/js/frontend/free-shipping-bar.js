@@ -463,15 +463,15 @@
 					return;
 				}
 
-				const spendingGoal = parseFloat( offer.required_goal );
+				const requiredGoal = parseFloat( offer.required_goal );
 				const contributionToProgress = Math.min(
-					( stepWidth / spendingGoal ) *
-						Math.min( spendingGoal, remainingTotal ),
+					( stepWidth / requiredGoal ) *
+						Math.min( requiredGoal, remainingTotal ),
 					stepWidth
 				);
 
 				progress += contributionToProgress;
-				remainingTotal -= Math.min( spendingGoal, remainingTotal );
+				remainingTotal -= Math.min( requiredGoal, remainingTotal );
 			} );
 
 			this.state.currentProgress = progress;
@@ -634,7 +634,6 @@
 			$( document.body ).off(
 				'added_to_cart.revenueX removed_from_cart.revenueX updated_cart_totals.revenueX'
 			);
-			$( '.revx-spending-goal-add-cart' ).off();
 		}
 	}
 

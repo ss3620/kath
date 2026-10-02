@@ -4,7 +4,7 @@
  *
  * @package  affiliate-for-woocommerce/includes/
  * @since    1.10.0
- * @version  1.12.9
+ * @version  1.13.1
  */
 
 use AFWC\Referral_Mediums\Referral_Medium_Interface;
@@ -743,6 +743,68 @@ if ( ! class_exists( 'AFWC_API' ) ) {
 		}
 
 		/**
+		 * Method to get all (multi-tier) affiliate commission rows recorded for an order.
+		 *
+		 * Sibling of get_affiliate_by_order(): that method intentionally returns only the
+		 * direct affiliate, whereas this returns every non-rejected referral.
+		 *
+		 * @param int $order_id The Order ID.
+		 *
+		 * @return array List of associative affiliate referral rows, or an empty array.
+		 */
+		public function get_affiliates_by_order( $order_id = 0 ) {
+			if ( empty( $order_id ) ) {
+				return array();
+			}
+
+			global $wpdb;
+
+			$affiliate_details = array();
+
+			try {
+				$affiliate_details = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					$wpdb->prepare(
+						"SELECT referral_id,
+							affiliate_id,
+							amount,
+							currency_id,
+							reference,
+							type,
+							campaign_id
+						FROM {$wpdb->prefix}afwc_referrals
+						WHERE post_id = %d
+							AND status != %s
+						ORDER BY
+							(reference = '') DESC,
+							referral_id ASC",
+						intval( $order_id ),
+						AFWC_REFERRAL_STATUS_REJECTED
+					),
+					ARRAY_A
+				);
+			} catch ( Throwable $e ) {
+				Affiliate_For_WooCommerce::log_error( __METHOD__, ( is_callable( array( $e, 'getMessage' ) ) ) ? $e->getMessage() : '' );
+			}
+
+			/**
+			 * Filter to get all affiliate details by order.
+			 *
+			 * @since 9.9.0
+			 *
+			 * @param array $affiliate_details Ordered list of affiliate referral rows for the order.
+			 * @param array $params            Additional parameters related to the order and current object.
+			 */
+			return apply_filters(
+				'afwc_get_affiliates_by_order',
+				! empty( $affiliate_details ) ? $affiliate_details : array(),
+				array(
+					'order_id' => $order_id,
+					'source'   => $this,
+				)
+			);
+		}
+
+		/**
 		 * Method to get a list of order IDs for a specific customer based on provided parameters.
 		 *
 		 * @param array $args Array of parameters.
@@ -757,6 +819,7 @@ if ( ! class_exists( 'AFWC_API' ) ) {
 
 			$customer_id   = ! empty( $args['customer_id'] ) ? intval( $args['customer_id'] ) : 0;
 			$billing_email = ! empty( $args['billing_email'] ) ? sanitize_email( $args['billing_email'] ) : '';
+			$order_status  = ! empty( $args['order_status'] ) ? array_filter( (array) $args['order_status'] ) : array();
 
 			if ( empty( $customer_id ) && empty( $billing_email ) ) {
 				return array();
@@ -770,64 +833,149 @@ if ( ! class_exists( 'AFWC_API' ) ) {
 					// DB Queries for HPOS setup.
 					if ( ! empty( $customer_id ) && ! empty( $billing_email ) ) {
 						// DB Query if both customer ID and billing email are provided.
-						$orders = $wpdb->get_results( // phpcs:ignore
-							$wpdb->prepare(
-								"SELECT id AS order_id
-									FROM {$wpdb->prefix}wc_orders
-									WHERE
-										type = %s
-										AND ( customer_id = %s OR billing_email = %s )",
-								'shop_order',
-								esc_sql( $customer_id ),
-								esc_sql( $billing_email )
-							),
-							'ARRAY_A'
-						);
+						if ( ! empty( $order_status ) ) {
+							// DB Query if both customer ID and billing email are provided with order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT id AS order_id
+										FROM {$wpdb->prefix}wc_orders
+										WHERE
+											type = %s
+											AND ( customer_id = %s OR billing_email = %s )
+											AND status IN (" . implode( ',', array_fill( 0, count( $order_status ), '%s' ) ) . ')',
+									array_merge(
+										array( 'shop_order', esc_sql( $customer_id ), esc_sql( $billing_email ) ),
+										$order_status
+									)
+								),
+								'ARRAY_A'
+							);
+						} else {
+							// DB Query if both customer ID and billing email are provided without order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT id AS order_id
+										FROM {$wpdb->prefix}wc_orders
+										WHERE
+											type = %s
+											AND ( customer_id = %s OR billing_email = %s )",
+									'shop_order',
+									esc_sql( $customer_id ),
+									esc_sql( $billing_email )
+								),
+								'ARRAY_A'
+							);
+						}
 					} elseif ( ! empty( $customer_id ) ) {
 						// DB Queries if only customer ID is provided.
+						if ( ! empty( $order_status ) ) {
+							// DB Query if only customer ID is provided with order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT id AS order_id
+										FROM {$wpdb->prefix}wc_orders
+										WHERE type = %s AND customer_id = %d
+											AND status IN (" . implode( ',', array_fill( 0, count( $order_status ), '%s' ) ) . ')',
+									array_merge(
+										array( 'shop_order', esc_sql( $customer_id ) ),
+										$order_status
+									)
+								),
+								'ARRAY_A'
+							);
+						} else {
+							// DB Query if only customer ID is provided without order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT id AS order_id
+										FROM {$wpdb->prefix}wc_orders
+										WHERE type = %s AND customer_id = %d",
+									'shop_order',
+									esc_sql( $customer_id )
+								),
+								'ARRAY_A'
+							);
+						}
+					} elseif ( ! empty( $billing_email ) ) {
+						// DB Queries if only billing email is provided.
+						if ( ! empty( $order_status ) ) {
+							// DB Query if only billing email is provided with order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT id AS order_id
+										FROM {$wpdb->prefix}wc_orders
+										WHERE type = %s AND billing_email = %s
+											AND status IN (" . implode( ',', array_fill( 0, count( $order_status ), '%s' ) ) . ')',
+									array_merge(
+										array( 'shop_order', esc_sql( $billing_email ) ),
+										$order_status
+									)
+								),
+								'ARRAY_A'
+							);
+						} else {
+							// DB Query if only billing email is provided without order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT id AS order_id
+										FROM {$wpdb->prefix}wc_orders
+										WHERE type = %s AND billing_email = %s",
+									'shop_order',
+									esc_sql( $billing_email )
+								),
+								'ARRAY_A'
+							);
+						}
+					}
+				} elseif ( ! empty( $customer_id ) && ! empty( $billing_email ) ) {
+					// DB Query if both customer ID and billing email are provided.
+					if ( ! empty( $order_status ) ) {
+						// DB Query if both customer ID and billing email are provided with order status.
 						$orders = $wpdb->get_results( // phpcs:ignore
 							$wpdb->prepare(
-								"SELECT id AS order_id
-									FROM {$wpdb->prefix}wc_orders
-									WHERE type = %s AND customer_id = %d",
-								'shop_order',
-								esc_sql( $customer_id )
+								"SELECT pm.post_id AS order_id
+								FROM {$wpdb->prefix}postmeta AS pm
+									INNER JOIN {$wpdb->prefix}posts AS p ON pm.post_id = p.ID
+								WHERE
+									p.post_type = %s
+									AND ( ( pm.meta_key = %s AND pm.meta_value = %d )
+										OR ( pm.meta_key = %s AND pm.meta_value = %s )
+									)
+									AND p.post_status IN (" . implode( ',', array_fill( 0, count( $order_status ), '%s' ) ) . ')',
+								array_merge(
+									array(
+										'shop_order',
+										'_customer_user',
+										esc_sql( $customer_id ),
+										'_billing_email',
+										esc_sql( $billing_email ),
+									),
+									$order_status
+								)
 							),
 							'ARRAY_A'
 						);
-					} elseif ( ! empty( $billing_email ) ) {
-						// DB Queries if only billing email is provided.
+					} else {
+						// DB Query if both customer ID and billing email are provided without order status.
 						$orders = $wpdb->get_results( // phpcs:ignore
 							$wpdb->prepare(
-								"SELECT id AS order_id
-									FROM {$wpdb->prefix}wc_orders
-									WHERE type = %s AND billing_email = %s",
+								"SELECT pm.post_id AS order_id
+								FROM {$wpdb->prefix}postmeta AS pm
+									INNER JOIN {$wpdb->prefix}posts AS p ON pm.post_id = p.ID
+								WHERE
+									p.post_type = %s
+									AND ( ( pm.meta_key = %s AND pm.meta_value = %d )
+										OR ( pm.meta_key = %s AND pm.meta_value = %s )
+									)",
 								'shop_order',
+								'_customer_user',
+								esc_sql( $customer_id ),
+								'_billing_email',
 								esc_sql( $billing_email )
 							),
 							'ARRAY_A'
 						);
 					}
-				} elseif ( ! empty( $customer_id ) && ! empty( $billing_email ) ) {
-					// DB Query if both customer ID and billing email are provided.
-					$orders = $wpdb->get_results( // phpcs:ignore
-						$wpdb->prepare(
-							"SELECT pm.post_id AS order_id
-							FROM {$wpdb->prefix}postmeta AS pm
-								INNER JOIN {$wpdb->prefix}posts AS p ON pm.post_id = p.ID
-							WHERE
-								p.post_type = %s
-								AND ( ( pm.meta_key = %s AND pm.meta_value = %d )
-									OR ( pm.meta_key = %s AND pm.meta_value = %s )
-								)",
-							'shop_order',
-							'_customer_user',
-							esc_sql( $customer_id ),
-							'_billing_email',
-							esc_sql( $billing_email )
-						),
-						'ARRAY_A'
-					);
 				} else {
 					// DB Query if any of one value is provided from customer id or billing email.
 					$meta_data = array(
@@ -845,19 +993,43 @@ if ( ! class_exists( 'AFWC_API' ) ) {
 						if ( empty( $meta['value'] ) ) {
 							continue;
 						}
-						$orders = $wpdb->get_results( // phpcs:ignore
-							$wpdb->prepare(
-								"SELECT pm.post_id AS order_id
-								FROM {$wpdb->prefix}postmeta AS pm
-									INNER JOIN {$wpdb->prefix}posts AS p ON pm.post_id = p.ID
-									WHERE p.post_type = %s
-									AND ( pm.meta_key = %s AND pm.meta_value = %s )",
-								'shop_order',
-								esc_sql( $meta['key'] ),
-								esc_sql( $meta['value'] )
-							),
-							'ARRAY_A'
-						);
+						if ( ! empty( $order_status ) ) {
+							// DB Query if any of one value is provided from customer id or billing email with order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT pm.post_id AS order_id
+									FROM {$wpdb->prefix}postmeta AS pm
+										INNER JOIN {$wpdb->prefix}posts AS p ON pm.post_id = p.ID
+										WHERE p.post_type = %s
+										AND ( pm.meta_key = %s AND pm.meta_value = %s )
+										AND p.post_status IN (" . implode( ',', array_fill( 0, count( $order_status ), '%s' ) ) . ')',
+									array_merge(
+										array(
+											'shop_order',
+											esc_sql( $meta['key'] ),
+											esc_sql( $meta['value'] ),
+										),
+										$order_status
+									)
+								),
+								'ARRAY_A'
+							);
+						} else {
+							// DB Query if any of one value is provided from customer id or billing email without order status.
+							$orders = $wpdb->get_results( // phpcs:ignore
+								$wpdb->prepare(
+									"SELECT pm.post_id AS order_id
+									FROM {$wpdb->prefix}postmeta AS pm
+										INNER JOIN {$wpdb->prefix}posts AS p ON pm.post_id = p.ID
+										WHERE p.post_type = %s
+										AND ( pm.meta_key = %s AND pm.meta_value = %s )",
+									'shop_order',
+									esc_sql( $meta['key'] ),
+									esc_sql( $meta['value'] )
+								),
+								'ARRAY_A'
+							);
+						}
 					}
 				}
 

@@ -185,7 +185,7 @@ return array(
 			)
 		),
 		'close_color' => '#ffffff',
-		'visibility'  => true,
+		'visibility'  => ! Xpo::is_lc_active(),
 	),
 	array(
 		'type'        => 'image-only',
@@ -204,7 +204,7 @@ return array(
 			)
 		),
 		'close_color' => '#ffffff',
-		'visibility'  => true,
+		'visibility'  => ! Xpo::is_lc_active(),
 	),
 );
 

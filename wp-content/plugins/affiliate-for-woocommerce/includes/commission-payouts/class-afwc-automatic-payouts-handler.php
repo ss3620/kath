@@ -4,7 +4,7 @@
  *
  * @package   affiliate-for-woocommerce/includes/commission-payouts/
  * @since     8.0.0
- * @version   1.3.2
+ * @version   1.3.3
  */
 
 // Exit if accessed directly.
@@ -688,10 +688,10 @@ if ( ! class_exists( 'AFWC_Automatic_Payouts_Handler' ) ) {
 										FROM
 											{$wpdb->prefix}actionscheduler_actions
 										WHERE
-											args LIKE %s
+											args = %s
 											AND status = %s
 											AND hook = %s",
-					'%' . $wpdb->esc_like( $affiliate_id ) . '%',
+					wp_json_encode( array( 'affiliate_id' => intval( $affiliate_id ) ) ),
 					'pending',
 					$this->process_payout_action
 				)

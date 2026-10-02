@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Affiliate For WooCommerce 9.8.0\n"
-"Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: Romanian\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-02T07:48:05+00:00\n"
-"PO-Revision-Date: 2025-08-02 14:20+0530\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Language: ro_RO\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n==0 || (n!=1 && n%100>=1 && n%100<=19) ? 1 : 2);\n"
+"Language-Team: Romanian\n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"PO-Revision-Date: 2025-08-02 14:20+0530\n"
+"POT-Creation-Date: 2025-08-02T07:48:05+00:00\n"
+"Plural-Forms: nplurals=3; plural=(n == 1) ? 0 : ((n == 0 || n % 100 >= 2 && n % 100 <= 19) ? 1 : 2);\n"
+"Project-Id-Version: Affiliate For WooCommerce 9.15.0\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Domain: affiliate-for-woocommerce\n"
 "X-Generator: Poedit 3.6\n"
 
@@ -135,7 +135,7 @@ msgid "Affiliate for WooCommerce requires WooCommerce to be activated."
 msgstr "Affiliate pentru WooCommerce necesită ca WooCommerce să fie activat."
 
 #. translators: 1: Action name 2: Error message
-#: includes/abstracts/class-afwc-background-process.php:139
+#: includes/abstracts/class-afwc-background-process.php:174
 #, php-format
 msgctxt "Batch failed error message"
 msgid "Failed batch action: %1$s. Error: %2$s"
@@ -162,199 +162,49 @@ msgctxt "success message on migration of affiliate user data"
 msgid "Successfully migrated affiliate with user ID: %s"
 msgstr "A migrat cu succes afiliatul cu ID-ul utilizatorului: %s"
 
-#: includes/admin/about-affiliate-for-woocommerce.php:72
-msgid "Thank you for installing Affiliate for WooCommerce"
-msgstr "Vă mulțumim pentru instalarea Affiliate pentru WooCommerce"
-
-#: includes/admin/about-affiliate-for-woocommerce.php:82
+#: includes/admin/about-affiliate-for-woocommerce.php:216
 msgid "We discovered that you are using another \"Affiliates\" plugin. Do you want to migrate your existing data to this new Affiliates for WooCommerce plugin?"
 msgstr "Am descoperit că utilizați un alt plugin \"Affiliates\". Doriți să vă migrați datele existente către acest nou plugin Affiliates for WooCommerce?"
 
-#: includes/admin/about-affiliate-for-woocommerce.php:97
+#: includes/admin/about-affiliate-for-woocommerce.php:232
 msgid "Yes, Migrate existing data."
 msgstr "Da, migrați datele existente."
 
-#: includes/admin/about-affiliate-for-woocommerce.php:111
+#: includes/admin/about-affiliate-for-woocommerce.php:248
 msgid "No, I want to start afresh."
 msgstr "Nu, vreau să o iau de la capăt."
 
-#: includes/admin/about-affiliate-for-woocommerce.php:113
+#: includes/admin/about-affiliate-for-woocommerce.php:251
 msgid "Note: Once you migrate from Affiliates plugin, please deactivate it. Affiliates and Affiliate for WooCommerce can't work simultaneously."
 msgstr "Notă: Odată ce migrați de la pluginul Affiliates, vă rugăm să îl dezactivați. Affiliates și Affiliate pentru WooCommerce nu pot funcționa simultan."
 
-#: includes/admin/about-affiliate-for-woocommerce.php:123
-msgid "Glad to have you onboard. We hope the plugin adds to your success 🏆"
-msgstr "Ne bucurăm să vă avem la bord. Sperăm că pluginul contribuie la succesul dvs. 🏆"
-
-#: includes/admin/about-affiliate-for-woocommerce.php:139
+#: includes/admin/about-affiliate-for-woocommerce.php:290
 msgctxt "link to view plugin settings"
 msgid "Settings"
 msgstr "Setări"
 
-#: includes/admin/about-affiliate-for-woocommerce.php:140
+#: includes/admin/about-affiliate-for-woocommerce.php:291
 msgctxt "link to documentation"
 msgid "Docs"
 msgstr "Docuri"
 
-#: includes/admin/about-affiliate-for-woocommerce.php:141
+#: includes/admin/about-affiliate-for-woocommerce.php:292
 msgctxt "link to contact support"
 msgid "Contact us"
 msgstr "Contactați-ne"
 
-#: includes/admin/about-affiliate-for-woocommerce.php:154
+#: includes/admin/about-affiliate-for-woocommerce.php:271
 msgctxt "Link to the admin affiliate dashboard"
 msgid "Visit Dashboard"
 msgstr "Vizitați tabloul de bord"
 
-#: includes/admin/about-affiliate-for-woocommerce.php:159
-msgctxt "bookmark welcome page"
-msgid "Bookmark this page to find it easily later!"
-msgstr "Marcați această pagină pentru a o găsi ușor mai târziu!"
-
-#: includes/admin/about-affiliate-for-woocommerce.php:160
-msgid "How to's"
-msgstr "Cum să"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:164
-msgid "How do I add/make a user an affiliate?"
-msgstr "Cum adaug/fac un utilizator afiliat?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:165
-msgid "Where do affiliates login and get their stats from?"
-msgstr "De unde se conectează afiliații și de unde își obțin statisticile?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:166
-msgid "Where's the link an affiliate will use to refer to my site?"
-msgstr "Unde este link-ul pe care un afiliat îl va folosi pentru a face trimitere la site-ul meu?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:167
-msgid "How to find, customize and share an affiliate referral link?"
-msgstr "Cum să găsiți, să personalizați și să partajați un link de recomandare afiliat?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:168
-msgid "How to give referral coupons to affiliates?"
-msgstr "Cum să oferiți cupoane de recomandare afiliaților?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:170
-msgid "How to bulk assign coupons to affiliates?"
-msgstr "Cum să atribuiți în bloc cupoane afiliaților?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:172
-msgid "How to set up a multilevel referral/multi-tier affiliate program?"
-msgstr "Cum să configurați un program de afiliere pe mai multe niveluri?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:173
-msgid "How to set up lifetime commissions?"
-msgstr "Cum se configurează comisioanele pe viață?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:174
-msgid "How to re-calculate the commission in an order?"
-msgstr "Cum se recalculează comisionul într-o comandă?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:175
-msgid "How to export affiliate data to CSV?"
-msgstr "Cum să exportați datele afiliaților în CSV?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:176
-msgid "FAQ's"
-msgstr "Întrebări frecvente"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:181
-msgid "How to create affiliate commission plans?"
-msgstr "Cum să creați planuri de comisioane pentru afiliați?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:183
-msgid "Set custom commission for affiliates"
-msgstr "Setați comisionul personalizat pentru afiliați"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:184
-msgid "Set custom commission for affiliate tags"
-msgstr "Setați comisionul personalizat pentru etichetele afiliate"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:185
-msgid "Set custom commission for products"
-msgstr "Setați comisionul personalizat pentru produse"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:186
-msgid "Set custom commission for custom product taxonomies - categories, tags, brands, type, etc"
-msgstr "Setați comisionul personalizat pentru taxonomiile personalizate ale produselor - categorii, etichete, mărci, tipuri etc."
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:187
-msgid "Set custom commissions with 15+ powerful rules"
-msgstr "Stabiliți comisioane personalizate cu peste 15 reguli puternice"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:189
-msgid "How to payout commissions to affiliates and check all the processed payouts?"
-msgstr "Cum să plătiți comisioane afiliaților și să verificați toate plățile procesate?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:194
-msgid "Payout via "
-msgstr "Plata prin"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:194
+#: includes/admin/about-affiliate-for-woocommerce.php:362
 msgid "PayPal"
 msgstr "PayPal"
 
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:194
+#: includes/admin/about-affiliate-for-woocommerce.php:363
 msgid "Stripe"
 msgstr "Dungă"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:194
-msgid "Coupon"
-msgstr "Cupon"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:194
-msgid "Store Credit"
-msgstr "Credit magazin"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:198
-msgid "How to restrict affiliate commission for products on sale?"
-msgstr "Cum să restricționați comisionul afiliatului pentru produsele în vânzare?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:199
-msgid "How to generate terms and conditions for affiliates and share them with affiliates?"
-msgstr "Cum să generați termeni și condiții pentru afiliați și să le partajați cu afiliații?"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:200
-msgid "How to promote affiliate links/referral coupons on social media?"
-msgstr "Cum să promovați link-uri afiliate/cupoane de recomandare pe social media?"
-
-#: includes/admin/about-affiliate-for-woocommerce.php:205
-msgctxt "description to view all docs"
-msgid "For more information, "
-msgstr "Pentru mai multe informații,"
-
-#. translators: Link to the Affiliate For WooCommerce Doc
-#: includes/admin/about-affiliate-for-woocommerce.php:205
-msgctxt "link text to view all docs"
-msgid "view all docs"
-msgstr "vezi toate documentele"
 
 #: includes/admin/class-afwc-admin-affiliate.php:76
 msgctxt "WP Users page: PayPal email validation"
@@ -429,12 +279,12 @@ msgctxt "notice to save user edit page first before leaving to get correct outpu
 msgid "%s Click on Update User button to save changes."
 msgstr "%s Faceți clic pe butonul Actualizare utilizator pentru a salva modificările."
 
-#: includes/admin/class-afwc-admin-affiliates.php:1598
+#: includes/admin/class-afwc-admin-affiliates.php:1616
 msgid "Guest"
 msgstr "Invitat"
 
 #. translators: Email address
-#: includes/admin/class-afwc-admin-affiliates.php:1883
+#: includes/admin/class-afwc-admin-affiliates.php:1901
 #, php-format
 msgctxt "Confirmation message for adding the new customer as lifetime commission customer"
 msgid "%s - Would you like to link this customer?"
@@ -515,12 +365,12 @@ msgctxt "Setting link in dashboard widget"
 msgid "Settings"
 msgstr "Setări"
 
-#: includes/affiliate-for-woocommerce-functions.php:1311
+#: includes/affiliate-for-woocommerce-functions.php:1327
 msgctxt "Title for active affiliate status"
 msgid "Active"
 msgstr "Activ"
 
-#: includes/affiliate-for-woocommerce-functions.php:1315
+#: includes/affiliate-for-woocommerce-functions.php:1331
 msgctxt "Title for rejected affiliate status"
 msgid "Rejected"
 msgstr "Respins"
@@ -545,14 +395,14 @@ msgstr "utilizați comisionul implicit"
 msgid "apply zero commission"
 msgstr "aplicați comision zero"
 
-#: includes/admin/class-afwc-admin-dashboard.php:520
-#: includes/admin/class-afwc-admin-dashboard.php:1775
-#: includes/admin/class-afwc-admin-dashboard.php:1810
+#: includes/admin/class-afwc-admin-dashboard.php:523
+#: includes/admin/class-afwc-admin-dashboard.php:1778
+#: includes/admin/class-afwc-admin-dashboard.php:1813
 #: includes/admin/class-afwc-campaign-dashboard.php:84
 #: includes/admin/class-afwc-campaign-dashboard.php:102
-#: includes/admin/class-afwc-campaign-dashboard.php:165
-#: includes/admin/class-afwc-commission-dashboard.php:87
-#: includes/admin/class-afwc-commission-dashboard.php:402
+#: includes/admin/class-afwc-campaign-dashboard.php:175
+#: includes/admin/class-afwc-commission-dashboard.php:88
+#: includes/admin/class-afwc-commission-dashboard.php:418
 #: includes/admin/class-afwc-onboarding.php:82
 #: includes/admin/class-afwc-onboarding.php:118
 #: includes/admin/class-afwc-onboarding.php:137
@@ -564,233 +414,233 @@ msgctxt "authorization failure message"
 msgid "You are not allowed to use this action"
 msgstr "Nu aveți voie să utilizați această acțiune"
 
-#: includes/admin/class-afwc-admin-dashboard.php:547
+#: includes/admin/class-afwc-admin-dashboard.php:550
 msgctxt "error message for requested parameter missing"
 msgid "Status missing"
 msgstr "Stat lipsă"
 
-#: includes/admin/class-afwc-admin-dashboard.php:581
-#: includes/admin/class-afwc-admin-dashboard.php:622
+#: includes/admin/class-afwc-admin-dashboard.php:584
+#: includes/admin/class-afwc-admin-dashboard.php:625
 msgid "Required params missing"
 msgstr "Parametrii necesari lipsesc"
 
-#: includes/admin/class-afwc-admin-dashboard.php:591
+#: includes/admin/class-afwc-admin-dashboard.php:594
 msgid "Failed to update commission status, please try after some time."
-msgstr "A eșuat actualizarea statutului comisiei, vă rugăm să încercați după ceva timp."
+msgstr "Nu s-a putut actualiza starea comisioanelor; vă rugăm să încercați din nou după un timp."
 
 #. translators: Number of records updated in referrals table.
-#: includes/admin/class-afwc-admin-dashboard.php:600
+#: includes/admin/class-afwc-admin-dashboard.php:603
 #, php-format
 msgid "Commission status updated for %d record"
 msgid_plural "Commission status updated for %d records"
-msgstr[0] "Statutul Comisiei actualizat pentru %d înregistrare"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Starea comisionului a fost actualizată pentru %d înregistrare"
+msgstr[1] "Starea comisionului a fost actualizată pentru %d înregistrări"
+msgstr[2] "Starea comisionului a fost actualizată pentru %d de înregistrări"
 
 #. translators: Name of the payout method.
-#: includes/admin/class-afwc-admin-dashboard.php:663
+#: includes/admin/class-afwc-admin-dashboard.php:666
 #, php-format
 msgctxt "Payout failed error message"
 msgid "%s payout failed."
 msgstr "%s plata a eșuat."
 
-#: includes/admin/class-afwc-admin-dashboard.php:1106
+#: includes/admin/class-afwc-admin-dashboard.php:1109
 msgctxt "csv export error message"
 msgid "WordPress upload directory is not set."
 msgstr "Directorul de încărcare WordPress nu este setat."
 
-#: includes/admin/class-afwc-admin-dashboard.php:1194
+#: includes/admin/class-afwc-admin-dashboard.php:1197
 msgctxt "error message when fetching payouts"
 msgid "Required parameter missing - Affiliate ID"
 msgstr "Lipsește parametrul necesar - ID afiliat"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1221
+#: includes/admin/class-afwc-admin-dashboard.php:1224
 msgctxt "error message when fetching products"
 msgid "Required parameter missing - Affiliate ID"
 msgstr "Lipsește parametrul necesar - ID afiliat"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1251
+#: includes/admin/class-afwc-admin-dashboard.php:1254
 #: includes/admin/class-afwc-pending-payout-dashboard.php:96
 msgctxt "error message when fetching profile details"
 msgid "Required parameter missing - Affiliate ID."
 msgstr "Lipsește parametrul necesar - ID afiliat."
 
-#: includes/admin/class-afwc-admin-dashboard.php:1373
+#: includes/admin/class-afwc-admin-dashboard.php:1376
 msgctxt "error message when missing necessary parameters"
 msgid "Required params missing"
 msgstr "Parametrii necesari lipsesc"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1390
+#: includes/admin/class-afwc-admin-dashboard.php:1393
 msgctxt "multi tier fetching error message"
 msgid "You do not have permission to fetch the multi-tier details."
 msgstr "Nu aveți permisiunea de a extrage detaliile pe mai multe niveluri."
 
-#: includes/admin/class-afwc-admin-dashboard.php:1418
+#: includes/admin/class-afwc-admin-dashboard.php:1421
 msgctxt "error message when fetching affiliate KPI details"
 msgid "Required parameter missing - Affiliate ID."
 msgstr "Lipsește parametrul necesar - ID afiliat."
 
-#: includes/admin/class-afwc-admin-dashboard.php:1490
+#: includes/admin/class-afwc-admin-dashboard.php:1493
 msgctxt "error message when fetching affiliate details"
 msgid "Required parameter missing - Affiliate ID."
 msgstr "Lipsește parametrul necesar - ID afiliat."
 
-#: includes/admin/class-afwc-admin-dashboard.php:1678
+#: includes/admin/class-afwc-admin-dashboard.php:1681
 msgctxt "error message for missing of required parameter for linking the lifetime customer"
 msgid "Customer or affiliate ID missing"
 msgstr "Lipsește ID-ul clientului sau al afiliatului"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1690
+#: includes/admin/class-afwc-admin-dashboard.php:1693
 msgctxt "error message on linking the customer due to the customer is already linked with the same affiliate"
 msgid "Customer is already linked to this affiliate"
 msgstr "Clientul este deja conectat la acest afiliat"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1691
+#: includes/admin/class-afwc-admin-dashboard.php:1694
 msgctxt "error message on linking the customer due to the customer is already linked with another affiliate"
 msgid "Customer is already linked with another affiliate"
 msgstr "Clientul este deja conectat cu un alt afiliat"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1720
+#: includes/admin/class-afwc-admin-dashboard.php:1723
 msgctxt "error message for missing of required parameter for unlinking the lifetime customer"
 msgid "Customer or affiliate ID missing"
 msgstr "Lipsește ID-ul clientului sau al afiliatului"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1749
+#: includes/admin/class-afwc-admin-dashboard.php:1752
 msgctxt "error message for missing of search term of linking lifetime customer"
 msgid "Search term is missing"
 msgstr "Termenul de căutare lipsește"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1854
-#: includes/admin/class-afwc-admin-dashboard.php:1991
-#: includes/admin/class-afwc-admin-dashboard.php:2057
+#: includes/admin/class-afwc-admin-dashboard.php:1857
+#: includes/admin/class-afwc-admin-dashboard.php:1994
+#: includes/admin/class-afwc-admin-dashboard.php:2060
 msgctxt "authorization failure message"
 msgid "You are not allowed to perform this action"
 msgstr "Nu vi se permite să efectuați această acțiune"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1858
-#: includes/admin/class-afwc-admin-dashboard.php:1995
-#: includes/admin/class-afwc-admin-dashboard.php:2061
+#: includes/admin/class-afwc-admin-dashboard.php:1861
+#: includes/admin/class-afwc-admin-dashboard.php:1998
+#: includes/admin/class-afwc-admin-dashboard.php:2064
 msgctxt "error message for missing affiliate data"
 msgid "Affiliate profile data is missing"
 msgstr "Datele privind profilul afiliatului lipsesc"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1863
-#: includes/admin/class-afwc-admin-dashboard.php:2000
-#: includes/admin/class-afwc-admin-dashboard.php:2066
+#: includes/admin/class-afwc-admin-dashboard.php:1866
+#: includes/admin/class-afwc-admin-dashboard.php:2003
+#: includes/admin/class-afwc-admin-dashboard.php:2069
 msgctxt "error message for missing affiliate ID"
 msgid "Affiliate ID is missing"
 msgstr "ID-ul afiliatului lipsește"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1878
+#: includes/admin/class-afwc-admin-dashboard.php:1881
 #: includes/frontend/class-afwc-my-account.php:2434
 msgctxt "referral url identifier updating error message"
 msgid "The URL identifier could not updated"
 msgstr "Identificatorul URL nu a putut fi actualizat"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1887
+#: includes/admin/class-afwc-admin-dashboard.php:1890
 #: includes/frontend/class-afwc-my-account.php:2457
 msgctxt "referral url identifier updating error message"
 msgid "Something went wrong"
 msgstr "Ceva nu a mers bine"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1903
+#: includes/admin/class-afwc-admin-dashboard.php:1906
 msgctxt "error message for invalid paypal email address"
 msgid "Invalid PayPal email address"
 msgstr "Adresă de e-mail PayPal invalidă"
 
-#: includes/admin/class-afwc-admin-dashboard.php:2009
+#: includes/admin/class-afwc-admin-dashboard.php:2012
 msgctxt "error message while approving an affiliate"
 msgid "Something went wrong while approving an affiliate."
 msgstr "Ceva nu a mers bine în timpul aprobării unui afiliat."
 
-#: includes/admin/class-afwc-admin-dashboard.php:2141
+#: includes/admin/class-afwc-admin-dashboard.php:2144
 msgctxt "error message when fetching payout KPI details"
 msgid "Required parameter missing."
 msgstr "Lipsește parametrul necesar."
 
-#: includes/admin/class-afwc-admin-dashboard.php:2222
+#: includes/admin/class-afwc-admin-dashboard.php:2225
 msgctxt "error message when dismissing notice"
 msgid "Required parameter missing."
 msgstr "Lipsește parametrul necesar."
 
-#: includes/admin/class-afwc-admin-notifications.php:93
+#: includes/admin/class-afwc-admin-notifications.php:96
 msgid "Getting started"
 msgstr "Noțiuni introductive"
 
-#: includes/admin/class-afwc-admin-notifications.php:94
+#: includes/admin/class-afwc-admin-notifications.php:97
 #: assets/js/admin/admin.js:1
 msgid "Settings"
 msgstr "Setări"
 
-#: includes/admin/class-afwc-admin-notifications.php:95
+#: includes/admin/class-afwc-admin-notifications.php:98
 msgid "Docs"
 msgstr "Docuri"
 
-#: includes/admin/class-afwc-admin-notifications.php:96
+#: includes/admin/class-afwc-admin-notifications.php:99
 msgid "Support"
 msgstr "Sprijin"
 
-#: includes/admin/class-afwc-admin-notifications.php:98
+#: includes/admin/class-afwc-admin-notifications.php:101
 msgid "Reviews"
 msgstr "Recenzii"
 
 #. translators: 1: heart symbol 2: plugin author
-#: includes/admin/class-afwc-admin-notifications.php:157
+#: includes/admin/class-afwc-admin-notifications.php:224
 #, php-format
 msgctxt "plugin and brand text in footer"
 msgid "Affiliate For WooCommerce, made with %1$s by %2$s"
 msgstr "Afiliat pentru WooCommerce, realizat cu %1$s de %2$s"
 
-#: includes/admin/class-afwc-admin-notifications.php:159
+#: includes/admin/class-afwc-admin-notifications.php:226
 msgctxt "brand name in footer"
 msgid "StoreApps"
 msgstr "MagazinApps"
 
 #. translators: 1: pipe as text separator 2: plugin version
-#: includes/admin/class-afwc-admin-notifications.php:168
+#: includes/admin/class-afwc-admin-notifications.php:235
 #, php-format
 msgctxt "text for showing plugin is for WordPress and WooCommerce in footer"
 msgid "Proudly built for WordPress & WooCommerce %1$s Version %2$s"
 msgstr "Construit cu mândrie pentru WordPress & WooCommerce %1$s Versiunea %2$s"
 
 #. translators: 1: open the anchor tag for plugin review link 2: five star symbol 3: close the anchor tag for plugin review link
-#: includes/admin/class-afwc-admin-notifications.php:203
+#: includes/admin/class-afwc-admin-notifications.php:270
 #, php-format
 msgctxt "text for plugin review in footer"
 msgid "If you like it, please give us %1$s %2$s rating%3$s."
 msgstr "Dacă vă place, vă rugăm să ne dați %1$s %2$s rating%3$s."
 
 #. translators: 1: open the anchor tag for plugin feature request link 2: close the anchor tag for plugin feature request link
-#: includes/admin/class-afwc-admin-notifications.php:215
+#: includes/admin/class-afwc-admin-notifications.php:282
 #, php-format
 msgctxt "text for plugin feature request in footer"
 msgid "Do you have a feature request? Tell us %1$shere%2$s."
 msgstr "Aveți o cerere de funcționalitate? Spuneți-ne %1$shere%2$s."
 
-#: includes/admin/class-afwc-admin-notifications.php:234
+#: includes/admin/class-afwc-admin-notifications.php:301
 #: assets/js/admin/admin.js:1
 msgctxt "Notice title to announce admin summary report"
 msgid "📣 Big update"
 msgstr "📣 Actualizare mare"
 
-#: includes/admin/class-afwc-admin-notifications.php:236
+#: includes/admin/class-afwc-admin-notifications.php:303
 #: assets/js/admin/admin.js:1
 msgctxt "Notice text for explaining admin summary email feature"
 msgid "A monthly affiliate program summary email will now be sent to the Affiliate Manager and Store Admin."
 msgstr "Un e-mail lunar cu rezumatul programului de afiliere va fi trimis acum managerului de afiliere și administratorului magazinului."
 
-#: includes/admin/class-afwc-admin-notifications.php:241
+#: includes/admin/class-afwc-admin-notifications.php:308
 #: assets/js/admin/admin.js:1
 msgctxt "Button text to view admin summary email settings"
 msgid "Review email"
 msgstr "Revizuire e-mail"
 
-#: includes/admin/class-afwc-admin-notifications.php:469
+#: includes/admin/class-afwc-admin-notifications.php:541
 msgctxt "error message for missing update action"
 msgid "Parameter is missing."
 msgstr "Parametrul lipsește."
 
-#: includes/admin/class-afwc-admin-notifications.php:493
+#: includes/admin/class-afwc-admin-notifications.php:571
 msgctxt "success message on feedback option update"
 msgid "Feedback option updated"
 msgstr "Opțiune de feedback actualizată"
@@ -810,11 +660,6 @@ msgctxt "Description for search and assign affiliate in order metabox"
 msgid "Search affiliate by email, username, name or user ID to assign this order to them."
 msgstr "Căutați afiliatul prin e-mail, nume de utilizator, nume sau ID utilizator pentru a-i atribui această comandă."
 
-#: includes/class-affiliate-for-woocommerce.php:1198
-msgctxt "affiliate search placeholder"
-msgid "Search by email, username or name"
-msgstr "Căutare prin e-mail, nume de utilizator sau nume"
-
 #: includes/admin/class-afwc-admin-order-affiliate-details.php:163
 msgctxt "Title of total commission in order metabox"
 msgid "Total commissions:"
@@ -830,42 +675,42 @@ msgctxt "affiliate setting tab name"
 msgid "Affiliate"
 msgstr "Afiliați"
 
-#: includes/admin/class-afwc-admin-settings.php:149
+#: includes/admin/class-afwc-admin-settings.php:150
 msgctxt "Affiliate tag create/edit page link text"
 msgid "Manage tags"
 msgstr "Gestionați etichetele"
 
-#: includes/admin/class-afwc-admin-settings.php:155
+#: includes/admin/class-afwc-admin-settings.php:156
 msgctxt "Plugin documentation link text at setting page"
 msgid "Documentation"
 msgstr "Documentație"
 
-#: includes/affiliate-for-woocommerce-functions.php:1654
+#: includes/affiliate-for-woocommerce-functions.php:1672
 msgctxt "general setting section title"
 msgid "General"
 msgstr "Generalități"
 
-#: includes/affiliate-for-woocommerce-functions.php:1655
+#: includes/affiliate-for-woocommerce-functions.php:1673
 msgctxt "registration form setting section title"
 msgid "Registration Form"
 msgstr "Formular de înregistrare"
 
-#: includes/affiliate-for-woocommerce-functions.php:1656
+#: includes/affiliate-for-woocommerce-functions.php:1674
 msgctxt "referrals setting section title"
 msgid "Referrals"
 msgstr "Referințe"
 
-#: includes/affiliate-for-woocommerce-functions.php:1657
+#: includes/affiliate-for-woocommerce-functions.php:1675
 msgctxt "commissions setting section title"
 msgid "Commissions"
 msgstr "Comisioane"
 
-#: includes/affiliate-for-woocommerce-functions.php:1658
+#: includes/affiliate-for-woocommerce-functions.php:1676
 msgctxt "payouts setting section title"
 msgid "Payouts"
 msgstr "Plăți"
 
-#: includes/affiliate-for-woocommerce-functions.php:1659
+#: includes/affiliate-for-woocommerce-functions.php:1677
 msgctxt "affiliate account setting section title"
 msgid "Affiliate's Account"
 msgstr "Contul afiliatului"
@@ -990,98 +835,88 @@ msgctxt "tip content for admin summary email"
 msgid "What if your affiliates earned commissions not just once but on every future purchase their referrals made? With Lifetime Commissions in Affiliate for WooCommerce, affiliates earn on every future purchase their referrals make—whether it's next month or next year. Turn one-time efforts into long-term earnings and keep your affiliate motivated."
 msgstr "Cum ar fi dacă afiliații dvs. ar câștiga comisioane nu doar o singură dată, ci pentru fiecare achiziție viitoare făcută de recomandările lor? Cu comisioanele pe viață din Affiliate for WooCommerce, afiliații câștigă la fiecare achiziție viitoare pe care o fac recomandările lor - indiferent dacă este luna viitoare sau anul viitor. Transformați eforturile punctuale în câștiguri pe termen lung și mențineți-vă afiliații motivați."
 
-#: includes/admin/class-afwc-campaign-dashboard.php:143
+#: includes/admin/class-afwc-campaign-dashboard.php:153
 msgctxt "campaign data save error message"
 msgid "Unable to save campaign. Database error."
 msgstr "Nu se poate salva campania. Eroare în baza de date."
 
-#: includes/admin/class-afwc-campaign-dashboard.php:182
+#: includes/admin/class-afwc-campaign-dashboard.php:192
 msgctxt "campaign delete error message"
 msgid "Failed to delete campaign"
 msgstr "Eșec la ștergerea campaniei"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:189
+#: includes/admin/class-afwc-campaign-dashboard.php:199
 msgctxt "campaign deleted success message"
 msgid "Campaign deleted successfully"
 msgstr "Campanie ștearsă cu succes"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:222
+#: includes/admin/class-afwc-campaign-dashboard.php:232
 msgctxt "campaign fetching error message"
 msgid "You do not have permission to fetch the campaign details."
 msgstr "Nu aveți permisiunea de a extrage detaliile campaniei."
 
-#: includes/admin/class-afwc-campaign-dashboard.php:247
+#: includes/admin/class-afwc-campaign-dashboard.php:257
 msgctxt "campaigns not found message"
 msgid "No campaigns found"
 msgstr "Nu s-au găsit campanii"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:266
+#: includes/admin/class-afwc-campaign-dashboard.php:276
 msgctxt "Error message for fetching the extra rule data of campaign"
 msgid "Required parameters missing"
 msgstr "Parametrii necesari lipsesc"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:474
+#: includes/admin/class-afwc-campaign-dashboard.php:484
 msgctxt "active campaign status"
 msgid "Active"
 msgstr "Activ"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:475
+#: includes/admin/class-afwc-campaign-dashboard.php:485
 msgctxt "draft campaign status"
 msgid "Draft"
 msgstr "Proiect"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:499
+#: includes/admin/class-afwc-campaign-dashboard.php:509
 msgctxt "The group name for affiliate list"
 msgid "Affiliates"
 msgstr "Afiliați"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:508
+#: includes/admin/class-afwc-campaign-dashboard.php:518
 msgctxt "The group name affiliate tags list"
 msgid "Affiliate Tags"
 msgstr "Etichete afiliate"
 
-#: includes/admin/class-afwc-campaign-dashboard.php:586
+#: includes/admin/class-afwc-campaign-dashboard.php:596
 msgctxt "authorization failure message"
 msgid "You are not allowed to re-generate sample campaigns."
 msgstr "Nu vi se permite să generați din nou campanii eșantion."
 
-#: includes/admin/class-afwc-commission-dashboard.php:279
+#: includes/admin/class-afwc-commission-dashboard.php:295
 msgctxt "commission default plan delete error message"
 msgid "Default plan can not be deleted"
 msgstr "Planul implicit nu poate fi șters"
 
-#: includes/admin/class-afwc-commission-dashboard.php:294
-msgctxt "commission plan delete error message"
-msgid "Failed to delete commission plan"
-msgstr "Nu a reușit să elimine planul comisiei"
-
-#: includes/admin/class-afwc-commission-dashboard.php:313
-msgctxt "commission plan delete success message"
-msgid "Commission plan deleted successfully"
-msgstr "Plan al Comisiei șters cu succes"
-
-#: includes/admin/class-afwc-commission-dashboard.php:350
-#: includes/admin/class-afwc-commission-dashboard.php:460
+#: includes/admin/class-afwc-commission-dashboard.php:366
+#: includes/admin/class-afwc-commission-dashboard.php:476
 msgctxt "commission plans not found message"
 msgid "No commission plans found"
 msgstr "Nu s-au găsit planuri de comision"
 
-#: includes/admin/class-afwc-commission-dashboard.php:386
+#: includes/admin/class-afwc-commission-dashboard.php:402
 msgctxt "no commission plan order save message"
 msgid "No commission plan order to save"
 msgstr "Nici un plan de comision pentru a salva"
 
-#: includes/admin/class-afwc-commission-dashboard.php:437
+#: includes/admin/class-afwc-commission-dashboard.php:453
 msgctxt "Requirement missing message to fetch extra data for commission plans"
 msgid "Data not available"
 msgstr "Datele nu sunt disponibile"
 
-#: includes/admin/class-afwc-commission-dashboard.php:475
+#: includes/admin/class-afwc-commission-dashboard.php:491
 msgctxt "active commission plan status"
 msgid "Active"
 msgstr "Activ"
 
-#: includes/admin/class-afwc-commission-dashboard.php:476
+#: includes/admin/class-afwc-commission-dashboard.php:492
 msgctxt "draft commission plan status"
 msgid "Draft"
 msgstr "Proiect"
@@ -1437,355 +1272,355 @@ msgctxt "Description tip for Affiliate landing pages setting"
 msgid "Use the <code>Affiliate Landing Page</code> meta box on a single page, post, or product to assign it to an affiliate which they can promote without using an affiliate link. The commission will be calculated based on the commission plan."
 msgstr "Utilizați caseta meta <code>Affiliate Landing Page</code> pe o singură pagină, postare sau produs pentru a o atribui unui afiliat pe care îl poate promova fără a utiliza un link afiliat. Comisionul va fi calculat pe baza planului de comisioane."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:403
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:405
 msgctxt "Admin setting name for Payout invoice"
 msgid "Payout invoice"
 msgstr "Factura de plată"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:404
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:406
 msgctxt "Admin setting description for Payout invoice"
 msgid "Enable this to generate an invoice for each commission payout"
 msgstr "Activați această opțiune pentru a genera o factură pentru fiecare plată de comision"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:409
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:411
 msgctxt "Admin setting description tip for Payout invoice"
 msgid "When enabled, you can print invoices from the Payouts tab. To allow affiliates to print their invoices, enable the \"Show and allow affiliates to print their invoice\" below."
 msgstr "Atunci când este activat, puteți tipări facturile din fila Plăți. Pentru a permite afiliaților să își tipărească facturile, activați opțiunea \"Afișați și permiteți afiliaților să își tipărească facturile\" de mai jos."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:413
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:415
 msgctxt "Admin setting description for Logo for payout invoice"
 msgid "Upload a logo representing your shop or business. It will be shown on the invoice."
 msgstr "Încărcați un logo care să vă reprezinte magazinul sau afacerea. Acesta va fi afișat pe factură."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:423
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:425
 msgctxt "Admin setting name for Show and allow affiliates to print their invoice"
 msgid "Show and allow affiliates to print their invoice"
 msgstr "Afișați și permiteți afiliaților să își tipărească factura"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:428
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:430
 msgctxt "Admin setting description tip for Show and allow affiliates to print their invoice"
 msgid "When enabled, a new column to print invoices will be visible in the affiliate's account > Reports > Payout History."
 msgstr "Atunci când este activată, o nouă coloană pentru imprimarea facturilor va fi vizibilă în contul afiliatului > Rapoarte > Istoric plăți."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:621
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:640
 msgctxt "Button text for media upload button"
 msgid "Upload image"
 msgstr "Încărcați imaginea"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:622
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:641
 msgctxt "Button text for media change button"
 msgid "Change image"
 msgstr "Modificarea imaginii"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:657
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:676
 msgctxt "Button name for remove media"
 msgid "Remove image"
 msgstr "Eliminați imaginea"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:113
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:115
 msgctxt "free plugin name"
 msgid "Affiliate Store Credit Payouts Integration"
 msgstr "Integrare plăți credit magazin afiliat"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:134
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:136
 msgctxt "setting name"
 msgid "Refund period"
 msgstr "Perioada de rambursare"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:135
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:137
 msgctxt "setting description"
 msgid "A refund isn't a successful referral. Therefore, enter how many days to wait before paying commissions for successful referrals. If you don't have a refund period, enter 0. Each referral within the refund period will be marked to show the remaining days in the refund period. In case automatic payouts are enabled, referrals within the refund period will not be included in it."
 msgstr "O rambursare nu este o recomandare de succes. Prin urmare, introduceți câte zile trebuie să așteptați înainte de a plăti comisioanele pentru recomandările de succes. Dacă nu aveți o perioadă de rambursare, introduceți 0. Fiecare recomandare din perioada de rambursare va fi marcată pentru a arăta zilele rămase din perioada de rambursare. În cazul în care sunt activate plățile automate, recomandările din perioada de rambursare nu vor fi incluse în aceasta."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:144
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:146
 msgctxt "placeholder for refund window setting"
 msgid "Enter the number of days. Default is 30."
 msgstr "Introduceți numărul de zile. Valoarea implicită este 30."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:147
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:149
 msgctxt "setting name"
 msgid "Minimum affiliate commission for payout"
 msgstr "Comision afiliat minim pentru plată"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:148
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:150
 msgctxt "setting description"
 msgid "An affiliate earnings must reach this minimum threshold value to qualify for commission payouts. This setting ensures that only eligible order's referrals are included for payouts. In case automatic payouts are enabled, order referrals below this threshold will not qualify for payouts."
 msgstr "Câștigurile unui afiliat trebuie să atingă acest prag minim pentru a se califica pentru plata comisioanelor. Această setare asigură faptul că numai referințele eligibile ale comenzii sunt incluse pentru plăți. În cazul în care sunt activate plățile automate, recomandările de comenzi sub acest prag nu se vor califica pentru plăți."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:157
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:159
 msgctxt "placeholder for payment day setting"
 msgid "Enter minimum commission amount. Default is 50."
 msgstr "Introduceți valoarea comisionului minim. Valoarea implicită este 50."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:170
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:172
 msgctxt "setting name"
 msgid "PayPal email address"
 msgstr "Adresa de e-mail PayPal"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:171
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:173
 msgctxt "setting description"
 msgid "Allow affiliates to enter their PayPal email address from their My Account > Affiliates > Profile for PayPal payouts"
 msgstr "Permiteți afiliaților să introducă adresa lor de e-mail PayPal din Contul meu > Afiliați > Profil pentru plățile PayPal"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:172
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:174
 msgctxt "setting description tip"
 msgid "Disabling this will not show it to affiliates in their account."
 msgstr "Dezactivarea acesteia nu va fi afișată afiliaților în contul lor."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:179
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:181
 msgctxt "setting name"
 msgid "Payout via PayPal"
 msgstr "Plată prin PayPal"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:310
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:312
 msgctxt "placeholder for allowed coupon types for payouts"
 msgid "Select the coupon type..."
 msgstr "Selectați tipul de cupon..."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:204
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:206
 msgctxt "setting name"
 msgid "Payout via Stripe"
 msgstr "Plata prin Stripe"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:205
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:207
 msgctxt "setting description"
 msgid "Pay commissions via Stripe by allowing affiliates to link their Stripe accounts to your store"
 msgstr "Plătiți comisioane prin Stripe permițând afiliaților să își conecteze conturile Stripe la magazinul dvs."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:210
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:212
 msgctxt "setting description tip"
 msgid "Disabling this will stop payouts through Stripe."
 msgstr "Dezactivarea acestei opțiuni va opri plățile prin Stripe."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:214
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:216
 msgctxt "setting name"
 msgid "Stripe Publishable Key"
 msgstr "Cheie publicabilă Stripe"
 
 #. translators: 1: Link to Stripe API keys dashboard 2: Stripe Connect documentation for testing with OAuth
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:217
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:219
 #, php-format
 msgctxt "setting description"
 msgid "To locate, go to <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Developers > API keys ></a> <strong>Standard keys > Publishable key</strong> (more info: <a href=\"%2$s\" target=\"_blank\">%2$s</a>). Mandatory to add this for commission payouts to work."
 msgstr "Pentru localizare, accesați <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Dezvoltatori > Chei API ></a> <strong>Chei standard > Cheie publicabilă</strong> (mai multe informații: <a href=\"%2$s\" target=\"_blank\">%2$s</a>). Este obligatoriu să adăugați acest lucru pentru ca plata comisioanelor să funcționeze."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:223
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:225
 msgctxt "Placeholder for Stripe Publishable Key setting"
 msgid "Values starting with \"pk_\""
 msgstr "Valori care încep cu \"pk_\""
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:233
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:235
 msgctxt "setting name"
 msgid "Stripe Secret Key"
 msgstr "Cheie secretă Stripe"
 
 #. translators: 1: Link to Stripe dashboard 2: Stripe Connect documentation for testing with OAuth
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:236
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:238
 #, php-format
 msgctxt "setting description"
 msgid "To locate, go to <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Developers > API keys ></a> <strong>Standard keys > Secret key > Reveal live key</strong> (more info: <a href=\"%2$s\" target=\"_blank\">%2$s</a>). Mandatory to add this for commission payouts to work."
 msgstr "Pentru localizare, accesați <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Dezvoltatori > Chei API ></a> <strong>Chei standard > Cheie secretă > Dezvăluiți cheia live</strong> (mai multe informații: <a href=\"%2$s\" target=\"_blank\">%2$s</a>). Este obligatoriu să adăugați acest lucru pentru ca plata comisioanelor să funcționeze."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:242
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:244
 msgctxt "Placeholder for Stripe Secret Key setting"
 msgid "Values starting with \"sk_\""
 msgstr "Valori care încep cu \"sk_\""
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:252
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:254
 msgctxt "setting name"
 msgid "Stripe Client ID"
 msgstr "ID client Stripe"
 
 #. translators: 1: Link to Stripe dashboard 2: Stripe Connect documentation for testing with OAuth
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:255
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:257
 #, php-format
 msgctxt "setting description"
 msgid "To locate, go to <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Settings > Connect > Onboarding options > OAuths ></a> <strong>Live mode client ID</strong> (more info: <a href=\"%2$s\" target=\"_blank\">%2$s</a>). Mandatory to add this for commission payouts to work."
 msgstr "Pentru localizare, accesați <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Setări > Conectare > Opțiuni de onboarding > OAuths ></a> <strong>ID client în modul live</strong> (mai multe informații: <a href=\"%2$s\" target=\"_blank\">%2$s</a>). Este obligatoriu să adăugați acest lucru pentru ca plata comisioanelor să funcționeze."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:261
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:263
 msgctxt "Placeholder for Stripe Client ID setting"
 msgid "Account ID - minimum 35 characters"
 msgstr "ID cont - minim 35 de caractere"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:271
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:273
 msgctxt "setting name"
 msgid "Add redirect URIs"
 msgstr "Adăugați URI-uri de redirecționare"
 
 #. translators: 1: Link to Stripe dashboard 2: current site's affiliate's my account endpoint for resources/profile tab
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:274
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:276
 #, php-format
 msgctxt "setting description"
 msgid "A <strong>Redirection URI is required</strong> when users connect their account to your site.<br><br>Go to <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Settings > Connect > Onboarding options > OAuths ></a> <strong>Redirects</strong> section and add the following URl to redirect: <code>%2$s</code><br><br>Redirects URI can be defined on test and live mode, we would recommend to test both scenarios."
 msgstr "Un <strong>Redirection URI este necesar</strong> atunci când utilizatorii își conectează contul la site-ul dvs. <br><br>Accedeți la <a href=\"%1$s\" target=\"_blank\">Stripe Dashboard > Settings > Connect > Onboarding options > OAuths ></a> secțiunea <strong>Redirects</strong> și adăugați următorul URl pentru redirecționare: <code>%2$s</code><br><br>URI-ul redirecționărilor poate fi definit în modul test și live, vă recomandăm să testați ambele scenarii."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:282
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:284
 msgctxt "setting description tip"
 msgid "It is mandatory to set this in your Stripe account to process commission payouts. Otherwise, payouts won't be processed."
 msgstr "Este obligatoriu să setați acest lucru în contul dvs. Stripe pentru a procesa plățile de comision. În caz contrar, plățile nu vor fi procesate."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:324
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:326
 msgctxt "setting name"
 msgid "Automatic payouts"
 msgstr "Plăți automate"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:333
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:335
 msgctxt "setting name for automatic payouts to include affiliates"
 msgid "Automatic payouts include affiliates"
 msgstr "Plățile automate includ afiliații"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:342
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:344
 msgctxt "Admin setting placeholder to search affiliates to include them for automatic payouts"
 msgid "Search affiliates by email, username or name"
 msgstr "Căutați afiliați după e-mail, nume de utilizator sau nume"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:350
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:352
 msgctxt "setting name"
 msgid "Maximum commission to pay an affiliate"
 msgstr "Comision maxim de plătit unui afiliat"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:351
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:353
 msgctxt "setting description"
 msgid "Set the maximum commission an affiliate can receive in automatic payouts. Set it to 0 if no limit. This setting ensures automatic payouts stay within a specified limit. Referrals exceeding this limit won't be included in automatic payouts."
 msgstr "Setați comisionul maxim pe care un afiliat îl poate primi în plățile automate. Setați-o la 0 dacă nu există limită. Această setare asigură că plățile automate rămân în limita specificată. Referințele care depășesc această limită nu vor fi incluse în plățile automate."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:362
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:364
 msgctxt "placeholder for payment day setting"
 msgid "Enter maximum commission amount. Default is 0."
 msgstr "Introduceți valoarea maximă a comisionului. Valoarea implicită este 0."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:365
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:367
 msgctxt "setting name"
 msgid "Commission payout day"
 msgstr "Ziua plății comisionului"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:76
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:77
 msgctxt "Admin setting description"
 msgid "Include affiliate referral details in the WooCommerce New order email (if enabled)"
 msgstr "Includeți detaliile referinței afiliate în e-mailul de comandă nouă WooCommerce (dacă este activat)"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:85
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:86
 msgctxt "setting name for tracking parameter name"
 msgid "Tracking param name"
 msgstr "Nume param de urmărire"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:86
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:87
 msgctxt "Tracking parameter setting description"
 msgid "Use <code>via</code>, <code>buddy</code>, <code>aff</code> or any other word (Default is <code>ref</code>). "
 msgstr "Utilizați <code>via</code>, <code>buddy</code>, <code>aff</code> sau orice alt cuvânt (implicit este <code>ref</code>)."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:89
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:90
 msgctxt "Tracking parameter setting placeholder text"
 msgid "Leaving this blank will use default value ref"
 msgstr "Lăsând acest câmp gol, se va utiliza valoarea implicită ref"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:93
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:94
 msgctxt "setting name to personalize affiliate identifier"
 msgid "Personalize affiliate identifier"
 msgstr "Personalizați identificatorul afiliatului"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:94
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:95
 msgctxt "setting description for personalizing affiliate identifier"
 msgid "Allow affiliates to use something other than {user_id} as referral identifier"
 msgstr "Permiteți afiliaților să utilizeze altceva decât {user_id} ca identificator de recomandare"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:98
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:99
 msgctxt "setting description tip for personalizing affiliate identifier"
 msgid "Good idea to keep this on. This allows \"friendly\" looking links - because people can use their brand name instead of {user_id}."
 msgstr "Este o idee bună să păstrați acest lucru. Acest lucru permite link-uri \"prietenoase\" - deoarece oamenii pot folosi numele lor de marcă în loc de {user_id}."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:102
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:103
 msgctxt "setting name for pretty affiliate links"
 msgid "Pretty affiliate links"
 msgstr "Link-uri afiliate frumoase"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:103
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:104
 msgctxt "setting description for pretty affiliate links"
 msgid "Automatically convert default affiliate referral links to beautiful links"
 msgstr "Convertiți automat linkurile de trimitere afiliate implicite în linkuri frumoase"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:125
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:126
 msgctxt "setting name for coupons for referral"
 msgid "Coupons for referral"
 msgstr "Cupoane pentru recomandare"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:126
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:127
 msgctxt "setting description of using coupons for referral"
 msgid "Use coupons for referral - along with affiliated links"
 msgstr "Utilizați cupoane pentru referințe - împreună cu link-uri afiliate"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:130
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:131
 msgctxt "setting description tip of using coupons for referral"
 msgid "Use the <code>Assign to affiliate</code> option while creating a coupon to link the coupon with an affiliate. Whenever that coupon is used, specified affiliate will be credited for the sale."
 msgstr "Utilizați opțiunea <code>Assign to affiliate</code> în timpul creării unui cupon pentru a asocia cuponul cu un afiliat. Ori de câte ori cuponul respectiv este utilizat, afiliatul specificat va fi creditat pentru vânzare."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:163
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:164
 msgctxt "setting name for multi-tier affiliate program"
 msgid "Multi-tier affiliate program"
 msgstr "Program de afiliere pe mai multe niveluri"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:164
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:165
 msgctxt "Description for multi-tier affiliate program"
 msgid "Allow existing affiliates to invite others to join your affiliate program, earning extra commissions from their referrals"
 msgstr "Permiteți afiliaților existenți să invite alte persoane să se alăture programului dvs. de afiliere, câștigând comisioane suplimentare din recomandările lor"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:165
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:166
 msgctxt "Description tip for multi-tier affiliate program"
 msgid "Existing (parent) affiliates will receive commissions on referrals of children affiliates - as long as active. Disabling this will remove the relationship as well as prevent commissions."
 msgstr "Afiliații existenți (părinți) vor primi comisioane pentru recomandările copiilor afiliați - atât timp cât sunt activi. Dezactivarea acestei funcții va elimina relația și va preveni comisioanele."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:172
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:173
 msgctxt "setting name to credit first or last affiliate during referral"
 msgid "Credit first/last affiliate"
 msgstr "Credit primul/ultimul afiliat"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:176
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:177
 msgctxt "Option to credit first affiliate"
 msgid "First - Credit the first affiliate who referred the customer."
 msgstr "Primul - creditează primul afiliat care a recomandat clientul."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:177
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:178
 msgctxt "Option to credit last affiliate"
 msgid "Last - Credit the last/latest affiliate who referred the customer."
 msgstr "Ultimul - creditează ultimul/cel mai recent afiliat care a recomandat clientul."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:182
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:183
 msgctxt "setting name for affiliate self-refer"
 msgid "Affiliate self-refer"
 msgstr "Afiliatul se auto-referă"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:183
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:184
 msgctxt "Description for affiliate self-refer setting"
 msgid "Allow affiliates to earn commissions on their own orders"
 msgstr "Permiteți afiliaților să câștige comisioane pentru propriile lor comenzi"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:184
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:185
 msgctxt "Description tip for affiliate self-refer setting"
 msgid "Disabling this will not record a commission if an affiliate uses their own referral link/coupons during orders."
 msgstr "Dezactivarea acestei opțiuni nu va înregistra un comision dacă un afiliat utilizează propriul link de recomandare/cupoane în timpul comenzilor."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:191
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:192
 msgctxt "setting name to show affiliate referral link for a product"
 msgid "Show affiliate referral link for a product"
 msgstr "Afișați linkul de recomandare afiliat pentru un produs"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:192
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:193
 msgctxt "setting description of showing affiliate referral link for a product"
 msgid "Allow affiliates to quickly copy their affiliate referral link for a specific product from a single product page"
 msgstr "Permiteți afiliaților să își copieze rapid link-ul de recomandare afiliat pentru un anumit produs dintr-o singură pagină de produs"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:196
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:197
 msgctxt "setting description tip for showing affiliate referral link for a product"
 msgid "When enabled, a \"Click to copy referral link\" button will appear for active affiliates on all products except the ones listed under \"Excluded products\" and assigned to the affiliate via a \"Landing page\"."
 msgstr "Atunci când este activat, un buton \"Faceți clic pentru a copia link-ul de recomandare\" va apărea pentru afiliații activi pe toate produsele, cu excepția celor enumerate la \"Produse excluse\" și atribuite afiliatului prin intermediul unei \"Pagini de destinație\"."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:200
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:201
 msgctxt "setting name to send referral details to admin"
 msgid "Send referral details to admin"
 msgstr "Trimiteți detaliile referinței către administrator"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:202
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:203
 msgctxt "setting description tip for sending referral details to admin"
 msgid "Disabling this will not include affiliate referral details in the email to admin."
 msgstr "Dezactivarea acestei opțiuni nu va include detaliile referințelor afiliaților în e-mailul către administrator."
@@ -1932,73 +1767,73 @@ msgstr "Altele"
 msgid "Join our affiliate program"
 msgstr "Alăturați-vă programului nostru de afiliere"
 
-#: includes/affiliate-for-woocommerce-functions.php:1160
+#: includes/affiliate-for-woocommerce-functions.php:1176
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for today"
 msgid "Today"
 msgstr "Astăzi"
 
-#: includes/affiliate-for-woocommerce-functions.php:1161
+#: includes/affiliate-for-woocommerce-functions.php:1177
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for yesterday"
 msgid "Yesterday"
 msgstr "Ieri"
 
-#: includes/affiliate-for-woocommerce-functions.php:1164
+#: includes/affiliate-for-woocommerce-functions.php:1180
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for this week"
 msgid "This Week"
 msgstr "Săptămâna aceasta"
 
-#: includes/affiliate-for-woocommerce-functions.php:1165
+#: includes/affiliate-for-woocommerce-functions.php:1181
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for last week"
 msgid "Last Week"
 msgstr "Săptămâna trecută"
 
-#: includes/affiliate-for-woocommerce-functions.php:1166
+#: includes/affiliate-for-woocommerce-functions.php:1182
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for last 4 weeks"
 msgid "Last 4 Weeks"
 msgstr "Ultimele 4 săptămâni"
 
-#: includes/affiliate-for-woocommerce-functions.php:1169
+#: includes/affiliate-for-woocommerce-functions.php:1185
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for this month"
 msgid "This Month"
 msgstr "Luna aceasta"
 
-#: includes/affiliate-for-woocommerce-functions.php:1170
+#: includes/affiliate-for-woocommerce-functions.php:1186
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for last month"
 msgid "Last Month"
 msgstr "Ultima lună"
 
-#: includes/affiliate-for-woocommerce-functions.php:1171
+#: includes/affiliate-for-woocommerce-functions.php:1187
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for 3 months"
 msgid "3 Months"
 msgstr "3 luni"
 
-#: includes/affiliate-for-woocommerce-functions.php:1172
+#: includes/affiliate-for-woocommerce-functions.php:1188
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for 6 months"
 msgid "6 Months"
 msgstr "6 luni"
 
-#: includes/affiliate-for-woocommerce-functions.php:1175
+#: includes/affiliate-for-woocommerce-functions.php:1191
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for this year"
 msgid "This Year"
 msgstr "Anul acesta"
 
-#: includes/affiliate-for-woocommerce-functions.php:1176
+#: includes/affiliate-for-woocommerce-functions.php:1192
 #: assets/js/admin/admin.js:1
 msgctxt "smart dates option for last year"
 msgid "Last Year"
 msgstr "Anul trecut"
 
-#: includes/affiliate-for-woocommerce-functions.php:1247
+#: includes/affiliate-for-woocommerce-functions.php:1263
 msgctxt "click to copy title"
 msgid "Click to copy"
 msgstr "Faceți clic pentru a copia"
@@ -2008,112 +1843,112 @@ msgctxt "PayPal payout method title"
 msgid "PayPal"
 msgstr "PayPal"
 
-#: includes/class-affiliate-for-woocommerce.php:250
-#: includes/class-affiliate-for-woocommerce.php:252
+#: includes/class-affiliate-for-woocommerce.php:254
+#: includes/class-affiliate-for-woocommerce.php:256
 msgid "Affiliate Tags"
 msgstr "Etichete afiliate"
 
-#: includes/class-affiliate-for-woocommerce.php:251
+#: includes/class-affiliate-for-woocommerce.php:255
 msgid "Affiliate Tag"
 msgstr "Etichetă de afiliat"
 
-#: includes/class-affiliate-for-woocommerce.php:253
+#: includes/class-affiliate-for-woocommerce.php:257
 msgid "Search Affiliate Tag"
 msgstr "Căutare etichetă afiliată"
 
-#: includes/class-affiliate-for-woocommerce.php:254
+#: includes/class-affiliate-for-woocommerce.php:258
 msgid "Popular Affiliate Tags"
 msgstr "Etichete afiliate populare"
 
-#: includes/class-affiliate-for-woocommerce.php:255
+#: includes/class-affiliate-for-woocommerce.php:259
 msgid "All Affiliate Tags"
 msgstr "Toate etichetele afiliate"
 
-#: includes/class-affiliate-for-woocommerce.php:256
+#: includes/class-affiliate-for-woocommerce.php:260
 msgid "Edit Affiliate Tag"
 msgstr "Editare etichetă afiliat"
 
-#: includes/class-affiliate-for-woocommerce.php:257
+#: includes/class-affiliate-for-woocommerce.php:261
 msgid "Update Affiliate Tag"
 msgstr "Actualizarea etichetei afiliate"
 
-#: includes/class-affiliate-for-woocommerce.php:258
+#: includes/class-affiliate-for-woocommerce.php:262
 msgid "Add New Affiliate Tag"
 msgstr "Adăugați o nouă etichetă afiliată"
 
-#: includes/class-affiliate-for-woocommerce.php:259
+#: includes/class-affiliate-for-woocommerce.php:263
 msgid "New Affiliate Tag Name"
 msgstr "Nume nou etichetă afiliat"
 
-#: includes/class-affiliate-for-woocommerce.php:260
+#: includes/class-affiliate-for-woocommerce.php:264
 msgid "No Affiliate Tags found"
 msgstr "Nu s-au găsit etichete afiliate"
 
 #. translators: A small arrow
-#: includes/class-affiliate-for-woocommerce.php:489
+#: includes/class-affiliate-for-woocommerce.php:494
 msgid "Affiliates Dashboard"
 msgstr "Tablou de bord Afiliați"
 
 #. translators: A small arrow
-#: includes/class-affiliate-for-woocommerce.php:489
+#: includes/class-affiliate-for-woocommerce.php:494
 #: assets/js/admin/admin.js:1
 msgid "Affiliates"
 msgstr "Afiliați"
 
-#: includes/class-affiliate-for-woocommerce.php:498
+#: includes/class-affiliate-for-woocommerce.php:503
 msgctxt "Page title for setup guide page"
 msgid "Getting Started"
 msgstr "Noțiuni introductive"
 
-#: includes/class-affiliate-for-woocommerce.php:498
+#: includes/class-affiliate-for-woocommerce.php:503
 msgctxt "Menu name for setup guide page"
 msgid "Getting Started"
 msgstr "Noțiuni introductive"
 
 #. translators: 1: user display name 2: user ID 3: user email
-#: includes/class-affiliate-for-woocommerce.php:1188
+#: includes/class-affiliate-for-woocommerce.php:1193
 #, php-format
 msgid "%1$s (#%2$s &ndash; %3$s)"
 msgstr "%1$s (#%2$s &ndash; %3$s)"
 
-#: includes/class-affiliate-for-woocommerce.php:1305
+#: includes/class-affiliate-for-woocommerce.php:1310
 msgctxt "text to copy the affiliate's product-specific referral link"
 msgid "Click to copy referral link"
 msgstr "Faceți clic pentru a copia link-ul de recomandare"
 
 #. translators: 1: Callable name 2: Error message
-#: includes/class-affiliate-for-woocommerce.php:1378
+#: includes/class-affiliate-for-woocommerce.php:1383
 #, php-format
 msgctxt "Error message details"
 msgid "Error in %1$s. Details: %2$s"
 msgstr "Eroare în %1$s. Detalii: %2$s"
 
-#: includes/class-affiliate-for-woocommerce.php:1457
+#: includes/class-affiliate-for-woocommerce.php:1462
 msgctxt "referral url identifier updating error message"
 msgid "Affiliate ID missing for updating affiliate URL identifier."
 msgstr "ID afiliat lipsă pentru actualizarea identificatorului URL afiliat."
 
-#: includes/class-affiliate-for-woocommerce.php:1467
+#: includes/class-affiliate-for-woocommerce.php:1472
 msgctxt "referral url identifier updating error message"
 msgid "The affiliate URL identifier can not be empty."
 msgstr "Identificatorul URL afiliat nu poate fi gol."
 
-#: includes/class-affiliate-for-woocommerce.php:1476
+#: includes/class-affiliate-for-woocommerce.php:1481
 msgctxt "referral url identifier updating error message"
 msgid "Numeric values are not allowed for affiliate URL identifier."
 msgstr "Valorile numerice nu sunt permise pentru identificatorul URL al filialei."
 
-#: includes/class-affiliate-for-woocommerce.php:1493
+#: includes/class-affiliate-for-woocommerce.php:1498
 msgctxt "referral identifier pattern validation error message"
 msgid "Invalid affiliate URL identifier. It should be a combination of alphabets and numbers, but the number should not be in the first position."
 msgstr "Identificator URL afiliat nevalid. Acesta ar trebui să fie o combinație de alfabet și cifre, dar numărul nu ar trebui să fie în prima poziție."
 
-#: includes/class-affiliate-for-woocommerce.php:1509
+#: includes/class-affiliate-for-woocommerce.php:1514
 msgctxt "referral url identifier updating error message"
 msgid "Old and new affiliate URL identifier are same. Please choose a different identifier."
 msgstr "Identificatorul vechi și cel nou al URL-ului afiliat sunt identice. Vă rugăm să alegeți un identificator diferit."
 
-#: includes/class-affiliate-for-woocommerce.php:1517
+#: includes/class-affiliate-for-woocommerce.php:1522
 msgctxt "referral url identifier updating error message"
 msgid "The URL identifier already exists. Please choose a different identifier."
 msgstr "Identificatorul URL există deja. Vă rugăm să alegeți un identificator diferit."
@@ -2142,12 +1977,12 @@ msgctxt "Greeting for admin"
 msgid "there"
 msgstr "acolo"
 
-#: includes/multi-tier/class-afwc-multi-tier.php:414
+#: includes/multi-tier/class-afwc-multi-tier.php:421
 msgctxt "Title for Affiliate registration parent user's id field"
 msgid "Referral affiliate user ID"
 msgstr "ID utilizator afiliat de referință"
 
-#: includes/multi-tier/class-afwc-multi-tier.php:583
+#: includes/multi-tier/class-afwc-multi-tier.php:590
 msgctxt "Input label for parent affiliate in user edit setting"
 msgid "Parent affiliate"
 msgstr "Părinte afiliat"
@@ -2290,17 +2125,17 @@ msgctxt "Logger for batch stopped due to health status"
 msgid "Batch stopped due to health status after Affiliate ID : %1$d in task: %2$s"
 msgstr "Lotul a fost oprit din cauza stării de sănătate după Affiliate ID : %1$d în sarcina: %2$s"
 
-#: includes/reports/class-afwc-visits.php:596
+#: includes/reports/class-afwc-visits.php:598
 msgctxt "Icon title for mobile"
 msgid "Mobile"
 msgstr "Mobil"
 
-#: includes/reports/class-afwc-visits.php:600
+#: includes/reports/class-afwc-visits.php:602
 msgctxt "Icon title for tablet"
 msgid "Tablet"
 msgstr "Tabletă"
 
-#: includes/reports/class-afwc-visits.php:604
+#: includes/reports/class-afwc-visits.php:606
 msgctxt "Icon title for desktop"
 msgid "Desktop"
 msgstr "Desktop"
@@ -2488,11 +2323,6 @@ msgstr "Afiliat - comenzi de recomandare valabile"
 msgctxt "Placeholder for the affiliate valid referral orders rule"
 msgid "Enter referral order count"
 msgstr "Introduceți numărul de comenzi de trimitere"
-
-#: includes/tracking/class-afwc-coupon.php:102
-msgctxt "help tip for search and assign affiliate"
-msgid "Search affiliate by email, username, name or user id to assign this coupon to them. Affiliates will see this coupon in their My account > Affiliates > Profile."
-msgstr "Căutați afiliatul prin e-mail, nume de utilizator, nume sau id utilizator pentru a-i atribui acest cupon. Afiliații vor vedea acest cupon în contul meu > Afiliați > Profil."
 
 #: includes/tracking/class-afwc-landing-page.php:135
 msgctxt "Title for landing page meta box"
@@ -3227,7 +3057,7 @@ msgstr "Data"
 #: includes/frontend/class-afwc-my-account.php:1056
 msgctxt "Referrals table header title for commission column"
 msgid "Commission"
-msgstr "Comisia"
+msgstr "Comision"
 
 #: includes/frontend/class-afwc-my-account.php:1057
 msgctxt "Referrals table header title for payout status column"
@@ -3659,22 +3489,22 @@ msgctxt "Elementor form action name for Affiliate registration"
 msgid "Affiliate Registration"
 msgstr "Înregistrarea afiliaților"
 
-#: includes/integration/woocommerce-smart-coupons/class-wsc-afwc-compatibility.php:73
+#: includes/integration/woocommerce-smart-coupons/class-wsc-afwc-compatibility.php:75
 msgctxt "Coupon meta name for assigning a coupon to an affiliate during export"
 msgid "Assign to affiliate"
 msgstr "Atribuire către afiliat"
 
-#: includes/integration/woocommerce-subscriptions/class-wcs-afwc-compatibility.php:146
+#: includes/integration/woocommerce-subscriptions/class-wcs-afwc-compatibility.php:149
 msgctxt "Admin setting description"
 msgid "Include affiliate referral details in the WooCommerce New order, WooCommerce Subscriptions New Renewal Order and Subscription Switched emails"
 msgstr "Includeți detaliile referinței afiliate în e-mailurile WooCommerce New order, WooCommerce Subscriptions New Renewal Order și Subscription Switched"
 
-#: includes/integration/woocommerce-subscriptions/class-wcs-afwc-compatibility.php:170
+#: includes/integration/woocommerce-subscriptions/class-wcs-afwc-compatibility.php:173
 msgctxt "Plan description for subscription renewal commission"
 msgid "To not issue recurring commissions on subscription renewals: create a new commission plan, add a rule: Subscription Renewal Order >= 0, set the commission = 0, mark it as active and save it. Set this plan at the top to give priority over other plans."
 msgstr "Pentru a nu emite comisioane recurente la reînnoirea abonamentelor: creați un nou plan de comisioane, adăugați o regulă: Comanda de reînnoire abonament >= 0, setați comisionul = 0, marcați-l ca activ și salvați-l. Setați acest plan în partea de sus pentru a acorda prioritate față de alte planuri."
 
-#: includes/integration/woocommerce-subscriptions/class-wcs-afwc-compatibility.php:186
+#: includes/integration/woocommerce-subscriptions/class-wcs-afwc-compatibility.php:189
 msgctxt "Commission group title for subscription rules"
 msgid "Subscription"
 msgstr "Abonament"
@@ -3768,7 +3598,7 @@ msgstr "Migrează acum"
 msgid "Dismiss"
 msgstr "Respinge"
 
-#: includes/migrations/class-migrate-data.php:444
+#: includes/migrations/class-migrate-data.php:486
 msgctxt "Disabled description for Affiliate users roles setting"
 msgid "This setting is no longer functional because some affiliates are imported from other plugins."
 msgstr "Această setare nu mai este funcțională deoarece unii afiliați sunt importați din alte plugin-uri."
@@ -4278,7 +4108,7 @@ msgstr "Referințe de succes:"
 #: templates/emails/plain/afwc-commission-paid.php:31
 msgctxt "title for the commission amount"
 msgid "Commission: "
-msgstr "Comisia:"
+msgstr "Comision: "
 
 #: templates/emails/afwc-commission-paid.php:37
 #: templates/emails/plain/afwc-commission-paid.php:33
@@ -4523,26 +4353,27 @@ msgstr "Notă personală înainte de semnare"
 msgid "The most important thing I have learned working with our partners is that the best way to succeed is quickly to start active promotions. If you postpone, you will not see results. If you take quick action, you may as well become one of our superstar partners! Looking forward to working closely with you."
 msgstr "Cel mai important lucru pe care l-am învățat lucrând cu partenerii noștri este că cel mai bun mod de a reuși este să începeți rapid promoțiile active. Dacă amânați, nu veți vedea rezultate. Dacă acționezi rapid, poți la fel de bine să devii unul dintre partenerii noștri superstar! Aștept cu nerăbdare să lucrez îndeaproape cu dumneavoastră."
 
-#: templates/emails/afwc-admin-new-referral.php:19
-#: templates/emails/plain/afwc-admin-new-referral.php:16
+#: templates/emails/afwc-admin-new-referral.php:22
+#: templates/emails/plain/afwc-admin-new-referral.php:19
 msgctxt "Affiliate section title"
 msgid "Affiliate information"
 msgstr "Informații privind afiliații"
 
-#: templates/emails/afwc-admin-new-referral.php:24
-#: templates/emails/plain/afwc-admin-new-referral.php:18
+#: templates/emails/afwc-admin-new-referral.php:27
+#: templates/emails/afwc-admin-new-referral.php:75
+#: templates/emails/plain/afwc-admin-new-referral.php:21
 msgctxt "Affiliate name"
 msgid "Affiliate"
 msgstr "Afiliați"
 
-#: templates/emails/afwc-admin-new-referral.php:31
-#: templates/emails/plain/afwc-admin-new-referral.php:21
+#: templates/emails/afwc-admin-new-referral.php:34
+#: templates/emails/plain/afwc-admin-new-referral.php:24
 msgctxt "Campaign name and id"
 msgid "Campaign"
 msgstr "Campanie"
 
-#: templates/emails/afwc-admin-new-referral.php:38
-#: templates/emails/plain/afwc-admin-new-referral.php:24
+#: templates/emails/afwc-admin-new-referral.php:50
+#: templates/emails/plain/afwc-admin-new-referral.php:30
 msgctxt "Commission earned amount"
 msgid "Commission earned"
 msgstr "Comision câștigat"
@@ -4948,17 +4779,17 @@ msgctxt "Link to affiliate my account dashboard"
 msgid "back to dashboard"
 msgstr "înapoi la tabloul de bord"
 
-#: templates/my-account/dashboard/header.php:38
+#: templates/my-account/dashboard/header.php:39
 msgctxt "Start date for date field of my account"
 msgid "From"
 msgstr "De la"
 
-#: templates/my-account/dashboard/header.php:41
+#: templates/my-account/dashboard/header.php:42
 msgctxt "Separator for date field of my account"
 msgid "to"
 msgstr "pentru"
 
-#: templates/my-account/dashboard/header.php:46
+#: templates/my-account/dashboard/header.php:48
 msgctxt "End date for date field of my account"
 msgid "To"
 msgstr "La"
@@ -5263,16 +5094,6 @@ msgstr "Exemple de campanii create cu succes"
 msgctxt "Notification message for failed sample campaigns creation"
 msgid "Failed to create sample campaigns"
 msgstr "Nu s-a reușit crearea campaniilor de probă"
-
-#: assets/js/admin/admin.js:1
-msgctxt "Notification error message for failed commission plan creation or update"
-msgid "Failed to create or update the commission plan"
-msgstr "Nu a reușit să creeze sau să actualizeze planul comisiei"
-
-#: assets/js/admin/admin.js:1
-msgctxt "Notification error message for failed commission plan deletion"
-msgid "Failed to delete the commission plan"
-msgstr "Nu a reușit să elimine planul comisiei"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Notification message for successful payout"
@@ -5719,11 +5540,6 @@ msgid "Run migration"
 msgstr "Rulează migrația"
 
 #: assets/js/admin/admin.js:1
-msgctxt "Affiliate import running text in notice"
-msgid "Affiliate data import is in progress..."
-msgstr "Importul datelor de afiliere este în curs..."
-
-#: assets/js/admin/admin.js:1
 msgctxt "Affiliate data import button"
 msgid "Start import"
 msgstr "Start import"
@@ -5891,7 +5707,7 @@ msgstr "Comandă"
 #: assets/js/admin/admin.js:1
 msgctxt "Column header for referral table"
 msgid "Commission"
-msgstr "Comisia"
+msgstr "Comision"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Column header for referral table"
@@ -6029,7 +5845,7 @@ msgstr "Actualizarea statutului comisionului"
 #: assets/js/admin/admin.js:1
 msgctxt "success message after updating commission status"
 msgid "Commission status updated successfully"
-msgstr "Statutul Comisiei actualizat cu succes"
+msgstr "Starea comisioanelor a fost actualizată cu succes"
 
 #: assets/js/admin/admin.js:1
 msgctxt "warning message when no referral is selected for commission status update"
@@ -6073,13 +5889,13 @@ msgctxt "number of selected records"
 msgid "%s record"
 msgid_plural "%s records"
 msgstr[0] "%s înregistrare"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[1] "%s înregistrări"
+msgstr[2] "%s de înregistrări"
 
 #: assets/js/admin/admin.js:1
 msgctxt "text for commission amount"
 msgid "commission"
-msgstr "comisie"
+msgstr "comision"
 
 #: assets/js/admin/admin.js:1
 msgctxt "commission batch action"
@@ -6126,9 +5942,9 @@ msgstr "Factură"
 msgctxt "number of referrals"
 msgid "%s referral"
 msgid_plural "%s referrals"
-msgstr[0] "Referință %s"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s referință"
+msgstr[1] "%s referințe"
+msgstr[2] "%s de referințe"
 
 #: assets/js/admin/admin.js:1
 msgctxt "title for printing the invoice icon"
@@ -6143,7 +5959,7 @@ msgstr "Detaliile de plată nu sunt disponibile pentru acest interval de date. A
 #: assets/js/admin/admin.js:1
 msgctxt "label for all time commission"
 msgid "Commission (All Time)"
-msgstr "Comisia (toate timpurile)"
+msgstr "Comision (total)"
 
 #: assets/js/admin/admin.js:1
 msgctxt "label for all time paid commissions"
@@ -6309,11 +6125,6 @@ msgstr "Ordine"
 #: assets/js/admin/admin.js:1
 msgid "Conversion Rate"
 msgstr "Rata de conversie"
-
-#: assets/js/admin/admin.js:1
-msgctxt "error message when campaign title is missing"
-msgid "Please add a campaign title"
-msgstr "Vă rugăm să adăugați un titlu de campanie"
 
 #: assets/js/admin/admin.js:1
 msgctxt "placeholder for searching target affiliates for campaign visibility"
@@ -6585,12 +6396,7 @@ msgstr "Procentul comisionului nu poate fi mai mare de 100 pentru nivelul %d"
 #: assets/js/admin/admin.js:1
 msgctxt "error message when commission data missing details"
 msgid "Something went wrong. The commission data was not found correctly."
-msgstr "Ceva nu a mers bine. Datele comisiei nu au fost găsite corect."
-
-#: assets/js/admin/admin.js:1
-msgctxt "error message when commission title is empty in the commission plan"
-msgid "Please add a commission title"
-msgstr "Vă rugăm să adăugați un titlu de comisie"
+msgstr "A apărut o eroare. Datele privind comisioanele nu au fost găsite corect."
 
 #: assets/js/admin/admin.js:1
 msgctxt "Commission plan name/title"
@@ -6615,7 +6421,7 @@ msgstr "Statut"
 #: assets/js/admin/admin.js:1
 msgctxt "Commission status dropdown"
 msgid "Commission status"
-msgstr "Statutul Comisiei"
+msgstr "Starea comisioanelor"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Button label to save commission plan"
@@ -6640,12 +6446,12 @@ msgstr "Plan de închidere"
 #: assets/js/admin/admin.js:1
 msgctxt "Title for commission amount and type"
 msgid "Commission"
-msgstr "Comisia"
+msgstr "Comision"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Commission plan type"
 msgid "Commission Type"
-msgstr "Tipul Comisiei"
+msgstr "Tipul comisioanelor"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Commission plan type: percentage"
@@ -6706,7 +6512,7 @@ msgstr "Comanda de plan salvată cu succes"
 #: assets/js/admin/admin.js:1
 msgctxt "Commission plans screen headline"
 msgid "Commission Plans"
-msgstr "Planurile Comisiei"
+msgstr "Planuri de comision"
 
 #: assets/js/admin/admin.js:1
 msgctxt "text to view documentation link"
@@ -7213,17 +7019,17 @@ msgctxt "alert when changing affiliate tracking param name"
 msgid "Changing tracking param name will stop affiliate tracking for the existing URL with the current tracking param name. Are you sure you want to continue?"
 msgstr "Schimbarea numelui parametrului de urmărire va opri urmărirea afiliaților pentru URL-ul existent cu numele parametrului de urmărire curent. Sunteți sigur că doriți să continuați?"
 
-#: assets/js/admin/afwc-settings.js:209
+#: assets/js/admin/afwc-settings.js:218
 msgctxt "Media uploader title"
 msgid "Select image"
 msgstr "Selectați imaginea"
 
-#: assets/js/admin/afwc-settings.js:210
+#: assets/js/admin/afwc-settings.js:219
 msgctxt "Media select button"
 msgid "Select"
 msgstr "Selectați"
 
-#: assets/js/admin/afwc-settings.js:247
+#: assets/js/admin/afwc-settings.js:256
 msgctxt "Media uploader button text"
 msgid "Upload image"
 msgstr "Încărcați imaginea"
@@ -7438,30 +7244,30 @@ msgctxt "Error message for payout method setting update"
 msgid "An error occurred while saving the payout method. Please contact affiliate manager."
 msgstr "A apărut o eroare în timpul salvării metodei de plată. Vă rugăm să contactați managerul afiliat."
 
-#: includes/admin/class-afwc-admin-dashboard.php:1941
-#: includes/admin/class-afwc-admin-dashboard.php:2309
+#: includes/admin/class-afwc-admin-dashboard.php:1944
+#: includes/admin/class-afwc-admin-dashboard.php:2319
 msgctxt "error message for direct link feature is not enabled"
 msgid "Direct Link feature is not enabled"
 msgstr "Funcția Direct Link nu este activată"
 
-#: includes/admin/class-afwc-admin-dashboard.php:1969
+#: includes/admin/class-afwc-admin-dashboard.php:1972
 msgctxt "error message for failing of linking the direct link"
 msgid "Link can't be added"
 msgstr "Linkul nu poate fi adăugat"
 
-#: includes/admin/class-afwc-admin-dashboard.php:2300
+#: includes/admin/class-afwc-admin-dashboard.php:2310
 msgctxt "error message for missing of required parameter for removing the direct link"
 msgid "Link ID is missing"
 msgstr "Lipsește ID-ul de legătură"
 
-#: includes/admin/class-afwc-admin-dashboard.php:2325
-#: includes/admin/class-afwc-admin-dashboard.php:2342
+#: includes/admin/class-afwc-admin-dashboard.php:2335
+#: includes/admin/class-afwc-admin-dashboard.php:2352
 msgctxt "error message for removing direct link"
 msgid "Something went wrong"
 msgstr "Ceva nu a mers bine"
 
 #. translators: %1$s: Pretty affiliate link %2$s: Default affiliate link
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:108
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:109
 #, php-format
 msgctxt "setting description tip for pretty affiliate links"
 msgid "When enabled, the affiliate links will look like <strong>%1$s</strong> instead of %2$s."
@@ -7470,9 +7276,9 @@ msgstr "Atunci când este activat, link-urile afiliate vor arăta ca <strong>%1$
 #: includes/emails/class-afwc-email-automatic-payouts-reminder.php:45
 msgctxt "subject for Automatic Payouts Reminder email"
 msgid "{site_title} Reminder: Affiliate Commission will be processed"
-msgstr "{site_title} Reamintire: Comisia de afiliere va fi procesată"
+msgstr "{site_title} Reamintim: Comisionul de afiliere va fi procesat"
 
-#: includes/tracking/class-afwc-coupon.php:90
+#: includes/tracking/class-afwc-coupon.php:94
 msgctxt "Label for coupon affiliate assignment field"
 msgid "Assign to affiliate"
 msgstr "Atribuire către afiliat"
@@ -7514,7 +7320,7 @@ msgstr "Nu s-a reușit eliminarea linkului direct. Vă rugăm să încercați di
 #: templates/emails/afwc-new-conversion.php:46
 msgctxt "Commission status on this referral order"
 msgid "Commission status"
-msgstr "Statutul Comisiei"
+msgstr "Starea comisioanelor"
 
 #. translators: %1$s: Affiliate name. %2$s: Date time when automatic payouts will be sent
 #: templates/emails/afwc-automatic-payouts-reminder.php:31
@@ -7553,7 +7359,7 @@ msgstr "Puteți găsi detaliile comisionului lor și puteți gestiona această p
 #: templates/emails/plain/afwc-new-conversion.php:33
 msgctxt "Commission status on this referral order"
 msgid "Commission status: "
-msgstr "Statutul Comisiei:"
+msgstr "Starea comisioanelor: "
 
 #: assets/js/admin/admin.js:1
 msgctxt "Success message after linking the direct link"
@@ -7681,13 +7487,13 @@ msgctxt "title for affiliate summary email"
 msgid "Your affiliate monthly summary is here"
 msgstr "Rezumatul lunar al afilierii dvs. este aici"
 
-#: templates/emails/afwc-admin-new-referral.php:42
-#: templates/emails/plain/afwc-admin-new-referral.php:26
+#: templates/emails/afwc-admin-new-referral.php:57
+#: templates/emails/plain/afwc-admin-new-referral.php:33
 msgctxt "Referral medium"
 msgid "Referral medium"
 msgstr "Mediu de referință"
 
-#: templates/my-account/dashboard/header.php:48
+#: templates/my-account/dashboard/header.php:50
 msgctxt "ARIA label for date range dropdown in affiliate my account"
 msgid "Select a date range"
 msgstr "Selectați un interval de date"
@@ -7762,7 +7568,7 @@ msgid "Manual"
 msgstr "Manual"
 
 #. translators: URL to contact support
-#: includes/class-affiliate-for-woocommerce.php:468
+#: includes/class-affiliate-for-woocommerce.php:473
 #, php-format
 msgctxt "text appended to log that provides a link to contact support"
 msgid "Need help? Get in touch with our support team: %s"
@@ -7773,22 +7579,22 @@ msgctxt "no details message"
 msgid "No details found."
 msgstr "Nu s-au găsit detalii."
 
-#: assets/js/admin/afwc-settings.js:89
+#: assets/js/admin/afwc-settings.js:98
 msgctxt "searched affiliate not found message for automatic payouts"
 msgid "No eligible affiliates found for automatic payouts"
 msgstr "Nu s-au găsit afiliați eligibili pentru plăți automate"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:112
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:113
 msgctxt "setting name for direct links"
 msgid "Direct link tracking"
 msgstr "Urmărirea legăturilor directe"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:113
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:114
 msgctxt "setting description for direct link tracking"
 msgid "Allow affiliates to track referrals via their domains"
 msgstr "Permiteți afiliaților să urmărească trimiterile prin intermediul domeniilor lor"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:117
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:118
 msgctxt "setting description tip for direct link tracking"
 msgid "Record referrals from an affiliate’s linked domains without requiring referral links. Supports multiple domains per affiliate (admin approval required)."
 msgstr "Înregistrați trimiterile de la domeniile legate de un afiliat fără a necesita linkuri de trimitere. Suportă mai multe domenii per afiliat (este necesară aprobarea administratorului)."
@@ -7873,42 +7679,42 @@ msgctxt "Referrals table header title for order column"
 msgid "Order"
 msgstr "Comandă"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:366
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:368
 msgctxt "setting description"
 msgid "Automatic commission payouts will be issued on this fixed day of each month you enter in the box. Leaving it blank will set the default day to the 15th of each month. If the entered date falls between the 28th and 31st, payouts will be automatically sent on the last day of that particular month. Payouts are processed in UTC so the date you see in your own timezone may vary."
 msgstr "Plățile automate ale comisioanelor vor fi efectuate în această zi fixă a fiecărei luni pe care o introduceți în căsuță. Lăsând-o goală, ziua implicită va fi stabilită la data de 15 a fiecărei luni. Dacă data introdusă cade între 28 și 31, plățile vor fi trimise automat în ultima zi a lunii respective. Plățile sunt procesate în UTC, astfel încât data pe care o vedeți în zona dvs. orară poate varia."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:378
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:380
 msgctxt "placeholder for payment day setting"
 msgid "Enter day of the month. Default is 15."
 msgstr "Introduceți ziua lunii. Valoarea implicită este 15."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:134
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:135
 msgctxt "setting name"
 msgid "Affiliate-made coupons"
 msgstr "Cupoane Affiliate-made"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:135
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:136
 msgctxt "setting description"
 msgid "Allow affiliates to create their own referral coupons"
 msgstr "Permiteți afiliaților să își creeze propriile cupoane de recomandare"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:136
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:137
 msgctxt "setting description tip"
 msgid "When enabled, affiliates can create one <code>Percentage discount</code> coupon from My Account > Affiliates > Profile."
 msgstr "Atunci când este activat, afiliații pot crea un cupon <code>Percentaj reducere</code> din Contul meu > Afiliați > Profil."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:148
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:149
 msgctxt "setting name"
 msgid "Affiliate coupon discount limit"
 msgstr "Limită reducere cupon afiliat"
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:149
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:150
 msgctxt "setting description"
 msgid "Set the highest discount an affiliate can add to their referral coupon. Enter 0 if you don't want the coupon to give any discount."
 msgstr "Setați cea mai mare reducere pe care un afiliat o poate adăuga la cuponul său de recomandare. Introduceți 0 dacă nu doriți ca cuponul să ofere nicio reducere."
 
-#: includes/admin/settings/class-afwc-referrals-admin-settings.php:154
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:155
 msgctxt "placeholder value placeholder"
 msgid "Enter maximum discount percentage. Default is 0."
 msgstr "Introduceți procentul maxim de reducere. Valoarea implicită este 0."
@@ -7947,47 +7753,47 @@ msgctxt "Logger for Fixed Cart Coupon payout"
 msgid "Invalid affiliate id."
 msgstr "Id afiliat invalid."
 
-#: includes/tracking/class-afwc-coupon.php:402
+#: includes/tracking/class-afwc-coupon.php:449
 msgctxt "affiliate coupon creation error when user is not logged in"
 msgid "Log in to create a coupon."
 msgstr "Conectați-vă pentru a crea un cupon."
 
-#: includes/tracking/class-afwc-coupon.php:406
+#: includes/tracking/class-afwc-coupon.php:453
 msgctxt "affiliate coupon creation error when user is not an affiliate"
 msgid "Only affiliates can create referral coupons."
 msgstr "Numai afiliații pot crea cupoane de recomandare."
 
-#: includes/tracking/class-afwc-coupon.php:414
+#: includes/tracking/class-afwc-coupon.php:461
 msgctxt "affiliate coupon creation error when affiliate is not allowed to create referral coupon"
 msgid "You cannot create referral coupons."
 msgstr "Nu puteți crea cupoane de recomandare."
 
-#: includes/tracking/class-afwc-coupon.php:423
+#: includes/tracking/class-afwc-coupon.php:470
 msgctxt "affiliate coupon creation error when discount amount is not valid"
 msgid "Discount amount is invalid."
 msgstr "Valoarea reducerii nu este valabilă."
 
-#: includes/tracking/class-afwc-coupon.php:427
+#: includes/tracking/class-afwc-coupon.php:474
 msgctxt "affiliate coupon creation error when coupon code is existed or invalid"
 msgid "Invalid code. Please try another."
 msgstr "Cod invalid. Vă rugăm să încercați altul."
 
-#: includes/tracking/class-afwc-coupon.php:440
+#: includes/tracking/class-afwc-coupon.php:487
 msgctxt "affiliate coupon creation error when affiliate already enough self created referral coupon"
 msgid "You’ve reached your referral coupon limit."
 msgstr "Ați atins limita cuponului de recomandare."
 
-#: includes/tracking/class-afwc-coupon.php:451
+#: includes/tracking/class-afwc-coupon.php:498
 msgctxt "affiliate coupon description template"
 msgid "Referral coupon created by affiliate"
 msgstr "Cupon de recomandare creat de afiliat"
 
-#: includes/tracking/class-afwc-coupon.php:459
+#: includes/tracking/class-afwc-coupon.php:506
 msgctxt "affiliate coupon create failure"
 msgid "Could not create a coupon."
 msgstr "Nu s-a putut crea un cupon."
 
-#: includes/tracking/class-afwc-coupon.php:462
+#: includes/tracking/class-afwc-coupon.php:509
 msgctxt "affiliate coupon success notification"
 msgid "Coupon created successfully."
 msgstr "Cupon creat cu succes."
@@ -8055,11 +7861,6 @@ msgstr "Nici o reducere nu va fi aplicată, dar acest cupon va urmări referinț
 msgctxt "button"
 msgid "Create coupon"
 msgstr "Creați un cupon"
-
-#: assets/js/admin/admin.js:1
-msgctxt "Notification error message for failed commission plan duplication"
-msgid "Failed to duplicate the commission plan"
-msgstr "Nu a reușit să reproducă planul comisiei"
 
 #: assets/js/admin/admin.js:1
 #, js-format
@@ -8190,7 +7991,7 @@ msgstr "Descriere"
 #: assets/js/admin/admin.js:1
 msgctxt "ARIA label"
 msgid "Commission plans views"
-msgstr "Comisia planifică punctele de vedere"
+msgstr "Vizualizări ale planurilor de comision"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Commission plans tab"
@@ -8227,12 +8028,12 @@ msgctxt "No commission plans hint text"
 msgid "Go ahead, click that \"Add a Plan\" button in the top bar to create your first commission."
 msgstr "Dați-i drumul, faceți clic pe butonul \"Adăugați un plan\" din bara de sus pentru a vă crea primul comision."
 
-#: includes/admin/class-afwc-commission-dashboard.php:204
+#: includes/admin/class-afwc-commission-dashboard.php:219
 msgctxt "commission plan save error message"
 msgid "Unable to update commission plan."
-msgstr "Imposibilitatea de a actualiza planul comisiei."
+msgstr "Nu se poate actualiza planul de comisioane."
 
-#: includes/admin/class-afwc-commission-dashboard.php:241
+#: includes/admin/class-afwc-commission-dashboard.php:256
 msgctxt "commission plan save error message"
 msgid "Unable to insert commission plan."
 msgstr "Nu se poate introduce planul de comision."
@@ -8364,24 +8165,24 @@ msgctxt "Button text to contact support regarding mismatched order total issue"
 msgid "Contact support"
 msgstr "Asistență de contact"
 
-#: includes/admin/class-afwc-admin-notifications.php:239
+#: includes/admin/class-afwc-admin-notifications.php:306
 #: assets/js/admin/admin.js:1
 msgctxt "Notice text stating admin summary email is auto-enabled"
 msgid "This email is automatically enabled for you."
 msgstr "Acest e-mail este activat automat pentru dvs."
 
-#: includes/admin/class-afwc-admin-notifications.php:239
+#: includes/admin/class-afwc-admin-notifications.php:306
 #: assets/js/admin/admin.js:1
 msgctxt "Notice text for stating to enable admin summary email"
 msgid "You can now review and enable this email."
 msgstr "Acum puteți revizui și activa acest e-mail."
 
-#: includes/affiliate-for-woocommerce-functions.php:1313
+#: includes/affiliate-for-woocommerce-functions.php:1329
 msgctxt "Title for pending affiliate status"
 msgid "Pending"
 msgstr "În așteptare"
 
-#: includes/affiliate-for-woocommerce-functions.php:1318
+#: includes/affiliate-for-woocommerce-functions.php:1334
 msgctxt "Title for not registered affiliate status"
 msgid "Not Registered"
 msgstr "Neînregistrat"
@@ -8627,20 +8428,20 @@ msgctxt "dashboard widget error message"
 msgid "Something went wrong. Please reload the page."
 msgstr "Ceva nu a mers bine. Vă rugăm să reîncărcați pagina."
 
-#: includes/admin/class-afwc-admin-notifications.php:262
+#: includes/admin/class-afwc-admin-notifications.php:329
 #: assets/js/admin/admin.js:1
 msgctxt "Notice title to announce multi-currency support"
 msgid "📣 Multi-currency support"
 msgstr "📣 Suport pentru mai multe valute"
 
-#: includes/admin/class-afwc-admin-notifications.php:264
+#: includes/admin/class-afwc-admin-notifications.php:331
 #: assets/js/admin/admin.js:1
 msgctxt "Notice text for explaining multi-currency support"
 msgid "Affiliate for WooCommerce now automatically calculates affiliate commissions in your store's base currency, even when customers pay in a different currency."
 msgstr "Affiliate pentru WooCommerce calculează acum automat comisioanele de afiliere în moneda de bază a magazinului dvs., chiar și atunci când clienții plătesc într-o monedă diferită."
 
 #. translators: %1$s: Aelia plugin link start, %2$s: Link end, %3$s: WPML plugin link start, %4$s: Link end
-#: includes/admin/class-afwc-admin-notifications.php:269
+#: includes/admin/class-afwc-admin-notifications.php:336
 #, php-format
 msgctxt "Action text with links for multi-currency support"
 msgid "Works with: %1$sAelia Currency Switcher%2$s and %3$sWPML Multilingual & Multicurrency%4$s"
@@ -8733,7 +8534,7 @@ msgid "Select the platform..."
 msgstr "Selectați platforma..."
 
 #. translators: Number of affiliates allowed for automatic payouts
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:336
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:338
 #, php-format
 msgctxt "Admin setting description for affiliates to include for automatic payouts"
 msgid "Select up to %s affiliates for automatic commission payouts (beta launch). Affiliates qualify for automatic payouts if they have set a payout method in their account."
@@ -8746,7 +8547,7 @@ msgctxt "registration form field toggle label"
 msgid "Enable %s field"
 msgstr "Activează câmpul %s"
 
-#: includes/affiliate-for-woocommerce-functions.php:1660
+#: includes/affiliate-for-woocommerce-functions.php:1678
 msgctxt "email marketing integrations setting section title"
 msgid "Email Marketing Integrations"
 msgstr "Integrări e-mail marketing"
@@ -8847,12 +8648,12 @@ msgstr "Statutul de afiliat"
 #: assets/js/admin/admin.js:1
 msgctxt "ARIA label for commission status filter group"
 msgid "Commission Status"
-msgstr "Statutul Comisiei"
+msgstr "Starea comisioanelor"
 
 #: assets/js/admin/admin.js:1
 msgctxt "ARIA label for commission status options"
 msgid "Commission Status"
-msgstr "Statutul Comisiei"
+msgstr "Starea comisioanelor"
 
 #: assets/js/admin/admin.js:1
 msgctxt "ARIA label for affiliate tags filter group"
@@ -9023,7 +8824,7 @@ msgstr "Selectați referința pentru comanda #%s"
 #: assets/js/admin/admin.js:1
 msgctxt "aria label for commission status in referral table"
 msgid "Commission status"
-msgstr "Statutul Comisiei"
+msgstr "Starea comisioanelor"
 
 #: assets/js/admin/admin.js:1
 msgctxt "ARIA loading label"
@@ -9033,7 +8834,7 @@ msgstr "Valoarea de încărcare"
 #: assets/js/admin/admin.js:1
 msgctxt "ARIA label for all time commission KPI"
 msgid "Commission (All Time)"
-msgstr "Comisia (toate timpurile)"
+msgstr "Comision (total)"
 
 #: assets/js/admin/admin.js:1
 msgctxt "ARIA label for all time paid commission KPI"
@@ -9060,118 +8861,119 @@ msgctxt "setting description"
 msgid "Select the email marketing platform you want to use."
 msgstr "Selectați platforma de e-mail marketing pe care doriți să o utilizați."
 
-#: includes/admin/class-afwc-commission-dashboard.php:490
-#: includes/admin/class-afwc-commission-dashboard.php:495
+#: includes/admin/class-afwc-commission-dashboard.php:506
+#: includes/admin/class-afwc-commission-dashboard.php:523
 msgctxt "no templates message"
 msgid "No templates found"
 msgstr "Nu s-au găsit șabloane"
 
-#: includes/admin/class-afwc-commission-dashboard.php:545
+#: includes/admin/class-afwc-commission-dashboard.php:573
 msgctxt "invalid template slug message"
 msgid "Invalid template slug."
 msgstr "Șablon slug invalid."
 
-#: includes/admin/class-afwc-commission-dashboard.php:558
+#: includes/admin/class-afwc-commission-dashboard.php:598
+#: includes/admin/class-afwc-commission-dashboard.php:608
 msgctxt "template not found message"
 msgid "Template not found."
 msgstr "Șablonul nu a fost găsit."
 
-#: includes/admin/class-afwc-commission-dashboard.php:564
-#: includes/admin/class-afwc-commission-dashboard.php:569
+#: includes/admin/class-afwc-commission-dashboard.php:614
+#: includes/admin/class-afwc-commission-dashboard.php:619
 msgctxt "invalid template data message"
 msgid "Invalid template data."
 msgstr "Date șablon invalide."
 
 #. translators: %s Plugin URI of Affiliate Store Credit Payouts Integration for WooCommerce.
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:108
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:110
 #, php-format
 msgctxt "setting description"
 msgid "Leave it blank to disable payout via coupons. Use %s (free WordPress plugin) to issue a Store Credit/Gift Certificate payout."
 msgstr "Lăsați-l gol pentru a dezactiva plata prin cupoane. Utilizați %s (plugin WordPress gratuit) pentru a emite o plată prin credit de magazin/certificat cadou."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:131
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:133
 msgctxt "Payouts setting section description"
 msgid "Settings to manage affiliate commission payouts."
 msgstr "Setări pentru gestionarea plăților comisioanelor afiliaților."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:164
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:166
 msgctxt "Paypal payout setting section title"
 msgid "PayPal"
 msgstr "PayPal"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:167
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:169
 msgctxt "PayPal payout setting description"
 msgid "Set up PayPal as a payout method to send affiliate commissions."
 msgstr "Configurați PayPal ca metodă de plată pentru a trimite comisioane afiliate."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:198
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:200
 msgctxt "Stripe payout setting section title"
 msgid "Stripe"
 msgstr "Dungă"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:201
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:203
 msgctxt "Stripe payout setting description"
 msgid "Set up Stripe as a payout method to send affiliate commissions."
 msgstr "Configurați Stripe ca metodă de plată pentru a trimite comisioanele afiliaților."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:294
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:296
 msgctxt "Coupons payout setting section title"
 msgid "Coupons"
 msgstr "Cupoane"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:297
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:299
 msgctxt "Coupons payout setting description"
 msgid "Select coupon types to send affiliate commissions as coupons."
 msgstr "Selectați tipurile de cupoane pentru a trimite comisioanele afiliaților sub formă de cupoane."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:300
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:302
 msgctxt "setting name"
 msgid "Coupon types"
 msgstr "Tipuri de cupoane"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:318
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:320
 msgctxt "Automatic payouts setting section title"
 msgid "Auto-pay commissions"
 msgstr "Plata automată a comisioanelor"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:321
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:323
 msgctxt "Auto Pay commissions setting description"
 msgid "Automatically send commission payouts to your affiliates once a month."
 msgstr "Trimiteți automat plata comisioanelor către afiliații dvs. o dată pe lună."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:325
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:327
 msgctxt "setting description"
 msgid "Configure the settings and automate the payout process based on your preference."
 msgstr "Configurați setările și automatizați procesul de plată în funcție de preferințele dvs."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:326
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:328
 msgctxt "setting description tip"
 msgid "Supports PayPal, Stripe and Coupons - if enabled."
 msgstr "Suportă PayPal, Stripe și Cupoane - dacă sunt activate."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:385
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:387
 msgctxt "Payout invoice setting section title"
 msgid "Generate invoices for payouts"
 msgstr "Generarea facturilor pentru plăți"
 
 #. translators: WooCommerce store settings link for store address
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:389
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:391
 #, php-format
 msgctxt "Admin setting description for payout invoice title"
 msgid "The store address details on the invoice are taken from <a href=\"%1$s\" target=\"_blank\">WooCommerce > Settings > General > Store Address</a>. The affiliate's address is taken from their My Account > Addresses > Billing address."
 msgstr "Datele privind adresa magazinului de pe factură sunt preluate din <a href=\"%1$s\" target=\"_blank\">WooCommerce > Setări > General > Adresa magazinului</a>. Adresa afiliatului este preluată din Contul meu > Adrese > Adresa de facturare."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:399
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:401
 msgctxt "Admin setting description for payout invoice address not found"
 msgid "If the address is not found, it will not be shown on the invoice."
 msgstr "Dacă adresa nu este găsită, aceasta nu va fi afișată pe factură."
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:412
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:414
 msgctxt "Admin setting name for Logo for payout invoice"
 msgid "Select a logo"
 msgstr "Selectați un logo"
 
-#: includes/admin/settings/class-afwc-payouts-admin-settings.php:424
+#: includes/admin/settings/class-afwc-payouts-admin-settings.php:426
 msgctxt "Admin setting description for Show and allow affiliates to print their invoice"
 msgid "Enable this to allow affiliates to print their invoices"
 msgstr "Activați această opțiune pentru a permite afiliaților să își tipărească facturile"
@@ -9184,17 +8986,12 @@ msgstr "Salvați detaliile metodei de plată"
 #: assets/js/admin/admin.js:1
 msgctxt "Loading text for commission plans"
 msgid "Loading Commission Plans"
-msgstr "Planurile Comisiei de încărcare"
+msgstr "Se încarcă planurile de comision"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Loading text for commission plan templates"
 msgid "Loading Commission Plan Templates"
-msgstr "Plan de încărcare a Comisiei Șabloane"
-
-#: assets/js/admin/admin.js:1
-msgctxt "Notification success message after updating a commission plan"
-msgid "Commission plan updated successfully"
-msgstr "Planul Comisiei actualizat cu succes"
+msgstr "Se încarcă șabloanele planurilor de comisioane"
 
 #: assets/js/admin/admin.js:1
 msgctxt "Notification success message after importing a commission template"
@@ -9281,22 +9078,580 @@ msgctxt "label for affiliate status checkbox at new user page"
 msgid "Add this user to the affiliate program."
 msgstr "Adăugați acest utilizator la programul de afiliere."
 
-#: includes/tracking/class-afwc-coupon.php:135
+#: includes/tracking/class-afwc-coupon.php:182
 msgctxt "coupon filter label on coupon list"
 msgid "Affiliate"
-msgstr ""
-
-#: assets/js/admin/admin.js:1
-msgctxt "Notification success message after creating a new commission plan"
-msgid "Commission plan created successfully"
-msgstr ""
-
-#: assets/js/admin/admin.js:1
-msgctxt "Notification success message after deleting a commission plan"
-msgid "Commission plan deleted successfully"
-msgstr ""
+msgstr "Afiliat"
 
 #: assets/js/admin/admin.js:1
 msgctxt "text for onboarding welcome page"
 msgid "You're now part of 6,000+ smart users growing their business and boosting revenue."
-msgstr ""
+msgstr "Acum faci parte dintr-un grup de peste 6.000 de utilizatori avizați care își dezvoltă afacerea și își sporesc veniturile."
+
+#. translators: %d: Affiliate (user) ID for an affiliate whose user account no longer exists.
+#: includes/admin/class-afwc-admin-new-referral-email.php:103
+#, php-format
+msgctxt "Fallback affiliate label when user is deleted"
+msgid "Affiliate #%d"
+msgstr "Afiliat nr. %d"
+
+#: templates/emails/afwc-admin-new-referral.php:43
+#: templates/emails/plain/afwc-admin-new-referral.php:28
+msgctxt "Total commission across all tiers"
+msgid "Total commission"
+msgstr "Comisionul total"
+
+#: templates/emails/afwc-admin-new-referral.php:68
+#: templates/emails/plain/afwc-admin-new-referral.php:36
+msgctxt "Multi-tier commission breakdown title"
+msgid "Commission breakdown"
+msgstr "Detalierea comisioanelor"
+
+#: templates/emails/afwc-admin-new-referral.php:74
+msgctxt "Commission tier column"
+msgid "Tier"
+msgstr "Nivel"
+
+#: templates/emails/afwc-admin-new-referral.php:76
+msgctxt "Commission amount column"
+msgid "Commission"
+msgstr "Comision"
+
+#. translators: %d: Commission tier number (1 = the affiliate who made the sale, 2 = their parent, etc.).
+#: templates/emails/afwc-admin-new-referral.php:87
+#: templates/emails/plain/afwc-admin-new-referral.php:44
+#, php-format
+msgctxt "Commission tier label"
+msgid "Tier %d"
+msgstr "Nivelul %d"
+
+#: templates/emails/afwc-admin-new-referral.php:91
+msgctxt "Hint marking the affiliate who made the sale"
+msgid "(made the sale)"
+msgstr "(a încheiat vânzarea)"
+
+#: assets/js/admin/admin.js:1
+#, js-format
+msgctxt "Affiliate import running text in notice"
+msgid "Your affiliate data import is in progress. Please keep the %s plugin activated until the migration is complete."
+msgstr "Importul datelor tale de afiliere este în curs de desfășurare. Te rugăm să menții pluginul %s activat până la finalizarea migrării."
+
+#: assets/js/admin/admin.js:1
+msgctxt "fallback name for the migration source plugin"
+msgid "source"
+msgstr "sursă"
+
+#: includes/admin/settings/class-afwc-referrals-admin-settings.php:248
+msgctxt "Tracking param name field sanitization error message"
+msgid "Tracking param name cannot start with a number and can contain only letters, numbers, dashes and underscores. Invalid characters were removed."
+msgstr "Numele parametrului de urmărire nu poate începe cu o cifră și poate conține doar litere, cifre, liniuțe și caractere de subliniere. Caracterele nevalide au fost eliminate."
+
+#: includes/admin/class-afwc-commission-dashboard.php:310
+#: assets/js/admin/admin.js:1
+msgctxt "Notification error message for failed commission plan deletion"
+msgid "Failed to delete the plan"
+msgstr "Nu s-a putut șterge planul"
+
+#: includes/admin/class-afwc-commission-dashboard.php:329
+#: assets/js/admin/admin.js:1
+msgctxt "Notification success message after deleting a commission plan"
+msgid "Plan deleted successfully"
+msgstr "Planul a fost șters cu succes"
+
+#: includes/admin/class-afwc-commission-dashboard.php:662
+#: includes/admin/class-afwc-commission-dashboard.php:668
+msgctxt "invalid plan data message"
+msgid "Invalid plan data."
+msgstr "Date de plan nevalide."
+
+#: includes/tracking/class-afwc-coupon.php:149
+msgctxt "heading for affiliate coupon sharing section"
+msgid "Affiliate-ready coupons"
+msgstr "Cupoane pregătite pentru programul de afiliere"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Notification success message after creating a new commission plan"
+msgid "Plan created successfully"
+msgstr "Planul a fost creat cu succes"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Notification success message after updating a commission plan"
+msgid "Plan updated successfully"
+msgstr "Planul a fost actualizat cu succes"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Notification error message for failed commission plan creation or update"
+msgid "Failed to create or update the plan"
+msgstr "Nu s-a putut crea sau actualiza planul"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Notification success message after duplicating a commission plan"
+msgid "Plan duplicated successfully"
+msgstr "Planul a fost copiat cu succes"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Notification error message for failed commission plan duplication"
+msgid "Failed to duplicate the plan"
+msgstr "Nu s-a reușit duplicarea planului"
+
+#: assets/js/admin/admin.js:1
+msgctxt "ARIA label for the main affiliate dashboard navigation"
+msgid "Affiliates dashboard"
+msgstr "Tabloul de bord al afiliaților"
+
+#: assets/js/admin/admin.js:1
+#, js-format
+msgctxt "error message when the entered tier count exceeds the maximum"
+msgid "Up to %d tiers are supported."
+msgstr "Sunt acceptate până la%de de niveluri."
+
+#: assets/js/admin/admin.js:1
+#, js-format
+msgctxt "error message when the number of tiers exceeds the maximum in the commission plan"
+msgid "You can add up to %d tiers only."
+msgstr "Puteți adăuga cel mult%d-uri."
+
+#: assets/js/admin/admin.js:1
+msgctxt "Tooltip for the commission plan rules help link"
+msgid "Open the commission plan setup guide"
+msgstr "Deschideți ghidul de configurare a planului de comisioane"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Loading state while creating a plan from a template"
+msgid "Creating..."
+msgstr "Se creează..."
+
+#: assets/js/admin/admin.js:1
+msgctxt "Action to create a commission plan from this template"
+msgid "Use"
+msgstr "Utilizare"
+
+#: assets/js/admin/admin.js:1
+#, js-format
+msgctxt "ARIA label for the button creating a plan from this template"
+msgid "Use %s"
+msgstr "Folosiți %s"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Title for the new commission plan intro screen"
+msgid "Choose how to create your commission plan"
+msgstr "Alegeți modul în care doriți să vă creați planul de comisioane"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Close plan intro icon"
+msgid "Close"
+msgstr "Închide"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Option label to create a commission plan from scratch"
+msgid "Start from scratch"
+msgstr "Începe de la zero"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Action to create a commission plan from scratch"
+msgid "Start"
+msgstr "Început"
+
+#: assets/js/admin/admin.js:1
+msgctxt "ARIA label for the button creating a plan from scratch"
+msgid "Start from scratch"
+msgstr "Începe de la zero"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Section label above the template list on the plan intro screen"
+msgid "Use a template"
+msgstr "Folosiți un șablon"
+
+#: assets/js/admin/admin.js:1
+msgctxt "ARIA label for the templates loading state"
+msgid "Loading templates"
+msgstr "Se încarcă șabloanele"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:206
+msgid "Thank you for choosing Affiliate for WooCommerce"
+msgstr "Vă mulțumim că ați ales Affiliate pentru WooCommerce"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:259
+msgid "🏆 We're here to support your growth. Find everything you need to run and scale your affiliate program."
+msgstr "🏆 Suntem aici pentru a vă sprijini dezvoltarea. Găsiți tot ce aveți nevoie pentru a gestiona și a vă extinde programul de afiliere."
+
+#: includes/admin/about-affiliate-for-woocommerce.php:297
+msgid "🚀 Getting started"
+msgstr "🚀 Primii pași"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:298
+msgid "Start with these essential steps to set up your affiliate program and get it up and running."
+msgstr "Începeți cu acești pași esențiali pentru a vă configura programul de afiliere și a-l pune în funcțiune."
+
+#: includes/admin/about-affiliate-for-woocommerce.php:304
+msgid "Add an affiliate"
+msgstr "Adaugă un afiliat"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:310
+msgid "Set up commission rate"
+msgstr "Configurarea ratei comisioanelor"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:316
+msgid "Find, customize & share referral links"
+msgstr "Găsește, personalizează și partajează linkuri de recomandare"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:322
+msgid "Set up payouts"
+msgstr "Configurarea plăților"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:328
+msgid "🔥 More referral methods"
+msgstr "🔥 Alte metode de recomandare"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:330
+msgid "Referral coupons"
+msgstr "Cupoane de recomandare"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:331
+msgid "Landing pages"
+msgstr "Pagini de destinație"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:332
+msgid "Direct/Domain tracking"
+msgstr "Urmărire directă/pe domeniu"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:333
+msgid "Lifetime commissions"
+msgstr "Comisioane pe toată durata de viață"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:334
+msgid "Subscription renewals"
+msgstr "Reînnoirea abonamentelor"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:335
+msgid "Manual commissions"
+msgstr "Comisioane manuale"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:339
+msgid "📚 Setup guides"
+msgstr "📚 Ghiduri de configurare"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:342
+#: includes/admin/about-affiliate-for-woocommerce.php:352
+#: includes/admin/about-affiliate-for-woocommerce.php:356
+msgid "Set up"
+msgstr "Configurare"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:343
+msgid "registration form to let users sign up"
+msgstr "formular de înregistrare care permite utilizatorilor să se înscrie"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:346
+msgid "Set commissions by"
+msgstr "Stabiliți comisioanele în funcție de"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:347
+msgid "affiliate"
+msgstr "afiliat"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:348
+msgid "tag"
+msgstr "etichetă"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:349
+msgid "product/product category"
+msgstr "produs/categorie de produse"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:353
+msgid "multi-tier affiliate program"
+msgstr "program de afiliere pe mai multe niveluri"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:357
+msgid "campaigns to share assets and creatives"
+msgstr "campanii de partajare a resurselor și a materialelor creative"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:359
+msgid "Review and manage plugin emails"
+msgstr "Verificarea și gestionarea e-mailurilor legate de pluginuri"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:361
+msgid "Pay commissions via"
+msgstr "Plătiți comisioanele prin intermediul"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:364
+msgid "coupons"
+msgstr "cupoane"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:365
+msgid "credits"
+msgstr "credite"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:366
+msgid "etc"
+msgstr "etc."
+
+#: includes/admin/about-affiliate-for-woocommerce.php:371
+msgid "💡 How-to guides"
+msgstr "💡 Ghiduri practice"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:373
+msgid "Restrict commissions on sale products"
+msgstr "Limitarea comisioanelor pentru produsele vândute"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:374
+msgid "Promote affiliate links on social media"
+msgstr "Promovează linkurile de afiliere pe rețelele sociale"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:375
+msgid "Generate affiliate terms & conditions"
+msgstr "Generați termenii și condițiile programului de afiliere"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:377
+msgid "Export affiliate data to CSV"
+msgstr "Exportă datele afiliaților în format CSV"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:378
+msgid " or "
+msgstr " sau "
+
+#: includes/admin/about-affiliate-for-woocommerce.php:379
+msgid "sync with Mailchimp"
+msgstr "sincronizare cu Mailchimp"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:381
+msgid "Override plugin templates"
+msgstr "Suprascrie șabloanele pluginurilor"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:382
+msgid "See how the plugin works with caching"
+msgstr "Vezi cum funcționează pluginul cu cache-ul"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:388
+msgid "Need help?"
+msgstr "Ai nevoie de ajutor?"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:391
+msgid "FAQs"
+msgstr "Întrebări frecvente"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:393
+msgid "Contact support"
+msgstr "Contactează serviciul de asistență"
+
+#: includes/admin/about-affiliate-for-woocommerce.php:395
+msgid "What's new"
+msgstr "Noutăți"
+
+#: includes/admin/class-afwc-campaign-dashboard.php:119
+#: assets/js/admin/admin.js:1
+msgctxt "campaign save validation error message when campaign title is missing"
+msgid "Please add a campaign title"
+msgstr "Vă rugăm să introduceți un titlu pentru campanie"
+
+#: includes/admin/class-afwc-commission-dashboard.php:161
+#: assets/js/admin/admin.js:1
+msgctxt "commission plan save validation error message when commission plan title is missing"
+msgid "Please add a plan title"
+msgstr "Vă rugăm să adăugați un titlu pentru plan"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Help link on the rules header while creating a new commission plan"
+msgid "Not sure how to set this up? Read the guide"
+msgstr "Nu știi cum să configurezi asta? Citește ghidul"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Heading of the notice about templates moving into the create-a-plan flow"
+msgid "A smoother way to use templates is here!"
+msgstr "Iată o modalitate mai simplă de a folosi șabloanele!"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Notice explaining where commission plan templates are moved to"
+msgid "You can still use this page, but you can also choose any template directly when adding a new plan."
+msgstr "Puteți folosi în continuare această pagină, dar puteți alege orice șablon direct atunci când adăugați un plan nou."
+
+#: assets/js/admin/admin.js:1
+msgctxt "Notice that the commission plan templates page will be removed"
+msgid "Note: This page will be removed in a future update."
+msgstr "Notă: Această pagină va fi eliminată într-o actualizare viitoare."
+
+#: assets/js/admin/admin.js:1
+msgctxt "Description to create a commission plan from scratch"
+msgid "Build a plan with your own rules."
+msgstr "Elaborează-ți un plan cu propriile reguli."
+
+#: assets/js/admin/admin.js:1
+msgctxt "ARIA loading label for 1st line"
+msgid "Loading pending payouts"
+msgstr "Se încarcă plățile în așteptare"
+
+#: assets/js/admin/admin.js:1
+msgctxt "ARIA loading label for 2nd line"
+msgid "Loading pending payouts"
+msgstr "Se încarcă plățile în așteptare"
+
+#: includes/reports/class-afwc-visits.php:577
+msgctxt "Icon title for a converted visit"
+msgid "Converted"
+msgstr "Convertit"
+
+#: includes/reports/class-afwc-visits.php:581
+msgctxt "Icon title for a visit that did not convert"
+msgid "Not converted"
+msgstr "Neconvertit"
+
+#: templates/my-account/dashboard/header.php:37
+msgctxt "ARIA label for start date input of my account"
+msgid "Start date"
+msgstr "Data de începere"
+
+#: templates/my-account/dashboard/header.php:46
+msgctxt "ARIA label for end date input of my account"
+msgid "End date"
+msgstr "Data de încheiere"
+
+#: includes/admin/class-afwc-admin-notifications.php:151
+msgctxt "Label for settings link"
+msgid "Go to Plugin Settings"
+msgstr "Accesați Setările pluginului"
+
+#: includes/admin/class-afwc-admin-notifications.php:165
+msgctxt "Label for dashboard link"
+msgid "Go to Plugin Dashboard"
+msgstr "Accesați panoul de control al pluginului"
+
+#: includes/admin/class-afwc-pending-payout-dashboard.php:217
+msgctxt "Affiliate name shown in pending payouts when the affiliate user account no longer exists"
+msgid "Deleted affiliate"
+msgstr "Afiliat șters"
+
+#: includes/class-affiliate-for-woocommerce.php:1203
+msgctxt "affiliate search placeholder"
+msgid "Search by email, username, name or user ID"
+msgstr "Căutare după adresă de e-mail, nume de utilizator, nume sau ID de utilizator"
+
+#. translators: %s: payout method name
+#: includes/tracking/class-afwc-coupon.php:120
+#, php-format
+msgctxt "description part for search and assign affiliate coupon field when shareable coupon link is available"
+msgid "Affiliates will see this coupon and a shareable coupon link %s under Account > Affiliate > Profile."
+msgstr "Afiliații vor vedea acest cupon și un link de partajare a cuponului %s în secțiunea Cont > Afiliat > Profil."
+
+#: includes/tracking/class-afwc-coupon.php:123
+msgctxt "description part for search and assign affiliate coupon field when shareable coupon link is not available"
+msgid "Affiliates will see this coupon with its details under Account > Affiliate > Profile."
+msgstr "Afiliații vor vedea acest cupon împreună cu detaliile sale în secțiunea Cont > Afiliat > Profil."
+
+#: includes/tracking/class-afwc-coupon.php:150
+msgctxt "description explaining that the referral coupon is automatically applied when customers use the referral link"
+msgid "Affiliates can promote using the shareable coupon link, which will automatically apply the coupon and track the referral when customers use the link."
+msgstr "Afiliații pot promova magazinul folosind linkul de cupon care poate fi distribuit, care va aplica automat cuponul și va urmări referința atunci când clienții utilizează linkul."
+
+#: includes/tracking/class-afwc-coupon.php:151
+msgctxt "description explaining that the referral coupon is automatically applied when customers use the referral link"
+msgid "You don't need to send the link or coupon code manually."
+msgstr "Nu este necesar să trimiteți manual linkul sau codul promoțional."
+
+#: assets/js/admin/admin.js:1
+msgctxt "Description for the parent affiliate field in affiliate profile"
+msgid "Affiliates will see these coupons with their details under Account > Affiliate > Profile."
+msgstr "Afiliații vor vedea aceste cupoane împreună cu detaliile lor în secțiunea Cont > Afiliat > Profil."
+
+#: includes/commission-rules/simple/class-afwc-user-order-count-commission.php:33
+msgctxt "Title for user order count commission rule"
+msgid "User - Order Count"
+msgstr "Utilizator - Număr de comenzi"
+
+#: includes/commission-rules/simple/class-afwc-user-order-count-commission.php:36
+msgctxt "Placeholder for user order count commission rule"
+msgid "Enter order count"
+msgstr "Introduceți numărul de comenzi"
+
+#: assets/js/admin/admin.js:1
+msgctxt "Kicker label shown above a milestone achievement message"
+msgid "Milestone unlocked"
+msgstr "Etapă deblocată"
+
+#: assets/js/admin/admin.js:1
+msgctxt "ARIA label for button that closes the feedback widget"
+msgid "Close feedback"
+msgstr "Închide feedback-ul"
+
+#. translators: %s: number of orders referred by affiliates
+#: includes/queue/class-afwc-milestone.php:447
+#, php-format
+msgctxt "Feedback widget headline for affiliate orders milestone"
+msgid "%s affiliate order"
+msgid_plural "%s affiliate orders"
+msgstr[0] "%s comandă de afiliat"
+msgstr[1] ""
+msgstr[2] ""
+
+#. translators: %s: number of active affiliates
+#: includes/queue/class-afwc-milestone.php:484
+#, php-format
+msgctxt "Feedback widget headline for affiliate-count milestone"
+msgid "%s affiliate joined"
+msgid_plural "%s affiliates joined"
+msgstr[0] "%s afiliat înscris"
+msgstr[1] ""
+msgstr[2] ""
+
+#: includes/queue/class-afwc-milestone.php:461
+msgctxt "Feedback widget message for 10 affiliate orders milestone"
+msgid "Your affiliates are already bringing real sales."
+msgstr "Afiliații dumneavoastră generează deja vânzări reale."
+
+#: includes/queue/class-afwc-milestone.php:462
+msgctxt "Feedback widget message for 100 affiliate orders milestone"
+msgid "Your affiliates are a proven sales channel."
+msgstr "Afiliații tăi reprezintă un canal de vânzări cu eficacitate dovedită."
+
+#: includes/queue/class-afwc-milestone.php:463
+msgctxt "Feedback widget message for 500 affiliate orders milestone"
+msgid "Customers keep buying through your affiliates."
+msgstr "Clienții continuă să cumpere prin intermediul afiliaților tăi."
+
+#: includes/queue/class-afwc-milestone.php:464
+msgctxt "Feedback widget message for 1,000 affiliate orders milestone"
+msgid "This is a strong affiliate program. You built it."
+msgstr "Acesta este un program de afiliere puternic. Tu l-ai creat."
+
+#: includes/queue/class-afwc-milestone.php:465
+msgctxt "Feedback widget message for 2,000 affiliate orders milestone"
+msgid "Look at what your affiliate program has become!"
+msgstr "Uită-te la ce a ajuns programul tău de afiliere!"
+
+#: includes/queue/class-afwc-milestone.php:466
+msgctxt "Feedback widget message for 5,000 affiliate orders milestone"
+msgid "Your affiliate program is a true success story!"
+msgstr "Programul tău de afiliere este o adevărată poveste de succes!"
+
+#: includes/queue/class-afwc-milestone.php:498
+msgctxt "Feedback widget message for 5 affiliates milestone"
+msgid "People already trust your affiliate program."
+msgstr "Oamenii au deja încredere în programul tău de afiliere."
+
+#: includes/queue/class-afwc-milestone.php:499
+msgctxt "Feedback widget message for 10 affiliates milestone"
+msgid "Your store now has a team of people promoting it."
+msgstr "Magazinul tău are acum o echipă de oameni care îl promovează."
+
+#: includes/queue/class-afwc-milestone.php:500
+msgctxt "Feedback widget message for 50 affiliates milestone"
+msgid "More and more people want to work with you."
+msgstr "Din ce în ce mai multe persoane doresc să colaboreze cu tine."
+
+#: includes/queue/class-afwc-milestone.php:501
+msgctxt "Feedback widget message for 100 affiliates milestone"
+msgid "You have built a real affiliate community."
+msgstr "Ați construit o adevărată comunitate de afiliați."
+
+#: includes/queue/class-afwc-milestone.php:502
+msgctxt "Feedback widget message for 200 affiliates milestone"
+msgid "So many people now promote your store!"
+msgstr "Atât de mulți oameni îți promovează acum magazinul!"
+
+#: includes/queue/class-afwc-milestone.php:503
+msgctxt "Feedback widget message for 500 affiliates milestone"
+msgid "Your affiliate team keeps getting bigger!"
+msgstr "Echipa ta de afiliați continuă să crească!"
+
+#: includes/queue/class-afwc-milestone.php:504
+msgctxt "Feedback widget message for 1,000 affiliates milestone"
+msgid "What you built is now a huge community!"
+msgstr "Ceea ce ai construit este acum o comunitate uriașă!"

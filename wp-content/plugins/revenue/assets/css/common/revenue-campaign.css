@@ -253,8 +253,7 @@ input[type="number"].revx-product-input {
 	border-color: var(--revx-regular-border-color);
 	/* margin-bottom: 44px; */
 }
-[data-campaign-type="free_shipping_bar"] .revx-slider-controller,
-[data-campaign-type="spending_goal"] .revx-slider-controller {
+[data-campaign-type="free_shipping_bar"] .revx-slider-controller {
 	top: unset;
 }
 .revx-slider-controller.next {
@@ -770,93 +769,6 @@ select.revx-product-Attr-wrapper.grid:focus {
 	}
 }
 
-/* Mix and Match */
-.revx-tiers-container {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-}
-.revx-tier-button {
-	flex: 1;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	min-width: 80px;
-	max-width: 240px;
-	/* cursor: pointer; */
-	transition: all 0.3s;
-	position: relative;
-}
-.revx-tier-button.revx-tier-regular {
-	color: var(--revx-tier-regular-color);
-	background-color: var(--revx-tier-regular-bg);
-	border-width: var(--revx-regular-border-width);
-	border-style: var(--revx-regular-border-style);
-	border-color: var(--revx-regular-border-color);
-}
-.revx-tier-button.revx-tier-enable {
-	color: var(--revx-tier-enable-color);
-	background-color: var(--revx-tier-enable-bg);
-	border-width: var(--revx-enable-border-width);
-	border-style: var(--revx-enable-border-style);
-	border-color: var(--revx-enable-border-color);
-}
-.revx-tier-button.revx-tier-selected {
-	color: var(--revx-tier-selected-color);
-	background-color: var(--revx-tier-selected-bg);
-	border-width: var(--revx-selected-border-width);
-	border-style: var(--revx-selected-border-style);
-	border-color: var(--revx-selected-border-color);
-}
-.revx-mix-title-badge {
-	flex: 1;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: var(--revx-title-badge-gap);
-}
-.revx-mix-match-badge {
-	border: 2px solid currentColor !important;
-	border-radius: 100px;
-	padding: 2px 6px;
-	white-space: nowrap;
-}
-.revx-selected-container {
-	display: flex;
-	gap: 12px;
-	align-items: center;
-	overflow-x: auto;
-	overflow-y: hidden;
-	margin-top: -10px;
-	padding-top: 10px;
-}
-.revx-selected-title {
-	max-width: 6rem;
-}
-.revx-selected-remove {
-	position: absolute;
-	z-index: 999;
-	top: -8px;
-	right: -8px;
-	width: 18px;
-	height: 18px;
-	/* font-size: 12px; */
-	font-size: 14px;
-	border-radius: 50%;
-	background-color: #ef4444;
-	color: #ffffff;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	line-height: 0;
-	cursor: pointer;
-}
-.revx-selected-remove:hover {
-	background-color: #be0707;
-}
-/* .revx-mix-match-footer {
-	max-width: var(--revx-product-body-width);
-} */
-
 /* Next Order Coupon Style */
 .revx-coupon-template-body {
 	margin: 0 auto !important;
@@ -1163,7 +1075,7 @@ a.revx-full-bar-link {
 	display: block;
 }
 
-/* Free shipping & Spending Goal */
+/* Shared progress indicator. */
 .revx-builder-body.drawer,
 .revx-builder-body.floating {
 	position: sticky;
@@ -1314,33 +1226,6 @@ a.revx-full-bar-link {
 	z-index: 99999 !important;
 }
 
-/* Spending Gift */
-.revx-progress-step {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.revx-progress-step:last-child .revx-spg-goal-label,
-.revx-progress-step:last-child .revx-absolute.revx-bellow-8 {
-	right: 2px;
-}
-.revx-gift-container {
-	position: fixed;
-	opacity: 0;
-	left: -250px;
-	visibility: hidden;
-	transition: opacity 0.3s ease;
-}
-.revx-spending-gift {
-	background-color: #ffffff;
-	box-shadow: 0px 16px 32px -12px rgba(88, 92, 95, 0.445);
-	max-width: 285px;
-	/* vw hides the remove button of product in mobile view */
-	/* width: 70vw; */
-	border-radius: 2px;
-	padding: 8px;
-	box-sizing: border-box;
-}
 .revx-spg-gift-builder.top {
 	transform: translate(-50%, -100%);
 	-webkit-transform: translate(-50%, -100%);
@@ -1370,13 +1255,6 @@ a.revx-full-bar-link {
 	-o-transform: translate(0%, -100%);
 }
 @media (max-width: 600px) {
-	.revx-spending-gift {
-		transform: scale(0.8);
-		-webkit-transform: scale(0.8);
-		-moz-transform: scale(0.8);
-		-ms-transform: scale(0.8);
-		-o-transform: scale(0.8);
-	}
 	.revx-spg-gift-builder.top {
 		transform: translate(-50%, -100%) scale(0.6);
 		-webkit-transform: translate(-50%, -100%) scale(0.6);
@@ -1410,150 +1288,6 @@ a.revx-full-bar-link {
 		transform-origin: left bottom;
 	}
 }
-.revx-spending-gift-heading {
-	font-size: 14px;
-	line-height: 20px;
-	letter-spacing: -0.084px;
-	font-weight: 500;
-	margin-bottom: 16px;
-	max-width: 260px;
-}
-
-.revx-spending-gift-container {
-	width: 100%;
-	max-height: 30vh;
-	overflow-y: auto;
-	overflow-x: hidden;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-}
-.revx-spending-gift-item {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 0;
-}
-.revx-spending-gift-image img {
-	width: 56px;
-	height: 56px;
-	max-width: unset;
-}
-.revx-spending-gift-title {
-	/* font-size: 12px; */
-	font-size: 14px;
-	font-weight: 500;
-	color: #0a0d14;
-	margin-bottom: 4px;
-	width: 8rem;
-}
-.revx-spending-gift-price {
-	/* font-size: 12px; */
-	font-size: 14px;
-	color: #525866;
-	display: flex;
-	align-items: center;
-	gap: 4px;
-}
-.revx-spending-gift-price del {
-	opacity: 0.5;
-}
-.revx-spending-gift-action {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-.revx-spending-gift-action > div {
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 28px;
-	height: 28px;
-	background-color: #f6f8fa;
-	color: #0a0d14;
-	cursor: pointer;
-	font-size: 20px;
-}
-.revx-spending-gift-action > div:hover {
-	background-color: #0a0d14;
-	color: #f6f8fa;
-}
-div.revx-gift-item-checked,
-div.revx-gift-item-checked:hover {
-	background-color: #eafff4;
-	color: #00a464;
-	cursor: default;
-}
-div.revx-gift-item-checked,
-div.revx-gift-item-remove {
-	display: none;
-}
-.revx-spending-gift-action.revx-active div.revx-gift-item-checked,
-.revx-spending-gift-action.revx-active div.revx-gift-item-remove {
-	display: flex;
-}
-.revx-spending-gift-action.revx-active div.revx-gift-item-add {
-	display: none;
-}
-
-/* Spending Success */
-.revx-spending-goal-success {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	background-color: #e4e9e2;
-	box-shadow: 0px 16px 32px -12px rgba(88, 92, 95, 0.445);
-	color: #00a464;
-	width: fit-content;
-	padding: 12px 90px 12px 24px;
-	position: absolute;
-	top: 10px;
-	border-radius: 12px 0 0 12px;
-	right: 0;
-	box-sizing: border-box;
-	white-space: nowrap;
-	transition: all 0.3s;
-	opacity: 0;
-	z-index: -99999;
-}
-.revx-spending-goal-success.revx-active {
-	opacity: 1;
-	z-index: 999;
-}
-.spending_goal.drawer.top-left .revx-spending-goal-success,
-.spending_goal.drawer.bottom-left .revx-spending-goal-success {
-	transform: translateX(-100%);
-	border-radius: 0 12px 12px 0;
-	padding: 12px 24px 12px 90px;
-	left: 0;
-	right: auto;
-}
-.spending_goal.drawer.top-right .revx-spending-goal-success,
-.spending_goal.drawer.bottom-right .revx-spending-goal-success {
-	transform: translateX(100%);
-	border-radius: 12px 0 0 12px;
-	padding: 12px 90px 12px 24px;
-	right: 0;
-	left: auto;
-}
-.spending_goal.drawer.top-left .revx-spending-goal-success.revx-active,
-.spending_goal.drawer.bottom-left .revx-spending-goal-success.revx-active,
-.spending_goal.drawer.top-right .revx-spending-goal-success.revx-active,
-.spending_goal.drawer.bottom-right .revx-spending-goal-success.revx-active {
-	transform: translateX(0%);
-}
-
-/* Double Order */
-.revx-double-order-items {
-	border-radius: var(--revx-border-radius-tl) var(--revx-border-radius-tr)
-		var(--revx-border-radius-br) var(--revx-border-radius-bl) !important;
-	border-width: var(--revx-doubleOrder-border-width);
-	border-style: var(--revx-doubleOrder-border-style);
-	border-color: var(--revx-doubleOrder-border-color);
-	overflow: hidden;
-}
-
 /* Full page Campaign */
 .revx-campaign-wrapper.popup,
 .revx-campaign-wrapper.floating {
@@ -1762,10 +1496,6 @@ div.revx-gift-item-remove {
 .rtl .revx-drawer-container {
 	flex-direction: row-reverse;
 }
-.rtl .revx-selected-remove {
-	left: -8px;
-	right: unset;
-}
 .rtl .revx-coupon-template-tag {
 	transform: rotate(0deg);
 }
@@ -1774,9 +1504,4 @@ div.revx-gift-item-remove {
 	margin-left: 30px !important;
 	border-left: 0 !important;
 	border-right: 2px dashed var(--revx-coupon-separator, #ffffff) !important;
-}
-.rtl .revx-progress-step:last-child .revx-spg-goal-label,
-.rtl .revx-progress-step:last-child .revx-absolute.revx-bellow-8 {
-	left: 2px;
-	right: unset;
 }

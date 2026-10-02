@@ -3,7 +3,7 @@ Contributors: woocommerce, automattic, claudiosanches, bor0, royho, laurendaviss
 Tags: woocommerce, google analytics
 Requires at least: 7.0
 Tested up to: 7.1
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,6 +48,12 @@ Duplicate Google Analytics code causes a conflict in tracking. Remove any other 
 
 == Changelog ==
 
+= 2.4.2 - 2026-09-08 =
+* Declare compatibility with WooCommerce 11.1.0.
+* Dev - Pin GitHub Actions and their nested dependencies to immutable commit SHAs.
+* Fix - Strip the order key and other sensitive query parameters from the page URL and referrer sent to Google Analytics, and send an explicit denied consent state for undecided visitors on opt-in sites.
+* Update GitHub Action references.
+
 = 2.4.1 - 2026-08-25 =
 * Fix - Purchase event no longer reports a false item discount in stores that enter prices inclusive of tax, and no longer drops coupon discounts for quantities above one; item price and discount are now per unit and tax-exclusive.
 * Fix - Purchase event value now sums the item prices × quantity, excluding tax and shipping as GA4 expects, instead of the gross order total.
@@ -58,8 +64,5 @@ Duplicate Google Analytics code causes a conflict in tracking. Remove any other 
 * Dev - Run the PHP coding standards job when dependencies change.
 * Dev - Update WPCS to 3.4.1 to pick up the fix for GHSA-3pwp-g2mj-5p3v.
 * Update - Bump the minimum required WooCommerce version to 10.9 and the compatibility version to 11.0.
-
-= 2.3.0 - 2026-06-25 =
-* Update - Require WooCommerce 10.8+.
 
 [See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce-google-analytics-integration/trunk/changelog.txt).

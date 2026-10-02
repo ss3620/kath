@@ -78,14 +78,4 @@ trait Attribute_Builder {
 
 		return implode( ' ', array_unique( $classes ) );
 	}
-
-	/**
-	 * Sanitize CSS class name
-	 *
-	 * @param string $class_name The CSS class name to sanitize.
-	 * @return string
-	 */
-	protected function sanitize_css_class( string $class_name ): string {
-		return sanitize_html_class( $class_name );
-	}
 }

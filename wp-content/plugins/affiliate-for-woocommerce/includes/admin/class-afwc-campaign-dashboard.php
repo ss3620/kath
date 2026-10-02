@@ -3,7 +3,7 @@
  * Main class for Campaigns Dashboard
  *
  * @package     affiliate-for-woocommerce/includes/admin/
- * @version     1.3.10
+ * @version     1.3.11
  */
 
 // Exit if accessed directly.
@@ -109,9 +109,19 @@ if ( ! class_exists( 'AFWC_Campaign_Dashboard' ) ) {
 				$campaign = json_decode( $params['campaign'], true );
 				$values   = array();
 
-				$campaign_id                 = ! empty( $campaign['campaignId'] ) ? intval( $campaign['campaignId'] ) : '';
-				$values['title']             = ! empty( $campaign['title'] ) ? $campaign['title'] : '';
-				$values['slug']              = ! empty( $campaign['slug'] ) ? $campaign['slug'] : sanitize_title_with_dashes( $values['title'] );
+				$campaign_id     = ! empty( $campaign['campaignId'] ) ? intval( $campaign['campaignId'] ) : '';
+				$values['title'] = ! empty( $campaign['title'] ) ? sanitize_text_field( $campaign['title'] ) : '';
+
+				if ( empty( $values['title'] ) ) {
+					wp_send_json(
+						array(
+							'ACK' => 'Failed',
+							'msg' => _x( 'Please add a campaign title', 'campaign save validation error message when campaign title is missing', 'affiliate-for-woocommerce' ),
+						)
+					);
+				}
+
+				$values['slug']              = sanitize_title_with_dashes( ! empty( $campaign['slug'] ) ? $campaign['slug'] : $values['title'] );
 				$values['target_link']       = ! empty( $campaign['targetLink'] ) ? $campaign['targetLink'] : home_url();
 				$values['short_description'] = ! empty( $campaign['shortDescription'] ) ? $campaign['shortDescription'] : '';
 				$values['body']              = ! empty( $campaign['body'] ) ? $campaign['body'] : '';

@@ -4,7 +4,7 @@ Tags: up-sell, cross-sell, product bundles, buy x get y, quantity discount
 Requires at least: 6.8  
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.1.4
+Stable tag: 2.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -15,6 +15,18 @@ WowRevenue Pro is the premium extension of the WowRevenue plugin.
 WowRevenue Pro is a comprehensive tool designed to quickly boost average order value. Packed with powerful features, it effectively drives revenue growth for WooCommerce stores. Built with both beginners and experienced users in mind, WowRevenue Pro offers a user-friendly experience for all skill levels.
 
 == Changelog ==
+= 2.2.2 – 27 September 2026 =
+* Security: Added nonce verification to the cart total AJAX request.
+
+= 2.2.1 – 21 September 2026 =
+* Fix: Pro now checks Free/Pro compatibility before loading Pro campaign, REST, frontend, and asset code, and shows a clear notice when the required Free version is unavailable.
+* Fix: Pro activation and update notices no longer call Pro initialization methods before they are available.
+
+= 2.2.0 – 20 September 2026 =
+* Improvement: Free plugin minimum version requirement updated to 2.3.0, matching the free plugin's new Pro-campaign routing filter.
+* Fix: The free-plugin version check and auto-update, previously defined but never run, are now wired up so an outdated free plugin is actually detected and updated.
+* New: If the free plugin can't be auto-updated to a compatible version, WowRevenue Pro now shows a persistent admin notice explaining the version mismatch, with links to download the latest free plugin or contact support.
+
 = 2.1.4 – 19 July 2026 =
 * Improvement: Free plugin minimum version requirement updated to 2.2.8 to prevent fatal errors when only Pro is updated.
 * Fix: Free plugin auto-update now installs the new version in place instead of deleting first, so a failed download can no longer leave the site without the free plugin.
@@ -155,4 +167,3 @@ WowRevenue Pro is a comprehensive tool designed to quickly boost average order v
 
 = 1.0.0 - 26 September 2024 =
 * New: Stable Release
-

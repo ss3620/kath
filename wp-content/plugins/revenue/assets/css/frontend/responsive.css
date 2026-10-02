@@ -20,9 +20,6 @@
     .revx-floating {
         width: 85vw !important;
     }
-    .revx-floating.revx-mix-match-grid {
-        max-width: 90vw !important;
-    }
     .revx-popup__content {
         box-sizing: border-box !important;
     }
@@ -48,9 +45,6 @@
 }
 
 @media only screen and (max-width: 600px) {
-    .revx-frequently-bought-together-grid .revx-campaign-container__product {
-        flex-direction: column;
-    }
     .revx-countdown-timer-container {
         flex-direction: column;
         align-items: flex-start !important;
@@ -72,9 +66,6 @@
         flex-direction: column;
         gap: 12px;
     }
-    .revx-mix-match .revx-campaign-text-content {
-        align-items: flex-start;
-    }
     .revx-campaign-list .revx-justify-space.revx-campaign-text-content {
         flex-direction: unset;
     }
@@ -85,11 +76,6 @@
     .revx-campaign-text-content .revx-product-title {
         font-size: 14px !important;
         margin-bottom: 8px !important;
-    }
-    .revx-fbt-options.revx-campaign-text-content .revx-product-title {
-        /* font-size: 12px !important; */
-        font-size: 14px !important;
-        margin: 0 !important;
     }
     .revx-campaign-text-content .revx-campaign-item__prices {
         margin-bottom: 0px !important;
@@ -131,9 +117,6 @@
     .revx-campaign-grid .revx-campaign-text-content .revx-builder-savings-tag {
         margin: 8px 0 12px !important;
     }
-    .revx-frequently-bought-together.revx-campaign-grid .revx-campaign-text-content .revx-builder-savings-tag {
-        margin: 8px 0 0 !important;
-    }
     .revx-bundle-discount .revx-campaign-text-content .revx-builder-savings-tag {
         margin: 0 !important;
     }
@@ -148,36 +131,14 @@
     .revx-builder__quantity input {
         font-size: 12px !important;
     */
-    .revx-mix-match .revx-builder__quantity,
-    .revx-frequently-bought-together .revx-builder__quantity {
-        margin: 12px 0 0 !important;
-    }
     .revx-campaign-text-content button {
         margin: 0 !important;
-    }
-    .revx-mix-match .revx-campaign-text-content button {
-        margin: 12px !important;
-    }
-    .revx-mix-match.revx-mix-match-grid .revx-campaign-text-content button {
-        margin: 8px 0 0 !important;
-    }
-    .revx-mix-match-item .revx-campaign-text-content button {
-        margin: 0 !important;
-    }
-    .revx-frequently-bought-together .revx-campaign-text-content button {
-        margin: 12px 0 0 !important;
     }
     .revx-campaign-grid .revx-builder__quantity {
         margin: 0 0 12px !important;
     }
-    .revx-mix-match.revx-campaign-grid .revx-builder__quantity {
-        margin: 12px 0 8px !important;
-    }
     .revx-campaign-grid.revx-bundle-discount .revx-builder__quantity {
         margin: 0 !important;
-    }
-    .revx-frequently-bought-together-grid.revx-campaign-grid .revx-builder__quantity {
-        margin: 16px 0 0 !important;
     }
     .revx-volume-discount .revx-builder__quantity {
         margin: 0 !important;
@@ -238,15 +199,6 @@
         max-height: 40vh;
     }
 
-    .revx-frequently-bought-together-grid .revx-regular-product {
-        flex-basis: 70%;
-    }
-    .revx-fbt-options {
-        flex-basis: 70%;
-    }
-    /* .revx-fbt-pricing {
-        display: block;
-    } */
     .revx-buyx-gety-grid .revx-campaign-container__wrapper {
         overflow-y: auto;
         max-height: 40vh;
@@ -284,12 +236,6 @@
     }
 }
 
-@media (max-width: 480px) {
-    .revx-frequently-bought-together .revx-triggerProduct .revx-justify-space {
-        flex-direction: column-reverse;
-        gap: 16px;
-    }
-}
 @media (max-width: 460px) {
     .revx-quantity-addToCart-container {
         gap: 12px;
@@ -334,9 +280,6 @@
     .revx-bundle-discount .revx-total-price__offer-price {
         justify-content: center;
     }
-    .revx-mix-match .revx-campaign-item__prices {
-        justify-content: flex-start;
-    }
     .revx-campaign-grid .revx-slider .revx-campaign-item {
         width: 40vw !important;
     }
@@ -344,7 +287,4 @@
         flex-direction: column;
         align-items: center;
     } */
-    .revx-frequently-bought-together-list .revx-campaign-item:first-child {
-        flex-direction: row;
-    }
 }

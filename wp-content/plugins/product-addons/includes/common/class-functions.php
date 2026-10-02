@@ -30,6 +30,16 @@ class Functions {
 	}
 
 	/**
+	 * Absolute file path of a bundled stylesheet: the same file get_style_path() gives the URL of.
+	 *
+	 * @param string $style_name style name.
+	 * @return string
+	 */
+	public function get_style_file_path( $style_name ) {
+		return PRAD_PATH . 'assets/css/' . $style_name . ( is_rtl() ? '-rtl' : '' ) . '.css';
+	}
+
+	/**
 	 * Enqueue style
 	 *
 	 * @param string $handle handle.
@@ -97,66 +107,38 @@ class Functions {
 	}
 
 	/**
-	 * Checks if the Product Addons Pro plugin is active and its license is valid.
+	 * Get the taxonomies an option can be assigned to, keyed by assignment type.
 	 *
-	 * Verifies whether the plugin located at 'product-addons-pro/product-addons-pro.php'
-	 * is currently active. If active, it then checks the license status stored in the
-	 * 'edd_prad_license_data' option to ensure it is marked as 'valid'.
+	 * This plugin supports product categories. Other plugins can add more through
+	 * the prad_assign_taxonomies filter.
 	 *
-	 * @return bool True if the plugin is active and the license is valid, false otherwise.
+	 * @since 1.8.2
+	 *
+	 * @return array Assignment type => taxonomy, e.g. 'specific_category' => 'product_cat'.
 	 */
-	public function is_lc_active() {
-		if ( defined( 'PRAD_PRO_VER' ) ) {
-			$license_data = get_option( 'edd_prad_license_data', array() );
-			return isset( $license_data['license'] ) && 'valid' === $license_data['license'] ? true : false;
-		}
-		return false;
+	public function get_assign_taxonomies(): array {
+		$default    = array( 'specific_category' => 'product_cat' );
+		$taxonomies = apply_filters( 'prad_assign_taxonomies', $default );
+
+		return is_array( $taxonomies ) ? $taxonomies : $default;
 	}
 
 	/**
-	 * Checks if the license has expired.
+	 * Get the assignable taxonomies keyed by the trigger type the search endpoints use.
 	 *
-	 * This method checks the stored license data in the WordPress options table
-	 * and determines if the license status is set to 'expired'. It returns `true`
-	 * if the license is expired, otherwise `false`.
+	 * @since 1.8.2
 	 *
-	 * @return bool True if the license is expired, otherwise false.
+	 * @return array Trigger type => taxonomy, e.g. 'cat' => 'product_cat'.
 	 */
-	public function is_lc_expired() {
-		$license_data = get_option( 'edd_prad_license_data', array() );
-		return isset( $license_data['license'] ) && 'expired' === $license_data['license'] ? true : false;
-	}
+	public function get_assign_trigger_taxonomies(): array {
+		$triggers = array();
 
-	/**
-	 * Checks if the license has expired.
-	 *
-	 * This method checks the stored license data in the WordPress options table
-	 * and determines if the license status is set to 'expired'. It returns `true`
-	 * if the license is expired, otherwise `false`.
-	 *
-	 * @return bool True if the license is expired, otherwise false.
-	 */
-	public function handle_all_pro_block() {
-		if ( defined( 'PRAD_PRO_VER' ) ) {
-			$license_data = get_option( 'edd_prad_license_data', array() );
-			return isset( $license_data['license'] ) && ( 'valid' === $license_data['license'] || 'expired' === $license_data['license'] ) ? true : false;
+		foreach ( $this->get_assign_taxonomies() as $assign_type => $taxonomy ) {
+			$trigger              = 'specific_category' === $assign_type ? 'cat' : preg_replace( '/^specific_/', '', $assign_type );
+			$triggers[ $trigger ] = $taxonomy;
 		}
-		return false;
-	}
 
-	/**
-	 * Checks if the pro feature is available based on plugin activation and license status.
-	 *
-	 * Returns true if the Product Addons Pro plugin is active and the license is either valid or expired.
-	 *
-	 * @return bool True if pro features are available, false otherwise.
-	 */
-	public function is_pro_feature_available() {
-		if ( defined( 'PRAD_PRO_VER' ) ) {
-			$license_data = get_option( 'edd_prad_license_data', array() );
-			return isset( $license_data['license'] ) && ( 'valid' === $license_data['license'] || 'expired' === $license_data['license'] ) ? true : false;
-		}
-		return false;
+		return $triggers;
 	}
 
 	/**
@@ -170,19 +152,41 @@ class Functions {
 	 */
 	public function get_assigned_product_data( $option_id ) {
 		$assigned_data = json_decode( product_addons()->safe_stripslashes( get_post_meta( $option_id, 'prad_base_assigned_data', true ) ), true );
+		$assigned_data = is_array( $assigned_data ) ? $assigned_data : array();
+
+		/**
+		 * Filters the assignment data of an option set sent to the builder, so extensions can
+		 * add their own assignment settings.
+		 *
+		 * @since 1.8.3
+		 *
+		 * @param array $data          'aType', 'includes' and 'excludes', with the includes and
+		 *                             excludes resolved to the items the builder shows.
+		 * @param array $assigned_data The saved assignment data.
+		 * @param int   $option_id     Option set ID.
+		 */
+		return (object) apply_filters( 'prad_assigned_product_data', $this->resolve_assigned_product_data( $assigned_data ), $assigned_data, $option_id );
+	}
+
+	/**
+	 * Resolves saved assignment data to what the builder shows.
+	 *
+	 * @param array $assigned_data The saved assignment data.
+	 * @return array
+	 */
+	private function resolve_assigned_product_data( $assigned_data ) {
 		if ( empty( $assigned_data ) ) {
-			return (object) array(
-				'aType'             => 'specific_product',
-				'includes'          => array(),
-				'excludes'          => array(),
-				'excludeCategories' => array(),
+			return array(
+				'aType'    => 'specific_product',
+				'includes' => array(),
+				'excludes' => array(),
 			);
 		} else {
 			if ( isset( $assigned_data['includes'] ) && count( $assigned_data['includes'] ) > 0 ) {
 				if ( 'specific_product' === $assigned_data['aType'] ) {
 					$includes = $this->get_searched_products( '', false, '', $assigned_data['includes'] );
-				} elseif ( 'specific_category' === $assigned_data['aType'] || 'specific_tag' === $assigned_data['aType'] || 'specific_brand' === $assigned_data['aType'] ) {
-					$term_type = 'specific_category' === $assigned_data['aType'] ? 'cat' : ( 'specific_tag' === $assigned_data['aType'] ? 'tag' : 'brand' );
+				} elseif ( isset( $this->get_assign_taxonomies()[ $assigned_data['aType'] ] ) ) {
+					$term_type = 'specific_category' === $assigned_data['aType'] ? 'cat' : preg_replace( '/^specific_/', '', $assigned_data['aType'] );
 					$includes  = $this->get_searched_categories(
 						array(
 							'term'         => '',
@@ -198,21 +202,11 @@ class Functions {
 				$includes = array();
 			}
 
-			return (object) array(
-				'aType'             => $assigned_data['aType'],
-				'includes'          => $includes,
-				'excludes'          => isset( $assigned_data['excludes'] ) && count( $assigned_data['excludes'] ) > 0
+			return array(
+				'aType'    => $assigned_data['aType'],
+				'includes' => $includes,
+				'excludes' => isset( $assigned_data['excludes'] ) && count( $assigned_data['excludes'] ) > 0
 					? $this->get_searched_products( '', false, '', $assigned_data['excludes'] )
-					: array(),
-				'excludeCategories' => isset( $assigned_data['excludeCategories'] ) && count( $assigned_data['excludeCategories'] ) > 0
-					? $this->get_searched_categories(
-						array(
-							'term'         => '',
-							'limit'        => '',
-							'includes'     => $assigned_data['excludeCategories'],
-							'trigger_type' => 'cat',
-						)
-					)
 					: array(),
 			);
 		}
@@ -317,9 +311,14 @@ class Functions {
 		$includes     = isset( $params['includes'] ) && is_array( $params['includes'] ) ? $params['includes'] : array();
 		$trigger_type = isset( $params['trigger_type'] ) ? $params['trigger_type'] : 'cat';
 
+		$taxonomies = $this->get_assign_trigger_taxonomies();
+		if ( ! isset( $taxonomies[ $trigger_type ] ) ) {
+			return array();
+		}
+
 		$found_categories = array();
 		$args             = array(
-			'taxonomy'   => array( 'product_' . $trigger_type ),
+			'taxonomy'   => array( $taxonomies[ $trigger_type ] ),
 			'orderby'    => 'id',
 			'number'     => $limit,
 			'order'      => 'ASC',
@@ -359,60 +358,118 @@ class Functions {
 	public function render_addon_css( $id, $type = '' ) {
 		$prad_addons_css = get_post_meta( $id, 'prad_addons_css', true );
 		if ( $prad_addons_css ) {
-			wp_register_style( 'prad-addons-css-'. $id, false ); // phpcs:ignore
-			wp_enqueue_style( 'prad-addons-css-' . $id );
-			wp_add_inline_style( 'prad-addons-css-' . $id, $prad_addons_css );
-		}
-		if ( 'print' === $type ) {
-			echo '<style id="prad-addons-css-' . esc_attr( $id ) . '-inline">' . esc_html( $prad_addons_css ) . '</style>';
+			$handle = 'prad-addons-css-' . $id;
+			wp_register_style( $handle, false ); // phpcs:ignore
+			wp_enqueue_style( $handle );
+			wp_add_inline_style( $handle, wp_strip_all_tags( $prad_addons_css ) );
+
+			// AJAX/REST responses never reach wp_footer(), so print the style straight away.
+			// esc_html() is not usable here: <style> is raw text, so &gt; and &quot; would reach the CSS parser as-is.
+			if ( 'print' === $type ) {
+				wp_print_styles( $handle );
+			}
 		}
 	}
 
 	/**
 	 * Sanitize Params
 	 *
-	 * Recursively sanitizes the given parameters to ensure safe data handling.
+	 * Recursively sanitizes REST request data (add-on blocks, styles, settings,
+	 * assignment data). Each string is sanitized according to its key:
+	 * rich-content fields allow post HTML, image fields must be URLs, formula
+	 * expressions keep their comparison operators, and every other string is
+	 * sanitized as plain text with line breaks kept. Numbers, booleans and
+	 * nulls are kept; any other type is dropped.
 	 *
-	 * @param mixed $params The data to be sanitized. Can be an array, boolean, object, or string.
+	 * @param mixed      $params The data to be sanitized.
+	 * @param int|string $key    Key of the current value in its parent array.
 	 *
 	 * @return mixed The sanitized data.
 	 */
-	public function sanitize_rest_params( $params ) {
+	public function sanitize_rest_params( $params, $key = '' ) {
 		if ( is_array( $params ) ) {
-			return array_map( array( $this, 'sanitize_rest_params' ), $params );
-		} elseif ( is_bool( $params ) ) {
-			return rest_sanitize_boolean( $params );
-		} elseif ( is_object( $params ) ) {
-			return $params;
-		} elseif ( is_string( $params ) ) {
-			return $params;
-		} else {
+			$clean = array();
+			foreach ( $params as $item_key => $item ) {
+				// List items inherit the parent key so they get the same rule.
+				$clean[ $item_key ] = $this->sanitize_rest_params( $item, is_int( $item_key ) ? $key : $item_key );
+			}
+			return $clean;
+		}
+
+		if ( is_string( $params ) ) {
+			switch ( $key ) {
+				case 'previewContent':
+				case 'popupContent':
+					return wp_kses_post( $params );
+				case 'img':
+				case 'src':
+				case 'url':
+					return esc_url_raw( $params );
+				case 'expression':
+					return $this->sanitize_formula_expression( $params );
+				default:
+					return sanitize_textarea_field( $params );
+			}
+		}
+
+		if ( is_bool( $params ) || is_int( $params ) || is_float( $params ) || is_null( $params ) ) {
 			return $params;
 		}
+
+		return null;
 	}
 
 	/**
-	 * Returns a structured price object with numeric and formatted HTML price.
+	 * Sanitize a formula expression.
 	 *
-	 * If a sale price is provided, the returned price is the sale price, and the
-	 * HTML includes both the regular and sale prices. Otherwise, it returns only
-	 * the regular price.
+	 * Formulas use the <, <=, > and >= operators, so HTML text sanitizers would
+	 * corrupt them. Instead, invalid UTF-8 and control characters are removed
+	 * and a space is added after any "<" that could open an HTML tag. The formula
+	 * lexer ignores whitespace, so the expression evaluates the same.
 	 *
-	 * @since 1.0.3
+	 * @param string $expression Raw formula expression.
 	 *
-	 * @param float|string $regular The regular price.
-	 * @param float|string $sale    The sale price. If empty or false, regular price is used.
-	 *
-	 * @return array {
-	 *     @type float  $price The numeric value of the applicable price.
-	 *     @type string $html  The formatted HTML price string.
-	 * }
+	 * @return string The sanitized expression.
 	 */
-	public function get_price_object( $regular, $sale ) {
-		return array(
-			'price' => $sale ? floatval( $sale ) : floatval( $regular ),
-			'html'  => $sale ? '<span class="pricex"><del>' . wc_price( $regular ) . '</del> <ins>' . wc_price( $sale ) . '</ins></span>' : '<span class="pricex">' . wc_price( $regular ) . '</span>',
-		);
+	public function sanitize_formula_expression( $expression ) {
+		$expression = wp_check_invalid_utf8( (string) $expression );
+		$expression = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $expression );
+		$expression = preg_replace( '/<(?=[a-zA-Z\/!?])/', '< ', $expression );
+
+		return trim( $expression );
+	}
+
+	/**
+	 * Recursively sanitize add-on selection data submitted from the product page.
+	 *
+	 * Keys are sanitized as text, `path` values (uploaded file URLs) as URLs and
+	 * every other string as textarea text so line breaks in customer input are kept.
+	 * Numbers, booleans and nulls are returned unchanged.
+	 *
+	 * @param mixed      $data Decoded selection data.
+	 * @param int|string $key  Key of the current value in its parent array.
+	 *
+	 * @return mixed The sanitized data.
+	 */
+	public function sanitize_selection_data( $data, $key = '' ) {
+		if ( is_array( $data ) ) {
+			$clean = array();
+			foreach ( $data as $item_key => $item ) {
+				$clean_key           = is_int( $item_key ) ? $item_key : sanitize_text_field( $item_key );
+				$clean[ $clean_key ] = $this->sanitize_selection_data( $item, $item_key );
+			}
+			return $clean;
+		}
+
+		if ( is_string( $data ) ) {
+			return 'path' === $key ? esc_url_raw( $data ) : sanitize_textarea_field( $data );
+		}
+
+		if ( is_int( $data ) || is_float( $data ) || is_bool( $data ) ) {
+			return $data;
+		}
+
+		return null;
 	}
 
 	/**
@@ -535,128 +592,6 @@ class Functions {
 
 		return $price;
 	}
-
-	/**
-	 * Revert the given price to the base price.
-	 *
-	 * Price is returned.
-	 *
-	 * @since 1.0.4
-	 *
-	 * @param float $price The original price to be reverted.
-	 *
-	 * @return float The reverted price.
-	 */
-	public function get_currency_reverted_price( $price ) {
-		$price = floatval( $price );
-
-		// WowStore Switcher.
-		if ( defined( 'WOPB_VER' ) && defined( 'WOPB_PRO_VER' ) && class_exists( 'WOPB_PRO\Currency_Switcher_Action' ) ) {
-			$current_currency_code = wopb_function()->get_setting( 'wopb_current_currency' );
-			$default_currency      = wopb_function()->get_setting( 'wopb_default_currency' );
-			$current_currency      = \WOPB_PRO\Currency_Switcher_Action::get_currency( $current_currency_code );
-			if ( ! $current_currency ) {
-				$current_currency = $default_currency;
-			}
-
-			if ( $current_currency_code !== $default_currency ) {
-				$wopb_current_currency_rate = floatval( ( isset( $current_currency['wopb_currency_rate'] ) && $current_currency['wopb_currency_rate'] > 0 && ! ( '' === $current_currency['wopb_currency_rate'] ) ) ? $current_currency['wopb_currency_rate'] : 1 );
-				$wopb_current_exchange_fee  = floatval( ( isset( $current_currency['wopb_currency_exchange_fee'] ) && $current_currency['wopb_currency_exchange_fee'] >= 0 && ! ( '' === $current_currency['wopb_currency_exchange_fee'] ) ) ? $current_currency['wopb_currency_exchange_fee'] : 0 );
-				$total_rate                 = ( $wopb_current_currency_rate + $wopb_current_exchange_fee );
-				return $price / $total_rate;
-			}
-		}
-
-		// WooCommerce Currency Switcher by WPExperts.
-		if ( defined( 'WCCS_VERSION' ) ) {
-			// Dont have any filter to revert the price.
-			$price = $this->manual_currency_reverted_price( $price );
-			return $price;
-		}
-
-		if ( function_exists( 'wmc_revert_price' ) ) {
-
-			if ( defined( 'WOOMULTI_CURRENCY_VERSION' ) && class_exists( 'WOOMULTI_CURRENCY_Data' ) ) {
-				$curcy = \WOOMULTI_CURRENCY_Data::get_ins();
-			} elseif ( defined( 'WOOMULTI_CURRENCY_F_VERSION' ) && class_exists( 'WOOMULTI_CURRENCY_F_Data' ) ) {
-				$curcy = \WOOMULTI_CURRENCY_F_Data::get_ins();
-			}
-
-			if ( isset( $curcy ) && $curcy->get_enable() ) {
-				$price = wmc_revert_price( $price );
-				return $price;
-			}
-		}
-
-		// Yay_Currency Switcher.
-		if ( defined( 'YAY_CURRENCY_VERSION' ) ) {
-			$price = apply_filters( 'yay_currency_revert_price', $price, '' );// phpcs:ignore
-			return $price;
-		}
-
-		// FOX - Currency Switcher.
-		if ( defined( 'WOOCS_VERSION' ) ) {
-			$price = apply_filters( 'woocs_back_convert_price', $price, '' );// phpcs:ignore
-			return $price;
-		}
-
-		// Currency Switcher for WooCommerce by wpwham.
-		if ( function_exists( 'alg_get_current_currency_code' ) && function_exists( 'alg_convert_price' ) ) {
-			// Dont have any filter to revert the price.
-			$price = $this->manual_currency_reverted_price( $price );
-			return $price;
-		}
-
-		// Yith Currency Switcher.
-		if ( function_exists( 'yith_wcmcs_convert_price' ) ) {
-			// Dont have any filter to revert the price.
-			$price = $this->manual_currency_reverted_price( $price );
-			return $price;
-		}
-
-		// Aelia Currency Switcher.
-		if ( class_exists( 'WC_Aelia_CurrencySwitcher' ) ) {
-			$base_currency   = apply_filters( 'wc_aelia_cs_base_currency', '' );// phpcs:ignore
-			$active_currency = get_woocommerce_currency();
-			$price           = apply_filters( 'wc_aelia_cs_convert', $price, $active_currency, $base_currency );// phpcs:ignore
-			return $price;
-		}
-
-		if ( class_exists( '\WCPay\MultiCurrency\MultiCurrency' ) ) {
-			$multi_currency  = null;
-			$converted_price = $price;
-
-			if ( class_exists( 'WC_Payments' ) && method_exists( '\WC_Payments', 'get_gateway' ) ) {
-				$gateway = \WC_Payments::get_gateway();
-
-				if ( class_exists( '\WCPay\WC_Payments_Currency_Manager' ) ) {
-					$currency_manager = new \WCPay\WC_Payments_Currency_Manager( $gateway );
-
-					if ( method_exists( $currency_manager, 'get_multi_currency_instance' ) ) {
-						$multi_currency = $currency_manager->get_multi_currency_instance();
-					}
-				}
-			}
-
-			// Convert price if instance exists.
-			if ( $multi_currency instanceof \WCPay\MultiCurrency\MultiCurrency && method_exists( $multi_currency, 'get_price' ) ) {
-				$currency = $multi_currency->get_selected_currency();
-				$rate     = $currency->get_rate();
-				if ( $currency->get_is_default() || $rate <= 0 ) {
-					return $converted_price;
-				}
-
-				// Reverse conversion.
-				$base_price = (float) $converted_price / $rate;
-
-				return (float) $base_price;
-
-			}
-		}
-
-		return $price;
-	}
-
 	/**
 	 * Retrieves currency conversion data including rate and extra value.
 	 *
@@ -698,7 +633,7 @@ class Functions {
 			$cr_rate  = isset( $currency_data['cr_rate'] ) ? $currency_data['cr_rate'] : 1;
 			$cr_extra = isset( $currency_data['cr_extra'] ) ? $currency_data['cr_extra'] : 0;
 
-			if ( floatval( $cr_rate ) == floatval( 0 ) ) {
+			if ( floatval( $cr_rate ) === floatval( 0 ) ) {
 				return 0;
 			}
 
@@ -707,308 +642,6 @@ class Functions {
 
 		return floatval( $price );
 	}
-
-	/**
-	 * Sanitizes the given content using wp_kses with allowed HTML tags.
-	 *
-	 * This method applies the 'prad_allowed_html_tags' filter to determine
-	 * which HTML tags are permitted, and then sanitizes the $prad_blocks content
-	 * accordingly using wp_kses.
-	 *
-	 * @since 1.0.5
-	 *
-	 * @param mixed $prad_blocks The content to be sanitized.
-	 * @return mixed The sanitized content with only allowed HTML tags.
-	 */
-	public function get_wp_kses_content( $prad_blocks ) {
-		return $prad_blocks;
-	}
-
-	/**
-	 * Get Option Value bypassing cache
-	 * Inspired By WordPress Core get_option
-	 *
-	 * @since v.1.0.7
-	 * @param string  $option Option Name.
-	 * @param boolean $default_value option default value.
-	 * @return mixed
-	 */
-	public function get_option_without_cache( $option, $default_value = false ) {
-		global $wpdb;
-
-		if ( is_scalar( $option ) ) {
-			$option = trim( $option );
-		}
-
-		if ( empty( $option ) ) {
-			return false;
-		}
-
-		$value = $default_value;
-
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", $option ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		if ( is_object( $row ) ) {
-			$value = $row->option_value;
-		} else {
-			return apply_filters( "prad_default_option_{$option}", $default_value, $option );
-		}
-
-		return apply_filters( "prad_option_{$option}", maybe_unserialize( $value ), $option );
-	}
-
-	/**
-	 * Add option without adding to the cache
-	 * Inspired By WordPress Core set_transient
-	 *
-	 * @since v.1.0.7
-	 * @param string $option option name.
-	 * @param string $value option value.
-	 * @param string $autoload whether to load WordPress startup.
-	 * @return bool
-	 */
-	public function add_option_without_cache( $option, $value = '', $autoload = 'yes' ) {
-		global $wpdb;
-
-		if ( is_scalar( $option ) ) {
-			$option = trim( $option );
-		}
-
-		if ( empty( $option ) ) {
-			return false;
-		}
-
-		wp_protect_special_option( $option );
-
-		if ( is_object( $value ) ) {
-			$value = clone $value;
-		}
-
-		$value = sanitize_option( $option, $value );
-
-		/*
-		 * Make sure the option doesn't already exist.
-		 */
-
-		if ( apply_filters( "prad_default_option_{$option}", false, $option, false ) !== $this->get_option_without_cache( $option ) ) {
-			return false;
-		}
-
-		$serialized_value = maybe_serialize( $value );
-		$autoload         = ( 'no' === $autoload || false === $autoload ) ? 'no' : 'yes';
-
-		$result = $wpdb->query( $wpdb->prepare( "INSERT INTO `$wpdb->options` (`option_name`, `option_value`, `autoload`) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE `option_name` = VALUES(`option_name`), `option_value` = VALUES(`option_value`), `autoload` = VALUES(`autoload`)", $option, $serialized_value, $autoload ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		if ( ! $result ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Get Transient Value bypassing cache
-	 * Inspired By WordPress Core get_transient
-	 *
-	 * @since v.1.0.7
-	 * @param string $transient Transient Name.
-	 * @return mixed
-	 */
-	public function get_transient_without_cache( $transient ) {
-		$transient_option  = '_transient_' . $transient;
-		$transient_timeout = '_transient_timeout_' . $transient;
-		$timeout           = $this->get_option_without_cache( $transient_timeout );
-
-		if ( false !== $timeout && $timeout < time() ) {
-			delete_option( $transient_option );
-			delete_option( $transient_timeout );
-			$value = false;
-		}
-
-		if ( ! isset( $value ) ) {
-			$value = $this->get_option_without_cache( $transient_option );
-		}
-
-		return apply_filters( "prad_transient_{$transient}", $value, $transient );
-	}
-
-	/**
-	 * Set transient without adding to the cache
-	 * Inspired By WordPress Core set_transient
-	 *
-	 * @since v.1.0.7
-	 * @param string  $transient Transient Name.
-	 * @param mixed   $value Transient Value.
-	 * @param integer $expiration Time until expiration in seconds.
-	 * @return bool
-	 */
-	public function set_transient_without_cache( $transient, $value, $expiration = 0 ) {
-		$expiration = (int) $expiration;
-
-		$transient_timeout = '_transient_timeout_' . $transient;
-		$transient_option  = '_transient_' . $transient;
-
-		$result = false;
-
-		if ( false === $this->get_option_without_cache( $transient_option ) ) {
-			$autoload = 'yes';
-			if ( $expiration ) {
-				$autoload = 'no';
-				$this->add_option_without_cache( $transient_timeout, time() + $expiration, 'no' );
-			}
-			$result = $this->add_option_without_cache( $transient_option, $value, $autoload );
-		} else {
-			/*
-			 * If expiration is requested, but the transient has no timeout option,
-			 * delete, then re-create transient rather than update.
-			 */
-			$update = true;
-
-			if ( $expiration ) {
-				if ( false === $this->get_option_without_cache( $transient_timeout ) ) {
-					delete_option( $transient_option );
-					$this->add_option_without_cache( $transient_timeout, time() + $expiration, 'no' );
-					$result = $this->add_option_without_cache( $transient_option, $value, 'no' );
-					$update = false;
-				} else {
-					update_option( $transient_timeout, time() + $expiration );
-				}
-			}
-
-			if ( $update ) {
-				$result = update_option( $transient_option, $value );
-			}
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Generates the HTML for the product block variation section.
-	 *
-	 * This function outputs the variation selection UI for a given product block item.
-	 *
-	 * @param array $args Arguments containing the product item.
-	 * @return string The generated HTML for the variation section.
-	 */
-	public function generate_products_block_variation_section_html( $args ) {
-		$item              = $args['item'];
-		$allowed_html_tags = apply_filters( 'prad_allowed_html_tags', array() );
-		ob_start();
-		if ( isset( $item->variation ) && $item->variation ) {
-			$select_options       = '';
-			$product              = wc_get_product( $item->id );
-			$available_variations = $product->get_available_variations();
-			foreach ( $available_variations as $variation_data ) {
-				$variation_id = $variation_data['variation_id'];
-				$variation    = wc_get_product( $variation_id );
-
-				if ( $variation && $variation->is_purchasable() && $variation->is_in_stock() ) {
-					$variation_attributes = $variation->get_attributes();
-					$option_label         = '';
-					$valid_variation      = true;
-					$i                    = 0;
-					$regular_price        = $variation->get_regular_price( '' );
-					$sale_price           = $variation->get_sale_price( '' );
-
-					$regular_price = apply_filters(
-						'prad_raw_tax_compitable_price',
-						array(
-							'product_id' => $variation_id,
-							'price'      => $variation->get_regular_price(),
-							'source'     => 'product_page',
-						)
-					);
-					$sale_price    = apply_filters(
-						'prad_raw_tax_compitable_price',
-						array(
-							'product_id' => $variation_id,
-							'price'      => $variation->get_sale_price(),
-							'source'     => 'product_page',
-						)
-					);
-					$price_obj     = product_addons()->get_price_object( $regular_price, $sale_price );
-					foreach ( $variation_attributes as $key => $value ) {
-						$label = str_replace( '_', ' ', str_replace( 'pa_', '', $key ) );
-						if ( ! empty( $value ) ) {
-							$option_label .= ( $i > 0 ? ' , ' : '' ) . ucfirst( $label ) . ' - ' . ucfirst( $value );
-							++$i;
-						} else {
-							$valid_variation = false;
-						}
-					}
-					if ( $valid_variation ) {
-						$option_label    = rawurldecode( wp_strip_all_tags( $option_label ) );
-						$select_options .= '<div class="prad-select-option" title="' . esc_attr( $option_label ) . '" value="' . esc_attr( $price_obj['price'] ) . '" data-variation-id="' . esc_attr( $variation_id ) . '"  data-pricehtml="' . esc_attr( $price_obj['html'] ) . '">' . esc_html( $option_label ) . '</div>';
-					}
-				}
-			}
-
-			if ( $select_options ) {
-				?>
-				<div class="prad-product-block-variation-select prad-mt-10">
-					<div class="prad-custom-select prad-w-full prad-product-variation-select-comp">
-						<div class="prad-select-box prad-block-input prad-block-content" readonly="readonly"><div style="max-width: 120px" class="prad-select-box-item prad-mr-12 prad-ellipsis"><?php esc_html_e( 'Select an option', 'product-addons' ); ?></div> <div class="prad-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m1 1 6 6 6-6"></path></svg></div></div>
-						<div class="prad-select-options">
-							<?php echo wp_kses( $select_options, $allowed_html_tags ); ?>
-						</div>
-					</div>
-				</div>
-				
-				<?php
-			}
-		}
-		return ob_get_clean();
-	}
-
-	/**
-	 * Retrieves product block attributes for a given product ID.
-	 *
-	 * Returns an object containing product details such as ID, type, variation status,
-	 * URL, name, image, regular and sale prices, stock status, and purchasable status.
-	 *
-	 * @param int  $p_id   Product ID.
-	 * @param bool $var_p  Whether the product is a variation.
-	 * @return object|null Product attributes object or null if not found.
-	 */
-	public function get_product_block_product_attr( $p_id, $var_p = false ) {
-		$product = wc_get_product( $p_id );
-		if ( $product ) {
-			$formatted_variation = wc_get_formatted_variation( $product, true, false, true );
-			$product_value       = $product->get_name() . ( $formatted_variation ? ' - ' . $formatted_variation : '' );
-			$data                = array(
-				'id'             => $p_id,
-				'type'           => 'per_unit',
-				'variation'      => $var_p,
-				'url'            => get_permalink( $p_id ),
-				'value'          => rawurldecode( wp_strip_all_tags( $product_value ) ),
-				'img'            => wp_get_attachment_url( $product->get_image_id() ),
-				'regular'        => apply_filters(
-					'prad_raw_tax_compitable_price',
-					array(
-						'product_id' => $p_id,
-						'ppType'     => 'reg',
-						'price'      => $product->get_regular_price(),
-						'source'     => 'product_page',
-					)
-				),
-				'sale'           => apply_filters(
-					'prad_raw_tax_compitable_price',
-					array(
-						'product_id' => $p_id,
-						'ppType'     => 'sale',
-						'price'      => $product->get_sale_price(),
-						'source'     => 'product_page',
-					)
-				),
-				'is_in_stock'    => $product->is_in_stock(),
-				'is_purchasable' => $product->is_purchasable(),
-			);
-			return (object) $data;
-		}
-
-		return null;
-	}
-
 	/**
 	 * Generates a UTM link with specified parameters and configuration.
 	 *
@@ -1113,32 +746,6 @@ class Functions {
 	}
 
 	/**
-	 * Get WOW Products Details
-	 *
-	 * @return array
-	 */
-	public function get_wow_products_details() {
-		return array(
-			'products'        => array(
-				'wow_shipping' => file_exists( WP_PLUGIN_DIR . '/wow-table-rate-shipping/wow-table-rate-shipping.php' ),
-				'post_x'       => file_exists( WP_PLUGIN_DIR . '/ultimate-post/ultimate-post.php' ),
-				'wow_store'    => file_exists( WP_PLUGIN_DIR . '/product-blocks/product-blocks.php' ),
-				'wow_optin'    => file_exists( WP_PLUGIN_DIR . '/optin/optin.php' ),
-				'wow_revenue'  => file_exists( WP_PLUGIN_DIR . '/revenue/revenue.php' ),
-				'wholesale_x'  => file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' ),
-			),
-			'products_active' => array(
-				'wow_shipping' => defined( 'WTRS_VER' ),
-				'post_x'       => defined( 'ULTP_VER' ),
-				'wow_store'    => defined( 'WOPB_VER' ),
-				'wow_optin'    => defined( 'OPTN_VERSION' ),
-				'wow_revenue'  => defined( 'REVENUE_VER' ),
-				'wholesale_x'  => defined( 'WHOLESALEX_VER' ),
-			),
-		);
-	}
-
-	/**
 	 * Move or copy files from temp folder to on_cart folder.
 	 *
 	 * @param array  $src_files Absolute file paths (from temp folder).
@@ -1158,12 +765,12 @@ class Functions {
 		$from_dir = $upload_dir['basedir'] . '/prad_option_files/' . $_from;
 		$to_dir   = $upload_dir['basedir'] . '/prad_option_files/' . $_to;
 
-		// Make sure destination folder exists
+		// Make sure destination folder exists.
 		if ( ! file_exists( $to_dir ) ) {
 			wp_mkdir_p( $to_dir );
 		}
 
-		// Make sure temp folder exists
+		// Make sure temp folder exists.
 		if ( ! file_exists( $from_dir ) ) {
 			wp_mkdir_p( $from_dir );
 		}
@@ -1238,41 +845,6 @@ class Functions {
 	}
 
 	/**
-	 * Retrieves the list of allowed file types for uploads.
-	 *
-	 * This function returns an array of file types that are permitted to be uploaded
-	 * through the product addons functionality.
-	 *
-	 * @return array List of allowed file types for uploads.
-	 */
-	public function prad_get_upload_allowed_file_types( $extras = array() ) {
-
-		$allowed_types = array(
-			'png'  => 'image/png',
-			'jpg'  => 'image/jpeg',
-			'jpeg' => 'image/jpeg',
-			'pdf'  => 'application/pdf',
-			'csv'  => 'text/csv',
-			'doc'  => 'application/msword',
-			'txt'  => 'text/plain',
-			'ppt'  => 'application/vnd.ms-powerpoint',
-			'heic' => 'image/heic',
-			'svg'  => 'image/svg+xml',
-			'ai'   => 'application/pdf',
-			'psd'  => 'image/vnd.adobe.photoshop',
-			'eps'  => 'application/postscript',
-			'cdr'  => 'application/vnd.corel-draw',
-			'gpx'  => 'text/xml',
-		);
-
-		if ( ! empty( $extras ) && is_array( $extras ) ) {
-			$allowed_types = array_merge( $allowed_types, $extras );
-		}
-
-		return apply_filters( 'prad_upload_field_allowed_file_types', $allowed_types );
-	}
-
-	/**
 	 * Retrieves global WooCommerce product attributes and their terms.
 	 *
 	 * This function fetches all global attributes defined in WooCommerce
@@ -1329,9 +901,10 @@ class Functions {
 		// Get options excluded from this product.
 		$option_exclude = $this->get_json_meta( $product_id, 'prad_product_assigned_meta_exc', array() );
 
-		// Get options from product terms (categories, tags, brands).
-		$option_terms_inc = $this->get_product_term_options( $product_id, 'prad_term_assigned_meta_inc' );
-		$option_terms_exc = $this->get_product_term_options( $product_id, 'prad_term_assigned_meta_exc' );
+		// Get options from product terms (the assignable taxonomies).
+		$option_terms_inc = $this->get_product_term_options( $product_id );
+		// Options excluded through the product's terms are supplied by product-addons-pro.
+		$option_terms_exc = (array) apply_filters( 'prad_term_excluded_option_ids', array(), $product_id );
 
 		// Merge and filter.
 		$merged     = array_unique( array_merge( $option_all, $option_terms_inc, $option_product ) );
@@ -1344,29 +917,20 @@ class Functions {
 	}
 
 	/**
-	 * Retrieves product options from terms (categories, tags, brands).
+	 * Retrieves the options assigned through product terms (the assignable taxonomies).
 	 *
-	 * @param int    $product_id The product ID.
-	 * @param string $meta_key   The meta key to retrieve ('prad_term_assigned_meta_inc' or 'prad_term_assigned_meta_exc').
+	 * @param int $product_id The product ID.
 	 *
 	 * @return array An array of option IDs from product terms.
 	 */
-	private function get_product_term_options( int $product_id, string $meta_key ) {
+	private function get_product_term_options( int $product_id ) {
 		$option_terms = array();
-		if ( 'prad_term_assigned_meta_exc' === $meta_key && ! $this->is_lc_active() ) {
-			return $option_terms;
-		}
 
-		$taxonomies = array( 'product_cat', 'product_tag', 'product_brand' );
-		if ( 'prad_term_assigned_meta_exc' === $meta_key ) {
-			$taxonomies = array( 'product_cat' );
-		}
-
-		foreach ( $taxonomies as $taxonomy ) {
+		foreach ( array_values( $this->get_assign_taxonomies() ) as $taxonomy ) {
 			$terms = get_the_terms( $product_id, $taxonomy );
 			if ( $terms && ! is_wp_error( $terms ) ) {
 				foreach ( $terms as $term ) {
-					$term_options = $this->get_json_term_meta( $term->term_id, $meta_key, array() );
+					$term_options = $this->get_json_term_meta( $term->term_id, 'prad_term_assigned_meta_inc', array() );
 
 					if ( is_array( $term_options ) ) {
 						$option_terms = array_unique( array_merge( $option_terms, $term_options ) );

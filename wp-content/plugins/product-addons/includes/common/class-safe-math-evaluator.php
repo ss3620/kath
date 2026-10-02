@@ -135,7 +135,7 @@ class SafeMathEvaluator {
 			if ( '*' === $operator ) {
 				$result = $left * $right;
 			} elseif ( '/' === $operator ) {
-				if ( 0 == $right ) {
+				if ( 0.0 === $right ) {
 					throw new \Exception( 'Division by zero' );
 				}
 				$result = $left / $right;

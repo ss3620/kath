@@ -49,13 +49,8 @@
 .revx-product-item,
 .revx-product-details,
 .revx-align-center,
-.revx-double-order-checkbox-label,
 .revx-bundle-discount-list .revx-campaign-item,
-.revx-buyx-gety-grid .revx-campaign-view__items,
-.revx-mix-match-grid .revx-empty-selected-items,
-.revx-mix-match-list .revx-empty-selected-items,
-.revx-mix-match-grid .revx-empty-selected-items .revx-selected-items,
-.revx-mix-match-list .revx-empty-selected-items .revx-selected-items {
+.revx-buyx-gety-grid .revx-campaign-view__items {
 	display: flex;
 	align-items: center;
 }
@@ -65,8 +60,7 @@
 }
 
 .revx-product-title,
-.revx-countdown-timer-container,
-.revx-selected-item__product-title {
+.revx-countdown-timer-container {
 	line-height: 1.4 !important;
 }
 
@@ -112,17 +106,6 @@
 	background-color: currentColor;
 }
 
-.revx-campaign-grid .revx-mix-match-products {
-	/* max-width: 410px; */
-	position: relative;
-	/* flex-basis: 65%; */
-}
-
-.revx-floating-container .revx-campaign-grid .revx-mix-match-products {
-	width: 100%;
-	max-width: 100%;
-}
-
 .revx-campaign-grid .revx-campaign-view__items {
 	display: flex;
 }
@@ -136,16 +119,8 @@
 	transform: rotate(180deg);
 }
 
-/* .revx-campaign-grid .revx-selected-product-container  {
-    max-width: 40%;
-} */
-.revx-campaign-list .revx-selected-product-container {
-	margin-top: 24px;
-}
-
 .revx-buyx-gety-grid .revx-campaign-item,
-.revx-bundle-discount-grid .revx-campaign-item,
-.revx-frequently-bought-together-grid .revx-campaign-item {
+.revx-bundle-discount-grid .revx-campaign-item {
 	flex: 1;
 	/* width: 8vw; */
 	min-width: auto !important;
@@ -304,9 +279,6 @@
     max-height: 40vh;
 } */
 /*================================
-    Mix Match Style
-==================================*/
-/*================================
     Volume Discount
 ==================================*/
 .revx-volume-title {
@@ -334,45 +306,6 @@
 .revx-volume-discount .revx-quantity-label {
 	margin: 0px !important;
 }
-
-/*================================
-    Spending Goal
-==================================*/
-.revx-spending-goal-slide,
-.revx-spending-goal .revx-campaign-container__wrapper {
-	position: relative;
-}
-
-.revx-spending-goal .revx-campaign-item {
-	min-width: 550px;
-}
-
-.revx-spending-goal .revx-builder-atc-btn {
-	width: fit-content;
-}
-
-.revx-spending-goal .revx-slider-container {
-	max-width: 600px;
-	width: 100%;
-	display: flex;
-}
-
-.revx-spending-goal .revx-builderSlider-icon {
-	position: static !important;
-}
-
-.revx-spending-goal .revx-campaign-item__image img {
-	border-radius: inherit;
-}
-
-.revx-spending-goal-slide .revx-builderSlider-left,
-.revx-spending-goal-slide .revx-builderSlider-right {
-	cursor: pointer;
-}
-
-/*================================
-    Spending Goal End
-==================================*/
 
 .revx-inpage-container {
 	/* overflow: hidden; conflict bundle inpage slider icon */
@@ -463,7 +396,7 @@
 	flex-grow: 1;
 }
 
-/* Common Upsell Sliders: Spending Goal/Free Shipping Progress Bar*/
+/* Common upsell and progress sliders. */
 
 .revx-upsell-slider-nav-button {
 	display: flex;

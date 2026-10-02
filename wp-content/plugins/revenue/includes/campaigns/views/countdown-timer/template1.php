@@ -8,6 +8,7 @@
  * @subpackage Templates
  * @version    1.0.0
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 
 //phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
@@ -18,8 +19,6 @@ use Revenue;
 /**
  * The Template for displaying revenue view.
  *
- * @package Revenue
- * @version 1.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -82,8 +81,8 @@ $countdown_config = $this->count_down_localize_data( $campaign );
 $current_page     = $countdown_config['currentPage'];
 $timer_type       = $countdown_config['countdownTimerType'];
 $time_frame       = $countdown_config['timeFrameMode'];
-$is_modified_date = ( $timer_type === 'evergreen' ) ||
-					( $timer_type === 'static' && $time_frame === 'startNow' );
+$is_modified_date = ( 'evergreen' === $timer_type ) ||
+					( 'static' === $timer_type && 'startNow' === $time_frame );
 
 if ( 'cart_page' === $current_page || 'shop_page' === $current_page ) {
 	$start = $is_modified_date
@@ -136,19 +135,19 @@ ob_start();
 						<div class="revx-cart-days">00</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'cartCountdownLabel', '', 'revx-countdown-digit-label', '', 'dayLabel', 'cartDigitContainer' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $cart_divider_icon, false ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $cart_divider_icon, false ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center">
 						<div class="revx-cart-hours">00</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'cartCountdownLabel', '', 'revx-countdown-digit-label', '', 'hourLabel', 'cartDigitContainer' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $cart_divider_icon, false ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $cart_divider_icon, false ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center">
 						<div class="revx-cart-minutes">00</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'cartCountdownLabel', '', 'revx-countdown-digit-label', '', 'minuteLabel', 'cartDigitContainer' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $cart_divider_icon, false ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $cart_divider_icon, false ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center">
 						<div class="revx-cart-seconds">00</div>
@@ -195,7 +194,7 @@ ob_start();
 						</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'productCountdownLabel', '', 'revx-countdown-digit-label', '', 'dayLabel', '' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $product_divider_icon, true ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $product_divider_icon, true ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-column">
 						<div
@@ -205,7 +204,7 @@ ob_start();
 						</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'productCountdownLabel', '', 'revx-countdown-digit-label', '', 'hourLabel', '' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $product_divider_icon, true ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $product_divider_icon, true ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-column">
 						<div
@@ -215,7 +214,7 @@ ob_start();
 						</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'productCountdownLabel', '', 'revx-countdown-digit-label', '', 'minuteLabel', '' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $product_divider_icon, true ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $product_divider_icon, true ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-column">
 						<div
@@ -242,19 +241,19 @@ ob_start();
 								<div class="revx-shop-days">00</div>
 								<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'shopCountdownLabel', '', 'revx-countdown-digit-label', '', 'dayLabel', 'shopDigitContainer' ) ); ?>
 							</div>
-							<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $shop_divider_icon, false ) ); ?>
+							<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $shop_divider_icon, false ), revenue()->get_allowed_tag() ); ?>
 
 							<div class="revx-d-flex revx-item-center">
 								<div class="revx-shop-hours">00</div>
 								<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'shopCountdownLabel', '', 'revx-countdown-digit-label', '', 'hourLabel', 'shopDigitContainer' ) ); ?>
 							</div>
-							<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $shop_divider_icon, false ) ); ?>
+							<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $shop_divider_icon, false ), revenue()->get_allowed_tag() ); ?>
 
 							<div class="revx-d-flex revx-item-center">
 								<div class="revx-shop-minutes">00</div>
 								<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'shopCountdownLabel', '', 'revx-countdown-digit-label', '', 'minuteLabel', 'shopDigitContainer' ) ); ?>
 							</div>
-							<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $shop_divider_icon, false ) ); ?>
+							<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $shop_divider_icon, false ), revenue()->get_allowed_tag() ); ?>
 
 							<div class="revx-d-flex revx-item-center">
 								<div class="revx-shop-seconds">00</div>
@@ -276,11 +275,15 @@ ob_start();
 	<input
 		type="hidden"
 		name="<?php echo esc_attr( 'revx-countdown-data-' . $campaign['id'] ); ?>"
-		value="<?php echo esc_html(
+		value="
+		<?php
+		echo esc_html(
 			htmlspecialchars(
 				wp_json_encode( $this->count_down_localize_data( $campaign ) )
 			)
-		); ?>"
+		);
+		?>
+		"
 	/>
 </div>
 <?php
@@ -333,7 +336,7 @@ if ( $is_all_page_enable ) {
 						</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'entireCountdownLabel', '', 'revx-countdown-digit-label', '', 'dayLabel', '' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $entire_divider_icon, true ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $entire_divider_icon, true ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-column">
 						<div
@@ -343,7 +346,7 @@ if ( $is_all_page_enable ) {
 						</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'entireCountdownLabel', '', 'revx-countdown-digit-label', '', 'hourLabel', '' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $entire_divider_icon, true ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $entire_divider_icon, true ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-column">
 						<div
@@ -353,7 +356,7 @@ if ( $is_all_page_enable ) {
 						</div>
 						<?php echo wp_kses_post( Revenue_Template_Utils::render_rich_text( $template_data, 'entireCountdownLabel', '', 'revx-countdown-digit-label', '', 'minuteLabel', '' ) ); ?>
 					</div>
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_divider_icon( $entire_divider_icon, true ) ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::get_divider_icon( $entire_divider_icon, true ), revenue()->get_allowed_tag() ); ?>
 
 					<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-column">
 						<div
@@ -370,7 +373,7 @@ if ( $is_all_page_enable ) {
 					echo wp_kses_post( Revenue_Template_Utils::render_link( $template_data, 'shopNowButton', $cta_link, '_blank' ) );
 				}
 				if ( 'yes' === $is_close_button_enable ) {
-					echo wp_kses_post( Revenue_Template_Utils::render_button_close( $template_data, 'closeIcon' ) );
+					echo wp_kses( Revenue_Template_Utils::render_button_close( $template_data, 'closeIcon' ), revenue()->get_allowed_tag() );
 				}
 				?>
 			</div>

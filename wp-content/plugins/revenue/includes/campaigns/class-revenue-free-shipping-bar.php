@@ -2,6 +2,8 @@
 
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 use Revenue;
 use Revenue\Services\Revenue_Product_Context;
 use WC_Shipping_Free_Shipping;
@@ -72,15 +74,7 @@ class Revenue_Free_Shipping_Bar {
 	}
 
 
-	/**
-	 * Set Current Campaign
-	 *
-	 * @param array $campaign Campaign.
-	 * @return void
-	 */
-	public function set_cur_campaign( $campaign ) {
-		$this->cur_campaign = $campaign;
-	}
+
 
 	/**
 	 * Fetch Campaigns
@@ -108,7 +102,7 @@ class Revenue_Free_Shipping_Bar {
 	 *
 	 * @param array $cart_item Cart Item.
 	 * @param int|string $campaign_id Campaign ID.
-	 * 
+	 *
 	 * @return float
 	 */
 	public function get_discounted_price( $cart_item, $campaign_id ) {
@@ -166,13 +160,13 @@ class Revenue_Free_Shipping_Bar {
 
 	/**
 	 * Cart Item Price
-	 * 
+	 *
 	 * Hooked to: revenue_campaign_free_shipping_bar_cart_item_price
 	 *
 	 * @param string $price Item Price.
 	 * @param array  $cart_item Cart Item.
 	 * @param int|string $campaign_id Campaign ID.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function cart_item_price( $price, $cart_item, $campaign_id ) {
@@ -363,8 +357,8 @@ class Revenue_Free_Shipping_Bar {
 		foreach ( $campaigns as $campaign ) {
 			$placement_settings_all = $campaign['placement_settings'];
 			$is_all_page_enabled    = isset( $placement_settings_all['all_page']['status'] ) ? 'yes' == $placement_settings_all['all_page']['status'] : false;
-			
-			if ( $is_all_page_enabled && $placement_settings_all['all_page']['display_style'] == 'bottom' ) {
+
+			if ( $is_all_page_enabled && 'bottom' === $placement_settings_all['all_page']['display_style'] ) {
 				$this->campaigns['hellobar']['bottom'][] = $campaign;
 				$this->all_campaigns[ $campaign['id'] ]  = $campaign;
 			}
@@ -383,8 +377,7 @@ class Revenue_Free_Shipping_Bar {
 	 * @return void
 	 */
 	public function render_views( $data = array(), $render_for = '' ) {
-		global $current_campaign;
-
+		global $revenue_current_campaign; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- renamed with plugin prefix.
 
 		$data = wp_parse_args(
 			$data,
@@ -392,20 +385,6 @@ class Revenue_Free_Shipping_Bar {
 				'placement' => 'product_page',
 			)
 		);
-
-		// if(revenue()->is_for_new_builder($campaign)) {
-		// 	wp_enqueue_style( 'revenue-campaign-fsb' );
-		// 	wp_enqueue_script( 'revenue-upsell-slider' );
-		// 	wp_enqueue_script( 'revenue-free-shipping-bar' );
-		// } else {
-		// 	wp_enqueue_style( 'revenue-v1-campaign-fsb' );
-		// 	wp_enqueue_script( 'revenue-v1-upsell-slider' );
-		// 	wp_enqueue_script( 'revenue-v1-free-shipping-bar' );
-		// }
-
-		// wp_enqueue_style( 'revenue-campaign-fsb' );
-		// wp_enqueue_script( 'revenue-upsell-slider' );
-		// wp_enqueue_script( 'revenue-free-shipping-bar' );
 
 		if ( ! empty( $this->campaigns['inpage'][ $this->current_position ] ) ) {
 			$output    = '';
@@ -419,21 +398,14 @@ class Revenue_Free_Shipping_Bar {
 				}
 				self::$rendered_campaigns[ $campaign_key ] = true;
 
-				$current_campaign = $campaign;
+				$revenue_current_campaign = $campaign;
 
-				if(revenue()->is_for_new_builder($campaign)) {
-					wp_enqueue_style( 'revenue-campaign-fsb' );
-					wp_enqueue_script( 'revenue-upsell-slider' );
-					wp_enqueue_script( 'revenue-free-shipping-bar' );
-				} else {
-					wp_enqueue_style( 'revenue-v1-campaign-fsb' );
-					wp_enqueue_script( 'revenue-v1-upsell-slider' );
-					wp_enqueue_script( 'revenue-v1-free-shipping-bar' );
-				}
+				wp_enqueue_style( 'revenue-campaign-fsb' );
+				wp_enqueue_script( 'revenue-upsell-slider' );
+				wp_enqueue_script( 'revenue-free-shipping-bar' );
 
 				revenue()->update_campaign_impression( $campaign['id'] );
 
-				// $file_path = REVENUE_PATH . 'includes/campaigns/views/free-shipping-bar/template1.php';
 				$file_path = revenue()->get_campaign_path( $campaign, 'inpage', 'free-shipping-bar' );
 
 				$file_path = apply_filters( 'revenue_campaign_view_path', $file_path, 'free_shipping_bar', 'inpage', $campaign );
@@ -441,14 +413,17 @@ class Revenue_Free_Shipping_Bar {
 				ob_start();
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-					extract( $data ); //phpcs:ignore
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 				$output .= ob_get_clean();
 			}
 
 			if ( $output ) {
-				echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wp_kses( $output, revenue()->get_allowed_tag() );
 			}
 		}
 
@@ -465,17 +440,11 @@ class Revenue_Free_Shipping_Bar {
 				}
 				self::$rendered_campaigns[ $campaign_key ] = true;
 
-				$current_campaign = $campaign;
+				$revenue_current_campaign = $campaign;
 
-				if(revenue()->is_for_new_builder($campaign)) {
-					wp_enqueue_style( 'revenue-campaign-fsb' );
-					wp_enqueue_script( 'revenue-upsell-slider' );
-					wp_enqueue_script( 'revenue-free-shipping-bar' );
-				} else {
-					wp_enqueue_style( 'revenue-v1-campaign-fsb' );
-					wp_enqueue_script( 'revenue-v1-upsell-slider' );
-					wp_enqueue_script( 'revenue-v1-free-shipping-bar' );
-				}
+				wp_enqueue_style( 'revenue-campaign-fsb' );
+				wp_enqueue_script( 'revenue-upsell-slider' );
+				wp_enqueue_script( 'revenue-free-shipping-bar' );
 
 				$placement_settings = revenue()->get_placement_settings( $campaign['id'] );
 
@@ -492,7 +461,10 @@ class Revenue_Free_Shipping_Bar {
 					ob_start();
 					if ( file_exists( $file_path ) ) {
 						do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-						extract( $data );
+						// Template vars supplied by the caller (no extract()).
+						$display_type = $data['display_type'] ?? '';
+						$placement    = $data['placement'] ?? '';
+						$position     = $data['position'] ?? '';
 						include $file_path;
 					}
 
@@ -500,7 +472,7 @@ class Revenue_Free_Shipping_Bar {
 				} else {
 					foreach ( $placement_settings as $page => $value ) {
 
-						if ( 'yes' === $value['status'] && ( $page === $current_page || $page == 'all_page' ) ) {
+						if ( 'yes' === $value['status'] && ( $page === $current_page || 'all_page' == $page ) ) {
 							$data['position'] = $value['drawer_position'];
 
 							$file_path = revenue()->get_campaign_path( $campaign, 'drawer', 'free-shipping-bar' );
@@ -509,7 +481,10 @@ class Revenue_Free_Shipping_Bar {
 							ob_start();
 							if ( file_exists( $file_path ) ) {
 								do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-								extract( $data );
+								// Template vars supplied by the caller (no extract()).
+								$display_type = $data['display_type'] ?? '';
+								$placement    = $data['placement'] ?? '';
+								$position     = $data['position'] ?? '';
 								include $file_path;
 							}
 
@@ -523,7 +498,7 @@ class Revenue_Free_Shipping_Bar {
 			}
 
 			if ( $output ) {
-				echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wp_kses( $output, revenue()->get_allowed_tag() );
 			}
 		}
 
@@ -542,17 +517,11 @@ class Revenue_Free_Shipping_Bar {
 					}
 					self::$rendered_campaigns[ $campaign_key ] = true;
 
-					$current_campaign = $campaign;
+					$revenue_current_campaign = $campaign;
 
-					if(revenue()->is_for_new_builder($campaign)) {
-						wp_enqueue_style( 'revenue-campaign-fsb' );
-						wp_enqueue_script( 'revenue-upsell-slider' );
-						wp_enqueue_script( 'revenue-free-shipping-bar' );
-					} else {
-						wp_enqueue_style( 'revenue-v1-campaign-fsb' );
-						wp_enqueue_script( 'revenue-v1-upsell-slider' );
-						wp_enqueue_script( 'revenue-v1-free-shipping-bar' );
-					}
+					wp_enqueue_style( 'revenue-campaign-fsb' );
+					wp_enqueue_script( 'revenue-upsell-slider' );
+					wp_enqueue_script( 'revenue-free-shipping-bar' );
 
 					$placement_settings = revenue()->get_placement_settings( $campaign['id'] );
 
@@ -563,7 +532,10 @@ class Revenue_Free_Shipping_Bar {
 					ob_start();
 					if ( file_exists( $file_path ) ) {
 						do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-						extract( $data );
+						// Template vars supplied by the caller (no extract()).
+						$display_type = $data['display_type'] ?? '';
+						$placement    = $data['placement'] ?? '';
+						$position     = $data['position'] ?? '';
 						include $file_path;
 					}
 
@@ -573,7 +545,7 @@ class Revenue_Free_Shipping_Bar {
 				}
 
 				if ( $output ) {
-					echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo wp_kses( $output, revenue()->get_allowed_tag() );
 				}
 			}
 
@@ -590,17 +562,11 @@ class Revenue_Free_Shipping_Bar {
 					}
 					self::$rendered_campaigns[ $campaign_key ] = true;
 
-					$current_campaign = $campaign;
+					$revenue_current_campaign = $campaign;
 
-					if(revenue()->is_for_new_builder($campaign)) {
-						wp_enqueue_style( 'revenue-campaign-fsb' );
-						wp_enqueue_script( 'revenue-upsell-slider' );
-						wp_enqueue_script( 'revenue-free-shipping-bar' );
-					} else {
-						wp_enqueue_style( 'revenue-v1-campaign-fsb' );
-						wp_enqueue_script( 'revenue-v1-upsell-slider' );
-						wp_enqueue_script( 'revenue-v1-free-shipping-bar' );
-					}
+					wp_enqueue_style( 'revenue-campaign-fsb' );
+					wp_enqueue_script( 'revenue-upsell-slider' );
+					wp_enqueue_script( 'revenue-free-shipping-bar' );
 
 					$placement_settings = revenue()->get_placement_settings( $campaign['id'] );
 
@@ -611,7 +577,10 @@ class Revenue_Free_Shipping_Bar {
 					ob_start();
 					if ( file_exists( $file_path ) ) {
 						do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-						extract( $data );
+						// Template vars supplied by the caller (no extract()).
+						$display_type = $data['display_type'] ?? '';
+						$placement    = $data['placement'] ?? '';
+						$position     = $data['position'] ?? '';
 						include $file_path;
 					}
 
@@ -622,7 +591,7 @@ class Revenue_Free_Shipping_Bar {
 				}
 
 				if ( $output ) {
-					echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo wp_kses( $output, revenue()->get_allowed_tag() );
 				}
 			}
 		}
@@ -644,12 +613,11 @@ class Revenue_Free_Shipping_Bar {
 	 */
 	public function render_shortcode( $campaign, $data = array() ) {
 		if ( is_array( $campaign ) ) {
-			revenue()->update_campaign_impression( $campaign['id']);
+			revenue()->update_campaign_impression( $campaign['id'] );
 		} else {
 			return;
 		}
 		if ( is_product() ) {
-
 
 			$this->run_shortcode(
 				$campaign,
@@ -707,43 +675,23 @@ class Revenue_Free_Shipping_Bar {
 		// wp_enqueue_style( 'revenue-utility' );
 		// wp_enqueue_style( 'revenue-responsive' );
 		// wp_enqueue_style( 'revenue-campaign-buyx_gety' );
-		// wp_enqueue_style( 'revenue-campaign-double_order' );
-		// wp_enqueue_style( 'revenue-campaign-fbt' );
-		// wp_enqueue_style( 'revenue-campaign-mix_match' );
 		// wp_enqueue_script( 'revenue-campaign' );
 
-		if(revenue()->is_for_new_builder( $campaign )) {
-			wp_enqueue_style( 'revenue-campaign' );
-			wp_enqueue_style( 'revenue-campaign-buyx_gety' );
-			wp_enqueue_style( 'revenue-campaign-volume' );
-			wp_enqueue_style( 'revenue-campaign-double_order' );
-			wp_enqueue_style( 'revenue-campaign-fbt' );
-			wp_enqueue_style( 'revenue-campaign-mix_match' );
-			wp_enqueue_style( 'revenue-utility' );
-			wp_enqueue_style( 'revenue-responsive' );
-			wp_enqueue_script( 'revenue-campaign' );
-			wp_enqueue_script( 'revenue-slider' );
-			wp_enqueue_script( 'revenue-add-to-cart' );
-			wp_enqueue_script( 'revenue-variation-product-selection' );
-			wp_enqueue_script( 'revenue-checkbox-handler' );
-			wp_enqueue_script( 'revenue-double-order' );
-			wp_enqueue_script( 'revenue-campaign-total' );
-			wp_enqueue_script( 'revenue-countdown' );
-			wp_enqueue_script( 'revenue-animated-add-to-cart' );
-			wp_enqueue_style( 'revenue-animated-add-to-cart' );
-		} else {
-			wp_enqueue_style( 'revenue-v1-campaign' );
-			wp_enqueue_style( 'revenue-v1-campaign-buyx_gety' );
-			wp_enqueue_style( 'revenue-v1-campaign-double_order' );
-			wp_enqueue_style( 'revenue-v1-campaign-fbt' );
-			wp_enqueue_style( 'revenue-v1-campaign-mix_match' );
-			wp_enqueue_style( 'revenue-v1-utility' );
-			wp_enqueue_style( 'revenue-v1-responsive' );
-			wp_enqueue_script( 'revenue-v1-campaign' );
-			wp_enqueue_script( 'revenue-v1-add-to-cart' );
-			wp_enqueue_script( 'revenue-v1-animated-add-to-cart' );
-			wp_enqueue_style( 'revenue-v1-animated-add-to-cart' );
-		}
+		wp_enqueue_style( 'revenue-campaign' );
+		wp_enqueue_style( 'revenue-campaign-buyx_gety' );
+		wp_enqueue_style( 'revenue-campaign-volume' );
+		do_action( 'revenue_enqueue_campaign_assets', $campaign['campaign_type'] );
+		wp_enqueue_style( 'revenue-utility' );
+		wp_enqueue_style( 'revenue-responsive' );
+		wp_enqueue_script( 'revenue-campaign' );
+		wp_enqueue_script( 'revenue-slider' );
+		wp_enqueue_script( 'revenue-add-to-cart' );
+		wp_enqueue_script( 'revenue-variation-product-selection' );
+		wp_enqueue_script( 'revenue-checkbox-handler' );
+		wp_enqueue_script( 'revenue-campaign-total' );
+		wp_enqueue_script( 'revenue-countdown' );
+		wp_enqueue_script( 'revenue-animated-add-to-cart' );
+		wp_enqueue_style( 'revenue-animated-add-to-cart' );
 
 		$file_path_prefix = apply_filters( 'revenue_campaign_file_path', REVENUE_PATH, $campaign['campaign_type'], $campaign );
 
@@ -757,7 +705,6 @@ class Revenue_Free_Shipping_Bar {
 				case 'multiple':
 					$file_path = revenue()->get_campaign_path( $campaign, 'inpage', $campaign_type );
 
-					// $file_path = $file_path_prefix . "includes/campaigns/views/{$campaign_type}/inpage.php";
 					break;
 				case 'popup':
 					$file_path = revenue()->get_campaign_path( $campaign, 'popup', $campaign_type );
@@ -776,7 +723,10 @@ class Revenue_Free_Shipping_Bar {
 		ob_start();
 		if ( file_exists( $file_path ) ) {
 			do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-			extract($data); //phpcs:ignore
+			// Template vars supplied by the caller (no extract()).
+			$display_type = $data['display_type'] ?? '';
+			$placement    = $data['placement'] ?? '';
+			$position     = $data['position'] ?? '';
 			?>
 				<div class="revenue-campaign-shortcode">
 					<?php
@@ -798,7 +748,7 @@ class Revenue_Free_Shipping_Bar {
 		if ( $is_rest_api_request ) {
 			return $output;
 		} else {
-			echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wp_kses( $output, revenue()->get_allowed_tag() );
 		}
 	}
 }

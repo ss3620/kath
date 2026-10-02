@@ -121,9 +121,6 @@
 	border-bottom-left-radius: 8px;
 }
 
-.revx-campaign-drawer.top-left .revx-gift-tooltip.revx-spending-goal-gift {
-	max-width: 250px;
-}
 
 
 
@@ -152,16 +149,6 @@
 }
 
 
-.revx-campaign-drawer .revx-spending-goal-slider {
-	position: relative;
-	display: flex;
-	align-items: center;
-	width: 100%;
-	padding: 0 40px;
-	/* padding-top: 26px; */
-	max-width: 472px;
-	margin: 0 auto;
-}
 
 
 .revx-campaign-drawer.top-left.has-upsell {
@@ -386,18 +373,6 @@
 	padding-bottom: 18px;
 	padding-right: 0px;
 
-}
-
-.revx-campaign-drawer .revx-spending-goal-nav-button {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	box-sizing: content-box;
-}
-
-.revx-campaign-drawer .revx-spending-goal-reward-message-wrapper.has-message {
-	display: flex;
-	gap: 0px
 }
 
 .revx-campaign-drawer .revx-has-upsell.revx-drawer-content.open {

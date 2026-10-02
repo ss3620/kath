@@ -14,10 +14,11 @@ jQuery( document ).ready( function ( $ ) {
 		// 	return;
 		// }
 		$.ajax( {
-			url: single_product_data.ajax_url,
+			url: revenue_campaign.ajax,
 			type: 'POST',
 			data: {
-				action: 'update_product_views',
+				action: 'revenue_update_product_views',
+				security: revenue_campaign.nonce,
 				product_id: productId,
 				campaign_id: campaignId,
 			},

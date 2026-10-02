@@ -5,7 +5,7 @@
 
 namespace Revenue;
 
-//phpcs:disable WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.PHP.StrictComparisons.LooseComparison
+defined( 'ABSPATH' ) || exit;
 
 /**
  * WowRevenue Campaign: Volume Discount
@@ -102,7 +102,7 @@ class Revenue_Volume_Discount {
 			}
 			foreach ( $offers as $offer ) {
 
-				if ( in_array( $product_id, $offered_products ) && $offer['quantity'] <= $cart_quantity ) {
+				if ( in_array( $product_id, $offered_products, true ) && $offer['quantity'] <= $cart_quantity ) {
 					$offer_type  = $offer['type'];
 					$offer_value = isset( $offer['value'] ) ? $offer['value'] : null;
 					$offer_qty   = intval( $offer['quantity'] );
@@ -185,7 +185,7 @@ class Revenue_Volume_Discount {
 				$cart_quantity = $this->get_cart_quantity_of_product( $campaign_id, $parent_id );
 			}
 			foreach ( $offers as $offer ) {
-				if ( in_array( $product_id, $offered_products ) && $offer['quantity'] <= $cart_quantity ) {
+				if ( in_array( $product_id, $offered_products, true ) && $offer['quantity'] <= $cart_quantity ) {
 					$offer_type  = $offer['type'];
 					$offer_value = $offer['value'];
 					$offer_qty   = intval( $offer['quantity'] );
@@ -363,7 +363,6 @@ class Revenue_Volume_Discount {
 				$output = '';
 				revenue()->update_campaign_impression( $campaign['id'] );
 
-				// $file_path = REVENUE_PATH . 'includes/campaigns/views/volume-discount/template1.php';
 				$file_path = revenue()->get_campaign_path( $campaign, 'inpage', 'volume-discount' );
 
 				$file_path = apply_filters( 'revenue_campaign_view_path', $file_path, 'volume_discount', 'inpage', $campaign );
@@ -371,7 +370,10 @@ class Revenue_Volume_Discount {
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
 
-					extract( $data ); //phpcs:ignore
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 			}
@@ -390,7 +392,7 @@ class Revenue_Volume_Discount {
 
 				revenue()->update_campaign_impression( $campaign['id'] );
 
-				revenue()->load_popup_assets( $campaign );
+				revenue()->load_popup_assets();
 
 				$file_path = revenue()->get_campaign_path( $campaign, 'popup', 'volume-discount' );
 
@@ -398,7 +400,10 @@ class Revenue_Volume_Discount {
 				do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
 				ob_start();
 				if ( file_exists( $file_path ) ) {
-					extract($data); //phpcs:ignore
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 
@@ -416,7 +421,7 @@ class Revenue_Volume_Discount {
 			$campaigns        = $this->campaigns['floating'];
 			foreach ( $campaigns as $campaign ) {
 
-				revenue()->load_floating_assets( $campaign );
+				revenue()->load_floating_assets();
 
 				revenue()->update_campaign_impression( $campaign['id'] );
 
@@ -427,7 +432,10 @@ class Revenue_Volume_Discount {
 				do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
 				ob_start();
 				if ( file_exists( $file_path ) ) {
-					extract($data); //phpcs:ignore
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 

@@ -707,7 +707,7 @@ class Tt4b_Catalog_Class {
 			'limit'         => 100,
 			'page'          => $page,
 		);
-		$parsed_time          = date( 'Y-m-d\TH:i:s', $last_catalog_sync );
+		$parsed_time          = gmdate( 'Y-m-d\TH:i:s', $last_catalog_sync );
 		$request              = new WP_REST_Request( 'GET', '/wc/v3/products' );
 		$request->set_query_params(
 			array(
@@ -1087,7 +1087,7 @@ class Tt4b_Catalog_Class {
 			$item_group_id = $parent_sku;
 			// if the current product SKU is the same as it's parent SKU, concatenate $parent_sku with the child post ID
 			// otherwise use the SKU of the variation
-			$sku_id = variation_content_id_helper( Method::CATALOG, $parent_sku, $sku_id, $product->get_id() );
+			$sku_id = tt4b_variation_content_id_helper( Method::CATALOG, $parent_sku, $sku_id, $product->get_id() );
 			// if there is a variation description only for this variant, use that instead of either
 			// the parent description or the title for the description field in the TikTok Catalog
 			$variantDescription = $product->get_description();
@@ -1214,8 +1214,8 @@ class Tt4b_Catalog_Class {
 	 * @return string
 	 */
 	private function generate_cron_string() {
-		$minute = rand( 0, 59 );
-		$hour   = rand( 0, 23 );
+		$minute = wp_rand( 0, 59 );
+		$hour   = wp_rand( 0, 23 );
 		return '' . $minute . ' ' . $hour . ' * * 0-6';
 	}
 }

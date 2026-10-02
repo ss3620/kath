@@ -1,0 +1,290 @@
+THIRD-PARTY LICENSES
+====================
+
+WowAddons is licensed under the GNU General Public License v3 (see product-addons.php).
+The compiled JavaScript in the assets/js folder bundles the open-source packages listed
+below. Each is distributed under a license that is compatible with the GPL. The
+un-minified source of this plugin is available at:
+https://bitbucket.org/wpstabon/product-addons/
+
+Packages licensed GPL-2.0-or-later are covered by the GNU General Public License,
+version 2 or (at your option) any later version.
+
+PACKAGES
+--------
+
+@ariakit/core 0.4.18 - MIT
+    Copyright (c) 2025-present Ariakit FZ-LLC
+
+@ariakit/react-core 0.4.21 - MIT
+    Copyright (c) 2025-present Ariakit FZ-LLC
+
+@base-ui/react 1.1.0 - MIT
+    Copyright (c) 2019 Material-UI SAS
+
+@base-ui/utils 0.2.4 - MIT
+    Copyright (c) 2019 Material-UI SAS
+
+@popperjs/core 2.11.8 - MIT
+    Copyright (c) 2019 Federico Zivolo
+
+@reduxjs/toolkit 2.11.2 - MIT
+    Copyright (c) 2018 Mark Erikson
+
+@tiptap/core 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-blockquote 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-bold 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-bubble-menu 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-bullet-list 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-code 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-code-block 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-document 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-dropcursor 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-floating-menu 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-gapcursor 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-hard-break 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-heading 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-highlight 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-history 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-horizontal-rule 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-image 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-italic 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-link 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-list-item 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-ordered-list 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-paragraph 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-strike 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-table 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-table-cell 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-table-header 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-table-row 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-text 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/extension-underline 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/pm 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/react 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@tiptap/starter-kit 2.27.2 - MIT
+    No copyright notice is shipped with this package. Project: https://github.com/ueberdosis/tiptap
+
+@wordpress/dataviews 11.3.0 - GPL-2.0-or-later
+    Copyright 2016-2026 by the contributors
+    Copyright 2003-2010 by the contributors
+
+@wordpress/icons 11.6.0 - GPL-2.0-or-later
+    Copyright 2016-2026 by the contributors
+    Copyright 2003-2010 by the contributors
+
+@wordpress/ui 0.6.0 - GPL-2.0-or-later
+    Copyright 2016-2026 by the contributors
+    Copyright 2003-2010 by the contributors
+
+clsx 2.1.1 - MIT
+    Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+
+colord 2.9.3 - MIT
+    Copyright (c) 2020 Vlad Shilov omgovich@ya.ru
+
+d3-array 3.2.4 - ISC
+    Copyright 2010-2023 Mike Bostock
+
+d3-color 3.1.0 - ISC
+    Copyright 2010-2022 Mike Bostock
+
+d3-format 3.1.2 - ISC
+    Copyright 2010-2026 Mike Bostock
+
+d3-interpolate 3.0.1 - ISC
+    Copyright 2010-2021 Mike Bostock
+
+d3-path 3.1.0 - ISC
+    Copyright 2015-2022 Mike Bostock
+
+d3-scale 4.0.2 - ISC
+    Copyright 2010-2021 Mike Bostock
+
+d3-shape 3.2.0 - ISC
+    Copyright 2010-2022 Mike Bostock
+
+d3-time 3.1.0 - ISC
+    Copyright 2010-2022 Mike Bostock
+
+d3-time-format 4.1.0 - ISC
+    Copyright 2010-2021 Mike Bostock
+
+date-fns 4.1.0 - MIT
+    Copyright (c) 2021 Sasha Koss and Lesha Koss https://kossnocorp.mit-license.org
+
+decimal.js-light 2.5.1 - MIT
+    Copyright (c) 2020 Michael Mclaughlin
+
+es-toolkit 1.44.0 - MIT
+    Copyright (c) 2024 Viva Republica, Inc
+
+eventemitter3 5.0.4 - MIT
+    Copyright (c) 2014 Arnout Kazemier
+
+fast-deep-equal 3.1.3 - MIT
+    Copyright (c) 2017 Evgeny Poberezkin
+
+immer 10.2.0 - MIT
+    Copyright (c) 2017 Michel Weststrate
+
+internmap 2.0.3 - ISC
+    Copyright 2021 Mike Bostock
+
+linkifyjs 4.3.2 - MIT
+    Copyright (c) 2024 Nick Frasser
+
+orderedmap 2.1.1 - MIT
+    Copyright (C) 2016 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-commands 1.7.1 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-dropcursor 1.8.2 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-gapcursor 1.4.0 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-history 1.5.0 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-keymap 1.2.3 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-model 1.25.4 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-schema-list 1.5.1 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-state 1.4.4 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-tables 1.8.5 - MIT
+    Copyright (C) 2015-2016 by Marijn Haverbeke <marijnh@gmail.com> and others
+
+prosemirror-transform 1.11.0 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+prosemirror-view 1.41.5 - MIT
+    Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+react-is 19.2.3 - MIT
+    Copyright (c) Meta Platforms, Inc. and affiliates.
+
+react-redux 9.2.0 - MIT
+    Copyright (c) 2015-present Dan Abramov
+
+recharts 3.7.0 - MIT
+    Copyright (c) 2015-present recharts
+
+redux 5.0.1 - MIT
+    Copyright (c) 2015-present Dan Abramov
+
+redux-thunk 3.1.0 - MIT
+    Copyright (c) 2015-present Dan Abramov
+
+remove-accents 0.5.0 - MIT
+    Copyright (c) 2015 Marin Atanasov
+
+reselect 5.1.1 - MIT
+    Copyright (c) 2015-2018 Reselect Contributors
+
+rope-sequence 1.3.4 - MIT
+    Copyright (C) 2016 by Marijn Haverbeke <marijn@haverbeke.berlin>
+
+tippy.js 6.3.7 - MIT
+    Copyright (c) 2017-present atomiks
+
+use-sync-external-store 1.6.0 - MIT
+    Copyright (c) Meta Platforms, Inc. and affiliates.
+
+victory-vendor 37.3.6 - MIT AND ISC
+    No copyright notice is shipped with this package. Project: https://github.com/FormidableLabs/victory
+
+w3c-keyname 2.2.8 - MIT
+    Copyright (C) 2016 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+
+MIT LICENSE
+-----------
+
+Applies to the packages listed above as MIT, together with the copyright notice shown for each.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ISC LICENSE
+-----------
+
+Applies to the packages listed above as ISC, together with the copyright notice shown for each.
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.

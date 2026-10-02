@@ -8,6 +8,7 @@
  * @subpackage Templates
  * @version    1.0.0
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 
 //phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 

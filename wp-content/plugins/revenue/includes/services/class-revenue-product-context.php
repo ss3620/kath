@@ -2,6 +2,8 @@
 
 namespace Revenue\Services;
 
+defined( 'ABSPATH' ) || exit;
+
 
 class Revenue_Product_Context {
 	/**
@@ -21,9 +23,9 @@ class Revenue_Product_Context {
 	/**
 	 * Get the product context object.
 	 *
-	 * @return \WC_Product|null|false 	The WooCommerce product object, 
-	 * 									or null if not set 
-	 * 									or false if no product found with previously given id.
+	 * @return \WC_Product|null|false   The WooCommerce product object,
+	 *                                  or null if not set
+	 *                                  or false if no product found with previously given id.
 	 */
 	public static function get_product_context() {
 		return self::$product_context;
@@ -47,5 +49,4 @@ class Revenue_Product_Context {
 	public static function clear_product_context() {
 		self::$product_context = null;
 	}
-		
 }

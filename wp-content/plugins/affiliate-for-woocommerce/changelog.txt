@@ -1,5 +1,100 @@
 *** Affiliate For WooCommerce Changelog ***
 
+2026-09-25 - version 9.15.0
+* New: "User - Order Count" commission plan rule to limit commission based on customer's orders count
+* New: Milestone prompt in the affiliate dashboard when the number of orders from affiliates or active affiliates reaches a new milestone [Admin]
+* Fix: Spanish and Italian translations used the formal register instead of the informal
+* Fix: "Commission" was translated as a committee or governing body instead of an affiliate payout in Arabic, Czech, Danish, French, German (formal), Hungarian, Polish, Romanian and Swedish translations
+* Fix: "Referral" was translated as a medical referral in Swedish and as a cross-reference in French translations
+* Fix: Plural forms were missing in 15 translations, so English text appeared for counts other than one (e.g. "5 records")
+* Fix: {site_title} and {user_id} tags in translated email subjects were translated or lost a brace, so the raw tag appeared in the sent email
+* Update: Translations synced
+* Update: POT file
+
+2026-09-07 - version 9.14.0
+* New: WooCommerce 11.1.0 compatible
+* New: 2 commission plan templates for product brands with affiliate tag and order subtotal rules [Admin]
+* New: Options for product visibility and product type rules instead of AJAX search [Admin]
+* New: Settings and Admin dashboard links after re-uploading the active plugin ZIP via Add Plugin -> Upload Plugin [Admin]
+* New: Generate and show referral coupon link on the coupon edit page with URL Coupons (https://wordpress.org/plugins/url-coupons-by-smart-coupons-for-woocommerce/) and Smart Coupons (https://woocommerce.com/products/smart-coupons/) plugins [Admin]
+* Fix: Affiliate referral coupon links adding an extra sc-page parameter with the Smart Coupons plugin [User]
+* Fix: Pending Payouts dashboard showing scheduled commission payout time for users not selected for automatic payouts [Admin]
+* Fix: Pending Payouts does not match an affiliate's unpaid commission when the commission status is unpaid and the order status is in paid order statuses [Admin]
+* Fix: Admin notices dismiss button uses the site's color instead of the intended grey [Admin]
+* Fix: Extra space after the links and missing underline on hover in multi-currency admin notice [Admin]
+* Fix: Danish translations not loading because the file used the da_DA name instead of the da_DK locale WordPress expects
+* Fix: Incorrect plural rules in the Japanese, Chinese, Turkish, French, Brazilian Portuguese, Romanian and Russian translations
+* Fix: Arabic translation file declared the wrong locale in its header
+* Fix: A malformed plural entry in the Arabic translation prevented the catalog from compiling
+* Update: Show the title on hover for the Converted column in the Visits dashboard
+* Update: Show 'Deleted affiliate' instead of N/A for deleted affiliate users in the Pending Payout dashboard [Admin]
+* Update: Show a loader while Pending Payouts loads when the date range changes in the affiliates dashboard [Admin]
+* Update: Description for the referral coupons in the profile tab in the affiliates dashboard [Admin]
+* Update: Description when assigning coupons to an affiliate [Admin]
+* Update: Placeholder text when searching for an affiliate [Admin]
+* Update: Affiliate usage information in the coupon shareable link metabox on the coupon edit page [Admin]
+* Update: Accessibility improvements
+* Update: Code improvements
+* Update: Translations synced
+* Update: POT file
+
+2026-08-27 - version 9.13.0
+* New: WordPress 7.1.0 compatible
+
+2026-08-26 - version 9.12.0
+* New: WooCommerce 11.0.1 compatible
+* New: Choose a template or start from scratch when creating a commission plan [Admin]
+* New: Documentation link to commission plan rules setup from the Rules section while creating a plan [Admin]
+* New: German translations with a de_DE_formal locale for sites with formal "Sie"
+* Fix: German translations used formal "Sie" under the informal de_DE locale instead of "du" [Thanks to: Fabrizio]
+* Fix: Blank refund period setting used 0 days instead of the default 30 days [Admin]
+* Fix: Plans and Campaigns list appeared blank when re-clicking the already-active tab [Admin]
+* Fix: Multi-tier commission plans lost the deepest tiers on save [Admin]
+* Update: Enforce the 10-tier distribution limit consistently in commission plans [Admin]
+* Update: Titles and descriptions for each commission plan template [Admin]
+* Update: Notification message when the title is empty in commission plans or campaigns [Admin]
+* Update: Welcome page [Admin]
+* Update: Code improvements
+* Update: Translations synced
+* Update: POT file
+
+2026-08-03 - version 9.11.0
+* New: Description for the referral coupons in the profile tab in the affiliates dashboard [Admin]
+* New: Affiliate usage information in the coupon shareable link metabox on the coupon edit page [Admin]
+* Fix: Arabic translations not loading due to an incorrect file name
+* Update: Description when assigning coupons to an affiliate if a coupon shareable link is available [Admin]
+* Update: Replace the tooltip with a description when assigning coupons to an affiliate [Admin]
+* Update: Create a new commission plan when duplicating an existing one instead of only showing a preview [Admin]
+* Update: Notification messages in the commission plans [Admin]
+* Update: Code improvements
+* Update: Translations synced
+* Update: POT file
+
+2026-07-23 - version 9.10.0
+* Fix: 'Add a plan' button not working on the commission plan templates [Admin]
+* Fix: Commission plan and campaign saved with whitespace-only names [Admin]
+* Fix: Tracking param name setting accepting characters other than letters on paste [Admin]
+* Update: Allow numbers, underscores, and dashes in the tracking param name, except as the first character [Admin]
+* Update: Reset the tracking param name to the default value when saved empty [Admin]
+* Update: Rename the disable commission on subscription renewal orders commission plan template for clarity [Admin]
+* Update: Code improvements
+* Update: POT file
+
+2026-07-10 - version 9.9.1
+* Fix: Referrals table not created on new installations after plugin activation [Thanks to: WooCommerce team]
+* Update: POT file
+
+2026-07-09 - version 9.9.0
+* New: WooCommerce 10.9.4 compatible
+* New: Show total commission and multi-tier commission breakdown for multi-tier referrals when Send referral details to admin is enabled
+* New: Commission plan template to disable commission on subscription renewal orders [Admin]
+* Fix: AffiliateWP migration notice not auto-dismissed when migration is completed [Admin]
+* Fix: Affiliate program summary email admin notice not dismissed after clicking 'Dismiss' on non-HPOS [Admin]
+* Update: Code improvements
+* Update: Translations synced
+* Update: POT file
+* Developer: Filter 'afwc_commission_plan_templates' to customize the list of commission plan templates
+
 2026-06-30 - version 9.8.0
 * New: WordPress 7.0 compatible
 * New: Filter affiliate's referral coupons on Marketing > Coupons [Admin]
@@ -133,7 +228,7 @@
 2026-01-29 - version 8.60.0
 * New: WooCommerce 10.4.3 compatible
 * New: PHP 8.5 compatible
-* New: 4 commission plan presets for affiliate, affiliate tags, product, product category rules
+* New: 4 commission plan presets for affiliate, affiliate tags, product, product category rules [Admin]
 * Update: Code improvements
 * Update: Compatibility with the new WordPress and WooCommerce Coding Standards
 * Update: Translations synced

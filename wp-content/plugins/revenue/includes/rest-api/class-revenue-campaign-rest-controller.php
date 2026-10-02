@@ -7,7 +7,8 @@
 
 namespace Revenue;
 
-  //phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.PHP.StrictComparisons.LooseComparison
+defined( 'ABSPATH' ) || exit;
+
 
 
 use WP_REST_Controller;
@@ -78,6 +79,15 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		 * @var   array
 		 */
 	protected $must_exist_meta_keys = array();
+
+		/**
+		 * Campaign meta keys that hold raw CSS printed into a <style> tag.
+		 * Stripped of tags on save so stored markup can't break out of <style>.
+		 *
+		 * @since 1.0.0
+		 * @var   array
+		 */
+	protected $css_meta_keys = array( 'css', 'drawer_css', 'inpage_css', 'floating_css', 'popup_css', 'top_css', 'bottom_css' );
 
 		/**
 		 * Total sales data
@@ -159,7 +169,7 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 						'type'              => 'string',
 						'required'          => true,
 						'validate_callback' => function ( $param, $request, $key ) {
-							return in_array( $param, array( 'publish', 'draft', 'pending' ) );
+							return in_array( $param, array( 'publish', 'draft', 'pending' ), true );
 						},
 					),
 				),
@@ -215,76 +225,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 				),
 			)
 		);
-
-		// to get realtime counting of the campaings without refreshing.
-		register_rest_route(
-			$this->namespace,
-			'/' . $this->base . '/limits',
-			array(
-				array(
-					'methods'             => WP_REST_Server::READABLE, // GET.
-					'callback'            => array( $this, 'get_campaign_limits_callback' ),
-					'permission_callback' => array( $this, 'get_campaign_permissions_check' ), // reuse existing.
-				),
-			)
-		);
-
-		register_rest_route(
-			$this->namespace,
-			'/' . $this->base . '/support/',
-			array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_support_callback' ),
-					'args'                => array(),
-					'permission_callback' => array( $this, 'get_campaign_permissions_check' ),
-				),
-			)
-		);
-	}
-
-		/**
-		 * Get Support Callaback.
-		 *
-		 * @param  array $request Request.
-		 * @return array
-		 */
-	public function get_support_callback( $request ) {
-		$action = sanitize_text_field( $request['type'] );
-
-		if ( 'support_data' === $action ) {
-			$user_info = get_userdata( get_current_user_id() );
-			$name      = $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' );
-			return array(
-				'success' => true,
-				'data'    => array(
-					'name'  => $name ? $name : $user_info->user_login,
-					'email' => $user_info->user_email,
-				),
-			);
-		} elseif ( 'support_action' === $action ) {
-			$api_params    = array(
-				'user_name'  => sanitize_text_field( $request['name'] ),
-				'user_email' => sanitize_email( $request['email'] ),
-				'subject'    => sanitize_text_field( $request['subject'] ),
-				'desc'       => sanitize_textarea_field( $request['desc'] ),
-			);
-			$response      = wp_remote_get(
-				'https://wpxpo.com/wp-json/v2/support_mail',
-				array(
-					'method'  => 'POST',
-					'timeout' => 120,
-					'body'    => $api_params,
-				)
-			);
-			$response_data = json_decode( $response['body'] );
-			$success       = ( isset( $response_data->success ) && $response_data->success ) ? true : false;
-
-			return array(
-				'success' => $success,
-				'message' => $success ? __( 'New Support Ticket has been Created.', 'revenue' ) : __( 'New Support Ticket is not Created Due to Some Issues.', 'revenue' ),
-			);
-		}
 	}
 
 		/**
@@ -489,7 +429,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -513,11 +452,17 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 				$request['campaign_trigger_type'] = 'products';
 			}
 
-			if ( isset( $request['campaign_type'] ) && 'spending_goal' == $request['campaign_type'] || 'free_shipping_bar' == $request['campaign_type'] ) {
+			if ( isset( $request['campaign_type'] ) && 'free_shipping_bar' === $request['campaign_type'] ) {
 				$request['campaign_trigger_type'] = 'all_products';
 			}
 
-			$campaign_id = $this->save_campaign( $request );
+			$dispatch = $this->route_campaign_payload( 'create', $request );
+			if ( is_wp_error( $dispatch ) ) {
+				return $dispatch;
+			}
+
+			$campaign_id = is_array( $dispatch ) ? (int) $dispatch['campaign_id'] : $this->save_campaign( $request );
+			revenue()->clear_campaign_runtime_cache( $campaign_id );
 				/**
 			 * Fires after a single item is created or updated via the REST API.
 			 *
@@ -549,7 +494,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -566,20 +510,26 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		$campaign = revenue()->get_campaign_data( $id );
 
 		$response = $this->prepare_item_for_response( $id, $request );
+		$dispatch = $this->route_campaign_payload( 'delete', $request, $id );
+		if ( is_wp_error( $dispatch ) ) {
+			return $dispatch;
+		}
 
-		do_action( 'revenue_before_delete_campaign', $id );
+		if ( null === $dispatch ) {
+			do_action( 'revenue_before_delete_campaign', $id );
 
-		$campaign['campaign_trigger_exclude_items'] = array();
-		$campaign['campaign_trigger_items	']      = array();
+			$campaign['campaign_trigger_exclude_items'] = array();
+			$campaign['campaign_trigger_items	']      = array();
 
-		$this->update_campaign_triggers( $id, $campaign, true );
+			$this->update_campaign_triggers( $id, $campaign, true );
 
-		$result = revenue()->delete_campaign( $id );
+			$result = revenue()->delete_campaign( $id );
 
-		do_action( 'revenue_delete_campaign', $id );
+			do_action( 'revenue_delete_campaign', $id );
 
-		if ( ! $result ) {
-			return new WP_Error( 'revenue_rest_cannot_delete', __( 'The campaign cannot be deleted.', 'revenue' ), array( 'status' => 500 ) );
+			if ( ! $result ) {
+				return new WP_Error( 'revenue_rest_cannot_delete', __( 'The campaign cannot be deleted.', 'revenue' ), array( 'status' => 500 ) );
+			}
 		}
 
 			/**
@@ -624,6 +574,18 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		foreach ( $ids as $id ) {
 			$id       = (int) $id;
 			$campaign = revenue()->get_campaign_data( $id );
+			$dispatch = $this->route_campaign_payload( 'delete_bulk', $request, $id );
+
+			// One refusal must not abandon the rest of the selection halfway through.
+			if ( is_wp_error( $dispatch ) ) {
+				continue;
+			}
+
+			if ( is_array( $dispatch ) ) {
+				revenue()->clear_campaign_runtime_cache( $id );
+				$response_data[] = $id;
+				continue;
+			}
 
 			do_action( 'revenue_before_delete_campaign', $id );
 
@@ -644,6 +606,23 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		return rest_ensure_response( $response_data );
 	}
 
+	/**
+	 * Remove trigger indexes before a provider deletes a campaign.
+	 *
+	 * @param int $campaign_id Campaign ID.
+	 * @return bool Whether the campaign exists and cleanup ran.
+	 */
+	public function delete_campaign_trigger_indexes( $campaign_id ) {
+		$campaign = revenue()->get_campaign_data( $campaign_id );
+		if ( ! $campaign ) {
+			return false;
+		}
+
+		$this->update_campaign_triggers( $campaign_id, $campaign, true );
+
+		return true;
+	}
+
 
 		/**
 		 * Update a single product.
@@ -656,7 +635,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -668,7 +646,12 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 
 		try {
 
-			$campaign_id = $this->update_campaign( $request );
+			$dispatch = $this->route_campaign_payload( 'update', $request, $campaign_id );
+			if ( is_wp_error( $dispatch ) ) {
+				return $dispatch;
+			}
+
+			$campaign_id = is_array( $dispatch ) ? (int) $dispatch['campaign_id'] : $this->update_campaign( $request );
 			revenue()->clear_campaign_runtime_cache( $campaign_id );
 
 			$campaign = revenue()->get_campaign_data( $campaign_id );
@@ -701,7 +684,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -720,52 +702,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Calculate campaign limits.
-	 *
-	 * @return array
-	 */
-	private function calculate_campaign_remainting_limtis() {
-		$counts = revenue()->get_campaign_counts();
-
-		return array(
-			'total_campaigns'            => max( 5 - $counts->total_campaigns, 0 ),
-			'normal_discount'            => max( 3 - $counts->normal_discount, 0 ),
-			'volume_discount'            => max( 1 - $counts->volume_discount, 0 ),
-			'bundle_discount'            => max( 1 - $counts->bundle_discount, 0 ),
-			'buy_x_get_y'                => max( 1 - $counts->buy_x_get_y, 0 ),
-			'stock_scarcity'             => max( 1 - $counts->stock_scarcity, 0 ),
-			'free_shipping_bar'          => max( 1 - $counts->free_shipping_bar, 0 ),
-			'next_order_coupon'          => max( 1 - $counts->next_order_coupon, 0 ),
-			'countdown_timer'            => max( 1 - $counts->countdown_timer, 0 ),
-			'mix_match'                  => 0, // pro campaign limits 0.
-			'frequently_bought_together' => 0,
-			'spending_goal'              => 0,
-			'double_order'               => 0,
-		);
-	}
-	/**
-	 * Get campaign limits.
-	 *
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|WP_REST_Response
-	 */
-	public function get_campaign_limits_callback( $request ) {
-		$nonce = $request->get_param( 'security' );
-
-		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
-			return new WP_Error(
-				'revenue_rest_nonce_error',
-				__( 'Nonce verification failed.', 'revenue' ),
-				array( 'status' => 403 )
-			);
-		}
-
-		$limits = $this->calculate_campaign_remainting_limtis();
-
-		return rest_ensure_response( $limits );
-	}
-
-	/**
 	 * Clone a campaign.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
@@ -776,7 +712,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -792,23 +727,18 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 			return new WP_Error( "revenue_rest_invalid_{$this->post_type}_campaign", __( 'Invalid Campaign.', 'revenue' ), array( 'status' => 404 ) );
 		}
 
-		if ( ! revenue()->is_pro_active() ) {
-			$limits = $this->calculate_campaign_remainting_limtis();
-			if ( $limits['total_campaigns'] <= 0 || $limits[ $old_campaign['campaign_type'] ] <= 0 ) {
-				// revenue_rest_clone_limit_reached is used to handle api response on admin panel frontend, do not chnage.
-				return new WP_Error(
-					'revenue_rest_clone_limit_reached',
-					__( 'You have reached the maximum number of campaigns allowed.', 'revenue' ),
-					array( 'status' => 400 )
-				);
-			}
-		}
 		unset( $old_campaign['id'] );
 
 		$old_campaign['campaign_name'] = __( 'Duplicate of ', 'revenue' ) . $old_campaign['campaign_name'];
 
 		try {
-			$campaign_id = $this->save_campaign( $old_campaign, true );
+			$dispatch = $this->route_campaign_payload( 'clone', $request, $id );
+			if ( is_wp_error( $dispatch ) ) {
+				return $dispatch;
+			}
+
+			$campaign_id = is_array( $dispatch ) ? (int) $dispatch['campaign_id'] : $this->save_campaign( $old_campaign, true );
+			revenue()->clear_campaign_runtime_cache( $campaign_id );
 				/**
 			 * Fires after a single item is created or updated via the REST API.
 			 *
@@ -840,7 +770,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -857,9 +786,9 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 			$like      = '%' . $wpdb->esc_like( $args['s'] ) . '%';
 
 			if ( is_numeric( $args['s'] ) ) {
-				$where_clause[] = "(campaigns.campaign_name LIKE '{$like}' OR campaigns.id = {$args['s']})";
+				$where_clause[] = $wpdb->prepare( '(campaigns.campaign_name LIKE %s OR campaigns.id = %d)', $like, (int) $args['s'] );
 			} else {
-				$where_clause[] = "campaigns.campaign_name LIKE '{$like}'";
+				$where_clause[] = $wpdb->prepare( 'campaigns.campaign_name LIKE %s', $like );
 			}
 		}
 
@@ -868,7 +797,7 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 			$campaign_type = sanitize_text_field( $request['campaign_type'] );
 			$campaign_type = str_replace( array( "\r", "\n" ), '', $campaign_type );
 
-			if ( in_array( $campaign_type, array_keys( revenue()->get_campaign_types() ) ) ) {
+			if ( in_array( $campaign_type, array_keys( revenue()->get_campaign_types() ), true ) ) {
 				$where_clause[] = $wpdb->prepare( 'campaigns.campaign_type=%s', $campaign_type );
 			} else {
 				return new WP_Error( 'revenue_rest_campaign_type_not_exist', __( 'This campaign type does not exist.', 'revenue' ), array( 'status' => 400 ) );
@@ -880,7 +809,7 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 			$campaign_status = sanitize_text_field( $request['campaign_status'] );
 			$campaign_status = str_replace( array( "\r", "\n" ), '', $campaign_status );
 
-			if ( in_array( $campaign_status, array_keys( revenue()->get_campaign_statuses() ) ) ) {
+			if ( in_array( $campaign_status, array_keys( revenue()->get_campaign_statuses() ), true ) ) {
 				$where_clause[] = $wpdb->prepare( 'campaigns.campaign_status=%s', $campaign_status );
 			} else {
 				return new WP_Error( 'revenue_rest_campaign_invalid_status', __( 'Campaign status is invalid!.', 'revenue' ), array( 'status' => 400 ) );
@@ -1054,7 +983,7 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		$order_by_query        = '';
 		$valid_order_by_colums = array( 'campaign_status', 'campaign_name', 'date_created', 'date_modified', 'start_date', 'end_date', 'id', 'campaign_total_order', 'conversion_rate', 'total_impressions', 'total_add_to_cart', 'total_checkout', 'total_rejections', 'total_orders', 'total_sales' );
 
-		if ( isset( $request['order_by'] ) && in_array( $request['order_by'], $valid_order_by_colums ) ) {
+		if ( isset( $request['order_by'] ) && in_array( $request['order_by'], $valid_order_by_colums, true ) ) {
 			$order_by = sanitize_text_field( $request['order_by'] );
 			$is_asc   = isset( $request['order'] ) ? 'asc' === sanitize_text_field( $request['order'] ) : false;
 
@@ -1164,7 +1093,7 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		if ( empty( $select_clause ) || 0 == $total_campaign->total ) {
 			$results = array();
 		} else {
-			$results = $wpdb->get_results( $sql );  //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$results = $wpdb->get_results( $sql );  //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql is built from trusted table/column names and validated parameters.
 		}
 
 		// Resolve stats for every campaign on this page in one pass. Doing this
@@ -1217,21 +1146,7 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 	}
 
 
-		/**
-		 * Get Campaign Stats.
-		 *
-		 * @param  string|int $campaign_id Campaign Id.
-		 * @param  array      $data_keys   Data keys.
-		 * @return array.
-		 */
-	public function get_campaign_stats( $campaign_id, $data_keys ) {
-		$stats = $this->get_campaigns_stats( array( $campaign_id ), $data_keys );
 
-		return isset( $stats[ (int) $campaign_id ] ) ? $stats[ (int) $campaign_id ] : array(
-			'data'   => array(),
-			'growth' => array(),
-		);
-	}
 
 	/**
 	 * Build the SQL that aggregates WooCommerce order stats per campaign.
@@ -1359,13 +1274,14 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		$ids_in    = implode( ',', $campaign_ids );
 
 		// 1. Campaign creation dates, which bound each chart series.
-		$start_dates = $wpdb->get_results( //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$start_dates = $wpdb->get_results( //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- campaign IDs are cast to int via absint() before use.
 			"SELECT id, DATE(date_created) AS start_date FROM {$wpdb->prefix}revenue_campaigns WHERE id IN ({$ids_in})", //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			OBJECT_K
 		);
 
 		// 2. Per-day impression / cart / checkout / rejection counters.
-		$analytics_rows = $wpdb->get_results( //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- campaign IDs are cast to int via absint() before use.
+		$analytics_rows = $wpdb->get_results( //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- campaign IDs are cast to int via absint() before use.
 			"SELECT
 				campaign_id,
 				DATE(date) AS stat_date,
@@ -1375,11 +1291,12 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 				COALESCE(SUM(checkout_count), 0) AS checkout_count
 			FROM {$wpdb->prefix}revenue_campaign_analytics
 			WHERE campaign_id IN ({$ids_in})
-			GROUP BY campaign_id, DATE(date)" //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			GROUP BY campaign_id, DATE(date)"
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		// 3. Per-day order counts and sales, attributed to the order's own date.
-		$order_rows = $wpdb->get_results( $this->get_order_stats_sql( 'campaign_date', $campaign_ids ) ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$order_rows = $wpdb->get_results( $this->get_order_stats_sql( 'campaign_date', $campaign_ids ) ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- query built internally from absint()-cast IDs.
 
 		// Index both result sets by campaign then date.
 		$by_campaign = array();
@@ -1632,7 +1549,9 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 				continue;
 			}
 			if ( ( isset( $campaign_data[ $key ], $data[ $key ] ) && $data[ $key ] != $campaign_data[ $key ] ) || ( ! isset( $campaign_data[ $key ] ) && isset( $data[ $key ] ) ) ) {
-				$updated = $this->update_or_delete_post_meta( $id, $key, $data[ $key ] );
+				$value = ( in_array( $key, $this->css_meta_keys, true ) && is_string( $data[ $key ] ) ) ? wp_strip_all_tags( $data[ $key ] ) : $data[ $key ];
+
+				$updated = $this->update_or_delete_post_meta( $id, $key, $value );
 
 				if ( $updated ) {
 					$updated_props[] = $key;
@@ -2113,57 +2032,9 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 
 		return (bool) $updated;
 	}
-		/**
-		 * Sets a date prop whilst handling formatting and datetime objects.
-		 *
-		 * @since 1.0.0
-		 * @param string|integer $value Value of the prop.
-		 */
-	protected function get_wc_date( $value ) {
-		try {
-			if ( empty( $value ) || '0000-00-00 00:00:00' === $value ) {
 
-				return null;
-			}
 
-			if ( is_a( $value, 'WC_DateTime' ) ) {
-				$datetime = $value;
-			} elseif ( is_numeric( $value ) ) {
-					// Timestamps are handled as UTC timestamps in all cases.
-				$datetime = new WC_DateTime( "@{$value}", new DateTimeZone( 'UTC' ) );
-			} else {
-					// Strings are defined in local WP timezone. Convert to UTC.
-				if ( 1 === preg_match( '/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|((-|\+)\d{2}:\d{2}))$/', $value, $date_bits ) ) {
-					$offset    = ! empty( $date_bits[7] ) ? iso8601_timezone_to_offset( $date_bits[7] ) : wc_timezone_offset();
-					$timestamp = gmmktime( $date_bits[4], $date_bits[5], $date_bits[6], $date_bits[2], $date_bits[3], $date_bits[1] ) - $offset;
-				} else {
-					$timestamp = wc_string_to_timestamp( get_gmt_from_date( gmdate( 'Y-m-d H:i:s', wc_string_to_timestamp( $value ) ) ) );
-				}
-				$datetime = new WC_DateTime( "@{$timestamp}", new DateTimeZone( 'UTC' ) );
-			}
 
-				// Set local timezone or offset.
-			if ( get_option( 'timezone_string' ) ) {
-				$datetime->setTimezone( new DateTimeZone( wc_timezone_string() ) );
-			} else {
-				$datetime->set_utc_offset( wc_timezone_offset() );
-			}
-
-			return $datetime;
-		} catch ( Exception $e ) {
-			return null;
-		} // @codingStandardsIgnoreLine.
-	}
-
-		/**
-		 * Only return writable props from schema.
-		 *
-		 * @param  array $schema Schema.
-		 * @return bool
-		 */
-	protected function filter_writable_props( $schema ) {
-		return empty( $schema['readonly'] );
-	}
 
 
 		/**
@@ -2314,13 +2185,39 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 	public function bulk_update_campaign_status( $request ) {
 		global $wpdb;
 
+		$nonce = '';
+		if ( isset( $request['security'] ) ) {
+			$nonce = sanitize_key( $request['security'] );
+		}
+		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
+			return new WP_Error( 'revenue_rest_nonce_error', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
+		}
+
 		$campaign_ids = $request->get_param( 'ids' );
+		$campaign_ids = is_array( $campaign_ids ) ? $campaign_ids : array();
 		$new_status   = sanitize_text_field( $request->get_param( 'status' ) );
 		$updated      = 0;
 
 		$data = array();
 		foreach ( $campaign_ids as $campaign_id ) {
 			$campaign_id = intval( $campaign_id );
+			$dispatch    = $this->route_campaign_payload( 'status', $request, $campaign_id );
+
+			// One refusal must not abandon the rest of the selection halfway through.
+			if ( is_wp_error( $dispatch ) ) {
+				continue;
+			}
+
+			if ( is_array( $dispatch ) ) {
+				if ( ! empty( $dispatch['changed'] ) ) {
+					$data[] = array(
+						'id'              => $campaign_id,
+						'campaign_status' => $new_status,
+					);
+				}
+				revenue()->clear_campaign_runtime_cache( $campaign_id );
+				continue;
+			}
 
 				// Get previous data.
 			$campaign_before = revenue()->get_campaign_data( $campaign_id );
@@ -2353,6 +2250,97 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 		}
 
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Operations this controller can finish on its own, whatever the campaign type,
+	 * because they only read and write the campaign row.
+	 *
+	 * @return array
+	 */
+	private function stored_row_operations() {
+		return array( 'status', 'delete', 'delete_bulk' );
+	}
+
+	/**
+	 * Route a non-Free campaign write to its installed provider.
+	 *
+	 * @param string          $operation   Write operation.
+	 * @param WP_REST_Request $request     REST request.
+	 * @param int             $campaign_id Campaign ID when operating on a stored campaign.
+	 * @return null|array|WP_Error
+	 */
+	private function route_campaign_payload( $operation, $request, $campaign_id = 0 ) {
+		$type = $this->resolve_campaign_type( $request, $campaign_id );
+
+		if ( is_wp_error( $type ) ) {
+			return $type;
+		}
+
+		if ( '' === $type || revenue()->is_free_campaign_type( $type ) ) {
+			return null;
+		}
+
+		$result = apply_filters( 'revenue_campaign_rest_dispatch', null, $operation, $type, $request, $campaign_id );
+
+		if ( null === $result ) {
+			// Nobody owns this type here. Operations that only touch the stored row still
+			// run, so a merchant is never stuck with a campaign they cannot remove or stop.
+			if ( in_array( $operation, $this->stored_row_operations(), true ) ) {
+				return null;
+			}
+
+			return new WP_Error(
+				'revenue_rest_campaign_type_unavailable',
+				__( 'Invalid campaign type.', 'revenue' ),
+				array( 'status' => 501 )
+			);
+		}
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		if ( ! is_array( $result ) || empty( $result['handled'] ) || empty( $result['campaign_id'] ) ) {
+			return new WP_Error(
+				'revenue_rest_campaign_provider_invalid_response',
+				__( 'The campaign provider returned an invalid response.', 'revenue' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Resolve the authoritative campaign type for a write operation.
+	 *
+	 * @param WP_REST_Request $request     REST request.
+	 * @param int             $campaign_id Stored campaign ID, or zero for create.
+	 * @return string|WP_Error
+	 */
+	private function resolve_campaign_type( $request, $campaign_id = 0 ) {
+		$request_type = isset( $request['campaign_type'] ) ? sanitize_key( $request['campaign_type'] ) : '';
+
+		if ( ! $campaign_id ) {
+			return $request_type;
+		}
+
+		$campaign = revenue()->get_campaign_data( $campaign_id );
+		if ( empty( $campaign['campaign_type'] ) ) {
+			return '';
+		}
+
+		$stored_type = sanitize_key( $campaign['campaign_type'] );
+		if ( '' !== $request_type && $request_type !== $stored_type ) {
+			return new WP_Error(
+				'revenue_rest_campaign_type_mismatch',
+				__( 'A campaign type cannot be changed after creation.', 'revenue' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		return $stored_type;
 	}
 
 
@@ -2692,53 +2680,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 						),
 					),
 				),
-				'spending_goal_upsell_discount_configuration' => array(
-					'description' => __( 'List of Offered items', 'revenue' ),
-					'type'        => 'object',
-					'context'     => array( 'view', 'edit' ),
-					'items'       => array(
-						'type'       => 'object',
-						'properties' => array(
-							'id'       => array(
-								'description' => __( 'Offers Row ID.', 'revenue' ),
-								'type'        => 'integer',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'products' => array(
-								'description' => __( 'Offered Products.', 'revenue' ),
-								'type'        => 'array',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'quantity' => array(
-								'description' => __( 'Offer quantity', 'revenue' ),
-								'type'        => 'integer',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'value'    => array(
-								'description' => __( 'Offer value', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'type'     => array(
-								'description' => __( 'Offer type.', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'tags'     => array(
-								'description' => __( 'Offer tags', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'desc'     => array(
-								'description' => __( 'Offer description', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-
-						),
-					),
-				),
-
 				// Normal Discount - No Settings.
 
 				// Buy X Get Y - No Settings.
@@ -2755,57 +2696,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 				// Volume Discount Settings.
 				'allow_more_than_required_quantity'        => array(
 					'description' => __( 'Volumne Discount Campaign Allow more than required quantity', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-
-				// Mix & Match Settings.
-				'is_required_products'                     => array(
-					'description' => __( 'Mix Match Campaign Is Required Products', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'initial_product_selection'                => array(
-					'description' => __( 'Mix Match Campaign Initial Products Selection', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'enum'        => array( 'all_product', 'no_product' ),
-				),
-
-				// Spending Goal Settings.
-				'reward_type'                              => array(
-					'description' => __( 'Spending Goal Campaign Reward Type', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'enum'        => array( 'free_shipping', 'discount' ),
-				),
-				'spending_goal'                            => array(
-					'description' => __( 'Spending Goal', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_upsell_product_selection_strategy' => array(
-					'description' => __( 'Spending Goal', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_on_cta_click'               => array(
-					'description' => __( 'Spending Goal', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_calculate_based_on'         => array(
-					'description' => __( 'Spending Goal calculate based on', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_discount_type'              => array(
-					'description' => __( 'Spending Goal Discount Type', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_discount_value'             => array(
-					'description' => __( 'Spending Goal Discount Value', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
@@ -2865,57 +2755,9 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 					),
 					'maxItems'    => 3,
 				),
-				'spending_goal_free_shipping_progress_messages' => array(
-					'description' => __( 'Campaign spending progress messages', 'revenue' ),
-					'type'        => 'array',
-					'context'     => array( 'view', 'edit' ),
-					'items'       => array(
-						'type'       => 'object',
-						'properties' => array(
-							'status'  => array(
-								'description' => __( 'Spending Progress Status', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'message' => array(
-								'description' => __( 'Spending Progress message', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-						),
-					),
-					'maxItems'    => 3,
-				),
-				'spending_goal_discount_progress_messages' => array(
-					'description' => __( 'Campaign spending progress messages', 'revenue' ),
-					'type'        => 'array',
-					'context'     => array( 'view', 'edit' ),
-					'items'       => array(
-						'type'       => 'object',
-						'properties' => array(
-							'status'  => array(
-								'description' => __( 'Spending Progress Status', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-							'message' => array(
-								'description' => __( 'Spending Progress message', 'revenue' ),
-								'type'        => 'string',
-								'context'     => array( 'view', 'edit' ),
-							),
-						),
-					),
-					'maxItems'    => 3,
-				),
-
 				// Countdown Timer.
 				'countdown_timer_enabled'                  => array(
 					'description' => __( 'Campaign countdown timer enabled or not', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_is_upsell_enable'           => array(
-					'description' => __( 'Is spending goal upsell enabled or not', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
@@ -3015,11 +2857,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'multiple_variation_selection_enabled'     => array(
-					'description' => __( 'Allow users to choose the variations of items based on selected quantity', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
 				'offered_product_on_cart_action'           => array(
 					'description' => __( 'If the offered products are already in cart action', 'revenue' ),
 					'type'        => 'string',
@@ -3090,21 +2927,6 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'mix_match_is_required_products'           => array(
-					'description' => __( 'Builder Data', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'mix_match_initial_product_selection'      => array(
-					'description' => __( 'Builder Data', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'mix_match_required_products'              => array(
-					'description' => __( 'Trigger items', 'revenue' ),
-					'type'        => 'array',
-					'context'     => array( 'view', 'edit' ),
-				),
 				'campaign_view_id'                         => array(
 					'description' => __( 'Builder unique id', 'revenue' ),
 					'type'        => 'string',
@@ -3120,37 +2942,7 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'fbt_is_trigger_product_required'          => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
 				'countdown_timer_prefix'                   => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'double_order_animation_type'              => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'double_order_animation_delay_between'     => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'double_order_animation_enabled'           => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'double_order_success_message'             => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'double_order_countdown_duration'          => array(
 					'description' => __( 'Builder view class', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
@@ -3160,62 +2952,47 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-
-				'spending_goal_upsell_products'            => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'mixed',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_upsell_product_status'      => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
 				'upsell_products'                          => array(
-					'description' => __( 'Builder view class', 'revenue' ),
+					'description' => __( 'Free shipping bar upsell products.', 'revenue' ),
 					'type'        => 'mixed',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'upsell_products_status'                   => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'show_confetti'                            => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'spending_goal_progress_show_icon'         => array(
-					'description' => __( 'Builder view class', 'revenue' ),
+					'description' => __( 'Free shipping bar upsell product status.', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'is_show_free_shipping_bar'                => array(
-					'description' => __( 'Builder view class', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'show_close_icon'                          => array(
-					'description' => __( 'Builder view class', 'revenue' ),
+					'description' => __( 'Whether the progress bar is shown.', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'enable_cta_button'                        => array(
-					'description' => __( 'Builder view class', 'revenue' ),
+					'description' => __( 'Whether the CTA button is shown.', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'cta_button_text'                          => array(
-					'description' => __( 'Builder view class', 'revenue' ),
+					'description' => __( 'CTA button text.', 'revenue' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'show_close_icon'                          => array(
+					'description' => __( 'Whether the close icon is shown.', 'revenue' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'show_confetti'                            => array(
+					'description' => __( 'Whether confetti plays on goal completion.', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'all_goals_complete_message'               => array(
-					'description' => __( 'Builder view class', 'revenue' ),
+					'description' => __( 'Message shown when every goal is met.', 'revenue' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
+
 				'css'                                      => array(
 					'description' => __( 'Builder view class', 'revenue' ),
 					'type'        => 'string',
@@ -3356,15 +3133,12 @@ class Revenue_Campaign_REST_Controller extends WP_REST_Controller {
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'campaign_version'                         => array(
-					'description' => __( 'Campaign Version', 'revenue' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
 			),
 		);
 
 			// get_campaign_keys.
+
+		$schema['properties'] = apply_filters( 'revenue_campaign_schema_properties', $schema['properties'] );
 
 		return $this->add_additional_fields_schema( $schema );
 	}

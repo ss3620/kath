@@ -47,7 +47,7 @@ class ShopCompatibilty {
 	 *
 	 * @return void
 	 */
-	public function on_product_duplicate( $duplicate, $product ) {
+	public function on_product_duplicate( $duplicate, $product ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $product required by the woocommerce_product_duplicate hook signature.
 		delete_post_meta( $duplicate->get_id(), 'prad_product_assigned_meta_inc' );
 		delete_post_meta( $duplicate->get_id(), 'prad_product_assigned_meta_exc' );
 	}
@@ -105,7 +105,7 @@ class ShopCompatibilty {
 	 * @return bool True if product has options, false otherwise.
 	 */
 	public function product_has_options( $product ) {
-		if ( in_array( $product->get_type(), array( 'grouped', 'external' ) ) ) {
+		if ( in_array( $product->get_type(), array( 'grouped', 'external' ), true ) ) {
 			return false;
 		}
 
@@ -132,7 +132,7 @@ class ShopCompatibilty {
 		$option_ids = product_addons()->get_product_option_ids( $product_id );
 
 		if ( is_array( $option_ids ) && ! empty( $option_ids ) ) {
-			foreach ( $option_ids as $k => $opt_id ) {
+			foreach ( $option_ids as $opt_id ) {
 				$status = get_post_status( $opt_id );
 				if ( 'publish' === $status ) {
 					$content = get_post_meta( $opt_id, 'prad_addons_blocks', true );

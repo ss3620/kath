@@ -1,8 +1,6 @@
 <?php //phpcs:ignore
 namespace PRAD\Includes\Compatibility\Currency;
 
-use PRAD\Includes\Common\Functions;
-
 defined( 'ABSPATH' ) || exit;
 
 /**

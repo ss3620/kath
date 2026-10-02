@@ -19,10 +19,7 @@ use Revenue\Revenue_Server;
 use Revenue\Revenue_Install;
 use Revenue\Revenue_Normal_Discount;
 use Revenue\Revenue_Volume_Discount;
-use Revenue\WowAddonsPromotion;
-use REVX\Includes\Durbin\Xpo;
 
-// use Revenue\Revenue_Notice;
 
 
 defined( 'ABSPATH' ) || exit;
@@ -61,6 +58,8 @@ final class Revenue {
 		register_activation_hook( REVENUE_FILE, array( $this, 'activate' ) );
 		register_deactivation_hook( REVENUE_FILE, array( $this, 'deactivate' ) );
 
+		add_action( 'plugins_loaded', array( new Revenue_Install(), 'maybe_upgrade' ), 5 );
+
 		add_action( 'wp_initialize_site', array( $this, 'new_site_activate_revenue' ), 10, 1 );
 
 		$this->include_ajax();
@@ -85,18 +84,16 @@ final class Revenue {
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_action( 'wp_head', array( $this, 'inline_critical_css' ), 0 );
 
-		$this->include_promotions();
+		add_filter(
+			'body_class',
+			function ( $classes ) {
+				$classes[] = 'revenue-front-page'; // [ revenue-front-page, wopb-front-page, optn-front-page]
+
+				return $classes;
+			}
+		);
 	}
 
-	/**
-	 * Summary of include_promotions
-	 *
-	 * @return void
-	 */
-	public function include_promotions() {
-		require_once REVENUE_PATH . 'includes/class-wow-addons-promotion.php';
-		new WowAddonsPromotion();
-	}
 	// NOTE: If faced with fatal error and page does not show, comment the above action with this function.
 	public function inline_critical_css() {
 		echo '<style>
@@ -144,7 +141,8 @@ final class Revenue {
 	 * @uses load_plugin_textdomain()
 	 */
 	public function localization_setup() {
-		load_plugin_textdomain( 'revenue', false, dirname( plugin_basename( REVENUE_FILE ) ) . '/languages/' );
+		// WordPress auto-loads translations for WP.org hosted plugins since 4.6.
+		// load_plugin_textdomain() is no longer needed here.
 	}
 
 	/**
@@ -156,7 +154,7 @@ final class Revenue {
 		/**
 		 * Action triggered before Revenue initialization begins.
 		 */
-		do_action( 'before_revenue_init' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		do_action( 'revenue_before_init' );
 
 		// Includes Files.
 		$this->includes();
@@ -206,8 +204,6 @@ final class Revenue {
 		require_once REVENUE_PATH . 'includes/campaigns/class-revenue-stock-scarcity.php';
 		require_once REVENUE_PATH . 'includes/campaigns/class-revenue-next-order-coupon.php';
 
-		// require_once REVENUE_PATH . 'includes/class-revenue-notice.php';
-
 		// load class only on frontend and rest api request.
 		// same condition used in wp_enqueue_scripts action, so that scripts are not loaded unnecessarily.
 		if ( $this->is_request( 'frontend' ) || $this->is_rest_api_request() ) {
@@ -225,11 +221,6 @@ final class Revenue {
 			require_once REVENUE_PATH . 'includes/admin/class-revenue-menu.php';
 
 		}
-		require_once REVENUE_PATH . 'includes/durbin/class-durbin-client.php';
-		require_once REVENUE_PATH . 'includes/durbin/class-our-plugins.php';
-		require_once REVENUE_PATH . 'includes/durbin/class-xpo.php';
-		require_once REVENUE_PATH . 'includes/deactive/class-deactive.php';
-		require_once REVENUE_PATH . 'includes/notice/class-notice.php';
 	}
 
 	/**
@@ -240,11 +231,6 @@ final class Revenue {
 	public function init_menu() {
 		if ( is_admin() ) {
 			new Revenue_Menu();
-		}
-		if ( is_admin() || $this->is_rest_api_request() ) {
-			new \REVX\Includes\Deactive\Deactive();
-			new \REVX\Includes\Notice\Notice();
-			new \REVX\Includes\Durbin\OurPlugins();
 		}
 	}
 
@@ -301,8 +287,6 @@ final class Revenue {
 
 		// Initialize Language Toggle
 		// \REVENUE\Revenue_Language_Toggle::instance();
-
-		// Revenue_Notice::instance()->init();
 	}
 
 	/**
@@ -322,25 +306,9 @@ final class Revenue {
 	}
 
 
-	/**
-	 * Check whether woocommerce is installed and active
-	 *
-	 * @return bool
-	 * @since 1.0.0
-	 */
-	public function has_woocommerce() {
-		return class_exists( 'WooCommerce' );
-	}
 
-	/**
-	 * Check whether woocommerce is installed
-	 *
-	 * @return bool
-	 * @since 1.0.0
-	 */
-	public function is_woocommerce_installed() {
-		return file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' );
-	}
+
+
 
 	/**
 	 * Handles scenerios when WooCommerce is not active
@@ -485,9 +453,6 @@ final class Revenue {
 	 * @return array
 	 */
 	public function plugin_list_action_links( $links ) {
-		// Promo data + brand identity for every surface lives in includes/notice/.
-		$notice_config = \REVX\Includes\Notice\Notice::config();
-
 		// Create the base URL for campaigns admin page.
 		$campaign_url = esc_url( admin_url( 'admin.php?page=' . revenue()->get_admin_menu_slug() . '#/campaigns' ) );
 
@@ -501,44 +466,6 @@ final class Revenue {
 
 		$links = array_merge( $first_part, $links );
 
-		if ( ! revenue()->is_pro_active() ) {
-
-			if ( Xpo::is_lc_expired() ) {
-				$text = esc_html__( 'Renew License', 'revenue' );
-				$url  = 'https://account.wpxpo.com/checkout/?edd_license_key=' . Xpo::get_lc_key() . '&renew=1';
-			} else {
-				// Evergreen fallback, used whenever no dated promo is live.
-				$text = esc_html__( 'Upgrade to Pro', 'revenue' );
-				$url  = Xpo::generate_utm_link(
-					array(
-						'config' => array(
-							'source'   => $notice_config['utm_source_plugin_meta'],
-							'medium'   => 'upgrade-pro',
-							'campaign' => $notice_config['utm_campaign'],
-						),
-					)
-				);
-
-				// Dated overrides: includes/notice/promos/plugin-meta.php.
-				$promo = \REVX\Includes\Notice\Notice::get_active_promo( 'plugin-meta' );
-				if ( $promo ) {
-					$text = $promo['text'];
-					$url  = $promo['url'];
-				}
-			}
-
-			$last_part = array(
-				'get_discounts' => sprintf(
-					'<a style="color:%s; font-weight: 700;" target="_blank" href="%s">%s</a>',
-					esc_attr( $notice_config['brand_color'] ),
-					esc_url( $url ),
-					esc_html( $text )
-				),
-			);
-
-			$links = array_merge( $links, $last_part );
-		}
-
 		return $links;
 	}
 
@@ -550,7 +477,7 @@ final class Revenue {
 	 * @return array
 	 */
 	public function plugin_row_meta( $links, $file ) {
-		if ( $file !== plugin_basename( REVENUE_FILE ) ) {
+		if ( plugin_basename( REVENUE_FILE ) !== $file ) {
 			return $links;
 		}
 

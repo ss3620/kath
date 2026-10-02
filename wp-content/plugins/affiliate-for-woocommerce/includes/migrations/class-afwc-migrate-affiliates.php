@@ -2,11 +2,12 @@
 /**
  * Main class for Affiliate For WooCommerce Migration
  *
- * @package     affiliate-for-woocommerce/includes/migrations/
- * @since       1.0.0
- * @version     1.3.1
+ * @package   affiliate-for-woocommerce/includes/migrations/
+ * @since     1.0.0
+ * @version   1.3.1
  */
 
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -22,7 +23,6 @@ if ( ! class_exists( 'AFWC_Migrate_Affiliates' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-
 			if ( is_admin() ) {
 				add_action( 'admin_init', array( $this, 'track_affiliates_migration' ) );
 			}

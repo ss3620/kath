@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/admin/settings/
  * @since       7.18.0
- * @version     1.8.0
+ * @version     1.9.0
  */
 
 // Exit if accessed directly.
@@ -60,6 +60,8 @@ if ( ! class_exists( 'AFWC_Payouts_Admin_Settings' ) ) {
 			add_filter( 'woocommerce_admin_settings_sanitize_option_afwc_automatic_payout_includes', array( $this, 'sanitize_ap_include_list' ), 10, 2 );
 
 			add_filter( 'woocommerce_admin_settings_sanitize_option_afwc_commission_payout_day', array( $this, 'sanitize_commission_payout_day' ) );
+
+			add_filter( 'woocommerce_admin_settings_sanitize_option_afwc_order_refund_period_in_days', array( $this, 'sanitize_refund_period' ) );
 
 			// Ajax action for automatic payouts.
 			add_action( 'wp_ajax_afwc_search_ap_includes_list', array( $this, 'afwc_json_search_include_ap_list' ) );
@@ -563,6 +565,23 @@ if ( ! class_exists( 'AFWC_Payouts_Admin_Settings' ) ) {
 			$value = absint( $value );
 
 			return ( ! empty( $value ) ) ? $value : 15;
+		}
+
+		/**
+		 * Method to sanitize the refund period value.
+		 *
+		 * A cleared field falls back to the default (30).
+		 *
+		 * @param mixed $value The value.
+		 *
+		 * @return int The sanitized refund period in days.
+		 */
+		public function sanitize_refund_period( $value = '' ) {
+			if ( '' === $value || null === $value ) {
+				return 30;
+			}
+
+			return absint( $value );
 		}
 
 		/**

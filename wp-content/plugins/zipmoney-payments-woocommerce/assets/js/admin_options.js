@@ -44,7 +44,8 @@ jQuery('.check_private_key').click(function () {
     }
     var data = {
         private_key: privatekey,
-        environment: environment
+        environment: environment,
+        zip_nonce: ZipApiKeyCheckNonce
     };
     var url = ZipApiKeyCheckUrl;
     // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php

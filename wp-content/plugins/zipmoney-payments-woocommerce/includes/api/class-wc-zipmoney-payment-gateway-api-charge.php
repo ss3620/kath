@@ -30,10 +30,11 @@ class WC_Zipmoney_Payment_Gateway_API_Request_Charge extends WC_Zipmoney_Payment
 	 * @param WC_Order $order
 	 * @param $api_key
 	 * @param int      $amount
+	 * @param string   $currency
 	 * @param string   $reason
 	 * @return bool
 	 */
-	public function refund_order_charge( WC_Order $order, $api_key, $amount = 0, $currency, $reason = '' ) {
+	public function refund_order_charge( WC_Order $order, $api_key, $amount, $currency, $reason = '' ) {
 		parent::set_api_key( $api_key );
 
 		try {
@@ -233,7 +234,7 @@ class WC_Zipmoney_Payment_Gateway_API_Request_Charge extends WC_Zipmoney_Payment
 				 $order_id = $orderId;
 			 }
 			 if ( ! $order_id ) {
-				 $order_id = get_option( $checkout_id );
+				 $order_id = WC_Zipmoney_Payment_Gateway_Util::get_checkout_order_id( $checkout_id );
 			 }
 			 // $region = $this->WC_Zipmoney_Payment_Gateway->get_option(WC_Zipmoney_Payment_Gateway_Config::CONFIG_SELECT_REGION);
 			 if ( $order_id == null ) {
@@ -317,7 +318,7 @@ class WC_Zipmoney_Payment_Gateway_API_Request_Charge extends WC_Zipmoney_Payment
 			 }
 
 			 // delete the option
-			 delete_option( $checkout_id );
+			 WC_Zipmoney_Payment_Gateway_Util::delete_checkout_order_id( $checkout_id );
 		 } catch ( Exception $exception ) {
 			 if ( ! empty( $order ) ) {
 				 $order->add_order_note( $exception->getCode() . $exception->getMessage() );
@@ -328,10 +329,10 @@ class WC_Zipmoney_Payment_Gateway_API_Request_Charge extends WC_Zipmoney_Payment
 
 			 WC_Zipmoney_Payment_Gateway_Util::log( 'Create charge exception ' . $exception->getCode() . $exception->getMessage(), WC_Zipmoney_Payment_Gateway_Config::LOG_LEVEL_INFO );
 			 wc_add_notice( __( 'Payment error:', 'zippayment' ) . $exception->getMessage(), 'error' );
-			 delete_option( $checkout_id );
+			 WC_Zipmoney_Payment_Gateway_Util::delete_checkout_order_id( $checkout_id );
 		 }
 
-		 delete_option( $checkout_id );
+		 WC_Zipmoney_Payment_Gateway_Util::delete_checkout_order_id( $checkout_id );
 		 $response['order'] = $order;
 
 		 return $response;

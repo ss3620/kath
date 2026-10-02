@@ -21,7 +21,7 @@ class Handler extends BaseHandler {
             return $this->postSend();
         }
 
-        return $this->handleResponse(new \WP_Error(422, __('Something went wrong!', 'fluent-smtp'), []));
+        return $this->handleResponse(new \WP_Error(422, __('Something went wrong.', 'fluent-smtp'), []));
     }
 
     public function postSend() {
@@ -70,7 +70,7 @@ class Handler extends BaseHandler {
                     'succeeded' => Arr::get($responseBody, 'data.succeeded'),
                 ];
             } else {
-                $returnResponse = new \WP_Error($responseCode, Arr::get($responseBody, 'data.error', 'Unknown Error'), $responseBody);
+                $returnResponse = new \WP_Error($responseCode, Arr::get($responseBody, 'data.error', __('Unknown Error', 'fluent-smtp')), $responseBody);
             }
         }
 
@@ -83,7 +83,7 @@ class Handler extends BaseHandler {
         $from = $this->getParam('sender_email');
 
         if ($name = $this->getParam('sender_name')) {
-            $from = $name . ' <' . $from . '>';
+            $from = self::formatAddress($from, $name);
         }
 
         return $from;
@@ -100,7 +100,7 @@ class Handler extends BaseHandler {
     protected function getRecipients($recipients) {
         return array_map(function ($recipient) {
             return isset($recipient['name'])
-                ? $recipient['name'] . ' <' . $recipient['email'] . '>'
+                ? self::formatAddress($recipient['email'], $recipient['name'])
                 : $recipient['email'];
         }, $recipients);
     }
@@ -132,7 +132,7 @@ class Handler extends BaseHandler {
             try {
                 // Use secure file reading with path traversal protection
                 $file = $this->secureFileRead($attachment[0]);
-                $fileName = basename($attachment[0]);
+                $fileName = $this->getAttachmentName($attachment);
 
                 // Get MIME type from the validated real path
                 $realPath = realpath($attachment[0]);

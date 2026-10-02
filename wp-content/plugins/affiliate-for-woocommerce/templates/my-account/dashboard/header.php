@@ -5,7 +5,7 @@
  * @see      This template can be overridden by: https://woocommerce.com/document/affiliate-for-woocommerce/how-to-override-templates/
  * @package  affiliate-for-woocommerce/templates/my-account/dashboard/
  * @since    8.5.0
- * @version  1.0.1
+ * @version  1.1.0
  */
 
 // Exit if accessed directly.
@@ -34,6 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div id="afwc_date_range_container">
 		<div id="afwc_datepicker_from">
 			<input type="date" id="afwc_from" name="afwc_from" min="2000-01-01" max="9999-12-31"
+				aria-label="<?php echo esc_attr_x( 'Start date', 'ARIA label for start date input of my account', 'affiliate-for-woocommerce' ); ?>"
 				value="<?php echo ( ! empty( $from ) ) ? esc_attr( $from ) : ''; ?>"
 				placeholder="<?php echo esc_attr_x( 'From', 'Start date for date field of my account', 'affiliate-for-woocommerce' ); ?>" />
 		</div>
@@ -42,6 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<div id="afwc_datepicker_to">
 			<input type="date" id="afwc_to" name="afwc_to" min="2000-01-01" max="9999-12-31"
+				aria-label="<?php echo esc_attr_x( 'End date', 'ARIA label for end date input of my account', 'affiliate-for-woocommerce' ); ?>"
 				value="<?php echo ( ! empty( $to ) ) ? esc_attr( $to ) : ''; ?>"
 				placeholder="<?php echo esc_attr_x( 'To', 'End date for date field of my account', 'affiliate-for-woocommerce' ); ?>" />
 		</div>

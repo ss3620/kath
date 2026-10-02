@@ -2573,6 +2573,7 @@ class Functions {
 				'fill'         => true,
 				'stroke'       => true,
 				'stroke-width' => true,
+				'class' => true,
 			),
 			'g'        => array(
 				'fill'            => true,
@@ -2654,6 +2655,16 @@ class Functions {
 				'class'  => true,
 				'style'  => true,
 				'data-*' => true,
+			),
+			'img'      => array(
+				'src'      => true,
+				'alt'      => true,
+				'width'    => true,
+				'height'   => true,
+				'srcset'   => true,
+				'sizes'    => true,
+				'decoding' => true,
+				'loading'  => true,
 			),
 		);
 

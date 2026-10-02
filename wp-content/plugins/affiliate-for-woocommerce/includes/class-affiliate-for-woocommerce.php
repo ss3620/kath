@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/
  * @since       1.0.0
- * @version     1.31.7
+ * @version     1.31.10
  */
 
 // Exit if accessed directly.
@@ -193,6 +193,10 @@ if ( ! class_exists( 'Affiliate_For_WooCommerce' ) ) {
 			// Set contact human support link - WooCommerce.com.
 			if ( ! defined( 'AFW_CONTACT_SUPPORT_URL' ) ) {
 				define( 'AFW_CONTACT_SUPPORT_URL', 'https://woocommerce.com/my-account/contact-support/?select=affiliate-for-woocommerce#contact-us' );
+			}
+			// Set plugin changelog link - WooCommerce.com.
+			if ( ! defined( 'AFWC_CHANGELOG_URL' ) ) {
+				define( 'AFWC_CHANGELOG_URL', 'https://dzv365zjfbd8v.cloudfront.net/changelogs/affiliate-for-woocommerce/changelog.txt' );
 			}
 		}
 
@@ -414,6 +418,7 @@ if ( ! class_exists( 'Affiliate_For_WooCommerce' ) ) {
 
 			include_once 'queue/class-afwc-report-background-emailer.php';
 			include_once 'queue/class-afwc-admin-summary-email-scheduler.php';
+			include_once 'queue/class-afwc-milestone.php';
 
 			include_once 'payouts/class-afwc-payout-handler.php';
 			include_once 'migrations/class-source-interface.php';
@@ -1195,7 +1200,7 @@ if ( ! class_exists( 'Affiliate_For_WooCommerce' ) ) {
 			}
 
 			?>
-			<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $class ); ?>" style="<?php echo esc_attr( $args['style'] ); ?>" data-placeholder="<?php echo esc_attr_x( 'Search by email, username or name', 'affiliate search placeholder', 'affiliate-for-woocommerce' ); ?>" data-allow-clear="<?php echo esc_attr( $args['allow_clear'] ); ?>" data-action="afwc_json_search_affiliates" <?php disabled( (bool) $args['disabled'] ); ?> >
+			<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $class ); ?>" style="<?php echo esc_attr( $args['style'] ); ?>" data-placeholder="<?php echo esc_attr_x( 'Search by email, username, name or user ID', 'affiliate search placeholder', 'affiliate-for-woocommerce' ); ?>" data-allow-clear="<?php echo esc_attr( $args['allow_clear'] ); ?>" data-action="afwc_json_search_affiliates" <?php disabled( (bool) $args['disabled'] ); ?> >
 				<?php if ( ! empty( $affiliate_id ) ) { ?>
 					<option value="<?php echo esc_attr( $affiliate_id ); ?>" selected="selected"><?php echo esc_html( wp_kses_post( $user_string ) ); ?></option>
 				<?php } ?>
@@ -1537,7 +1542,7 @@ if ( ! class_exists( 'Affiliate_For_WooCommerce' ) ) {
 			if ( empty( $order_created_date ) || ! is_numeric( $order_created_date ) || $order_created_date < 0 ) {
 				return 0;
 			}
-			$refund_period_in_seconds          = absint( get_option( 'afwc_order_refund_period_in_days', 30 ) ) * DAY_IN_SECONDS;
+			$refund_period_in_seconds          = afwc_get_order_refund_period_in_days() * DAY_IN_SECONDS;
 			$order_refund_time_diff_in_seconds = time() - absint( $order_created_date );
 			if ( $order_refund_time_diff_in_seconds < $refund_period_in_seconds ) {
 				return ceil( ( $refund_period_in_seconds - $order_refund_time_diff_in_seconds ) / DAY_IN_SECONDS ); // Used `ceil` here to round-up remaining refund days, E.g.: return 2 for 1.3 days.

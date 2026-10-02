@@ -4,7 +4,7 @@ Tags: zipmoney payments woocommerce, zipmoney payments module for woocommerce, z
 Requires at least: WP 6.5
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.3.34
+Stable tag: 2.4.1
 License: GPLv2 or later License http://www.gnu.org/licenses/gpl-2.0.html
 
 
@@ -299,3 +299,19 @@ To configure the plugin, go to __WooCommerce > Settings__ from the left hand me
 * Refund requests now carry the currency, and captures can be marked as partial
 * Fixed a fatal error in the SDK when Zip returned a file download
 * The plugin package is around 300KB smaller: the SDK no longer ships its own documentation, tests and build tooling
+
+= 2.3.35 =
+* The Zip widget script is no longer loaded on every page of the store. It is requested on the pages that print a widget or a banner, and on checkout
+
+= 2.4.0 =
+* Fixed a security issue in the plugin's public endpoints
+
+= 2.4.1 =
+* The product and cart widgets can be moved: two new settings take a CSS selector from your theme, and the widget is placed in front of the first element it matches. The position dropdowns are gone — the widget renders under the price and under the Proceed to checkout button, and the selector moves it from there
+* After updating, a store that had chosen a widget position other than the default gets the widget back in the default place, and a store that had chosen to place the widget only with the [zip_widget] shortcode gets an automatic widget again alongside its own
+* New Zealand is no longer offered in the region list. A store still set to New Zealand keeps sending it until the settings screen is saved, which rewrites it to Australia
+* Australian stores were shown Zip's generic "4 interest free payments" line instead of their own terms. The region was sent upper-cased, and the Zip widget script compares it in lower case
+* The widget now carries the merchant's own configuration on block-based cart and checkout pages, and on themes that do not call wp_body_open. In those cases the Zip script fell back to Zip's generic copy
+* The cart widget quotes the total the shopper is actually asked for. A store charging a cart fee or a surcharge will see it quote a higher amount than before, matching the total on the page
+* A variable product whose parent price was never re-synced is quoted at its cheapest priced variation instead of showing no widget at all
+* A page can carry both an automatic widget and a [zip_widget] shortcode: both are re-priced when a variation is picked, and the selector never moves the one placed by the shortcode

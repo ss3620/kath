@@ -2,9 +2,9 @@
 /**
  * Main class for URL Coupons Compatibility
  *
- * @package     affiliate-for-woocommerce/includes/integration/url-coupons-by-smart-coupons-for-woocommerce/
- * @since       9.7.0
- * @version     1.0.0
+ * @package  affiliate-for-woocommerce/includes/integration/url-coupons-by-smart-coupons-for-woocommerce/
+ * @since    9.7.0
+ * @version  1.1.0
  */
 
 // Exit if accessed directly.
@@ -30,9 +30,10 @@ if ( ! class_exists( 'UCSCWC_AFWC_Compatibility' ) ) {
 		 * Constructor
 		 */
 		private function __construct() {
-
 			// Filter to generate affiliate coupon URL.
 			add_filter( 'afwc_coupon_url', array( $this, 'generate_coupon_url' ), 10, 2 );
+
+			add_filter( 'afwc_coupon_shareable_link_is_available', '__return_true' );
 		}
 
 		/**

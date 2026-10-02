@@ -13,13 +13,9 @@ namespace Revenue;
 
 use Revenue\Services\Revenue_Product_Context;
 
-/**
- * The Template for displaying bundle discount view
- *
- * @package Revenue
- * @version 1.0.0
- */
 
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 defined( 'ABSPATH' ) || exit;
 
 $product = Revenue_Product_Context::get_product_context();
@@ -34,7 +30,7 @@ $template_data          = revenue()->get_campaign_meta( $campaign['id'], 'builde
 $offers                 = revenue()->get_campaign_meta( $campaign['id'], 'offers', true );
 $placement_settings     = revenue()->get_placement_settings( $campaign['id'] );
 $display_style          = isset( $placement_settings['display_style'] ) ? $placement_settings['display_style'] : 'inpage';
-$slider_columns         = json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
+$slider_columns         = wp_json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
 $products_wrapper_class = 'revx-slider-wrapper';
 
 

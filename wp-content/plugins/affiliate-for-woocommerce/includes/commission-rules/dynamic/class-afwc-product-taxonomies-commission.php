@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/commission-rules/dynamic/
  * @since       8.17.0
- * @version     1.0.1
+ * @version     1.1.0
  */
 
 // Exit if accessed directly.
@@ -29,6 +29,16 @@ if ( ! class_exists( 'AFWC_Product_Taxonomies_Commission' ) && class_exists( Num
 		private $term_product_map = array();
 
 		/**
+		 * Stores the list of taxonomy slugs whose terms should be prefilled instead of loaded via AJAX search.
+		 *
+		 * @var array
+		 */
+		private $prefill_taxonomies = array(
+			'product_visibility',
+			'product_type',
+		);
+
+		/**
 		 * Constructor
 		 *
 		 * @param array $args props.
@@ -46,6 +56,144 @@ if ( ! class_exists( 'AFWC_Product_Taxonomies_Commission' ) && class_exists( Num
 		public function get_possible_operators() {
 			$this->exclude_operators( array( 'gt', 'gte', 'lt', 'eq', 'lte', 'neq' ) );
 			return $this->possible_operators;
+		}
+
+		/**
+		 * Get the list of taxonomy slugs that should have prefilled options.
+		 *
+		 * @return array Array of taxonomy slugs.
+		 */
+		public function get_prefill_taxonomies() {
+			/**
+			 * Filter to modify the list of product taxonomies that should have prefilled options instead of AJAX search in the commission plan rule builder.
+			 *
+			 * @param array $prefill_taxonomies Array of taxonomy slugs to prefill.
+			 *
+			 * @since 9.14.0
+			 */
+			return apply_filters( 'afwc_prefill_product_taxonomies_in_rule', $this->prefill_taxonomies );
+		}
+
+		/**
+		 * Returns preloaded options for supported taxonomies.
+		 *
+		 * Only taxonomies listed in the prefill list return all terms.
+		 * Other taxonomies return an empty array so the UI falls back to AJAX search.
+		 *
+		 * @return array Array of term_id => term_name.
+		 */
+		public function get_options() {
+			$taxonomy = $this->get_taxonomy_slug();
+			if ( empty( $taxonomy ) || ! in_array( $taxonomy, $this->get_prefill_taxonomies(), true ) ) {
+				return array();
+			}
+
+			$function_name = 'get_' . $taxonomy . '_options';
+
+			return method_exists( $this, $function_name )
+				? $this->$function_name()
+				: $this->get_default_taxonomy_options( $taxonomy );
+		}
+
+		/**
+		 * Returns available product types.
+		 *
+		 * Uses WooCommerce labels when available, otherwise falls back to term names.
+		 *
+		 * @return array Array of term_id => label.
+		 */
+		public function get_product_type_options() {
+			$terms = get_terms(
+				array(
+					'taxonomy'   => 'product_type',
+					'hide_empty' => false,
+				)
+			);
+
+			if ( is_wp_error( $terms ) || empty( $terms ) || ! is_array( $terms ) ) {
+				return array();
+			}
+
+			$types   = function_exists( 'wc_get_product_types' ) ? wc_get_product_types() : array();
+			$options = array();
+
+			foreach ( $terms as $term ) {
+				if ( ! $term instanceof WP_Term || empty( $term->slug ) ) {
+					continue;
+				}
+
+				$label = ! empty( $term->name ) ? $term->name : $term->slug;
+
+				$options[ $term->term_id ] = $types[ $term->slug ] ?? $label;
+			}
+
+			return $options;
+		}
+
+		/**
+		 * Returns available product visibility options.
+		 *
+		 * Adds catalog/search context for exclusion terms to make them easier to identify.
+		 *
+		 * @return array Array of term_id => label.
+		 */
+		public function get_product_visibility_options() {
+			$terms = get_terms(
+				array(
+					'taxonomy'   => 'product_visibility',
+					'hide_empty' => false,
+				)
+			);
+
+			if ( is_wp_error( $terms ) || empty( $terms ) || ! is_array( $terms ) ) {
+				return array();
+			}
+
+			$types   = function_exists( 'wc_get_product_visibility_options' ) ? wc_get_product_visibility_options() : array();
+			$options = array();
+
+			foreach ( $terms as $term ) {
+				if ( ! $term instanceof WP_Term || empty( $term->slug ) ) {
+					continue;
+				}
+
+				$label = ! empty( $term->name ) ? $term->name : $term->slug;
+
+				if ( 'exclude-from-search' === $term->slug && ! empty( $types['catalog'] ) ) {
+					$options[ $term->term_id ] = $label . ' (' . $types['catalog'] . ')';
+				} elseif ( 'exclude-from-catalog' === $term->slug && ! empty( $types['search'] ) ) {
+					$options[ $term->term_id ] = $label . ' (' . $types['search'] . ')';
+				} else {
+					$options[ $term->term_id ] = $label;
+				}
+			}
+
+			return $options;
+		}
+
+		/**
+		 * Returns terms for a taxonomy as id => name.
+		 *
+		 * Used as the default resolver for prefilled taxonomies that do not require custom option formatting.
+		 *
+		 * @param string $taxonomy Taxonomy slug.
+		 *
+		 * @return array Array of term_id => term_name.
+		 */
+		public function get_default_taxonomy_options( $taxonomy = '' ) {
+			if ( empty( $taxonomy ) ) {
+				return array();
+			}
+
+			$terms = get_terms(
+				array(
+					'taxonomy'   => $taxonomy,
+					'fields'     => 'id=>name',
+					'hide_empty' => false,
+				)
+			);
+
+			return ! is_wp_error( $terms ) && ! empty( $terms ) && is_array( $terms ) ? $terms : array();
 		}
 
 		/**

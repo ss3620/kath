@@ -29,10 +29,10 @@ $offers        = revenue()->get_campaign_meta( $campaign['id'], 'offers', true )
 $current_page       = revenue()->get_current_page();
 $placement_settings = $campaign['placement_settings'];
 
-$is_all_page_active   = isset( $placement_settings['all_page'] ) ? $placement_settings['all_page']['status'] === 'yes' : false;
-$is_other_page_active = isset( $placement_settings[ $current_page ] ) ? $placement_settings[ $current_page ]['status'] === 'yes' : false;
-$page_key 			  = ( $is_all_page_active && ! $is_other_page_active ) ? 'all_page' : $current_page;
-$display_style        = isset( $placement_settings[ $page_key]['display_style'] ) ? $placement_settings[ $page_key ]['display_style'] : 'inpage';
+$is_all_page_active   = isset( $placement_settings['all_page'] ) ? 'yes' === $placement_settings['all_page']['status'] : false;
+$is_other_page_active = isset( $placement_settings[ $current_page ] ) ? 'yes' === $placement_settings[ $current_page ]['status'] : false;
+$page_key             = ( $is_all_page_active && ! $is_other_page_active ) ? 'all_page' : $current_page;
+$display_style        = isset( $placement_settings[ $page_key ]['display_style'] ) ? $placement_settings[ $page_key ]['display_style'] : 'inpage';
 $is_upsell_on         = 'yes' === $campaign['spending_goal_upsell_product_status'];
 $is_campaign_close    = 'yes' === $campaign['show_close_icon'];
 
@@ -56,11 +56,11 @@ $stroke_width = $is_upsell_on ? 12 : 8;
 $label_size   = $is_upsell_on ? 18 : 16;
 
 // use subtotal to ignore coupons, include taxes if needed.
-$cart_total = WC()->cart ? WC()->cart->get_subtotal() : 0;
-$cart_total +=  WC()->cart->display_prices_including_tax() ? WC()->cart->get_subtotal_tax() : 0;
+$cart_total  = WC()->cart ? WC()->cart->get_subtotal() : 0;
+$cart_total += WC()->cart->display_prices_including_tax() ? WC()->cart->get_subtotal_tax() : 0;
 // Divide evenly across steps.
-$step_width = 100 / ( count( $offers ) ); 
-$progress = 0;
+$step_width      = 100 / ( count( $offers ) );
+$progress        = 0;
 $remaining_total = $cart_total;
 
 $total_goal = 0;
@@ -104,7 +104,6 @@ foreach ( $offers as $index => $offer ) {
 	if ( $cart_total < $required_goal ) {
 		// User hasn't reached this step yet.
 		$current_message = isset( $offer['before_message'] ) ? $offer['before_message'] : '';
-		// $reward_message  = isset( $offer['after_message'] ) ? $offer['after_message'] : '';
 
 		$remaining_amount = $cart_total - $required_goal;
 
@@ -225,7 +224,7 @@ if ( 'yes' === $campaign['spending_goal_upsell_product_status'] ) {
 
 $is_drawer = 'drawer' === $display_style;
 if ( $is_drawer ) {
-    $wrapper_id = 'drawerWrapper';
+	$wrapper_id = 'drawerWrapper';
 
 	$drawer_position = $placement_settings[ $page_key ]['drawer_position'] ?? 'top-right';
 
@@ -233,14 +232,14 @@ if ( $is_drawer ) {
 	$circumference   = 2 * pi() * $radius;
 	$progress_offset = $circumference - ( $progress / 100 ) * $circumference;
 } elseif ( $is_all_page_active && ! $is_other_page_active ) {
-    $wrapper_id = 'allSideProgressWrapper';
+	$wrapper_id = 'allSideProgressWrapper';
 } else {
-    $wrapper_id = 'wrapper';
+	$wrapper_id = 'wrapper';
 }
 
 ?>
 
-<div 
+<div
 	id="revx-progress-<?php echo esc_attr( $display_style ); ?>"
 	<?php # the revx-relative is for keeping the success message within the container. ?>
 	class="
@@ -253,11 +252,11 @@ if ( $is_drawer ) {
 			)
 		);
 		?>
-				<?php echo esc_attr( $display_style ); ?> 
-		<?php echo $is_drawer ? esc_attr( $drawer_position ) : ''; ?> 
+				<?php echo esc_attr( $display_style ); ?>
+		<?php echo $is_drawer ? esc_attr( $drawer_position ) : ''; ?>
 		revx-d-flex
-		<?php echo $is_drawer ? 'revx-drawer-container' : 'revx-w-full'; ?>
-		<?php echo ( $is_drawer || ( $is_all_page_active && ! $is_other_page_active ) ) ? '' : 'revx-flex-column'; ?> 
+		<?php echo $is_drawer ? 'revx-drawer-container' : 'revx-w-full';  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded two-branch ternary, both branches literal strings. ?>
+		<?php echo ( $is_drawer || ( $is_all_page_active && ! $is_other_page_active ) ) ? '' : 'revx-flex-column';  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded two-branch ternary, both branches literal strings. ?>
 		<?php echo esc_attr( $device_manager_class ); ?>
 	"
 	data-position="<?php echo esc_attr( $display_style ); ?>"
@@ -266,7 +265,6 @@ if ( $is_drawer ) {
 	data-container-level="top"
 	data-cart-total="<?php echo esc_attr( $cart_total ); ?>"
 	data-progress="<?php echo esc_attr( $progress ); ?>"
-	data-position="<?php echo esc_attr( $position ); ?>"
 	data-final-message="<?php echo esc_attr( $campaign['all_goals_complete_message'] ); ?>"
 	data-show-confetti="<?php echo esc_attr( $campaign['show_confetti'] ); ?>"
 	data-radius="<?php echo esc_attr( $is_drawer ? $radius : '' ); ?>"
@@ -276,65 +274,65 @@ if ( $is_drawer ) {
 
 if ( 'drawer' === $display_style ) {
 	if ( $is_campaign_close ) {
-		echo Revenue_Template_Utils::render_campaign_close( $template_data, 'revx-drawer-closer' );
+		echo wp_kses( Revenue_Template_Utils::render_campaign_close( $template_data, 'revx-drawer-closer' ), revenue()->get_allowed_tag() );
 	}
 
 	?>
 	<div
 		class="
-			<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'circularProgressContainer' ) ); ?> 
+			<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'circularProgressContainer' ) ); ?>
 			revx-circular-progress-container revx-d-flex revx-item-center revx-justify-center revx-flex-column revx-drawer-opener
 		"
 	>
 		<div
 			class="revx-relative revx-d-flex revx-item-center revx-justify-center"
 		>
-			<svg width="<?php echo $size; ?>" height="<?php echo $size; ?>">
+			<svg width="<?php echo esc_attr( $size ); ?>" height="<?php echo esc_attr( $size ); ?>">
 				<circle
 					class="revx-progress-empty"
-					r="<?php echo $radius; ?>"
-					cx="<?php echo $size / 2; ?>"
-					cy="<?php echo $size / 2; ?>"
+					r="<?php echo esc_attr( $radius ); ?>"
+					cx="<?php echo esc_attr( $size / 2 ); ?>"
+					cy="<?php echo esc_attr( $size / 2 ); ?>"
 					style="
 						stroke: var(
 							--revx-circlular-progress-bar-inactive,
 							#31353f
 						);
-						stroke-width: <?php echo $stroke_width; ?>;
+						stroke-width: <?php echo esc_attr( $stroke_width ); ?>;
 						fill: none;
 					"
 				></circle>
 				<circle
 					class="revx-progress-active"
-					r="<?php echo $radius; ?>"
-					cx="<?php echo $size / 2; ?>"
-					cy="<?php echo $size / 2; ?>"
+					r="<?php echo esc_attr( $radius ); ?>"
+					cx="<?php echo esc_attr( $size / 2 ); ?>"
+					cy="<?php echo esc_attr( $size / 2 ); ?>"
 					style="
 						stroke: var(
 							--revx-circlular-progress-bar-active,
 							#f2ae40
 						);
-						stroke-width: <?php echo $stroke_width; ?>;
-						stroke-dasharray: <?php echo $circumference; ?>;
-						stroke-dashoffset: <?php echo $progress_offset; ?>;
+						stroke-width: <?php echo esc_attr( $stroke_width ); ?>;
+						stroke-dasharray: <?php echo esc_attr( $circumference ); ?>;
+						stroke-dashoffset: <?php echo esc_attr( $progress_offset ); ?>;
 						stroke-linecap: round;
 						fill: none;
 						transition: stroke-dashoffset 500ms ease-in-out;
 					"
 				></circle>
 			</svg>
-			<div 
-				class="revx-circular-text revx-absolute" 
-				style="font-size: <?php echo ( '100' === $progress ) ? $label_size - 3 : $label_size; ?>px"
+			<div
+				class="revx-circular-text revx-absolute"
+				style="font-size: <?php echo esc_attr( ( '100' === $progress ) ? $label_size - 3 : $label_size ); ?>px"
 			>
 				<?php echo number_format( $progress, 2 ); ?>%
 			</div>
 		</div>
-		<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'drawerCompleteMessage' ); ?>
+		<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'drawerCompleteMessage' ), revenue()->get_allowed_tag() ); ?>
 	</div>
 	<div
 		class="
-			<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'campaignDrawerContent' ) ); ?> 
+			<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'campaignDrawerContent' ) ); ?>
 			revx-d-flex revx-item-center revx-drawer-content revx-w-full
 		"
 	>
@@ -343,10 +341,10 @@ if ( 'drawer' === $display_style ) {
 			style="gap: var(--revx-drawer-content-gap)"
 		>
 			<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-wrap revx-gap-10">
-				<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'spgHeading', $current_message, 'revx-text-center' ); ?>
-				<?php echo Revenue_Template_Utils::render_add_to_cart_button( $template_data, false, 'shopNowButton' ); ?>
+				<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'spgHeading', $current_message, 'revx-text-center' ), revenue()->get_allowed_tag() ); ?>
+				<?php echo wp_kses( Revenue_Template_Utils::render_add_to_cart_button( $template_data, false, 'shopNowButton' ), revenue()->get_allowed_tag() ); ?>
 			</div>
-			<?php echo Revenue_Template_Utils::render_progressbar( $template_data, 'CampaignProgressbar', $progress, $campaign ); ?>
+			<?php echo wp_kses( Revenue_Template_Utils::render_progressbar( $template_data, 'CampaignProgressbar', $progress, $campaign ), revenue()->get_allowed_tag() ); ?>
 			<?php Revenue_Template_Utils::render_products_container( $campaign, $template_data, $placement, true ); ?>
 		</div>
 	</div>
@@ -368,10 +366,10 @@ if ( 'drawer' === $display_style ) {
 	}
 	?>
 		<div class="revx-d-flex revx-item-center revx-justify-center revx-flex-wrap revx-gap-10">
-			<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'spgHeading', $current_message, 'revx-text-center' ); ?>
-			<?php echo Revenue_Template_Utils::render_add_to_cart_button( $template_data, false, 'shopNowButton' ); ?>
+			<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'spgHeading', $current_message, 'revx-text-center' ), revenue()->get_allowed_tag() ); ?>
+			<?php echo wp_kses( Revenue_Template_Utils::render_add_to_cart_button( $template_data, false, 'shopNowButton' ), revenue()->get_allowed_tag() ); ?>
 		</div>
-		<?php echo Revenue_Template_Utils::render_progressbar( $template_data, 'CampaignProgressbar', $progress, $campaign ); ?>
+		<?php echo wp_kses( Revenue_Template_Utils::render_progressbar( $template_data, 'CampaignProgressbar', $progress, $campaign ), revenue()->get_allowed_tag() ); ?>
 		<?php Revenue_Template_Utils::render_products_container( $campaign, $template_data, $placement, true ); ?>
 	<?php
 	if ( $is_all_page_active && ! $is_other_page_active ) {
@@ -379,7 +377,7 @@ if ( 'drawer' === $display_style ) {
 	}
 	?>
 	<div class="revx-spending-goal-success">
-		<svg 
+		<svg
 			style="
 				background-color: #00A464;
 				color: #ffffff;
@@ -389,21 +387,21 @@ if ( 'drawer' === $display_style ) {
 				padding: 4px;
 				box-sizing: content-box;
 			"
-			xmlns="http://www.w3.org/2000/svg" 
-			width="1em" 
-			height="1em" 
-			fill="none" 
+			xmlns="http://www.w3.org/2000/svg"
+			width="1em"
+			height="1em"
+			fill="none"
 			viewBox="0 0 24 24"
 		>
 			<path stroke="currentColor" d="M20 6 9 17l-5-5"/>
-		</svg> 
+		</svg>
 		<span> <?php echo esc_attr( $reward_message ); ?> </span>
 	</div>
 	<?php
 }
 ?>
-	<input type="hidden" name="revenue_spending_goal_offer" value="<?php echo htmlspecialchars( wp_json_encode( $offers ) ); ?>" />
-	<input type="hidden" name="revenue_upsell_products" value="<?php echo htmlspecialchars( wp_json_encode( $upsell_products ) ); ?>" />
+	<input type="hidden" name="revenue_spending_goal_offer" value="<?php echo esc_attr( wp_json_encode( $offers ) ); ?>" />
+	<input type="hidden" name="revenue_upsell_products" value="<?php echo esc_attr( wp_json_encode( $upsell_products ) ); ?>" />
 </div>
 <?php
 

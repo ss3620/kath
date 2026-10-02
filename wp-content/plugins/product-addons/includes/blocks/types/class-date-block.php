@@ -43,7 +43,7 @@ class Date_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 		if ( empty( $options ) ) {
 			return '';
 		}
@@ -66,6 +66,7 @@ class Date_Block extends Abstract_Block {
 	/**
 	 * Get date specific attributes
 	 *
+	 * @param array $price_info Price information.
 	 * @return array
 	 */
 	private function get_date_attributes( $price_info ): array {
@@ -87,6 +88,7 @@ class Date_Block extends Abstract_Block {
 	/**
 	 * Render date picker
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_date_picker( $price_info ): string {
@@ -106,6 +108,7 @@ class Date_Block extends Abstract_Block {
 	/**
 	 * Render date input container
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_date_input_container( $price_info ): string {
@@ -132,6 +135,7 @@ class Date_Block extends Abstract_Block {
 	/**
 	 * Render date input
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_date_input( $price_info ): string {

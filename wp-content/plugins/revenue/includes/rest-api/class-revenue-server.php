@@ -47,7 +47,5 @@ class Revenue_Server {
 			$this->controllers['revenue/v1']['settings'] = new Revenue_Settings_REST_Controller();
 		}
 		$this->controllers['revenue/v1']['settings']->register_routes();
-
 	}
-
 }

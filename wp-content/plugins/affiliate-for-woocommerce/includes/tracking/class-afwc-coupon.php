@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/tracking/
  * @since       1.7.0
- * @version     1.7.0
+ * @version     1.8.1
  */
 
 // Exit if accessed directly.
@@ -37,6 +37,10 @@ if ( ! class_exists( 'AFWC_Coupon' ) ) {
 				// Filter for WooCommerce > Coupons table.
 				add_filter( 'views_edit-shop_coupon', array( $this, 'add_referral_coupons_filter' ) );
 				add_action( 'pre_get_posts', array( $this, 'filter_referral_coupons' ) );
+
+				// Action to add content of coupon referral link for affiliate in shareable link metabox.
+				add_action( 'wc_sc_coupon_shareable_link_metabox_end', array( $this, 'show_afwc_coupon_shareable_link' ) );
+				add_action( 'ucscwc_coupon_shareable_link_metabox_end', array( $this, 'show_afwc_coupon_shareable_link' ) );
 			}
 			add_action( 'woocommerce_coupon_options_save', array( $this, 'save_affiliate_coupon_fields' ), 10, 2 );
 
@@ -95,13 +99,56 @@ if ( ! class_exists( 'AFWC_Coupon' ) ) {
 							'afwc_referral_coupon_of',
 							array(
 								'affiliate_id' => $user_id,
-								'style'        => 'width: 50%;',
+								'style'        => 'width: 51%;', // Set this width to make description go to the next line and not next to the field.
 							)
 						)
 						: '';
-					echo wp_kses_post( wc_help_tip( _x( 'Search affiliate by email, username, name or user id to assign this coupon to them. Affiliates will see this coupon in their My account > Affiliates > Profile.', 'help tip for search and assign affiliate', 'affiliate-for-woocommerce' ) ) );
+
+					$current_screen  = get_current_screen();
+					$add_coupon_page = ( ! empty( $current_screen ) && ! empty( $current_screen->post_type ) && ! empty( $current_screen->action ) && 'shop_coupon' === $current_screen->post_type && 'add' === $current_screen->action );
+
+					$coupon_code = is_callable( array( $coupon, 'get_code' ) ) ? $coupon->get_code() : get_the_title( $coupon_id );
+					$coupon_url  = $this->get_coupon_url( $coupon_code );
+					/**
+					 * Filter to check if coupon has sharable link feature
+					 *
+					 * @since 9.11.0
+					 */
+					$description = apply_filters( 'afwc_coupon_shareable_link_is_available', false ) && ! empty( $coupon_code ) && ! $add_coupon_page
+						? sprintf(
+							/* translators: %s: payout method name */
+							_x( 'Affiliates will see this coupon and a shareable coupon link %s under Account > Affiliate > Profile.', 'description part for search and assign affiliate coupon field when shareable coupon link is available', 'affiliate-for-woocommerce' ),
+							'<code>' . esc_url( $coupon_url ) . '</code>'
+						)
+						: _x( 'Affiliates will see this coupon with its details under Account > Affiliate > Profile.', 'description part for search and assign affiliate coupon field when shareable coupon link is not available', 'affiliate-for-woocommerce' );
+
+					echo '<span class="description" style="display: inline-block; margin: 0.5rem 0 0 0;">';
+					echo wp_kses_post( $description );
+					echo '</span>';
 					?>
 				</p>
+			</div>
+			<?php
+		}
+
+		/**
+		 * Method to add content of coupon referral link for affiliate in shareable link metabox.
+		 */
+		public function show_afwc_coupon_shareable_link() {
+			/**
+			 * Filter to check if coupon has sharable link feature
+			 *
+			 * @since 9.11.0
+			 */
+			if ( ! apply_filters( 'afwc_coupon_shareable_link_is_available', false ) ) {
+				return;
+			}
+			?>
+			<hr style="margin-top: 1rem;" />
+			<div class="afw-coupon-referral-link">
+				<h4><?php echo esc_html_x( 'Affiliate-ready coupons', 'heading for affiliate coupon sharing section', 'affiliate-for-woocommerce' ); ?></h4>
+				<p><?php echo esc_html_x( 'Affiliates can promote using the shareable coupon link, which will automatically apply the coupon and track the referral when customers use the link.', 'description explaining that the referral coupon is automatically applied when customers use the referral link', 'affiliate-for-woocommerce' ); ?></p>
+				<p><?php echo esc_html_x( "You don't need to send the link or coupon code manually.", 'description explaining that the referral coupon is automatically applied when customers use the referral link', 'affiliate-for-woocommerce' ); ?></p>
 			</div>
 			<?php
 		}

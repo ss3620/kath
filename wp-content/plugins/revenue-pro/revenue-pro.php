@@ -3,7 +3,7 @@
  * Plugin Name: WowRevenue Pro
  * Plugin URI: https://wordpress.org/plugins/revenue
  * Description: The Pro Version of WowRevenue - The most advanced WooCommerce plugin. Build powerful sales campaigns and deploy them on your online stores without limits.
- * Version: 2.1.4
+ * Version: 2.2.2
  * Author: WowRevenue
  * Author URI: https://wowrevenue.com/
  * License: GPLv3
@@ -27,6 +27,13 @@ if ( ! defined( 'REVENUE_PRO_PATH' ) ) {
 
 if ( ! defined( 'REVENUE_PRO_URL' ) ) {
 	define( 'REVENUE_PRO_URL', plugin_dir_url( __FILE__ ) );
+}
+
+// Free/Pro compatibility guard. Nothing else may load until this passes.
+require_once REVENUE_PRO_PATH . 'includes/class-revenue-pro-compat.php';
+
+if ( ! \RevenuePro\Revenue_Pro_Compat::boot() ) {
+	return;
 }
 
 // Include the main Revenue class.

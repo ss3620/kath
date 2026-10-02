@@ -7,6 +7,8 @@
 
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Revenue Analytics
  *
@@ -91,7 +93,7 @@ class Revenue_Analytics {
 	 * @param int $campaign_id Campaign ID.
 	 * @param int $item_id Item ID.
 	 */
-	public function increment_campaign_order_count( $campaign_id, $item_id=false ) {
+	public function increment_campaign_order_count( $campaign_id, $item_id = false ) {
 		$this->update_campaign_stat( $campaign_id, 'order_count' );
 	}
 
@@ -123,8 +125,8 @@ class Revenue_Analytics {
 		}
 		$stat_type = esc_sql( $stat_type );
 
-		$cache_key   = "campaign_stat_{$campaign_id}_{$date}";
-		$cached_stat = wp_cache_get( $cache_key, 'campaign_analytics' );
+		$cache_key   = "revenue_campaign_stat_{$campaign_id}_{$date}";
+		$cached_stat = wp_cache_get( $cache_key, 'revenue_campaign_analytics' );
 
 		if ( ! $cached_stat ) {
 			$existing_record = $wpdb->get_row( //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -137,7 +139,7 @@ class Revenue_Analytics {
 			);
 			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			wp_cache_set( $cache_key, $existing_record, 'campaign_analytics' );
+			wp_cache_set( $cache_key, $existing_record, 'revenue_campaign_analytics' );
 		} else {
 			$existing_record = $cached_stat;
 		}
@@ -166,7 +168,6 @@ class Revenue_Analytics {
 			);
 		}
 
-		wp_cache_delete( $cache_key, 'campaign_analytics' );
+		wp_cache_delete( $cache_key, 'revenue_campaign_analytics' );
 	}
-
 }

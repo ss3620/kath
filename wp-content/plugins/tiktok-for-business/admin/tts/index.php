@@ -6,6 +6,10 @@
 
 namespace tiktok\admin\tts\index;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 add_action(
 	'plugins_loaded',
 	function () {

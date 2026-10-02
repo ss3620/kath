@@ -17,6 +17,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class Upload_Block extends Abstract_Block {
 
+	/**
+	 * Allowed file extensions for the current block instance.
+	 *
+	 * @var array
+	 */
 	private $allowed_file_types = array();
 
 	/**
@@ -34,7 +39,7 @@ class Upload_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 
 		if ( empty( $options ) ) {
 			return '';
@@ -60,6 +65,7 @@ class Upload_Block extends Abstract_Block {
 	/**
 	 * Get checkbox specific attributes
 	 *
+	 * @param array $price_info Price information.
 	 * @return array
 	 */
 	private function get_upload_attributes( $price_info ): array {
@@ -72,16 +78,15 @@ class Upload_Block extends Abstract_Block {
 		);
 
 		$allowed = $this->get_property( 'allowedFileTypes', array() );
-		if ( ! product_addons()->is_pro_feature_available() ) {
-			$allowed = array_values(
-				array_filter(
-					$allowed,
-					function ( $ext ) {
-						return in_array( $ext, array( 'jpg', 'jpeg', 'png' ), true );
-					}
-				)
-			);
-		}
+		$allowed = array_values(
+			array_filter(
+				$allowed,
+				function ( $ext ) {
+					return in_array( $ext, array( 'jpg', 'jpeg', 'png' ), true );
+				}
+			)
+		);
+		$allowed = apply_filters( 'prad_upload_allowed_file_types', $allowed, $this->get_property( 'allowedFileTypes', array() ), $this );
 
 		$this->allowed_file_types = $allowed;
 
@@ -105,8 +110,8 @@ class Upload_Block extends Abstract_Block {
 	/**
 	 * Render upload section
 	 *
-	 * @param object $item Upload item
-	 * @param array  $price_info Price information
+	 * @param object $item Upload item.
+	 * @param array  $price_info Price information.
 	 * @return string
 	 */
 	private function render_upload_section( $item, array $price_info ): string {
@@ -129,9 +134,9 @@ class Upload_Block extends Abstract_Block {
 	/**
 	 * Render upload label and dropzone
 	 *
-	 * @param string $block_id Block ID
-	 * @param array  $price_info Price information
-	 * @param string $accept_types Accepted file types
+	 * @param string $block_id Block ID.
+	 * @param array  $price_info Price information.
+	 * @param string $accept_types Accepted file types.
 	 * @return string
 	 */
 	private function render_upload_label( string $block_id, array $price_info, string $accept_types ): string {
@@ -143,7 +148,7 @@ class Upload_Block extends Abstract_Block {
 
 		$html .= '<div class="prad-d-flex prad-item-center prad-gap-12">';
 
-			// Upload icon
+			// Upload icon.
 			$html         .= $this->render_upload_icon();
 			$html         .= '<div class="prad-block-upload-text prad-block-upload-title">';
 				$html     .= $this->render_file_input( $block_id, $price_info, $accept_types );
@@ -162,9 +167,9 @@ class Upload_Block extends Abstract_Block {
 	/**
 	 * Render file input
 	 *
-	 * @param string $block_id Block ID
-	 * @param array  $price_info Price information
-	 * @param string $accept_types Accepted file types
+	 * @param string $block_id Block ID.
+	 * @param array  $price_info Price information.
+	 * @param string $accept_types Accepted file types.
 	 * @return string
 	 */
 	private function render_file_input( string $block_id, array $price_info, string $accept_types ): string {
@@ -192,7 +197,7 @@ class Upload_Block extends Abstract_Block {
 	private function render_upload_icon(): string {
 		$upload_text = $this->get_property( 'uploadText', 'Upload' );
 		return '<div class="prad-block-upload-icon prad-d-flex prad-item-center prad-gap-6">
-		
+
 		<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M11.5556 2.45333C11.5556 2.82152 11.2571 3.12 10.8889 3.12C10.5207 3.12 10.2222 2.82152 10.2222 2.45333V2C10.2222 1.63181 9.92375 1.33333 9.55556 1.33333L2 1.33333C1.63181 1.33333 1.33333 1.63181 1.33333 2V2.45333C1.33333 2.82152 1.03486 3.12 0.666667 3.12C0.298477 3.12 0 2.82152 0 2.45333V2C0 0.895431 0.895431 0 2 0H9.55556C10.6601 0 11.5556 0.895431 11.5556 2V2.45333Z" fill="#1A1A1A"/>
 			<path d="M6.44445 11.12C6.44445 11.4882 6.14597 11.7867 5.77778 11.7867C5.40959 11.7867 5.11111 11.4882 5.11111 11.12V5.17392L3.58252 6.70252C3.32217 6.96287 2.90006 6.96287 2.63971 6.70252C2.37936 6.44217 2.37936 6.02006 2.63971 5.75971L5.30637 3.09304C5.56672 2.83269 5.98883 2.83269 6.24918 3.09304L8.91585 5.75971C9.1762 6.02006 9.1762 6.44217 8.91585 6.70252C8.6555 6.96287 8.23339 6.96287 7.97304 6.70252L6.44445 5.17392V11.12Z" fill="#1A1A1A"/>
@@ -206,7 +211,7 @@ class Upload_Block extends Abstract_Block {
 	/**
 	 * Get accept types string for file input
 	 *
-	 * @param array $allowed_types Array of allowed file extensions
+	 * @param array $allowed_types Array of allowed file extensions.
 	 * @return string
 	 */
 	private function get_accept_types( array $allowed_types ): string {

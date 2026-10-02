@@ -70,6 +70,11 @@ class Tt4b_Menu_Class {
 		$advanced_matching = false;
 		$shop_name         = get_bloginfo( 'name' );
 		$redirect_uri      = admin_url();
+		$oauth_state       = get_option( 'tt4b_oauth_state' );
+		if ( ! is_string( $oauth_state ) || '' === $oauth_state ) {
+			$oauth_state = wp_generate_password( 32, false );
+			update_option( 'tt4b_oauth_state', $oauth_state );
+		}
 
 		$app_id            = get_option( 'tt4b_app_id' );
 		$secret            = get_option( 'tt4b_secret' );
@@ -129,6 +134,7 @@ class Tt4b_Menu_Class {
 			'domain'               => $shop_domain,
 			'app_id'               => $app_id,
 			'redirect_uri'         => $redirect_uri,
+			'state'                => $oauth_state,
 			'hmac'                 => $hmac,
 			'close_method'         => 'redirect_inside_tiktok',
 			'extra_data'           => $current_tiktok_for_woocommerce_version,
@@ -356,20 +362,9 @@ class Tt4b_Menu_Class {
 			$store_city      = get_option( 'woocommerce_store_city' );
 			$store_postcode  = get_option( 'woocommerce_store_postcode' );
 
-			// country and state separated.
-			$store_raw_country = get_option( 'woocommerce_default_country' );
-			$split_country     = explode( ':', $store_raw_country );
-			$store_state       = '';
-			if ( count( $split_country ) > 1 ) {
-				$store_state = $split_country[1];
-				$menu_obj    = new Tt4b_Menu_Class();
-				$store_state = $menu_obj->convert_state( $store_state );
-			}
-
 			$external_data['address_1'] = $store_address;
 			$external_data['address_2'] = $store_address_2;
 			$external_data['city']      = $store_city;
-			$external_data['state']     = $store_state;
 			$external_data['zip_code']  = $store_postcode;
 
 		}
@@ -433,33 +428,33 @@ class Tt4b_Menu_Class {
 	 * @return void
 	 */
 	public static function tt4b_store_access_token() {
-		$logger = new Logger();
-		$mapi   = new Tt4b_Mapi_Class( $logger );
-		$url    = '';
-		if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
-			$url = esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) . wp_unslash( $_SERVER['REQUEST_URI'] ) );
+		if ( wp_doing_ajax() || ! current_user_can( 'manage_options' ) ) {
+			return;
 		}
-		$auth_code        = '';
-		$split_url        = explode( '&', $url );
-		$split_url_params = count( $split_url );
-		for ( $i = 0; $i < $split_url_params; $i++ ) {
-			if ( false !== strpos( $split_url[ $i ], 'auth_code' ) ) {
-				$auth_code = substr( $split_url[ $i ], strpos( $split_url[ $i ], '=' ) + 1 );
-				$logger->log( __METHOD__, "auth_code retrieved: $auth_code" );
-			}
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- TikTok's OAuth redirect cannot carry a nonce; the state parameter generated in tt4b_admin_menu_main is validated instead.
+		if ( ! isset( $_GET['auth_code'] ) || ! isset( $_GET['state'] ) ) {
+			return;
 		}
-		if ( '' !== $auth_code ) {
-			$app_id           = get_option( 'tt4b_app_id' );
-			$secret           = get_option( 'tt4b_secret' );
-			$access_token_rsp = $mapi->get_access_token( $app_id, $secret, $auth_code, 'v1.2' );
-			$results          = json_decode( $access_token_rsp, true );
-			if ( 'OK' === $results['message'] ) {
-				// status OK.
-				$access_token = $results['data']['access_token'];
-				update_option( 'tt4b_access_token', $access_token );
-				wp_safe_redirect( get_admin_url() . 'admin.php?page=tiktok' );
-			}
+		$auth_code = sanitize_text_field( wp_unslash( $_GET['auth_code'] ) );
+		$state     = sanitize_text_field( wp_unslash( $_GET['state'] ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		$expected_state = get_option( 'tt4b_oauth_state' );
+		if ( '' === $auth_code || ! is_string( $expected_state ) || '' === $expected_state || ! hash_equals( $expected_state, $state ) ) {
+			return;
 		}
+		$logger           = new Logger();
+		$mapi             = new Tt4b_Mapi_Class( $logger );
+		$app_id           = get_option( 'tt4b_app_id' );
+		$secret           = get_option( 'tt4b_secret' );
+		$access_token_rsp = $mapi->get_access_token( $app_id, $secret, $auth_code, 'v1.2' );
+		$results          = json_decode( $access_token_rsp, true );
+		if ( isset( $results['message'], $results['data']['access_token'] ) && 'OK' === $results['message'] ) {
+			update_option( 'tt4b_access_token', $results['data']['access_token'] );
+			delete_option( 'tt4b_oauth_state' );
+			wp_safe_redirect( get_admin_url() . 'admin.php?page=tiktok' );
+			exit;
+		}
+		$logger->log( __METHOD__, 'access token exchange failed', 'error' );
 	}
 
 	/**

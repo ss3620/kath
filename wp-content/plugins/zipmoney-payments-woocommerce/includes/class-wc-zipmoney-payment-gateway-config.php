@@ -33,10 +33,17 @@ class WC_Zipmoney_Payment_Gateway_Config {
 	const CONFIG_PRODUCT                      = 'product';
 	const CONFIG_CHARGE_CAPTURE               = 'charge_capture';
 	const CONFIG_LOGGING_LEVEL                = 'log_level';
-	const CONFIG_DISPLAY_WIDGET               = 'display_widget';
-	const CONFIG_DISPLAY_WIDGET_MODE          = 'display_widget_mode';
-	const CONFIG_DISPLAY_WIDGET_PRODUCT_PAGE  = 'display_widget_product_page';
-	const CONFIG_DISPLAY_WIDGET_CART          = 'display_widget_cart';
+	const CONFIG_DISPLAY_WIDGET                 = 'display_widget';
+	const CONFIG_DISPLAY_WIDGET_MODE            = 'display_widget_mode';
+	// The four widget placement keys below are also spelled in Widget_Placement::$keys,
+	// which is what reads them back. The form takes its keys from there through
+	// get_setting_key(), so the two cannot drift: renaming a constant here without touching
+	// the resolver used to mean the form writes one option and the resolver reads another,
+	// and the setting quietly stopped applying.
+	const CONFIG_DISPLAY_WIDGET_PRODUCT_PAGE     = 'display_widget_product_page';
+	const CONFIG_DISPLAY_WIDGET_PRODUCT_SELECTOR = 'display_widget_product_selector';
+	const CONFIG_DISPLAY_WIDGET_CART             = 'display_widget_cart';
+	const CONFIG_DISPLAY_WIDGET_CART_SELECTOR    = 'display_widget_cart_selector';
 	const CONFIG_DISPLAY_BANNERS              = 'display_banners';
 	const CONFIG_DISPLAY_BANNER_SHOP          = 'display_banner_shop';
 	const CONFIG_DISPLAY_BANNER_PRODUCT_PAGE  = 'display_banner_product_page';
@@ -62,7 +69,7 @@ class WC_Zipmoney_Payment_Gateway_Config {
 
 	// region for zip widget
 	const REGION_AU = 'au';
-	const REGION_NZ = 'nz';
+//	const REGION_NZ = 'nz';
 //	const REGION_GB = 'gb';
 //	const REGION_ZA = 'za';
 //	const REGION_US = 'us';
@@ -204,7 +211,8 @@ class WC_Zipmoney_Payment_Gateway_Config {
                     }
                     var data = {
                         private_key: privatekey,
-                        environment: environment
+                        environment: environment,
+                        zip_nonce: ZipApiKeyCheckNonce
                     };
                     var url = ZipApiKeyCheckUrl;
                     $.post(url, data, function(response) {
@@ -284,7 +292,7 @@ class WC_Zipmoney_Payment_Gateway_Config {
 					self::REGION_AU => 'Australia',
 //					self::REGION_CA => 'Canada',
 //					self::REGION_MX => 'Mexico',
-					self::REGION_NZ => 'New Zealand',
+//					self::REGION_NZ => 'New Zealand',
 //					self::REGION_SG => 'Singapore',
 //					self::REGION_ZA => 'South Africa',
 //					self::REGION_AE => 'United Arab Emirates',
@@ -347,18 +355,34 @@ class WC_Zipmoney_Payment_Gateway_Config {
 					self::DISPLAY_INLINE => __( 'inline', 'zippayment' ),
 				),
 			),
-			self::CONFIG_DISPLAY_WIDGET_PRODUCT_PAGE  => array(
+			WC_Zipmoney_Payment_Gateway_Widget_Placement::get_setting_key( WC_Zipmoney_Payment_Gateway_Widget_Placement::TYPE_PRODUCT, 'enabled' ) => array(
 				'title'    => __( 'Marketing widgets', 'zippayment' ),
 				'label'    => __( 'Display on product page', 'zippayment' ),
 				'type'     => 'checkbox',
 				'desc_tip' => __( 'The product widget will break down the price of the item and display a minimum weekly repayment or divide the price by 4 and show the customer an equal price breakdown', 'zippayment' ),
 				'default'  => 'yes',
 			),
-			self::CONFIG_DISPLAY_WIDGET_CART          => array(
+			WC_Zipmoney_Payment_Gateway_Widget_Placement::get_setting_key( WC_Zipmoney_Payment_Gateway_Widget_Placement::TYPE_CART, 'enabled' ) => array(
 				'label'    => __( 'Display on cart page', 'zippayment' ),
 				'type'     => 'checkbox',
 				'desc_tip' => __( 'The cart widget will break down the price of the item and display a minimum weekly repayment or divide the price by 4 and show the customer an equal price breakdown', 'zippayment' ),
 				'default'  => 'yes',
+			),
+			// The two checkboxes above stay adjacent on purpose: the cart one carries no
+			// 'title', so WooCommerce renders it with an empty <th> and it reads as a
+			// continuation of the "Marketing widgets" row. Anything titled placed between
+			// them breaks that grouping.
+			WC_Zipmoney_Payment_Gateway_Widget_Placement::get_setting_key( WC_Zipmoney_Payment_Gateway_Widget_Placement::TYPE_PRODUCT, 'selector' ) => array(
+				'title'    => __( 'Product widget selector', 'zippayment' ),
+				'type'     => 'text',
+				'desc_tip' => __( 'Optional CSS selector, pointing at an element of your theme. The widget is rendered under the price, then moved in front of the first matching element — the selector moves that widget, it never creates one, and it never moves a widget you placed yourself with the [zip_widget] shortcode. Leave it empty, or let it match nothing, and the widget stays under the price.', 'zippayment' ),
+				'default'  => '',
+			),
+			WC_Zipmoney_Payment_Gateway_Widget_Placement::get_setting_key( WC_Zipmoney_Payment_Gateway_Widget_Placement::TYPE_CART, 'selector' ) => array(
+				'title'    => __( 'Cart widget selector', 'zippayment' ),
+				'type'     => 'text',
+				'desc_tip' => __( 'Optional CSS selector, pointing at an element of your theme. The widget is rendered under the Proceed to checkout button, then moved in front of the first matching element — the selector moves that widget, it never creates one, and it never moves a widget you placed yourself with the [zip_widget] shortcode. It works on the classic cart and on a block cart alike, where the widget otherwise fills the order summary. Leave it empty, or let it match nothing, and the widget stays where it was rendered.', 'zippayment' ),
+				'default'  => '',
 			),
 			self::CONFIG_DISPLAY_BANNERS              => array(
 				'title'    => __( 'Marketing banners', 'zippayment' ),
@@ -394,6 +418,7 @@ class WC_Zipmoney_Payment_Gateway_Config {
 			),
 		);
 	}
+
 
 	public function get_checkout_redirect_url() {
 		$url = get_home_url();
@@ -456,6 +481,29 @@ class WC_Zipmoney_Payment_Gateway_Config {
 	 */
 	public function get_environment() {
 		 return $this->is_bool_config_by_key( self::CONFIG_SANDBOX ) ? 'sandbox' : 'production';
+	}
+
+	/**
+	 * The region the Zip widget bundle is given, in the spelling the option stores.
+	 *
+	 * Lower case, and it has to stay lower case. The bundle's region enum is lower case —
+	 * `wt.AU = "au"` in zip-widget.min.js 1.7.0 — and so are the keys of the asset
+	 * configuration it fetches, global.json holding au, nz and us. Any other spelling
+	 * misses the `region === wt.AU` branch, and the widget then shows the line the bundle
+	 * hard-codes for every other region, "or 4 interest free payments of …", instead of
+	 * the merchant's own copy.
+	 *
+	 * This used to be upper-cased here. That was read off a stand whose merchant public
+	 * key was empty: with no key the bundle serves the generic asset on 'au' as well, by
+	 * the second half of the same condition, so the upper-cased value merely looked like
+	 * the one that worked.
+	 *
+	 * @return string
+	 */
+	public function get_widget_region() {
+		$value = $this->WC_Zipmoney_Payment_Gateway->get_option( self::CONFIG_SELECT_REGION );
+
+		return is_scalar( $value ) ? (string) $value : '';
 	}
 
 	/**

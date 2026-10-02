@@ -58,7 +58,7 @@ class Date_Time_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 		if ( empty( $options ) ) {
 			return '';
 		}
@@ -81,7 +81,7 @@ class Date_Time_Block extends Abstract_Block {
 	/**
 	 * Get datetime specific attributes
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return array
 	 */
 	private function get_datetime_attributes( $price_info ): array {
@@ -92,9 +92,9 @@ class Date_Time_Block extends Abstract_Block {
 			$this->get_css_class(),
 		);
 
-		$attributes['class']      = $this->build_css_classes( $css_classes );
-		$attributes['data-val']   = $price_info['price'];
-		$attributes['data-ptype'] = $price_info['type'];
+		$attributes['class']              = $this->build_css_classes( $css_classes );
+		$attributes['data-val']           = $price_info['price'];
+		$attributes['data-ptype']         = $price_info['type'];
 		$attributes['data-field-variant'] = $this->get_property( 'blockType', 'datetime' );
 
 		return $attributes;
@@ -103,7 +103,7 @@ class Date_Time_Block extends Abstract_Block {
 	/**
 	 * Render datetime picker
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_datetime_picker( $price_info ): string {
@@ -125,7 +125,7 @@ class Date_Time_Block extends Abstract_Block {
 	/**
 	 * Render date input container
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_date_input_container( $price_info ): string {
@@ -143,7 +143,7 @@ class Date_Time_Block extends Abstract_Block {
 	/**
 	 * Render time input container
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_time_input_container( $price_info ): string {
@@ -185,7 +185,7 @@ class Date_Time_Block extends Abstract_Block {
 	/**
 	 * Render date input
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_date_input( $price_info ): string {
@@ -197,18 +197,20 @@ class Date_Time_Block extends Abstract_Block {
 			'type'                    => 'text',
 			'readonly'                => true,
 			'class'                   => 'prad-date-input prad-custom-date-input prad-w-95 prad-cursor-pointer prad-input',
-			'data-min-date'           => 'custom' == $min_date_type ? $this->get_property( 'minDate', '' ) : $min_date_type,
-			'data-max-date'           => 'custom' == $max_date_type ? $this->get_property( 'maxDate', '' ) : $max_date_type,
+			'data-min-date'           => 'custom' === $min_date_type ? $this->get_property( 'minDate', '' ) : $min_date_type,
+			'data-max-date'           => 'custom' === $max_date_type ? $this->get_property( 'maxDate', '' ) : $max_date_type,
 			'placeholder'             => $format,
 			'data-format'             => $format,
 			'data-disabled-weekdays'  => wp_json_encode( $this->get_property( 'disableDays', array() ) ),
 			'data-disabled-date'      => wp_json_encode( $this->get_property( 'disableDates', array() ) ),
 			'data-disabled-specdates' => wp_json_encode( $this->get_property( 'disableSpecificDates', '[]' ) ),
 			'data-disable-today'      => wp_json_encode( $this->get_property( 'disableToday', false ) ),
-			'data-disable-next-days'  => product_addons()->is_pro_feature_available() ? intval( $this->get_property( 'disableNextDays', 0 ) ) : 0,
 			'data-val'                => $price_info['price'],
 			'data-initdate'           => 'no',
 		);
+
+		// Extra date rules (for example "disable the next N days") are added by product-addons-pro.
+		$attributes = apply_filters( 'prad_date_input_attributes', $attributes, $this );
 
 		return sprintf( '<input %s />', $this->build_attributes( $attributes ) );
 	}
@@ -216,7 +218,7 @@ class Date_Time_Block extends Abstract_Block {
 	/**
 	 * Render time input
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_time_input( $price_info ): string {
@@ -225,7 +227,7 @@ class Date_Time_Block extends Abstract_Block {
 			'type'             => 'text',
 			'readonly'         => true,
 			'class'            => 'prad-time-input prad-custom-time-input prad-w-95 prad-cursor-pointer prad-input',
-			'placeholder'      => '12_hours' == $format_type ? 'hh:mm A' : 'HH:mm',
+			'placeholder'      => '12_hours' === $format_type ? 'hh:mm A' : 'HH:mm',
 			'data-val'         => $price_info['price'],
 			'data-max-time'    => $this->get_property( 'maxTime', '' ),
 			'data-min-time'    => $this->get_property( 'minTime', '' ),

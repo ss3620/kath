@@ -37,17 +37,8 @@ jQuery( document ).ready( function ( $ ) {
 				initializeSlider( $( this ), 'bundle_discount' );
 			} );
 
-			$(
-				'.revx-floating.revx-frequently-bought-together-grid .revx-slider-container'
-			).each( function () {
-				initializeSlider( $( this ), 'fbt' );
-			} );
-
-			$( '.revx-floating.revx-mix-match .revx-slider-container' ).each(
-				function () {
-					initializeSlider( $( this ), 'mix_match' );
-				}
-			);
+			// Campaign types owned by other plugins initialise their own sliders.
+			$( document ).trigger( 'revx-campaign-floating-opened' );
 
 			buxXGetYSlider();
 

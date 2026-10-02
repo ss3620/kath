@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/multi-tier/
  * @since       5.4.0
- * @version     2.4.0
+ * @version     2.5.0
  */
 
 use AFWC\Referral_Mediums\Referral_Medium_Interface;
@@ -23,6 +23,13 @@ if ( ! class_exists( 'AFWC_Multi_Tier' ) ) {
 	 * Class to handle Multi-Tier
 	 */
 	class AFWC_Multi_Tier {
+
+		/**
+		 * Maximum number of tiers allowed.
+		 *
+		 * @var int
+		 */
+		const MAX_TIERS = 10;
 
 		/**
 		 * Variable to hold whether the multi tier is enabled or not

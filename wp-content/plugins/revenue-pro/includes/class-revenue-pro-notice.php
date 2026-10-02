@@ -1,6 +1,8 @@
 <?php
 namespace RevenuePro;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * RevenueX Notice
  *
@@ -11,7 +13,7 @@ class Revenue_Pro_Notice {
 
 
 	public static function get_installation_notice_css() {
-		if(self::$is_css_added) {
+		if ( self::$is_css_added ) {
 			return;
 		}
 		self::$is_css_added = true;
@@ -187,12 +189,10 @@ class Revenue_Pro_Notice {
 				/>
 				<div class="revx-wc-install__body">
 					<h3 class="revx-wc-install__heading">
-						<?php echo sprintf(
-							"You installed WowRevenue Pro"
-						); ?>
+						<?php esc_html_e( 'You installed WowRevenue Pro', 'revenue-pro' ); ?>
 					</h3>
 					<p>
-						<?php echo sprintf("To use all the pro features, you need to activate the free version of WowRevenue"); ?>
+						<?php esc_html_e( 'To use all the pro features, you need to activate the free version of WowRevenue', 'revenue-pro' ); ?>
 					</p>
 					<p>
 						<button
@@ -213,19 +213,19 @@ class Revenue_Pro_Notice {
 						e.preventDefault();
 						let $button = $(this);
 						$button.removeClass('installing').addClass('activating');
-						$button.text('<?php esc_html_e( 'Activating...', 'revenue-pro' ); ?>').append('<span class="spinner"></span>');
+						$button.text('<?php echo esc_js( __( 'Activating...', 'revenue-pro' ) ); ?>').append('<span class="spinner"></span>');
 						$.ajax({
 							url: ajaxurl,
 							type: 'POST',
 							data: {
-								action: 'revx_activate_wowrevenue',
+								action: 'revenue_activate_wowrevenue',
 								_ajax_nonce: '<?php echo esc_attr( wp_create_nonce( 'activate_wowrevenue' ) ); ?>'
 							},
 							success: function(response) {
 								$button.removeClass('activating');
 								$button.find('.spinner').hide();
 								if (response.success) {
-									window.location.href = '<?php echo esc_url( admin_url(  'admin.php?page=' . revenue_pro()->get_admin_menu_slug() . '#/' ) ); ?>';
+									window.location.href = '<?php echo esc_url( admin_url( 'admin.php?page=' . apply_filters( 'revenue_menu_slug', 'revenue' ) . '#/' ) ); ?>';
 								} else {
 									console.log( response.data );
 								}
@@ -240,8 +240,6 @@ class Revenue_Pro_Notice {
 				});
 			</script>
 		<?php
-
-
 	}
 
 	public static function get_wowrevenue_not_installed_notice() {
@@ -251,18 +249,16 @@ class Revenue_Pro_Notice {
 			<img
 				loading="lazy"
 				width="200"
-                src="<?php echo esc_url( REVENUE_PRO_URL . 'assets/images/revenue_logo.png' ); ?>"
+				src="<?php echo esc_url( REVENUE_PRO_URL . 'assets/images/revenue_logo.png' ); ?>"
 				alt="Revenue logo"
 				class="revx-wc-install__img"
 			/>
 			<div class="revx-wc-install__body">
 				<h3 class="revx-wc-install__heading">
-					<?php echo sprintf(
-						"You installed WowRevenue Pro"
-					); ?>
+					<?php esc_html_e( 'You installed WowRevenue Pro', 'revenue-pro' ); ?>
 				</h3>
 				<p>
-					<?php echo sprintf("To use all the pro features, you need to activate the free version of WowRevenue"); ?>
+					<?php esc_html_e( 'To use all the pro features, you need to activate the free version of WowRevenue', 'revenue-pro' ); ?>
 				</p>
 				<p>
 					<button
@@ -284,31 +280,31 @@ class Revenue_Pro_Notice {
 					var $button = $(this);
 					$button.addClass('installing');
 					$button.find('.spinner').show();
-					$button.text('<?php esc_html_e( 'Installing...', 'revenue-pro' ); ?>').append('<span class="spinner"></span>');
+					$button.text('<?php echo esc_js( __( 'Installing...', 'revenue-pro' ) ); ?>').append('<span class="spinner"></span>');
 					$.ajax({
 						url: ajaxurl,
 						type: 'POST',
 						data: {
-							action: 'revx_install_wowrevenue',
-							_ajax_nonce: '<?php  echo esc_attr( wp_create_nonce( "install_wowrevenue" ) ); ?>'// phpcs:ignore
+							action: 'revenue_install_wowrevenue',
+							_ajax_nonce: '<?php echo esc_attr( wp_create_nonce( 'install_wowrevenue' ) ); ?>'// phpcs:ignore
 						},
 						success: function(response) {
 							if (response.success) {
 								$button.removeClass('installing').addClass('activating');
-								$button.text('<?php esc_html_e( 'Activating...', 'revenue-pro' ); ?>').append('<span class="spinner"></span>');
+								$button.text('<?php echo esc_js( __( 'Activating...', 'revenue-pro' ) ); ?>').append('<span class="spinner"></span>');
 								$.ajax({
 									url: ajaxurl,
 									type: 'POST',
 									data: {
-										action: 'revx_activate_wowrevenue',
-										_ajax_nonce: '<?php echo esc_attr( wp_create_nonce( "activate_wowrevenue" ) ); ?>'// phpcs:ignore
+										action: 'revenue_activate_wowrevenue',
+										_ajax_nonce: '<?php echo esc_attr( wp_create_nonce( 'activate_wowrevenue' ) ); ?>'// phpcs:ignore
 									},
 									success: function(response) {
 										$button.removeClass('activating');
 										$button.find('.spinner').hide();
 										if (response.success) {
 											//location.reload();
-											window.location.href = '<?php echo esc_url( admin_url(  'admin.php?page=' . revenue_pro()->get_admin_menu_slug() . '#/' ) ); ?>';
+											window.location.href = '<?php echo esc_url( admin_url( 'admin.php?page=' . apply_filters( 'revenue_menu_slug', 'revenue' ) . '#/' ) ); ?>';
 										} else {
 											console.log(response.data);
 										}
@@ -338,4 +334,32 @@ class Revenue_Pro_Notice {
 		<?php
 	}
 
+	/**
+	 * Shown when the active free plugin is older than this Pro version requires
+	 * and it could not be auto-updated to a compatible version.
+	 *
+	 * @return void
+	 * @since  2.2.0
+	 */
+	public static function get_wowrevenue_incompatible_version_notice() {
+		?>
+		<div class="notice notice-warning">
+			<p>
+				<strong><?php esc_html_e( 'WowRevenue version mismatch', 'revenue-pro' ); ?></strong>
+			</p>
+			<p>
+				<?php esc_html_e( 'WowRevenue Pro requires a newer version of WowRevenue (free), and the automatic update did not complete. Pro campaign types stay paused until WowRevenue is updated; your campaigns and settings are untouched.', 'revenue-pro' ); ?>
+			</p>
+			<p>
+				<a href="<?php echo esc_url( 'https://wordpress.org/plugins/revenue/' ); ?>" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e( 'Download the latest WowRevenue', 'revenue-pro' ); ?>
+				</a>
+				&nbsp;|&nbsp;
+				<a href="<?php echo esc_url( 'https://www.wowrevenue.com/' ); ?>" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e( 'Contact support', 'revenue-pro' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
+	}
 }

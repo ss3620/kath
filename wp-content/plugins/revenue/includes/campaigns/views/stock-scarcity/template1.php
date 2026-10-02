@@ -8,6 +8,7 @@
  * @subpackage Templates
  * @version    2.0.0
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 
 //phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
@@ -19,8 +20,6 @@ use Revenue\Services\Revenue_Product_Context;
 /**
  * The Template for displaying revenue view
  *
- * @package Revenue
- * @version 1.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -51,7 +50,7 @@ $user_count = (int) $this->get_distinct_user_count_by_product( $product->get_id(
 
 $total_stock = $sold_stock + $stock_quantity;
 $percentage  = round( $total_stock > 0 ? ( $stock_quantity / $total_stock ) * 100 : 0 );
-if ( ! $product->managing_stock() || 0 === $stock_quantity ) {
+if ( ! $product->managing_stock() || $stock_quantity <= 0 ) {
 	return;
 }
 
@@ -158,7 +157,7 @@ if ( 'generalMessage' === $message_type ) {
 			update_post_meta( $product_id, $fixed_general_quantity_meta_key, $fixed_gen_stock_quantity );
 		}
 		$quantity_gen_diff   = (int) $stock_quantity - (int) $fixed_gen_stock_quantity;
-		$fake_stock_quantity = (int) $in_stock_fake_amount + (int) $quantity_gen_diff;
+		$fake_stock_quantity = max( 0, (int) $in_stock_fake_amount + (int) $quantity_gen_diff );
 
 		// If Fake is enable and repeat interval.
 		if ( 'yes' === $repeat_interval && $stock_quantity >= $in_stock_fake_amount && 0 === $fake_stock_quantity ) {

@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/upgrades/
  * @since       1.2.1
- * @version     1.12.0
+ * @version     1.14.0
  */
 
 // Exit if accessed directly.
@@ -65,7 +65,7 @@ if ( ! class_exists( 'AFWC_DB_Upgrade' ) ) {
 		 */
 		public function initialize_db_upgrade() {
 			$current_db_version = get_option( '_afwc_current_db_version' );
-			if ( version_compare( $current_db_version, '1.4.3', '<' ) || empty( $current_db_version ) ) {
+			if ( version_compare( $current_db_version, '1.4.5', '<' ) || empty( $current_db_version ) ) {
 				update_option( 'afwc_db_upgrade_running', true, 'no' );
 				$this->do_db_upgrade();
 			}
@@ -180,6 +180,14 @@ if ( ! class_exists( 'AFWC_DB_Upgrade' ) ) {
 
 				if ( '1.4.2' === get_option( '_afwc_current_db_version' ) ) {
 					$this->upgrade_to_1_4_3();
+				}
+
+				if ( '1.4.3' === get_option( '_afwc_current_db_version' ) ) {
+					$this->upgrade_to_1_4_4();
+				}
+
+				if ( '1.4.4' === get_option( '_afwc_current_db_version' ) ) {
+					$this->upgrade_to_1_4_5();
 				}
 
 				update_option( 'afwc_db_upgrade_running', false, 'no' );
@@ -950,6 +958,73 @@ if ( ! class_exists( 'AFWC_DB_Upgrade' ) ) {
 			} else {
 				update_option( '_afwc_current_db_version', '1.4.3', 'no' );
 			}
+		}
+
+		/**
+		 * Method to upgrade the database to version 1.4.4.
+		 * Add index to post_id column in afwc_referrals table for better performance.
+		 */
+		public function upgrade_to_1_4_4() {
+			global $wpdb;
+
+			$table_name = $wpdb->prefix . 'afwc_referrals';
+
+			$existing_table = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					'SHOW TABLES LIKE %s',
+					$wpdb->esc_like( $table_name )
+				)
+			);
+
+			if ( ! empty( $existing_table ) ) {
+
+				$has_post_index = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					$wpdb->prepare(
+						"SHOW INDEX FROM {$wpdb->prefix}afwc_referrals WHERE Key_name = %s",
+						'afwc_referrals_post'
+					)
+				);
+
+				if ( null === $has_post_index ) {
+					$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+						"ALTER TABLE {$wpdb->prefix}afwc_referrals ADD KEY afwc_referrals_post (post_id)" // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
+					);
+				}
+			}
+
+			update_option( '_afwc_current_db_version', '1.4.4', 'no' );
+		}
+
+		/**
+		 * Method to upgrade the database to version 1.4.5.
+		 *
+		 * Widen the `distribution` column in afwc_commission_plans from varchar(50)
+		 * to varchar(255).
+		 */
+		public function upgrade_to_1_4_5() {
+			global $wpdb;
+
+			$table_name        = $wpdb->prefix . 'afwc_commission_plans';
+			$commission_exists = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					'SHOW TABLES LIKE %s',
+					$wpdb->esc_like( $table_name )
+				)
+			);
+
+			if ( ! empty( $commission_exists ) ) {
+				$distribution_col = $wpdb->get_row( "SHOW COLUMNS FROM {$wpdb->prefix}afwc_commission_plans WHERE Field = 'distribution'", 'ARRAY_A' ); // phpcs:ignore
+				if ( is_array( $distribution_col ) && ! empty( $distribution_col['Type'] ) ) {
+					$type = strtolower( $distribution_col['Type'] );
+					if ( 'varchar(255)' !== $type ) {
+						$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+							"ALTER TABLE {$wpdb->prefix}afwc_commission_plans MODIFY COLUMN distribution varchar(255) DEFAULT NULL" // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
+						);
+					}
+				}
+			}
+
+			update_option( '_afwc_current_db_version', '1.4.5', 'no' );
 		}
 	}
 }

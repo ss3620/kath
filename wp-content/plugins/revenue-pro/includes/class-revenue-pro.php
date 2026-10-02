@@ -28,7 +28,7 @@ final class Revenue_Pro {
 	 * @var   string
 	 * @since 1.0.0
 	 */
-	public $version = '2.1.4';
+	public $version = '2.2.1';
 
 	/**
 	 * Containt Instance of this class
@@ -54,10 +54,6 @@ final class Revenue_Pro {
 		register_activation_hook( REVENUE_PRO_FILE, array( $this, 'activate' ) );
 		register_deactivation_hook( REVENUE_PRO_FILE, array( $this, 'deactivate' ) );
 
-		add_action( 'activated_plugin', array( $this, 'install_dependent_plugin' ) );
-
-		add_action( 'admin_init', array( $this, 'may_by_update_free' ) );
-
 		// Handle one-time activation redirect to settings/license page.
 		add_action( 'admin_init', array( $this, 'pro_activation_redirect' ) );
 
@@ -66,100 +62,6 @@ final class Revenue_Pro {
 		$this->include_notice();
 
 		add_action( 'revenue_loaded', array( $this, 'init_plugin' ) );
-
-		// Register admin notices to container and load notices.
-
-		add_action( 'plugins_loaded', array( $this, 'revenue_not_loaded' ), 11 );
-	}
-
-	public function may_by_update_free() {
-
-		// Minimum free version this pro version requires.
-		$required_free_version = '2.2.8';
-
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		// Path to the main plugin file.
-		$plugin_file = WP_PLUGIN_DIR . '/revenue/revenue.php';
-
-		// Missing free plugin is handled by revenue_not_loaded() notices, not here.
-		if ( ! file_exists( $plugin_file ) ) {
-			return;
-		}
-
-		if ( ! function_exists( 'get_plugin_data' ) ) {
-			include_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		$plugin_data     = get_plugin_data( $plugin_file );
-		$current_version = isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : '';
-
-		if ( empty( $current_version ) || version_compare( $current_version, $required_free_version, '>=' ) ) {
-			return;
-		}
-
-		if ( get_transient( 'revenue_free_version_updating' ) ) {
-			return;
-		}
-
-		// Guard against concurrent requests before any file operation starts.
-		set_transient( 'revenue_free_version_updating', true, HOUR_IN_SECONDS );
-
-		if ( ! function_exists( 'plugins_api' ) ) {
-			include ABSPATH . 'wp-admin/includes/plugin-install.php';
-		}
-		if ( ! class_exists( 'WP_Upgrader' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-		}
-		if ( ! class_exists( 'Plugin_Installer_Skin' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-plugin-installer-skin.php';
-		}
-		if ( ! class_exists( 'Plugin_Upgrader' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
-		}
-		include_once ABSPATH . 'wp-admin/includes/file.php';
-
-		// Download the new version before touching the installed plugin, so a
-		// failed download never leaves the site without the free plugin.
-		$plugin_zip_url = 'https://downloads.wordpress.org/plugin/revenue.zip';
-		$tmp_file       = download_url( $plugin_zip_url );
-
-		if ( is_wp_error( $tmp_file ) ) {
-			error_log( 'WowRevenue Pro: error downloading free plugin update: ' . $tmp_file->get_error_message() );
-			return;
-		}
-
-		$plugin_slug = 'revenue/revenue.php';
-
-		// Overwrite install replaces the files in place; no deactivate/delete needed.
-		$result = $this->install_plugin( $tmp_file, true );
-
-		if ( file_exists( $tmp_file ) ) {
-			wp_delete_file( $tmp_file );
-		}
-
-		if ( is_wp_error( $result ) || ! $result ) {
-			$message = is_wp_error( $result ) ? $result->get_error_message() : 'installation failed';
-			error_log( 'WowRevenue Pro: error updating free plugin: ' . $message );
-			return;
-		}
-
-		if ( ! is_plugin_active( $plugin_slug ) ) {
-			activate_plugin( $plugin_slug );
-		}
-
-		// Only clear the guard once the installed version actually satisfies the
-		// requirement; otherwise every admin request would retry the install.
-		$plugin_data = get_plugin_data( $plugin_file );
-
-		if ( version_compare( $plugin_data['Version'], $required_free_version, '>=' ) ) {
-			delete_transient( 'revenue_free_version_updating' );
-			error_log( 'WowRevenue Pro: free plugin updated to version ' . $plugin_data['Version'] );
-		} else {
-			error_log( 'WowRevenue Pro: free plugin is still ' . $plugin_data['Version'] . ' after update; ' . $required_free_version . ' or later is required.' );
-		}
 	}
 
 	/**
@@ -172,7 +74,7 @@ final class Revenue_Pro {
 	 * @since  1.0.0
 	 */
 	public static function init() {
-		if ( self::$instance === null ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 
@@ -212,8 +114,6 @@ final class Revenue_Pro {
 		 */
 		do_action( 'before_revenue_pro_init' );
 
-		// add_action('admin_init',[ $this, 'install_dependent_plugin' ] );
-
 		// Includes Files.
 		$this->includes();
 
@@ -231,7 +131,6 @@ final class Revenue_Pro {
 	 */
 	public function define_constants() {
 		define( 'REVENUE_PRO_VER', $this->version );
-		// define( 'REVENUE_PRO_URL', plugin_dir_url( __FILE__ ) );
 		define( 'REVENUE_PRO_BASE', plugin_basename( REVENUE_PRO_FILE ) );
 	}
 
@@ -246,7 +145,10 @@ final class Revenue_Pro {
 		include_once REVENUE_PRO_PATH . 'includes/updater/License.php';
 
 		// Campaign.
+		require_once REVENUE_PRO_PATH . 'includes/class-revenue-pro-template-utils.php';
 		include_once REVENUE_PRO_PATH . 'includes/class-revenue-pro-campaign.php';
+		include_once REVENUE_PRO_PATH . 'includes/class-revenue-pro-rest.php';
+		include_once REVENUE_PRO_PATH . 'includes/class-revenue-pro-assets.php';
 
 		// Campaigns.
 		include_once REVENUE_PRO_PATH . 'includes/campaigns/class-revenue-mix-match.php';
@@ -302,6 +204,8 @@ final class Revenue_Pro {
 	public function init_classes() {
 		new RevenuePro\License();
 		new Revenue_Pro_Campaign();
+		new RevenuePro\Revenue_Pro_REST();
+		new RevenuePro\Revenue_Pro_Assets();
 
 		Revenue_Mix_Match::instance()->init();
 		Revenue_Frequently_Bought_Together::instance()->init();
@@ -311,8 +215,6 @@ final class Revenue_Pro {
 
 
 	public function load_scripts() {
-		// wp_enqueue_style( 'revennue-pro-style', REVENUE_PRO_URL . 'assets/css/revenue-pro.css', array(), REVENUE_PRO_VER );
-		// wp_enqueue_script( 'evennue-pro-script', REVENUE_PRO_URL . 'assets/js/revenue-pro.js', array( 'wp-api-fetch', 'jquery' ), REVENUE_PRO_VER, true );
 	}
 
 
@@ -355,36 +257,11 @@ final class Revenue_Pro {
 	}
 
 	/**
-	 * Handles scenerios when WooCommerce is not active
-	 *
-	 * @return void
-	 * @since  1.0.0
-	 */
-	public function revenue_not_loaded() {
-		if ( did_action( 'revenue_loaded' ) || ! is_admin() ) {
-			return;
-		}
-
-		if ( $this->is_revenue_installed() && ! $this->has_revenue() ) {
-			// Should Activate Notice.
-
-			add_action( 'admin_notices', array( RevenuePro\Revenue_Pro_Notice::class, 'get_wowrevenue_not_active_notice' ) );
-
-		} elseif ( ! $this->is_revenue_installed() ) {
-			// Should Show Installation Notice.
-			add_action( 'admin_notices', array( RevenuePro\Revenue_Pro_Notice::class, 'get_wowrevenue_not_installed_notice' ) );
-		}
-	}
-
-	/**
 	 * Placeholder for activation function
 	 *
 	 * Nothing being called here yet.
 	 */
 	public function activate() {
-		if ( ! $this->has_revenue() ) {
-		}
-
 		// Set a flag so we can redirect the user to the license/settings page after activation.
 		update_option( 'revenue_pro_do_activation_redirect', true );
 
@@ -413,7 +290,8 @@ final class Revenue_Pro {
 		// Remove the flag so we only redirect once.
 		delete_option( 'revenue_pro_do_activation_redirect' );
 
-		// Prevent redirect during bulk plugin activation.
+		// Prevent redirect during bulk plugin activation. This flag only suppresses navigation.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Does not perform an action based on request data.
 		if ( isset( $_GET['activate-multi'] ) ) {
 			return;
 		}
@@ -439,16 +317,16 @@ final class Revenue_Pro {
 
 			// Include required files if not already included.
 			if ( ! function_exists( 'plugins_api' ) ) {
-				include ABSPATH . 'wp-admin/includes/plugin-install.php';
+				require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 			}
 			if ( ! class_exists( 'WP_Upgrader' ) ) {
-				include ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+				require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 			}
 			if ( ! class_exists( 'Plugin_Installer_Skin' ) ) {
-				include ABSPATH . 'wp-admin/includes/class-plugin-installer-skin.php';
+				require_once ABSPATH . 'wp-admin/includes/class-plugin-installer-skin.php';
 			}
 			if ( ! class_exists( 'Plugin_Upgrader' ) ) {
-				include ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
+				require_once ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
 			}
 
 			// Check if the 'revenue' plugin is already active or installed.
@@ -467,8 +345,7 @@ final class Revenue_Pro {
 
 			// Check for download errors.
 			if ( is_wp_error( $tmp_file ) ) {
-				error_log( 'WowRevenue Pro: error downloading the free plugin: ' . $tmp_file->get_error_message() );
-				return;
+				return $tmp_file;
 			}
 
 			// Install the plugin.
@@ -480,8 +357,7 @@ final class Revenue_Pro {
 
 			// Check for installation errors.
 			if ( is_wp_error( $result ) || ! $result ) {
-				error_log( 'WowRevenue Pro: error installing the free plugin.' );
-				return;
+				return is_wp_error( $result ) ? $result : new WP_Error( 'revenue_free_install_failed', __( 'WowRevenue could not be installed.', 'revenue-pro' ) );
 			}
 
 			// Activate the plugin.
@@ -489,7 +365,7 @@ final class Revenue_Pro {
 
 			// Check for activation errors.
 			if ( is_wp_error( $activate_result ) ) {
-				error_log( 'WowRevenue Pro: error activating the free plugin: ' . $activate_result->get_error_message() );
+				return $activate_result;
 			}
 		}
 	}

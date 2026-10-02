@@ -3,7 +3,7 @@
  * Main class for Affiliates Dashboard
  *
  * @package     affiliate-for-woocommerce/includes/admin/
- * @version     1.25.14
+ * @version     1.25.19
  */
 
 // Exit if accessed directly.
@@ -373,6 +373,7 @@ if ( ! class_exists( 'AFWC_Admin_Dashboard' ) ) {
 							'searchPlan'     => wp_create_nonce( 'afwc-admin-search-commission-plans' ),
 							'fetchTemplates' => wp_create_nonce( 'afwc-admin-fetch-commission-plan-templates' ),
 							'importTemplate' => wp_create_nonce( 'afwc-admin-import-commission-plan-template' ),
+							'duplicatePlan'  => wp_create_nonce( 'afwc-admin-duplicate-commission-plan' ),
 						),
 						'pendingPayouts' => array(
 							'fetchData'              => wp_create_nonce( 'afwc-admin-pending-payouts-dashboard-data' ),
@@ -411,6 +412,7 @@ if ( ! class_exists( 'AFWC_Admin_Dashboard' ) ) {
 					'afwc_filters'                   => $afwc_filters,
 					'plan_dashboard_data'            => $plan_dashboard_data,
 					'can_ask_for_feedback'           => AFWC_Admin_Notifications::show_feedback(),
+					'feedback_milestone'             => is_callable( array( 'AFWC_Milestone', 'get_pending_copy' ) ) ? AFWC_Milestone::get_pending_copy() : null,
 					'review_link'                    => AFWC_REVIEW_URL,
 					'support_link'                   => AFW_CONTACT_SUPPORT_URL,
 					'show_admin_notice'              => $show_admin_notice,
@@ -433,6 +435,7 @@ if ( ! class_exists( 'AFWC_Admin_Dashboard' ) ) {
 					'isPrettyReferralEnabled'        => get_option( 'afwc_use_pretty_referral_links', 'no' ),
 					'userRoles'                      => ! empty( $wp_roles->role_names ) ? $wp_roles->role_names : array(),
 					'isMultiTierEnabled'             => is_callable( array( 'AFWC_Multi_Tier', 'is_enabled' ) ) && AFWC_Multi_Tier::is_enabled(),
+					'maxTiers'                       => class_exists( 'AFWC_Multi_Tier' ) ? AFWC_Multi_Tier::MAX_TIERS : 0,
 					'subscriptionDescForPlan'        => ( class_exists( 'WCS_AFWC_Compatibility' ) && is_callable( array( 'WCS_AFWC_Compatibility', 'plan_description' ) ) ) ? WCS_AFWC_Compatibility::plan_description() : '',
 					'afwDocLink'                     => AFWC_DOC_DOMAIN,
 					'afwManageTagsLink'              => add_query_arg( array( 'taxonomy' => 'afwc_user_tags' ), admin_url( 'edit-tags.php' ) ),
@@ -2262,8 +2265,10 @@ if ( ! class_exists( 'AFWC_Admin_Dashboard' ) ) {
 
 			$migrate = is_callable( array( Migrate_Data::class, 'get_instance' ) ) ? Migrate_Data::get_instance() : null;
 
+			$source = ! empty( $params['source'] ) ? $params['source'] : '';
+
 			if ( is_callable( array( $migrate, 'is_completed' ) )
-				&& $migrate->is_completed( ! empty( $params['source'] ) ? $params['source'] : '' )
+				&& $migrate->is_completed( $source )
 			) {
 				delete_option( 'afwc_migrate_started_for' );
 				delete_option( 'afwc_is_migration_process_running' ); // Destroy the migration process.
@@ -2273,6 +2278,11 @@ if ( ! class_exists( 'AFWC_Admin_Dashboard' ) ) {
 						'status' => 'completed',
 					)
 				);
+			}
+
+			// Not completed yet: nudge any stalled source so it can re-schedule to finish.
+			if ( is_callable( array( $migrate, 'resume_incomplete' ) ) ) {
+				$migrate->resume_incomplete( $source );
 			}
 
 			wp_send_json(

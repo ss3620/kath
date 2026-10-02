@@ -3,7 +3,7 @@
  * Main class for Affiliates Admin
  *
  * @package     affiliate-for-woocommerce/includes/admin/
- * @version     1.16.1
+ * @version     1.16.2
  */
 
 // Exit if accessed directly.
@@ -815,6 +815,12 @@ if ( ! class_exists( 'AFWC_Admin_Affiliates' ) ) {
 			$aggregated          = array();
 			$paid_order_statuses = afwc_get_paid_order_status();
 
+			// Every query below builds order_status IN (...) from this list, and IN () is invalid SQL.
+			// Fall back to a value that is not a valid order status, so it can never match: no paid statuses means nothing is payable.
+			if ( empty( $paid_order_statuses ) ) {
+				$paid_order_statuses = array( '__afwc_no_paid_order_status__' );
+			}
+
 			if ( ! empty( $this->affiliate_ids ) ) {
 
 				if ( 1 === count( $this->affiliate_ids ) ) {
@@ -956,17 +962,23 @@ if ( ! class_exists( 'AFWC_Admin_Affiliates' ) ) {
 				// Get the unpaid records only if the user exists - we are not fetching records for deleted/non-existing users.
 				$unpaid_data = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 					$wpdb->prepare(
-						"SELECT IFNULL(SUM( CASE WHEN referral.status = 'unpaid' THEN referral.amount END ), 0) as unpaid_commissions,
-							IFNULL(COUNT( DISTINCT(CASE WHEN referral.status = 'unpaid' THEN referral.affiliate_id END) ), 0) as unpaid_affiliates
+						"SELECT IFNULL(SUM( CASE WHEN referral.status = 'unpaid' AND referral.order_status IN (" . implode( ',', array_fill( 0, count( $paid_order_statuses ), '%s' ) ) . ") THEN referral.amount END ), 0) as unpaid_commissions,
+							IFNULL(COUNT( DISTINCT(CASE WHEN referral.status = 'unpaid' AND referral.order_status IN (" . implode( ',', array_fill( 0, count( $paid_order_statuses ), '%s' ) ) . ") THEN referral.affiliate_id END) ), 0) as unpaid_affiliates
 						FROM {$wpdb->prefix}afwc_referrals as referral
 							JOIN {$wpdb->prefix}users ON ( ID = referral.affiliate_id )
 						WHERE referral.affiliate_id != %d
 							AND referral.datetime BETWEEN %s AND %s
 							AND referral.currency_id = %s",
-						0,
-						$this->from,
-						$this->to,
-						$this->currency
+						array_merge(
+							$paid_order_statuses,
+							$paid_order_statuses,
+							array(
+								0,
+								$this->from,
+								$this->to,
+								$this->currency,
+							)
+						)
 					),
 					'ARRAY_A'
 				);
@@ -999,14 +1011,20 @@ if ( ! class_exists( 'AFWC_Admin_Affiliates' ) ) {
 				// Get the unpaid records only if the user exists - we are not fetching records for deleted/non-existing users.
 				$unpaid_data = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 					$wpdb->prepare(
-						"SELECT IFNULL(SUM( CASE WHEN referral.status = 'unpaid' THEN referral.amount END ), 0) as unpaid_commissions,
-							IFNULL(COUNT( DISTINCT(CASE WHEN referral.status = 'unpaid' THEN referral.affiliate_id END) ), 0) as unpaid_affiliates
+						"SELECT IFNULL(SUM( CASE WHEN referral.status = 'unpaid' AND referral.order_status IN (" . implode( ',', array_fill( 0, count( $paid_order_statuses ), '%s' ) ) . ") THEN referral.amount END ), 0) as unpaid_commissions,
+							IFNULL(COUNT( DISTINCT(CASE WHEN referral.status = 'unpaid' AND referral.order_status IN (" . implode( ',', array_fill( 0, count( $paid_order_statuses ), '%s' ) ) . ") THEN referral.affiliate_id END) ), 0) as unpaid_affiliates
 						FROM {$wpdb->prefix}afwc_referrals as referral
 							JOIN {$wpdb->prefix}users ON ( ID = referral.affiliate_id )
 						WHERE referral.affiliate_id != %d
 							AND referral.currency_id = %s",
-						0,
-						$this->currency
+						array_merge(
+							$paid_order_statuses,
+							$paid_order_statuses,
+							array(
+								0,
+								$this->currency,
+							)
+						)
 					),
 					'ARRAY_A'
 				);

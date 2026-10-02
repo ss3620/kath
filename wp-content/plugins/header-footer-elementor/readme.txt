@@ -4,7 +4,7 @@ Tags: elementor, elementor addons, elementor widgets, elementor templates, heade
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.9.4
+Stable tag: 2.9.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -353,6 +353,9 @@ You can report the issue through our [Bug Bounty Program](https://brainstormforc
 ---
 
 == Changelog ==
+= 2.9.5 =
+- Improvement: Compatibility with latest Elementor and Elementor Pro 4.3 version.
+
 = 2.9.4 =
 - Fix: Security - Hardened the [hfe_template] shortcode so that unpublished, scheduled, trashed and non-public content can no longer be rendered by users who are not allowed to view it.
 - Fix: Security - Removed the plugin's redundant SVG upload handler; SVG uploads are now managed by Elementor's own upload control and sanitisation, closing a stored XSS vector in the legacy sanitiser.

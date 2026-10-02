@@ -16,19 +16,7 @@ jQuery( document ).ready( function ( $ ) {
 			offset += wcInstall.offsetHeight;
 		}
 
-		// 3. Other notices (can be multiple)
-		const notices = document.querySelectorAll( '.revx-setting-hellobar' );
-		notices.forEach( ( notice ) => {
-			// parents are nulll since child has fixed position. removed parent check.
-			if ( notice ) {
-				notice.style.position = 'fixed';
-				notice.style.top = offset + 'px';
-				notice.style.opacity = 1; // reveal smoothly
-				offset += notice.offsetHeight;
-			}
-		} );
-
-		// 4. Navbar
+		// 3. Navbar
 		const navbar = document.querySelector( '.revx-nav.revx-nav-wrapper' );
 		if ( navbar ) {
 			navbar.style.top = offset + 'px';
@@ -55,7 +43,7 @@ jQuery( document ).ready( function ( $ ) {
 			url: revenue?.ajax,
 			type: 'POST',
 			data: {
-				action: 'revx_activate_woocommerce',
+				action: 'revenue_activate_woocommerce',
 				security: revenue?.nonce,
 			},
 			success: function ( response ) {
@@ -87,7 +75,7 @@ jQuery( document ).ready( function ( $ ) {
 			url: revenue?.ajax,
 			type: 'POST',
 			data: {
-				action: 'revx_install_woocommerce',
+				action: 'revenue_install_woocommerce',
 				security: revenue?.nonce,
 			},
 			success: function ( response ) {
@@ -102,7 +90,7 @@ jQuery( document ).ready( function ( $ ) {
 						url: revenue?.ajax,
 						type: 'POST',
 						data: {
-							action: 'revx_activate_woocommerce',
+							action: 'revenue_activate_woocommerce',
 							security: revenue?.nonce,
 						},
 						success: function ( response ) {

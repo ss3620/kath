@@ -2,6 +2,10 @@
 /**
  * Image Switch Block Implementation
  *
+ * Deprecated, kept only as legacy support: the Image Swatches field can no longer be
+ * added in the builder. This class stays so Image Swatches fields that existing users
+ * already saved on their products keep working, and it will be removed in a future release.
+ *
  * @package PRAD
  * @since 1.0.0
  */
@@ -40,23 +44,23 @@ class Image_Switch_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options( true );
+		// Fields made with WowAddons Pro's "Advanced Image Swatches" are Pro fields, rendered by Pro only.
+		if ( $this->get_property( 'isAdvanced', false ) ) {
+			return '';
+		}
+
+		$options = $this->get_field_options();
 		if ( empty( $options ) ) {
 			return '';
 		}
 
 		$attributes = array_merge(
 			$this->get_common_attributes(),
-			$this->get_switch_attributes(),
-			$this->get_same_price_attributes()
+			$this->get_switch_attributes()
 		);
 
-		$html = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_title_description_price_with_position( $this->same_price_info );
-		} else {
-			$html .= $this->render_title_description_noprice();
-		}
+		$html  = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
+		$html .= $this->render_title_description_noprice();
 		$html .= $this->render_swatch_wrapper( $options );
 		$html .= $this->render_description_below_field();
 		$html .= $this->render_tooltip();
@@ -78,7 +82,6 @@ class Image_Switch_Block extends Abstract_Block {
 		$css_classes = array(
 			'prad-parent',
 			'prad-block-img-swatches',
-			! empty( $this->same_price_info['enabled'] ) ? 'prad-block-same-price' : '',
 			'prad-type_swatches-input',
 			'prad-switcher-count',
 			'prad-switcher-count-' . $input_type,
@@ -88,9 +91,9 @@ class Image_Switch_Block extends Abstract_Block {
 		);
 
 		$attributes['class'] = $this->build_css_classes( $css_classes );
-		$enableMinMaxRes     = $this->get_property( 'enableMinMaxRes', true );
+		$enable_min_max_res  = $this->get_property( 'enableMinMaxRes', true );
 
-		if ( $multiple && $enableMinMaxRes ) {
+		if ( $multiple && $enable_min_max_res ) {
 			$attributes['data-minselect'] = $this->get_property( 'minSelect', '' );
 			$attributes['data-maxselect'] = $this->get_property( 'maxSelect', '' );
 		}
@@ -119,6 +122,7 @@ class Image_Switch_Block extends Abstract_Block {
 	/**
 	 * Render swatch wrapper with all image options
 	 *
+	 * @param array $options Options to render.
 	 * @return string
 	 */
 	private function render_swatch_wrapper( $options ) {
@@ -135,7 +139,7 @@ class Image_Switch_Block extends Abstract_Block {
 	/**
 	 * Get image swatch wrapper attributes
 	 *
-	 * @param object $item
+	 * @param object $item Option data.
 	 * @return array
 	 */
 	private function get_swatch_wrapper_attributes( $item ): array {
@@ -161,44 +165,27 @@ class Image_Switch_Block extends Abstract_Block {
 	/**
 	 * Render a single image swatch
 	 *
-	 * @param object  $item
-	 * @param integer $index
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
 	 * @return string
 	 */
 	private function render_single_swatch( $item, int $index ): string {
 		$price_info         = $this->get_price_info( $item );
 		$wrapper_attributes = $this->get_swatch_wrapper_attributes( $item );
 		$layout             = $this->get_property( 'layout', '_default' );
-		$display_item       = $item;
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$display_item         = $item;
-			$display_item['type'] = 'no_cost';
-		}
 
 		$html  = sprintf( '<div %s>', $this->build_attributes( $wrapper_attributes ) );
-		$html .= $this->render_swatch_container( $display_item, $index, $price_info );
+		$html .= $this->render_swatch_container( $item, $index, $price_info );
 
-		if ( $layout === '_default' ) {
-			$html .= $this->render_block_content( (object) $display_item, $index, $price_info );
+		if ( '_default' === $layout ) {
+			$html .= $this->render_block_content( (object) $item, $index, $price_info );
 		}
 
-		if ( $layout === '_img' ) {
-			$html .= $this->render_option_description( $item );
-		}
-
-		if ( $layout === '_img' && empty( $this->same_price_info['enabled'] ) ) {
+		if ( '_img' === $layout ) {
 			$html .= sprintf(
 				'<div class="prad-text-center">%s</div>',
 				$this->render_price_html( $price_info, 'beside' )
 			);
-		}
-
-		if ( $this->should_render_quantity_input( $layout ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
-		}
-
-		if ( $this->get_property( 'enableCount', false ) && $this->is_overlay_count_hidden() && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
 		}
 
 		$html .= '</div>';
@@ -206,31 +193,11 @@ class Image_Switch_Block extends Abstract_Block {
 	}
 
 	/**
-	 * Whether the swatch is a small overlay where the quantity input has no room and
-	 * should instead render outside the overlay.
-	 *
-	 * @return boolean
-	 */
-	private function is_overlay_count_hidden(): bool {
-		$layout = $this->get_property( 'layout', '_default' );
-		if ( '_overlay' !== $layout ) {
-			return false;
-		}
-
-		$styles = $this->get_property( '_styles', array() );
-		$height = $styles['height']['val'] ?? null;
-		$width  = $styles['width']['val'] ?? null;
-		$radius = $styles['radius']['val'] ?? null;
-
-		return is_numeric( $height ) && is_numeric( $width ) && ( (float) $height < 100 || (float) $width < 100 ) && (float) $radius > 30;
-	}
-
-	/**
 	 * Render the swatch container
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
+	 * @param array   $price_info Price data for the option.
 	 * @return string
 	 */
 	private function render_swatch_container( $item, int $index, array $price_info ): string {
@@ -245,8 +212,8 @@ class Image_Switch_Block extends Abstract_Block {
 		$html .= $this->render_swatch_label( $item, $index, $price_info );
 		$html .= $this->render_swatch_mark();
 
-		if ( $layout === '_overlay' ) {
-			$html .= $this->render_block_content( (object) $item, $index, $price_info, '', $this->is_overlay_count_hidden() );
+		if ( '_overlay' === $layout ) {
+			$html .= $this->render_block_content( (object) $item, $index, $price_info );
 		}
 
 		$html .= '</div>';
@@ -256,30 +223,25 @@ class Image_Switch_Block extends Abstract_Block {
 	/**
 	 * Render the swatch input
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
+	 * @param array   $price_info Price data for the option.
 	 * @return string
 	 */
 	private function render_swatch_input( $item, int $index, array $price_info ): string {
-		$multiple           = $this->get_property( 'multiple', false );
-		$enable_count       = $this->get_property( 'enableCount', false );
-		$blockid            = $this->get_block_id();
-		$item_formula_value = $this->is_formula_value_enabled() && ! empty( $item['formulaValue'] ) ? $item['formulaValue'] : '';
+		$multiple = $this->get_property( 'multiple', false );
+		$blockid  = $this->get_block_id();
 
 		$attributes = array(
-			'class'              => 'prad-input-hidden',
-			'type'               => $multiple ? 'checkbox' : 'radio',
-			'data-index'         => $index,
-			'data-uid'           => $item['uid'] ?? '',
-			'data-formula-value' => $item_formula_value,
-			'id'                 => $blockid . $index,
-			'name'               => $blockid,
-			'value'              => $price_info['price'],
-			'data-ptype'         => $price_info['type'],
-			'data-label'         => $item['value'],
-			'data-count'         => $enable_count ? 'yes' : 'no',
-			'data-counter'       => $blockid . $index . '-switcher-count',
+			'class'      => 'prad-input-hidden',
+			'type'       => $multiple ? 'checkbox' : 'radio',
+			'data-index' => $index,
+			'data-uid'   => $item['uid'] ?? '',
+			'id'         => $blockid . $index,
+			'name'       => $blockid,
+			'value'      => $price_info['price'],
+			'data-ptype' => $price_info['type'],
+			'data-label' => $item['value'],
 		);
 
 		return sprintf( '<input %s />', $this->build_attributes( $attributes ) );
@@ -288,9 +250,9 @@ class Image_Switch_Block extends Abstract_Block {
 	/**
 	 * Render the swatch label with image
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
+	 * @param array   $price_info Price data for the option.
 	 * @return string
 	 */
 	private function render_swatch_label( $item, int $index, array $price_info ): string {
@@ -299,11 +261,10 @@ class Image_Switch_Block extends Abstract_Block {
 
 		$html  = sprintf( '<label class="prad-lh-0 prad-mb-0" for="%s">', esc_attr( $blockid . $index ) );
 		$html .= sprintf(
-			'<img class="prad-swatch-item" title="%s" src="%s" alt="swatch item" data-tooltip-label="%s" data-tooltip-description="%s" />',
+			'<img class="prad-swatch-item" title="%s" src="%s" alt="swatch item" data-tooltip-label="%s" />',
 			esc_attr( $price_info['price'] ),
 			esc_url( $img_url ),
-			esc_attr( $item['value'] ?? '' ),
-			esc_attr( $this->get_option_tooltip_description( $item ) ),
+			esc_attr( $item['value'] ?? '' )
 		);
 		$html .= '</label>';
 
@@ -320,50 +281,14 @@ class Image_Switch_Block extends Abstract_Block {
 	}
 
 	/**
-	 * Check if quantity input should be rendered
+	 * Render the hidden image preview tooltip container.
 	 *
-	 * @param string $layout
-	 * @return boolean
-	 */
-	private function should_render_quantity_input( string $layout ): bool {
-		return $this->get_property( 'enableCount', false ) && $layout === '_img';
-	}
-
-	/**
-	 * Get quantity input attributes
+	 * Deprecated, legacy support: "Enable Image Preview" has always been a free setting of
+	 * the Image Swatches field, so Image Swatches fields existing users already saved keep
+	 * their image preview. It goes away with this field type in a future release.
 	 *
-	 * @param integer $index
-	 * @return array
-	 */
-	private function get_quantity_input_attributes( int $index ): array {
-		$blockid = $this->get_block_id();
-		$min     = $this->get_property( 'min', 1 );
-		$max     = $this->get_property( 'max', 100 );
-
-		return array(
-			'id'           => 'prad_quantity_' . $blockid . $index,
-			'name'         => 'prad_quantity_' . $blockid . $index,
-			'type'         => 'number',
-			'placeholder'  => $min,
-			'value'        => $min,
-			'min'          => $min,
-			'max'          => $max,
-			'class'        => 'prad-block-input prad-quantity-input switcher-count prad-input prad-w-full prad-mt-6',
-			'data-counter' => $blockid . $index . '-switcher-count',
-		);
-	}
-
-	/**
-	 * Render quantity input
-	 *
-	 * @param integer $index
 	 * @return string
 	 */
-	private function render_quantity_input( int $index ): string {
-		return sprintf( '<input %s />', $this->build_attributes( $this->get_quantity_input_attributes( $index ) ) );
-	}
-
-
 	private function render_tooltip(): string {
 		$enable_preview = $this->get_property( 'enableImagePreview', false );
 		if ( ! $enable_preview ) {
@@ -373,7 +298,6 @@ class Image_Switch_Block extends Abstract_Block {
 		<div class="prad-img-tooltip" role="tooltip" aria-hidden="true">
 			<img src="" alt="" />
 			<span class="prad-img-tooltip-label"></span>
-			<span class="prad-img-tooltip-description"></span>
 		</div>';
 	}
 }

@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/admin/settings/
  * @since       7.18.0
- * @version     1.0.9
+ * @version     1.10.0
  */
 
 // Exit if accessed directly.
@@ -52,6 +52,7 @@ if ( ! class_exists( 'AFWC_Referrals_Admin_Settings' ) ) {
 		private function __construct() {
 			$this->section = str_replace( '-', '_', str_replace( array( 'class-afwc-', '-admin-settings.php' ), '', basename( __FILE__ ) ) );
 			add_filter( "afwc_{$this->section}_section_admin_settings", array( $this, 'get_section_settings' ) );
+			add_filter( 'woocommerce_admin_settings_sanitize_option_afwc_pname', array( $this, 'sanitize_pname' ) );
 		}
 
 		/**
@@ -212,6 +213,44 @@ if ( ! class_exists( 'AFWC_Referrals_Admin_Settings' ) ) {
 			);
 
 			return $afwc_referrals_admin_settings;
+		}
+
+		/**
+		 * Method to sanitize the tracking param name value.
+		 * Strips any character that does not match the allowed regex pattern and, if characters were removed, adds a settings error notice.
+		 *
+		 * @param mixed $value The value.
+		 *
+		 * @return string The sanitized tracking param name, or the default 'ref' when the value is empty after sanitization.
+		 */
+		public function sanitize_pname( $value = '' ) {
+			$value = is_scalar( $value ) ? (string) $value : '';
+
+			if ( empty( $value ) ) {
+				return 'ref';
+			}
+
+			$pattern = afwc_pname_allowed_chars_regex();
+			$cleaned = '';
+
+			// Drop characters outside the allowed set (letters, numbers, underscore, dash).
+			foreach ( str_split( $value ) as $character ) {
+				if ( ! empty( $pattern ) && preg_match( '/' . $pattern . '/', $character ) ) {
+					$cleaned .= $character;
+				}
+			}
+
+			// Drop leading digits - the tracking param name must not start with a number.
+			$cleaned = preg_replace( '/^[0-9]+/', '', $cleaned );
+
+			if ( $cleaned !== $value && is_callable( array( 'WC_Admin_Settings', 'add_error' ) ) ) {
+				WC_Admin_Settings::add_error(
+					_x( 'Tracking param name cannot start with a number and can contain only letters, numbers, dashes and underscores. Invalid characters were removed.', 'Tracking param name field sanitization error message', 'affiliate-for-woocommerce' )
+				);
+			}
+
+			// Never store an empty param name; fall back to the default.
+			return '' === $cleaned ? 'ref' : $cleaned;
 		}
 	}
 

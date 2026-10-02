@@ -93,7 +93,7 @@ jQuery( function ( $ ) {
 					'data-regular-price',
 					matchedVariation?.regular_price
 				);
-				// for buy x get y = is-x-product , is-trigger = fbt, bundle
+				// Trigger products and buy-x-get-y products use their regular price.
 				const isRequired =
 					$container.data( 'is-x-product' ) === 'yes' ||
 					$container.data( 'is-trigger' ) === 'yes';
@@ -118,26 +118,11 @@ jQuery( function ( $ ) {
 						$container.closest( '.revx-template' );
 					$bundleTopContainer.trigger( 'revx-variation-changed' );
 					// updateBundleTotal( $bundleTopContainer );
-				} else if (
-					$container.attr( 'campaign_type' ) ===
-					'frequently_bought_together'
-				) {
-					// update data for js usage, needed for frequently bought together
-					$container.data(
-						'regular-price',
-						matchedVariation?.regular_price
-					);
-					$container.data(
-						'product-offered-price',
-						matchedVariation?.offered_price ||
-							( isRequired ? matchedVariation?.regular_price : 0 )
-					);
-					// check to see if this belongs to any active checkbox
-					if ( $container.find( '.revx-active' ).length ) {
-						// Dispatch a custom event AFTER vairation changes to recalculate frequenty bought together price
-						$container.trigger( 'revx-variation-changed' );
-					}
 				}
+				$( document ).trigger(
+					'revx-campaign-variation-updated',
+					[ $container, matchedVariation, isRequired ]
+				);
 			}
 
 			// === Filter other attributes ===
@@ -409,4 +394,26 @@ jQuery( function ( $ ) {
 		setPriceText.call( $oldPriceContainer, totalRegular );
 		setPriceText.call( $offeredPriceContainer, totalOffer );
 	}
+} );
+
+/**
+ * Volume discount (template2): highlight the selected option row.
+ * Moved out of inline <script> so campaign markup can be escaped.
+ */
+jQuery( function ( $ ) {
+	$( document ).on( 'click', '.revx-volume-discount-item', function () {
+		const $radio = $( this ).find( '.revx-radio-wrapper' );
+		const $attribute = $( this ).find( '.revx-volume-attributes' );
+
+		// Deactivate every other option.
+		$( '.revx-radio-wrapper, .revx-volume-attributes' )
+			.removeClass( 'revx-active' )
+			.addClass( 'revx-inactive' );
+
+		// Activate the clicked one.
+		$radio
+			.add( $attribute )
+			.addClass( 'revx-active' )
+			.removeClass( 'revx-inactive' );
+	} );
 } );

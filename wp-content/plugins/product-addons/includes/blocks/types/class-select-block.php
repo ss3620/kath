@@ -34,7 +34,7 @@ class Select_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 
 		if ( empty( $options ) ) {
 			return '';
@@ -46,12 +46,8 @@ class Select_Block extends Abstract_Block {
 			$this->get_same_price_attributes()
 		);
 
-		$html = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_title_description_price_with_position( $this->same_price_info );
-		} else {
-			$html .= $this->render_title_description_noprice();
-		}
+		$html  = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
+		$html .= $this->render_block_heading();
 		$html .= $this->render_select_container( $options );
 		$html .= $this->render_description_below_field();
 		$html .= '</div>';
@@ -101,9 +97,9 @@ class Select_Block extends Abstract_Block {
 	 */
 	private function render_select_box(): string {
 		$placeholder = $this->get_property( 'placeholder', '' );
-		$placeholder = $placeholder ? $placeholder : esc_html__( 'Select an option', 'product-addons' );
+		$placeholder = $placeholder ? $placeholder : __( 'Select an option', 'product-addons' );
 		$html        = '<div class="prad-select-box prad-block-input prad-block-content" readonly="readonly">';
-		$html       .= '<div class="prad-select-box-item">' . $placeholder . '</div>';
+		$html       .= '<div class="prad-select-box-item">' . esc_html( $placeholder ) . '</div>';
 		$html       .= '<div class="prad-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" fill="none">';
 		$html       .= '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m1 1 6 6 6-6"></path>';
 		$html       .= '</svg></div>';
@@ -122,23 +118,24 @@ class Select_Block extends Abstract_Block {
 		$html = '<div class="prad-select-options">';
 
 		foreach ( $options as $index => $item ) {
-			$price_info         = $this->get_price_info( $item );
-			$item_formula_value = $this->is_formula_value_enabled() && ! empty( $item['formulaValue'] ) ? $item['formulaValue'] : '';
+			$price_info = $this->get_price_info( $item );
 
-			$option_attributes = array(
-				'class'              => 'prad-select-option',
-				'data-value'         => $price_info['price'],
-				'data-label'         => $item['value'],
-				'data-index'         => $index,
-				'data-uid'           => $item['uid'] ?? '',
-				'data-formula-value' => $item_formula_value,
-				'data-ptype'         => $item['type'] ?? 'no_cost',
+			$option_attributes = array_merge(
+				array(
+					'class'      => 'prad-select-option',
+					'data-value' => $price_info['price'],
+					'data-label' => $item['value'],
+					'data-index' => $index,
+					'data-uid'   => $item['uid'] ?? '',
+					'data-ptype' => $item['type'] ?? 'no_cost',
+				),
+				$this->get_option_extra_attributes( $item, $index )
 			);
 
 			$html .= sprintf( '<div %s>', $this->build_attributes( $option_attributes ) );
 			$html .= '<div class="prad-d-flex prad-item-center prad-gap-8">';
 
-			// Option content
+			// Option content.
 			$html .= '<div class="prad-block-content prad-d-flex prad-item-center">';
 			$html .= $this->maybe_render_option_image( $item );
 			$html .= '<div class="prad-option-content">';
@@ -151,8 +148,8 @@ class Select_Block extends Abstract_Block {
 			$html .= '</div>';
 			$html .= '</div>';
 
-			// Price if not free
-			if ( isset( $item['type'] ) && $item['type'] !== 'no_cost' && ! ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) ) {
+			// Price if not free.
+			if ( isset( $item['type'] ) && 'no_cost' !== $item['type'] && ! $this->has_shared_price() ) {
 				$html .= '<div class="prad-block-price prad-text-upper">';
 				$html .= wp_kses( $price_info['html'], $this->allowed_html_tags );
 				$html .= '</div>';
@@ -167,19 +164,12 @@ class Select_Block extends Abstract_Block {
 	}
 
 	/**
-	 * Render option image if available
+	 * Render the option image, if an extension adds one.
 	 *
-	 * @param object $item Option item
+	 * @param array $item Option item.
 	 * @return string
 	 */
 	private function maybe_render_option_image( $item ): string {
-		if ( ! isset( $item['img'] ) || ! $item['img'] || ! product_addons()->is_pro_feature_available() ) {
-			return '';
-		}
-
-		return sprintf(
-			'<img class="prad-block-item-img" src="%s" alt="Item" />',
-			esc_url( $item['img'] )
-		);
+		return apply_filters( 'prad_option_image_html', '', $item, $this );
 	}
 }

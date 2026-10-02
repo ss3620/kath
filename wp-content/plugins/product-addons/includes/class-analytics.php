@@ -20,334 +20,23 @@ class Analytics {
 	 * @since v.1.0.0
 	 */
 	public function __construct() {
-		register_activation_hook( PRAD_PATH . 'product-addons.php', array( $this, 'plugin_activation_hook' ) );
 		add_action( 'prad_update_stats_table_data', array( $this, 'update_stats_table' ), 10, 3 );
 	}
 
 	/**
-	 * Redirect After Active Plugin
+	 * Creates the stats tables. Called from the activation hook in product-addons.php.
 	 *
-	 * @since v.1.0.0
-	 *
-	 * @param string $plugin Plugin name.
+	 * @since v.1.8.3
 	 *
 	 * @return void
 	 */
-	public function plugin_activation_hook( $plugin ) { // phpcs:ignore
+	public static function create_tables() {
 		global $wpdb;
 		$wpdb->hide_errors();
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$this->create_stats_table();
-		$this->create_stats_graph_table();
-		$this->handle_default_option_creations();
-	}
-
-	/**
-	 * Handles the creation of default options for the plugin.
-	 *
-	 * Checks whether the default options have already been created by verifying
-	 * the `prad_addons_default_option_created` option. If the option exists,
-	 * the function returns early and no further action is taken.
-	 *
-	 * @return void
-	 */
-	public function handle_default_option_creations() {
-		$exists = get_option( 'prad_addons_default_option_created', false );
-		if ( $exists ) {
-			return;
-		}
-		$dummy_content = array(
-			array(
-				'title'   => 'Delicious HandMade Pizza',
-				'content' => array(
-					array(
-						'type'          => 'checkbox',
-						'blockid'       => 'm0tx-pwu08v',
-						'label'         => 'Toppings',
-						'desc'          => '',
-						'columns'       => '2',
-						'enableCount'   => false,
-						'hide'          => false,
-						'required'      => false,
-						'min'           => 1,
-						'max'           => 100,
-						'minSelect'     => '',
-						'maxSelect'     => '',
-						'pricePosition' => 'with_option',
-						'_options'      => array(
-							array(
-								'value'   => 'Olives',
-								'type'    => 'fixed',
-								'regular' => '2',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Mushrooms',
-								'type'    => 'fixed',
-								'regular' => '2',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Pepperoni',
-								'type'    => 'fixed',
-								'regular' => '2',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Chicken',
-								'type'    => 'fixed',
-								'regular' => '3',
-								'sale'    => '10',
-							),
-						),
-						'class'         => '',
-						'id'            => '',
-						'defval'        => array( 3, 2 ),
-					),
-					array(
-						'type'          => 'checkbox',
-						'blockid'       => 'mbt7-iizxj3',
-						'label'         => 'Dipping Sauce Add-ons',
-						'desc'          => '',
-						'columns'       => '1',
-						'enableCount'   => true,
-						'hide'          => false,
-						'required'      => false,
-						'min'           => 1,
-						'max'           => 100,
-						'minSelect'     => '',
-						'maxSelect'     => '',
-						'pricePosition' => 'with_option',
-						'_options'      => array(
-							array(
-								'value'   => 'Tomato Sauce',
-								'type'    => 'no_cost',
-								'regular' => '',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Spicy Marinara',
-								'type'    => 'per_unit',
-								'regular' => '1',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Ranch',
-								'type'    => 'per_unit',
-								'regular' => '2',
-								'sale'    => '',
-							),
-						),
-						'class'         => '',
-						'id'            => '',
-						'defval'        => array( 1, 2 ),
-					),
-					array(
-						'type'     => 'button',
-						'blockid'  => 'mcw4-d1i4ws',
-						'label'    => 'Spice Level',
-						'desc'     => '',
-						'multiple' => false,
-						'hide'     => false,
-						'required' => false,
-						'vertical' => false,
-						'_options' => array(
-							array(
-								'value'   => 'Regular',
-								'type'    => 'no_cost',
-								'regular' => '8',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Medium',
-								'type'    => 'no_cost',
-								'regular' => '6',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Extreme',
-								'type'    => 'no_cost',
-								'regular' => '3',
-								'sale'    => '',
-							),
-						),
-						'class'    => '',
-						'id'       => '',
-						'defval'   => array( 0 ),
-					),
-					array(
-						'type'     => 'range',
-						'blockid'  => 'm9uz-kt4i55',
-						'label'    => 'Crust Thickness',
-						'_options' => array(
-							array(
-								'type'    => 'no_cost',
-								'regular' => '2',
-								'sale'    => '',
-							),
-						),
-						'min'      => 1,
-						'max'      => '20',
-						'value'    => '3',
-						'step'     => 1,
-						'class'    => '',
-						'id'       => '',
-						'hide'     => false,
-						'required' => false,
-					),
-				),
-
-			),
-			array(
-				'title'   => 'Buttercream Bluff Cake',
-				'content' => array(
-					array(
-						'type'     => 'button',
-						'blockid'  => 'mj3f-z9ggz4',
-						'label'    => 'Cake Size',
-						'desc'     => '',
-						'multiple' => false,
-						'hide'     => false,
-						'required' => false,
-						'vertical' => false,
-						'_options' => array(
-							array(
-								'value'   => '1 pound',
-								'type'    => 'fixed',
-								'regular' => '26',
-								'sale'    => '',
-							),
-							array(
-								'value'   => '3 pound',
-								'type'    => 'fixed',
-								'regular' => '78',
-								'sale'    => '70',
-							),
-							array(
-								'value'   => '5 pound',
-								'type'    => 'fixed',
-								'regular' => '130',
-								'sale'    => '',
-							),
-						),
-						'class'    => '',
-						'id'       => '',
-						'defval'   => array( 0 ),
-					),
-					array(
-						'type'            => 'radio',
-						'blockid'         => 'mc2a-nctpsf',
-						'label'           => 'Choose Flavor',
-						'desc'            => '',
-						'columns'         => '1',
-						'enableCount'     => false,
-						'hide'            => false,
-						'required'        => false,
-						'min'             => 1,
-						'max'             => 100,
-						'pricePosition'   => 'with_option',
-						'_options'        => array(
-							array(
-								'value'   => 'Strawberry',
-								'type'    => 'no_cost',
-								'regular' => '',
-								'sale'    => '',
-								'def'     => false,
-							),
-							array(
-								'value'   => 'Avocado',
-								'type'    => 'no_cost',
-								'regular' => '6',
-								'sale'    => '',
-								'def'     => false,
-							),
-							array(
-								'value'   => 'Blueberry',
-								'type'    => 'fixed',
-								'regular' => '12',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Chocolate',
-								'type'    => 'fixed',
-								'regular' => '10',
-								'sale'    => '8',
-								'def'     => false,
-							),
-						),
-						'en_logic'        => false,
-						'fieldConditions' => array(),
-					),
-					array(
-						'type'     => 'button',
-						'blockid'  => 'm60j-i43lv3',
-						'label'    => 'Cake Tiers',
-						'desc'     => '',
-						'multiple' => false,
-						'hide'     => false,
-						'required' => false,
-						'vertical' => false,
-						'_options' => array(
-							array(
-								'value'   => 'Single',
-								'type'    => 'no_cost',
-								'regular' => '8',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Two - Tier',
-								'type'    => 'fixed',
-								'regular' => '6',
-								'sale'    => '',
-							),
-							array(
-								'value'   => 'Three - Tier',
-								'type'    => 'fixed',
-								'regular' => '8',
-								'sale'    => '',
-							),
-						),
-						'class'    => '',
-						'id'       => '',
-						'defval'   => array( 0 ),
-					),
-					array(
-						'type'          => 'textfield',
-						'blockid'       => 'mbg8-joml77',
-						'label'         => 'Message on Cake',
-						'placeholder'   => 'Happy Birthday',
-						'pricePosition' => 'with_title',
-						'_options'      => array(
-							array(
-								'type'    => 'no_cost',
-								'regular' => '2',
-								'sale'    => '',
-							),
-						),
-						'class'         => '',
-						'id'            => '',
-						'hide'          => false,
-						'required'      => false,
-					),
-				),
-			),
-		);
-
-		foreach ( $dummy_content as $addon ) {
-			$attr = array(
-				'post_title'   => $addon['title'],
-				'post_status'  => 'draft',
-				'post_content' => $addon['title'],
-				'post_type'    => 'prad_option',
-			);
-			$id   = wp_insert_post( $attr );
-			if ( $id ) {
-				update_post_meta( $id, 'prad_addons_blocks', $addon['content'] );
-			}
-		}
-
-		update_option( 'prad_addons_default_option_created', true );
+		self::create_stats_table();
+		self::create_stats_graph_table();
 	}
 
 	/**
@@ -360,21 +49,24 @@ class Analytics {
 	 *
 	 * @return void
 	 */
-	public function create_stats_table() {
+	public static function create_stats_table() {
 		global $wpdb;
 
-		$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}prad_stats_table` (
-            `id` INT unsigned NOT NULL AUTO_INCREMENT,
-            `option_id` bigint(20) unsigned NOT NULL,
-            `impression_count` INT unsigned NOT NULL default '0',
-            `click_count` INT unsigned NOT NULL default '0',
-            `add_to_cart_count` INT unsigned NOT NULL default '0',
-            `order_count` INT unsigned NOT NULL default '0',
-            `sales` FLOAT NOT NULL default '0',
-            PRIMARY KEY (id),
+		$table_name = $wpdb->prefix . 'prad_stats_table';
+
+		$sql = "CREATE TABLE $table_name (
+            id int unsigned NOT NULL AUTO_INCREMENT,
+            option_id bigint(20) unsigned NOT NULL,
+            impression_count int unsigned NOT NULL DEFAULT '0',
+            click_count int unsigned NOT NULL DEFAULT '0',
+            add_to_cart_count int unsigned NOT NULL DEFAULT '0',
+            order_count int unsigned NOT NULL DEFAULT '0',
+            sales float NOT NULL DEFAULT '0',
+            PRIMARY KEY  (id),
             KEY option_id_index (option_id)
         ) {$wpdb->get_charset_collate()};";
 
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 	}
 
@@ -389,21 +81,24 @@ class Analytics {
 	 *
 	 * @return void
 	 */
-	public function create_stats_graph_table() {
+	public static function create_stats_graph_table() {
 		global $wpdb;
 
-		$sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}prad_stats_graph` (
-            `id` INT unsigned NOT NULL AUTO_INCREMENT,
-            `date` date NOT NULL,
-            `impression_count` INT unsigned NOT NULL default '0',
-            `click_count` INT unsigned NOT NULL default '0',
-            `add_to_cart_count` INT unsigned NOT NULL default '0',
-            `order_count` INT unsigned NOT NULL default '0',
-            `sales` FLOAT NOT NULL default '0',
-            PRIMARY KEY (id),
+		$table_name = $wpdb->prefix . 'prad_stats_graph';
+
+		$sql = "CREATE TABLE $table_name (
+            id int unsigned NOT NULL AUTO_INCREMENT,
+            date date NOT NULL,
+            impression_count int unsigned NOT NULL DEFAULT '0',
+            click_count int unsigned NOT NULL DEFAULT '0',
+            add_to_cart_count int unsigned NOT NULL DEFAULT '0',
+            order_count int unsigned NOT NULL DEFAULT '0',
+            sales float NOT NULL DEFAULT '0',
+            PRIMARY KEY  (id),
             KEY option_date (date)
         ) {$wpdb->get_charset_collate()};";
 
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 	}
 

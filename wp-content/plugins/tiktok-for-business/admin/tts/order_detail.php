@@ -136,7 +136,7 @@ class OrderDetail {
 					return;
 				}
 
-				throw new \Exception( esc_html__( 'TikTok orders cannot be modified via the normal interface. Modify on TikTok.' ) );
+				throw new \Exception( esc_html__( 'TikTok orders cannot be modified via the normal interface. Modify on TikTok.', 'tiktok-for-business' ) );
 			}
 		);
 	}
@@ -157,8 +157,8 @@ class OrderDetail {
 				?>
 				<div class="notice notice-warning">
 					<p>
-				<?php echo esc_html__( 'Orders generated from TikTok Shop can only be managed through' ); ?>
-							<a target="_blank" href="<?php echo esc_url( get_tts_seller_center_origin() . '/order/detail?order_no=' . self::$order->get_meta( 'tiktok_order_id' ) ); ?>"><?php echo esc_html__( 'TikTok Seller Center' ); ?></a>
+				<?php echo esc_html__( 'Orders generated from TikTok Shop can only be managed through', 'tiktok-for-business' ); ?>
+							<a target="_blank" href="<?php echo esc_url( get_tts_seller_center_origin() . '/order/detail?order_no=' . self::$order->get_meta( 'tiktok_order_id' ) ); ?>"><?php echo esc_html__( 'TikTok Seller Center', 'tiktok-for-business' ); ?></a>
 					</p>
 				</div>
 				<?php

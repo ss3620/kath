@@ -7,6 +7,8 @@
 
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Singleton trait.
  */

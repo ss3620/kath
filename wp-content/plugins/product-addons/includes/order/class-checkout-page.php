@@ -19,9 +19,6 @@ class CheckoutPage {
 	public function __construct() {
 
 		add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'woocommerce_checkout_create_order_line_item' ), 10, 4 );
-		// if ( ! has_action( 'woocommerce_checkout_create_order_line_item', [ $this, 'woocommerce_checkout_create_order_line_item' ] ) ) {
-		// add_action( 'woocommerce_checkout_create_order_line_item', [ $this, 'woocommerce_checkout_create_order_line_item' ], 10, 4 );
-		// }.
 		add_action( 'woocommerce_checkout_order_processed', array( $this, 'woocommerce_checkout_create_order' ), 10 );
 		add_action( 'woocommerce_store_api_checkout_order_processed', array( $this, 'woocommerce_checkout_create_order' ), 10 );
 		add_action( 'woocommerce_view_order', array( $this, 'prad_custom_view_order_fields' ), 10, 1 );
@@ -50,13 +47,7 @@ class CheckoutPage {
 
 		// Loop through each item in the order.
 		foreach ( $items as $item ) {
-			// Get the campaign ID from the item's meta data.
-			// $prad_option_uploads_path = $item->get_meta( '_prad_option_uploads_path' );
-			// if ( ! empty( $prad_option_uploads_path ) ) {
-			// $moved_data = product_addons()->prad_move_uploadblock_files( $prad_option_uploads_path, 'order_placed' );
-			// }.
-
-			// starts.
+			// Move the order's uploaded files out of the temporary folder.
 			$cart_item_prad_selection = $item->get_meta( 'cart_item_prad_selection' );
 			if ( ! empty( $cart_item_prad_selection['extra_data'] ) ) {
 
@@ -116,7 +107,7 @@ class CheckoutPage {
 	 * @param \WC_Order $order Order.
 	 * @return void
 	 */
-	public function woocommerce_checkout_create_order_line_item( $item, $cart_item_key, $cart_item, $order ) {
+	public function woocommerce_checkout_create_order_line_item( $item, $cart_item_key, $cart_item, $order ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $order required by the woocommerce_checkout_create_order_line_item hook signature.
 
 		// Add Option Ids applied.
 		if ( ! empty( $cart_item['prad_option_published_ids'] ) ) {
@@ -236,7 +227,6 @@ class CheckoutPage {
 			$order->save();
 			foreach ( $data as $campaign_id ) {
 				do_action( 'prad_update_stats_table_data', $campaign_id, 'order_count', '' );
-				// do_action( 'prad_update_stats_table_data', $campaign_id, 'sales', $order->get_total() );.
 			}
 		}
 	}
@@ -246,6 +236,7 @@ class CheckoutPage {
 	 *
 	 * @param array  $val        The extra_data entry for an upload field.
 	 * @param string $move_stage File move stage: 'temp' or 'order_placed'.
+	 * @param bool   $add_price  Whether to include this field's price contribution.
 	 * @return array { value: string, paths: string[] }
 	 */
 	private function process_upload_field_on_checkout( array $val, string $move_stage, bool $add_price = true ): array {
@@ -299,7 +290,10 @@ class CheckoutPage {
 			: array();
 
 		if ( empty( $extra_data ) ) {
-			return array( 'value' => $changed_value, 'paths' => $collected_paths );
+			return array(
+				'value' => $changed_value,
+				'paths' => $collected_paths,
+			);
 		}
 
 		$has_upload = false;
@@ -311,7 +305,10 @@ class CheckoutPage {
 		}
 
 		if ( ! $has_upload ) {
-			return array( 'value' => $changed_value, 'paths' => $collected_paths );
+			return array(
+				'value' => $changed_value,
+				'paths' => $collected_paths,
+			);
 		}
 
 		$parts = array();
@@ -324,7 +321,7 @@ class CheckoutPage {
 				$result          = $this->process_upload_field_on_checkout( $entry, $move_stage, false );
 				$collected_paths = array_merge( $collected_paths, $result['paths'] );
 				$entry_value     = $result['value'];
-			} elseif ( 'custom_formula' === $entry_type || 'advanced_formula' === $entry_type ) {
+			} elseif ( 'custom_formula' === $entry_type || ! empty( $prad_additional['price_only'] ) ) {
 				$entry_value = isset( $prad_additional['opt_price_with_html'] ) ? $prad_additional['opt_price_with_html'] : '';
 			} else {
 				$entry_value = isset( $entry['value'] ) ? $entry['value'] : '';

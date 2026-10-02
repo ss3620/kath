@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/integration/woocommerce-subscriptions/
  * @since       6.1.0
- * @version     1.6.0
+ * @version     1.7.0
  */
 
 // Exit if accessed directly.
@@ -42,6 +42,9 @@ if ( ! class_exists( 'WCS_AFWC_Compatibility' ) ) {
 
 			// Hooks to register the subscription referral medium.
 			add_filter( 'afwc_referral_mediums', array( $this, 'register_referral_medium' ), 9, 1 );
+
+			// Hooks to register the commission plan templates related to subscriptions.
+			add_filter( 'afwc_commission_plan_templates', array( $this, 'register_commission_plan_templates' ), 9, 1 );
 		}
 
 		/**
@@ -272,6 +275,28 @@ if ( ! class_exists( 'WCS_AFWC_Compatibility' ) ) {
 			}
 
 			return $classes;
+		}
+
+		/**
+		 * Registers the commission plan templates.
+		 *
+		 * @param array $templates The array of templates.
+		 *
+		 * @return array The updated array of templates.
+		 */
+		public function register_commission_plan_templates( $templates = array() ) {
+			if ( ! is_array( $templates ) ) {
+				return $templates;
+			}
+
+			$sub_templates_dir = __DIR__ . '/commission-plans/templates';
+			if ( ! is_dir( $sub_templates_dir ) || ! is_readable( $sub_templates_dir ) ) {
+				return $templates;
+			}
+
+			$templates = array_merge( $templates, (array) glob( $sub_templates_dir . '/*.php' ) );
+
+			return $templates;
 		}
 	}
 

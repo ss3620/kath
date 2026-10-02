@@ -47,7 +47,7 @@ class Time_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 
 		if ( empty( $options ) ) {
 			return '';
@@ -72,6 +72,7 @@ class Time_Block extends Abstract_Block {
 	/**
 	 * Get date specific attributes
 	 *
+	 * @param array $price_info Price information.
 	 * @return array
 	 */
 	private function get_time_attributes( $price_info ): array {
@@ -92,8 +93,7 @@ class Time_Block extends Abstract_Block {
 	/**
 	 * Render time picker section
 	 *
-	 * @param object $item Time item
-	 * @param array  $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_time_picker( array $price_info ): string {
@@ -114,6 +114,7 @@ class Time_Block extends Abstract_Block {
 	/**
 	 * Render date input container
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_time_input_container( $price_info ): string {
@@ -140,11 +141,10 @@ class Time_Block extends Abstract_Block {
 	/**
 	 * Render date input
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_time_input( $price_info ): string {
-		$format = $this->get_property( 'dateFormat', '' );
-
 		$attributes = array(
 			'type'          => 'text',
 			'readonly'      => true,

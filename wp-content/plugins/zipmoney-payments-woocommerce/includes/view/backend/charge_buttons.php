@@ -4,6 +4,7 @@ if ( $order->get_status() == WC_Zipmoney_Payment_Gateway_Config::ZIP_ORDER_STATU
 	<button type="button" class="button zip-capture-btn">Capture zip charge</button>
 	<button type="button" class="button zip-cancel-btn">Cancel charge</button>
 	<input type="hidden" name="zip_order_id" value="<?php echo WC_Zipmoney_Payment_Gateway_Util::get_order_id( $order ); ?>">
+	<?php wp_nonce_field( 'zip_charge_action', 'zip_nonce' ); ?>
 	<!-- Add the capture zip charge and hide the refund button -->
 	<script>
 		jQuery(function () {

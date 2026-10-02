@@ -3,7 +3,7 @@
         'name' => 'wpmanageninja/fluent-smtp',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '0ae6bb701b68edab52aef011545dfe67333fa7e4',
+        'reference' => '6b454bdfbcf118b278a7ab5bb750bb76095c70ac',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'wpmanageninja/fluent-smtp' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '0ae6bb701b68edab52aef011545dfe67333fa7e4',
+            'reference' => '6b454bdfbcf118b278a7ab5bb750bb76095c70ac',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

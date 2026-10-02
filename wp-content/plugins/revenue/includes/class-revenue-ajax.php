@@ -7,6 +7,8 @@
 
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 use WC_AJAX;
 use WC_Data_Store;
 use WP_Query;
@@ -36,13 +38,9 @@ class Revenue_Ajax {
 
 		add_action( 'wp_ajax_revenue_get_product_price', array( $this, 'get_product_price' ) );
 
-		add_action( 'wp_ajax_revx_get_next_campaign_id', array( $this, 'get_next_campaign_id' ) );
+		add_action( 'wp_ajax_revenue_activate_woocommerce', array( $this, 'activate_woocommerce' ) );
 
-		add_action( 'wp_ajax_revx_get_campaign_limits', array( $this, 'get_campaign_limits' ) );
-
-		add_action( 'wp_ajax_revx_activate_woocommerce', array( $this, 'activate_woocommerce' ) );
-
-		add_action( 'wp_ajax_revx_install_woocommerce', array( $this, 'install_woocommerce' ) );
+		add_action( 'wp_ajax_revenue_install_woocommerce', array( $this, 'install_woocommerce' ) );
 
 		add_action( 'wp_ajax_revenue_get_search_suggestion', array( $this, 'get_search_suggestion' ) );
 		add_action( 'wp_ajax_revenue_get_cart_total', array( $this, 'get_cart_total' ) );
@@ -51,11 +49,49 @@ class Revenue_Ajax {
 		add_action( 'wp_ajax_revenue_get_campaign_offer_items', array( $this, 'get_offer_items' ) );
 
 		add_action( 'wp_ajax_revenue_get_trigger_items', array( $this, 'get_trigger_items' ) );
+	}
 
-		add_action( 'wp_ajax_nopriv_revenue_get_trigger_items', array( $this, 'get_trigger_items' ) );
+	/**
+	 * Campaign types whose trigger search returns products without their variations.
+	 *
+	 * @param string $campaign_type Campaign type slug.
+	 * @return bool
+	 */
+	private static function trigger_search_drops_children( $campaign_type ) {
+		$types = apply_filters(
+			'revenue_campaign_trigger_search_drops_children_types',
+			array( 'normal_discount', 'bundle_discount', 'volume_discount', 'buy_x_get_y' )
+		);
+
+		return in_array( $campaign_type, (array) $types, true );
+	}
+
+	/**
+	 * Campaign types whose trigger search leaves out the parent product itself.
+	 *
+	 * @param string $campaign_type Campaign type slug.
+	 * @return bool
+	 */
+	private static function trigger_search_skips_parent( $campaign_type ) {
+		$types = apply_filters( 'revenue_campaign_trigger_search_skips_parent_types', array( 'buy_x_get_y' ) );
+
+		return in_array( $campaign_type, (array) $types, true );
+	}
+
+	/**
+	 * Authorize dashboard data access; callers also verify the request nonce.
+	 *
+	 * @return void
+	 */
+	private function verify_dashboard_capability() {
+		if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to manage campaigns.', 'revenue' ) ), 403 );
+		}
 	}
 
 	public function get_cart_total() {
+		check_ajax_referer( 'revenue-add-to-cart', false );
+
 		if ( WC()->cart ) {
 			// Recalculate totals before getting the cart total
 			WC()->cart->calculate_totals();
@@ -91,15 +127,8 @@ class Revenue_Ajax {
 
 
 	public function get_trigger_items() {
-
-		$nonce = '';
-		if ( isset( $_GET['security'] ) ) {
-			$nonce = sanitize_key( $_GET['security'] );
-		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
-		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
-			die();
-		}
+		$this->verify_dashboard_capability();
+		check_ajax_referer( 'revenue-dashboard', 'security' );
 
 		$type = isset( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : '';
 
@@ -141,10 +170,10 @@ class Revenue_Ajax {
 	 */
 	public function search_products( $term, $include_variations = false ) {
 
-		if ( isset( $_GET['limit'] ) && ! empty( wp_unslash( $_GET['limit'] ) ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['limit'] ) && ! empty( wp_unslash( $_GET['limit'] ) ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$limit = absint( wp_unslash( $_GET['limit'] ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		} else {
-			$limit = absint( apply_filters( 'woocommerce_json_search_limit', 30 ) );
+			$limit = absint( apply_filters( 'woocommerce_json_search_limit', 30 ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce core filter.
 		}
 		$source         = isset( $_GET['source'] ) ? sanitize_text_field( wp_unslash( $_GET['source'] ) ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$trigger_action = isset( $_GET['trigger_action'] ) ? sanitize_text_field( wp_unslash( $_GET['trigger_action'] ) ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -167,7 +196,7 @@ class Revenue_Ajax {
 			if ( $product && $product->is_in_stock() ) {
 
 				// Check if trigger_action is "exclude" and validate include_cats.
-				if ( $trigger_action === 'exclude' && ! empty( $include_cats ) ) {
+				if ( 'exclude' === $trigger_action && ! empty( $include_cats ) ) {
 					$product_categories = wp_get_post_terms( $product_id, 'product_cat', array( 'fields' => 'ids' ) );
 					if ( empty( array_intersect( $product_categories, $include_cats ) ) ) {
 						continue; // Skip products not in the included categories.
@@ -236,39 +265,13 @@ class Revenue_Ajax {
 					'children'      => $child_data,
 				);
 
-				if ( 'bundle_discount' === $product->get_type() ) {
-					// $products = array_merge( $products, $child_data );
-				} elseif ( 'trigger' == $source ) {
-					switch ( $campaign_type ) {
-						case 'normal_discount':
-							$product_data['children'] = array();
-							$products[]               = $product_data;
-							break;
-						case 'bundle_discount':
-							$product_data['children'] = array();
-							$products[]               = $product_data;
-							break;
-						case 'volume_discount':
-							$product_data['children'] = array();
-							$products[]               = $product_data;
-							break;
-						case 'buy_x_get_y':
-							$product_data['children'] = array();
-							$products[]               = $product_data;
-							break;
-						case 'mix_match':
-							$product_data['children'] = array();
-							$products[]               = $product_data;
-							break;
-						case 'frequently_bought_together':
-							$product_data['children'] = array();
-							$products[]               = $product_data;
-							break;
-						default:
-							$products[] = $product_data;
-							break;
+				if ( 'trigger' === $source ) {  // bundle_discount type doesn't add to products list.
+					if ( self::trigger_search_drops_children( $campaign_type ) ) {
+						$product_data['children'] = array();
 					}
-				} else {
+				}
+
+				if ( 'bundle_discount' !== $product->get_type() ) {
 					$products[] = $product_data;
 				}
 
@@ -288,11 +291,8 @@ class Revenue_Ajax {
 	 * @return mixed
 	 */
 	public function get_search_suggestion() {
-
-		$nonce = isset( $_GET['security'] ) ? sanitize_key( $_GET['security'] ) : '';
-		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
-			die();
-		}
+		$this->verify_dashboard_capability();
+		check_ajax_referer( 'revenue-dashboard', 'security' );
 
 		$type           = isset( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$source         = isset( $_GET['source'] ) ? sanitize_text_field( wp_unslash( $_GET['source'] ) ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -367,7 +367,7 @@ class Revenue_Ajax {
 								}
 								$child_data[] = array(
 									'item_id'       => $child_id,
-									'item_name'     => $source === 'offer' ? $child_name : $full_name,
+									'item_name'     => 'offer' === $source ? $child_name : $full_name,
 									'thumbnail'     => wp_get_attachment_url( $child->get_image_id() ),
 									'regular_price' => $child->get_regular_price(),
 									'parent_id'     => $product->get_id(),
@@ -389,35 +389,10 @@ class Revenue_Ajax {
 					);
 
 					if ( 'trigger' == $source ) {
-						switch ( $campaign_type ) {
-							case 'normal_discount':
-								$product_data['children'] = array();
-								$data[]                   = $product_data;
-								break;
-							case 'bundle_discount':
-								$product_data['children'] = array();
-								$data[]                   = $product_data;
-								break;
-							case 'volume_discount':
-								$product_data['children'] = array();
-								$data[]                   = $product_data;
-								break;
-							case 'buy_x_get_y':
-								$product_data['children'] = array();
-								$data[]                   = $product_data;
-								break;
-							case 'mix_match':
-								$product_data['children'] = array();
-								$data[]                   = $product_data;
-								break;
-							case 'frequently_bought_together':
-								$product_data['children'] = array();
-								$data[]                   = $product_data;
-								break;
-							default:
-								$data[] = $product_data;
-								break;
+						if ( self::trigger_search_drops_children( $campaign_type ) ) {
+							$product_data['children'] = array();
 						}
+						$data[] = $product_data;
 					} else {
 						$data[] = $product_data;
 					}
@@ -502,28 +477,6 @@ class Revenue_Ajax {
 		}
 
 		return $data;
-	}
-
-
-	/**
-	 * Get next campaign id.
-	 *
-	 * @return mixed
-	 */
-	public function get_next_campaign_id() {
-		$nonce = '';
-		if ( isset( $_POST['security'] ) ) {
-			$nonce = sanitize_key( $_POST['security'] );
-		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
-		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
-			die();
-		}
-
-		global $wpdb;
-		$res = $wpdb->get_row( "SELECT COALESCE(MAX(id), 0) + 1 AS next_campaign_id FROM {$wpdb->prefix}revenue_campaigns;" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		return wp_send_json_success( array( 'next_campaign_id' => $res->next_campaign_id ) );
 	}
 
 	/**
@@ -659,10 +612,8 @@ class Revenue_Ajax {
 			unset( $data['builderdata'] );
 		}
 
-		if ( isset( $data['campaign_type'] ) && 'mix_match' === $data['campaign_type'] ) {
-			$data['campaign_trigger_relation'] = 'and';
-		} elseif ( empty( $data['campaign_trigger_relation'] ) ) {
-				$data['campaign_trigger_relation'] = 'or';
+		if ( empty( $data['campaign_trigger_relation'] ) ) {
+			$data['campaign_trigger_relation'] = 'or';
 		}
 
 		if ( empty( $data['campaign_placement'] ) && 'next_order_coupon' == $data['campaign_type'] ) {
@@ -688,23 +639,8 @@ class Revenue_Ajax {
 			$data['countdown_start_time_status'] = 'right_now';
 		}
 
-		if ( isset( $data['campaign_placement'] ) && 'multiple' != $data['campaign_placement'] ) {
-			if ( 'double_order' == $data['campaign_type'] ) {
-				$data['placement_settings'] = array(
-					$data['campaign_placement'] => array(
-						'page'                     => $data['campaign_placement'],
-						'status'                   => 'yes',
-						'display_style'            => $data['campaign_display_style'] ?? 'inpage',
-						'builder_view'             => $data['campaign_builder_view'],
-						'inpage_position'          => $data['campaign_inpage_position'] ? $data['campaign_inpage_position'] : 'review_order_before_payment',
-						'popup_animation'          => $data['campaign_popup_animation'],
-						'popup_animation_delay'    => $data['campaign_popup_animation_delay'],
-						'floating_position'        => $data['campaign_floating_position'],
-						'floating_animation_delay' => $data['campaign_floating_animation_delay'],
-						'drawer_position'          => 'top-left',
-					),
-				);
-			} elseif ( 'stock_scarcity' == $data['campaign_type'] ) {
+		if ( isset( $data['campaign_placement'] ) && 'multiple' != $data['campaign_placement'] && empty( $data['placement_settings'] ) ) {
+			if ( 'stock_scarcity' == $data['campaign_type'] ) {
 				$data['placement_settings'] = array(
 					$data['campaign_placement'] => array(
 						'page'                     => $data['campaign_placement'],
@@ -768,10 +704,6 @@ class Revenue_Ajax {
 			$data['active_page'] = ! empty( $placement_setting ) ? array_keys( $placement_setting )[0] : 'product_page';
 		}
 
-		if ( ! isset( $data['double_order_animation_type'] ) ) {
-			$data['double_order_animation_type'] = 'shake';
-		}
-
 		if ( isset( $data['campaign_type'] ) && 'next_order_coupon' === $data['campaign_type'] ) {
 			if ( isset( $data['revx_next_order_coupon'] ) ) {
 				$coupon_id                                     = $data['revx_next_order_coupon']['choose_next_order_coupon'] ?? '';
@@ -799,7 +731,7 @@ class Revenue_Ajax {
 		$quantity     = isset( $_POST['quantity'] ) ? sanitize_text_field( wp_unslash( $_POST['quantity'] ) ) : '';
 		$index        = isset( $_POST['index'] ) ? sanitize_text_field( wp_unslash( $_POST['index'] ) ) : '';
 		$variation_id = isset( $_POST['variationId'] ) ? sanitize_text_field( wp_unslash( $_POST['variationId'] ) ) : 0;
-		$attributes   = isset( $_POST['selectedAttr'] ) ? revenue()->sanitize_posted_attributes( $_POST['selectedAttr'] ) : array();
+		$attributes   = isset( $_POST['selectedAttr'] ) ? revenue()->sanitize_posted_attributes( wp_unslash( $_POST['selectedAttr'] ) ) : array(); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce checked via check_ajax_referer(), attributes sanitized by custom method.
 
 		$has_free_shipping_enabled = revenue()->get_campaign_meta( $campaign_id, 'free_shipping_enabled', true ) ?? 'no';
 
@@ -815,19 +747,32 @@ class Revenue_Ajax {
 			'revx_campaign_type'   => $campaign['campaign_type'],
 		);
 
-		// Detect if it's new version (has 'products' data) or old version.
-		// NEED TO CHECK WITH RELEASE DATE.
-		$is_new_version = false;
+		// The builder posts a `products` array; older ad-hoc callers may not.
+		$is_new_version = isset( $_POST['products'] ) && ! empty( $_POST['products'] ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-		$campaign_version = revenue()->get_campaign_meta( $campaign_id, 'campaign_version', true ) ?? '1.0.0';
-
-		if ( '2.0.0' === $campaign_version && version_compare( REVENUE_VER, '2.0.0', '>=' ) ) {
-			$is_new_version = true;
+		$product_index   = 0;
+		$provider_status = apply_filters(
+			'revenue_campaign_add_to_cart_dispatch',
+			null,
+			$campaign,
+			array(
+				'product_id'                => $product_id,
+				'campaign_id'               => $campaign_id,
+				'quantity'                  => $quantity,
+				'variation_id'              => $variation_id,
+				'attributes'                => $attributes,
+				'offers'                    => $offers,
+				'cart_item_data'            => $cart_item_data,
+				'has_free_shipping_enabled' => $has_free_shipping_enabled,
+			)
+		);
+		if ( null === $provider_status && ! revenue()->is_free_campaign_type( $campaign['campaign_type'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid campaign type.', 'revenue' ) ), 501 );
 		}
 
-		// For backward compatibility, if the campaign was created before the new version release date, treat it as old version.
-		$product_index = 0;
-		if ( 'buy_x_get_y' === $campaign['campaign_type'] ) {
+		if ( null !== $provider_status ) {
+			$status = $provider_status;
+		} elseif ( 'buy_x_get_y' === $campaign['campaign_type'] ) {
 
 			$bxgy_data         = isset( $_POST['bxgy_data'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['bxgy_data'] ) ) : array();
 			$bxgy_trigger_data = isset( $_POST['bxgy_trigger_data'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['bxgy_trigger_data'] ) ) : array();
@@ -854,7 +799,22 @@ class Revenue_Ajax {
 
 			// New version: Process products array for variable product support.
 			if ( $is_new_version ) {
-				$products = $_POST['products'];
+				$raw_products = is_array( $_POST['products'] ) ? wp_unslash( $_POST['products'] ) : array(); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce checked via check_ajax_referer() above; each element sanitized in loop below.
+				$products     = array();
+
+				foreach ( $raw_products as $raw_p_data ) {
+					if ( ! is_array( $raw_p_data ) || ! isset( $raw_p_data['product_id'] ) ) {
+						continue;
+					}
+
+					$products[] = array(
+						'product_id'          => absint( $raw_p_data['product_id'] ),
+						'is_x_product'        => isset( $raw_p_data['is_x_product'] ) ? sanitize_text_field( $raw_p_data['is_x_product'] ) : 'no',
+						'quantity'            => isset( $raw_p_data['quantity'] ) ? absint( $raw_p_data['quantity'] ) : 1,
+						'variation_id'        => isset( $raw_p_data['variation_id'] ) ? absint( $raw_p_data['variation_id'] ) : 0,
+						'selected_attributes' => isset( $raw_p_data['selected_attributes'] ) ? revenue()->sanitize_posted_attributes( $raw_p_data['selected_attributes'] ) : array(),
+					);
+				}
 
 				foreach ( $products as $p_data ) {
 					if ( isset( $trigger_product_ids[ $p_data['product_id'] ] ) && 'yes' == $p_data['is_x_product'] ) {
@@ -934,166 +894,6 @@ class Revenue_Ajax {
 			}
 
 			revenue()->increment_campaign_add_to_cart_count( $campaign_id );
-		} elseif ( 'mix_match' === $campaign['campaign_type'] ) {
-
-			$has_required_products      = isset( $campaign['mix_match_is_required_products'] ) && 'yes' == $campaign['mix_match_is_required_products'];
-			$required_products          = $has_required_products ? revenue()->get_campaign_meta( $campaign['id'], 'mix_match_required_products', true ) : array();
-			$mix_match_trigger_products = revenue()->get_item_ids_from_triggers( $campaign );
-			$mix_match_data             = isset( $_POST['mix_match_data'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['mix_match_data'] ) ) : array();
-
-			$cart_item_data = array_merge(
-				$cart_item_data,
-				array(
-					'revx_campaign_id'        => $campaign_id,
-					'revx_campaign_type'      => $campaign['campaign_type'],
-					'revx_required_products'  => $required_products,
-					'revx_mix_match_products' => array_keys( $mix_match_data ),
-					'revx_offer_data'         => $offers,
-					'rev_is_free_shipping'    => $has_free_shipping_enabled,
-				)
-			);
-
-			if ( $is_new_version ) {
-				// New version: Use products array with variable support.
-				$products = $_POST['products'];
-				foreach ( $products as $p_data ) {
-					$pid          = $p_data['product_id'];
-					$qty          = $p_data['quantity'];
-					$variation_id = isset( $p_data['variation_id'] ) ? $p_data['variation_id'] : 0;
-					$attributes   = isset( $p_data['selected_attributes'] ) ? $p_data['selected_attributes'] : array();
-					$status       = WC()->cart->add_to_cart(
-						$pid,
-						$qty,
-						$variation_id,
-						$attributes,
-						$cart_item_data
-					);
-					revenue()->increment_campaign_add_to_cart_count( $campaign_id, $pid );
-
-					if ( $status ) {
-						do_action( 'revenue_item_added_to_cart', $status, $pid, $campaign_id );
-					}
-				}
-			} else {
-				// Old version: Use mix_match_data.
-				foreach ( $mix_match_data as $pid => $qty ) {
-					$status = WC()->cart->add_to_cart(
-						$pid,
-						$qty,
-						0,
-						array(),
-						$cart_item_data
-					);
-					revenue()->increment_campaign_add_to_cart_count( $campaign_id, $pid );
-
-					if ( $status ) {
-						do_action( 'revenue_item_added_to_cart', $status, $pid, $campaign_id );
-					}
-				}
-			}
-		} elseif ( 'frequently_bought_together' === $campaign['campaign_type'] ) {
-			$required_products = isset( $_POST['requiredProducts'] ) ? $_POST['requiredProducts'] : array();
-
-			if ( ! is_array( $required_products ) ) {
-				$required_products = array( $required_products );
-			}
-			$required_products = array_map( 'absint', $required_products );
-			$required_products = array_filter( $required_products ); // remove invalid/empty
-
-			$fbt_data = isset( $_POST['fbt_data'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['fbt_data'] ) ) : array();
-
-			$is_required_trigger_product = revenue()->get_campaign_meta( $campaign_id, 'fbt_is_trigger_product_required', true );
-
-			if ( 'yes' === $is_required_trigger_product ) {
-				// check if required trigger product is set in fbt data
-				foreach ( $required_products as $required_product ) {
-					if ( ! isset( $fbt_data[ $required_product ] ) ) {
-						return wp_send_json_error(
-							array(
-								'message' => 'Required trigger product not found.',
-							),
-							400
-						);
-					}
-				}
-			}
-
-			$cart_item_data = array_merge(
-				$cart_item_data,
-				array(
-					'revx_campaign_id'           => $campaign_id,
-					'revx_campaign_type'         => $campaign['campaign_type'],
-					'revx_fbt_required_products' => $required_products,
-					'revx_fbt_data'              => $fbt_data,
-					'revx_offer_data'            => $offers,
-					'rev_is_free_shipping'       => $has_free_shipping_enabled,
-				)
-			);
-
-			if ( $is_new_version ) {
-				// New version: Use products array with variable support.
-				$products                             = $_POST['products'];
-				$cart_item_data['revx_products_data'] = $products;
-				$revx_fbt_all_triggers_key            = array();
-				$revx_fbt_all_items_key               = array();
-				foreach ( $products as $_pd ) {
-					$variation_id = isset( $_pd['variation_id'] ) ? $_pd['variation_id'] : 0;
-					$attributes   = isset( $_pd['selected_attributes'] ) ? $_pd['selected_attributes'] : array();
-					$status       = WC()->cart->add_to_cart(
-						$_pd['product_id'],
-						$_pd['quantity'],
-						$variation_id,
-						$attributes,
-						$cart_item_data
-					);
-					if ( $status ) {
-						if ( in_array( $_pd['product_id'], $required_products ) ) {
-							$revx_fbt_all_triggers_key[] = $status;
-						} else {
-							$revx_fbt_all_items_key[] = $status;
-						}
-						do_action( 'revenue_item_added_to_cart', $status, $_pd['product_id'], $campaign_id );
-					}
-				}
-				// only set trigger keys and items keys to trigger items on cart,
-				// its easier to handle the removal of items when trigger items are removed.
-				foreach ( $revx_fbt_all_triggers_key as $key ) {
-					WC()->cart->cart_contents[ $key ]['revx_fbt_all_triggers_key'] = $revx_fbt_all_triggers_key;
-					WC()->cart->cart_contents[ $key ]['revx_fbt_all_items_key']    = $revx_fbt_all_items_key;
-				}
-			} else {
-				// Old version: Use fbt_data.
-				foreach ( $fbt_data as $pid => $qty ) {
-					$status = WC()->cart->add_to_cart(
-						$pid,
-						$qty,
-						0,
-						array(),
-						$cart_item_data
-					);
-					if ( $status ) {
-						do_action( 'revenue_item_added_to_cart', $status, $pid, $campaign_id );
-					}
-				}
-			}
-
-			revenue()->increment_campaign_add_to_cart_count( $campaign_id );
-
-		} elseif ( 'spending_goal' === $campaign['campaign_type'] ) {
-			$cart_item_data['revx_spending_goal_upsell'] = 'yes';
-			$status                                      = WC()->cart->add_to_cart(
-				$product_id,
-				$quantity,
-				$variation_id,
-				$attributes,
-				$cart_item_data
-			);
-
-			revenue()->increment_campaign_add_to_cart_count( $campaign_id );
-
-			if ( $status ) {
-				do_action( 'revenue_item_added_to_cart', $status, $product_id, $campaign_id );
-			}
 		} elseif ( 'free_shipping_bar' === $campaign['campaign_type'] ) {
 			$cart_item_data['revx_free_shipping_bar_upsell'] = 'yes';
 			$status = WC()->cart->add_to_cart(
@@ -1223,7 +1023,7 @@ class Revenue_Ajax {
 				if ( isset( $_POST['products'] ) && is_array( $_POST['products'] ) && ! empty( $_POST['products'] ) ) {
 					$cart_item_data['revx_multiple_variation'] = 'yes';
 
-					$products = $_POST['products'];
+					$products = isset( $_POST['products'] ) && is_array( $_POST['products'] ) ? wp_unslash( $_POST['products'] ) : array(); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce checked via check_ajax_referer() above; each element sanitized in loop below.
 					foreach ( $products as $p_data ) {
 						$pid    = isset( $p_data['product_id'] ) ? sanitize_text_field( $p_data['product_id'] ) : 0;
 						$qty    = isset( $p_data['quantity'] ) ? absint( $p_data['quantity'] ) : $quantity;
@@ -1313,7 +1113,7 @@ class Revenue_Ajax {
 
 		$data = array(
 			'fragments' => apply_filters(
-				'woocommerce_add_to_cart_fragments',
+				'woocommerce_add_to_cart_fragments', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce core filter.
 				array(
 					'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
 				)
@@ -1353,7 +1153,7 @@ class Revenue_Ajax {
 
 		// Detect version: new version has 'products' data, old version doesn't
 		$is_new_version = isset( $_POST['products'] ) && ! empty( $_POST['products'] );
-		$products       = $is_new_version ? $_POST['products'] : array();
+		$products       = $is_new_version ? wp_unslash( $_POST['products'] ) : array(); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce checked above; processed/sanitized per-element below.
 
 		$tip                  = false;
 		$trigger_product_data = array();
@@ -1423,10 +1223,7 @@ class Revenue_Ajax {
 
 		$on_cart_action = revenue()->get_campaign_meta( $campaign['id'], 'offered_product_on_cart_action', true );
 
-		// Handle different source page parameter names for backward compatibility
-		$campaign_source_page = isset( $_POST['campaignSrcPage'] ) ?
-			sanitize_text_field( wp_unslash( $_POST['campaignSrcPage'] ) ) :
-			( isset( $_POST['campaignSourcePage'] ) ? sanitize_text_field( wp_unslash( $_POST['campaignSourcePage'] ) ) : '' );
+		$campaign_source_page = isset( $_POST['campaignSourcePage'] ) ? sanitize_text_field( wp_unslash( $_POST['campaignSourcePage'] ) ) : '';
 
 		$response_data = array(
 			'add_to_cart'    => $status,
@@ -1454,7 +1251,7 @@ class Revenue_Ajax {
 
 		$data = array(
 			'fragments' => apply_filters(
-				'woocommerce_add_to_cart_fragments',
+				'woocommerce_add_to_cart_fragments', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce core filter.
 				array(
 					'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
 				)
@@ -1471,7 +1268,7 @@ class Revenue_Ajax {
 	 * @return mixed
 	 */
 	public function close_popup() {
-		check_ajax_referer( 'revenue-add-to-cart', false ); // Add this nonce on js and also localize this.
+		check_ajax_referer( 'revenue-add-to-cart', false );
 
 		$campaign_id = isset( $_POST['campaignId'] ) ? sanitize_text_field( wp_unslash( $_POST['campaignId'] ) ) : '';
 
@@ -1490,7 +1287,7 @@ class Revenue_Ajax {
 	 * @return mixed
 	 */
 	public function count_impression() {
-		check_ajax_referer( 'revenue-add-to-cart', false ); // Add this nonce on js and also localize this.
+		check_ajax_referer( 'revenue-add-to-cart', false );
 
 		$campaign_id = isset( $_POST['campaignId'] ) ? sanitize_text_field( wp_unslash( $_POST['campaignId'] ) ) : '';
 
@@ -1498,38 +1295,6 @@ class Revenue_Ajax {
 
 		wp_send_json_success( array( 'impression_count_updated' => true ) );
 	}
-
-
-	/**
-	 * Get campaign limits.
-	 *
-	 * @return array.
-	 */
-	public function get_campaign_limits() {
-		$nonce = '';
-		if ( isset( $_POST['security'] ) ) {
-			$nonce = sanitize_key( $_POST['security'] );
-		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
-		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
-			die();
-		}
-
-		global $wpdb;
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$res = $wpdb->get_row(
-			"SELECT
-                COUNT(*) AS total_campaigns,
-                SUM(CASE WHEN campaign_type = 'normal_discount' THEN 1 ELSE 0 END) AS normal_discount,
-                SUM(CASE WHEN campaign_type = 'volume_discount' THEN 1 ELSE 0 END) AS volume_discount,
-                SUM(CASE WHEN campaign_type = 'bundle_discount' THEN 1 ELSE 0 END) AS bundle_discount,
-                SUM(CASE WHEN campaign_type = 'buy_x_get_y' THEN 1 ELSE 0 END) AS buy_x_get_y
-            FROM {$wpdb->prefix}revenue_campaigns;"
-		); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		return wp_send_json_success( $res );
-	}
-
 
 
 	/**
@@ -1576,10 +1341,10 @@ class Revenue_Ajax {
 		}
 
 		if ( ! class_exists( 'WP_Upgrader' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+			require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 		}
 		if ( ! function_exists( 'plugins_api' ) ) {
-			include ABSPATH . 'wp-admin/includes/plugin-install.php';
+			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 		}
 		$plugin_slug = 'woocommerce';
 		$api         = plugins_api(
@@ -1611,41 +1376,12 @@ class Revenue_Ajax {
 
 
 
-	public function get_eventin_ticket_data_by_id( $variation_id ) {
-		$id = explode( '_', $variation_id )[0];
 
-		$data       = array();
-		$event_logo = get_post_meta( $id, 'etn_event_logo', true );
-		$variations = get_post_meta( $id, 'etn_ticket_variations', true );
-		$child_data = array();
-
-		if ( is_array( $variations ) && ! empty( $variations ) ) {
-
-			foreach ( $variations as $variation ) {
-				if ( $id . '_' . $variation['etn_ticket_slug'] == $variation_id ) {
-					$data = array(
-						'item_id'       => $id . '_' . $variation['etn_ticket_slug'],
-						'item_name'     => $variation['etn_ticket_name'],
-						'regular_price' => $variation['etn_ticket_price'],
-						'thumbnail'     => wc_placeholder_img_src(),
-						'_type'         => 'eventin_events',
-					);
-				}
-			}
-		}
-
-		return $data;
-	}
 
 
 	public function get_offer_items() {
-		$nonce = '';
-		if ( isset( $_GET['security'] ) ) {
-			$nonce = sanitize_key( $_GET['security'] );
-		}
-		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
-			die();
-		}
+		$this->verify_dashboard_capability();
+		check_ajax_referer( 'revenue-dashboard', 'security' );
 
 		$type = isset( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : '';
 
@@ -1685,7 +1421,7 @@ class Revenue_Ajax {
 						}
 					}
 
-					if ( 'trigger' === $source && 'mix_match' !== $campaign_type && 'buy_x_get_y' !== $campaign_type && 'frequently_bought_together' !== $campaign_type ) {
+					if ( 'trigger' === $source && ! self::trigger_search_skips_parent( $campaign_type ) ) {
 						$data[] = array(
 							'item_id'        => $product->get_id(),
 							'url'            => get_permalink( $product ),

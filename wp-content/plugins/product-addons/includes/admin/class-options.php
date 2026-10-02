@@ -33,7 +33,6 @@ class Options {
 
 	/**
 	 * Adds quick action links below the plugin name.
-	 * **YOU NEED TO CUSTOMIZE THIS FUNCTION**
 	 *
 	 * @param array $links Default plugin action links.
 	 * @return array Modified plugin action links.
@@ -41,49 +40,13 @@ class Options {
 	public function plugin_action_links_callback( $links ) {
 		$offer_config = array(
 			array(
-				'start'  => '2026-05-07 00:00 Asia/Dhaka',
-				'end'    => '2026-05-21 23:59 Asia/Dhaka',
+				'start'  => '2026-09-02 00:00 Asia/Dhaka',
+				'end'    => '2026-10-10 23:59 Asia/Dhaka',
 				'text'   => __(
-					'Flash Sale - Up to 50% OFF',
+					'Get Pro at $52',
 					'product-addons'
 				),
-				'utmKey' => 'plugin_meta',
-			),
-			array(
-				'start'  => '2026-05-22 00:00 Asia/Dhaka',
-				'end'    => '2026-06-01 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Surprise Sale - Up to 55% OFF',
-					'product-addons'
-				),
-				'utmKey' => 'plugin_meta',
-			),
-			array(
-				'start'  => '2026-06-02 00:00 Asia/Dhaka',
-				'end'    => '2026-06-20 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Massive Sale - Up to 50% OFF',
-					'product-addons'
-				),
-				'utmKey' => 'plugin_meta',
-			),
-			array(
-				'start'  => '2026-07-06 00:00 Asia/Dhaka',
-				'end'    => '2026-08-01 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Summer Sale - Up to 50% OFF',
-					'product-addons'
-				),
-				'utmKey' => 'plugin_meta_summer_db',
-			),
-			array(
-				'start'  => '2026-08-02 00:00 Asia/Dhaka',
-				'end'    => '2026-08-16 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Summer Sale - Up to 50% OFF',
-					'product-addons'
-				),
-				'utmKey' => 'plugin_meta_summer_db',
+				'utmKey' => 'plugin_meta_base_price',
 			),
 		);
 
@@ -93,38 +56,40 @@ class Options {
 
 		$upgrade_link = array();
 
-		// Free user or expired license user.
-		if ( ! defined( 'PRAD_PRO_VER' ) || Xpo::is_lc_expired() ) {
+		$text = esc_html__( 'Upgrade to Pro', 'product-addons' );
+		$url  = Xpo::generate_utm_link(
+			array(
+				'utmKey' => 'plugin_meta',
+			)
+		);
 
-			if ( Xpo::is_lc_expired() ) {
-				$text = esc_html__( 'Renew License', 'product-addons' );
-				$url  = 'https://account.wpxpo.com/checkout/?edd_license_key=' . Xpo::get_lc_key() . '&renew=1';
-			} else {
-
-				$text = esc_html__( 'Upgrade to Pro', 'product-addons' );
+		foreach ( $offer_config as $offer ) {
+			$current_time = gmdate( 'U' );
+			$notice_start = gmdate( 'U', strtotime( $offer['start'] ) );
+			$notice_end   = gmdate( 'U', strtotime( $offer['end'] ) );
+			if ( $current_time >= $notice_start && $current_time <= $notice_end ) {
 				$url  = Xpo::generate_utm_link(
 					array(
-						'utmKey' => 'plugin_meta',
+						'utmKey' => $offer['utmKey'],
 					)
 				);
-
-				foreach ( $offer_config as $offer ) {
-					$current_time = gmdate( 'U' );
-					$notice_start = gmdate( 'U', strtotime( $offer['start'] ) );
-					$notice_end   = gmdate( 'U', strtotime( $offer['end'] ) );
-					if ( $current_time >= $notice_start && $current_time <= $notice_end ) {
-						$url  = Xpo::generate_utm_link(
-							array(
-								'utmKey' => $offer['utmKey'],
-							)
-						);
-						$text = $offer['text'];
-						break;
-					}
-				}
+				$text = $offer['text'];
+				break;
 			}
+		}
 
-			$upgrade_link['prad_pro'] = '<a style="color: #e83838; font-weight: bold;" target="_blank" href="' . esc_url( $url ) . '">' . $text . '</a>';
+		// Pro decides here whether to override this with a renew link, or suppress
+		// it entirely (valid license) — free never checks license state itself.
+		$link = apply_filters(
+			'prad_pro_renew_link',
+			array(
+				'text' => $text,
+				'url'  => $url,
+			)
+		);
+
+		if ( $link ) {
+			$upgrade_link['prad_pro'] = '<a style="color: #e83838; font-weight: bold;" target="_blank" href="' . esc_url( $link['url'] ) . '">' . esc_html( $link['text'] ) . '</a>';
 		}
 
 		return array_merge( $setting_link, $links, $upgrade_link );
@@ -132,7 +97,6 @@ class Options {
 
 	/**
 	 * Adds extra links to the plugin row meta on the plugins page.
-	 * **YOU NEED TO CUSTOMIZE THIS FUNCTION**
 	 *
 	 * @param array  $links Existing plugin meta links.
 	 * @param string $file  Plugin file path.
@@ -181,18 +145,17 @@ class Options {
 		$menu_lists['analytics'] = esc_html__( 'Analytics', 'product-addons' );
 		$menu_lists['settings']  = esc_html__( 'Settings', 'product-addons' );
 
+		// A plain link to the dashboard: with no callback, WordPress uses the slug as the URL.
 		add_submenu_page(
 			'edit.php?post_type=product',
 			__( 'WowAddons', 'product-addons' ),
 			__( 'WowAddons', 'product-addons' ),
 			$menupage_cap,
-			'wowaddons-page',
-			array( __CLASS__, 'render_main' )
+			'admin.php?page=prad-dashboard#dashboard'
 		);
 
-		if ( defined( 'PRAD_PRO_VER' ) ) {
-			$menu_lists['license'] = esc_html__( 'License', 'product-addons' );
-		}
+		$menu_lists = array_merge( $menu_lists, apply_filters( 'prad_pro_menu_lists', array() ) );
+
 		foreach ( $menu_lists as $key => $val ) {
 			add_submenu_page(
 				'prad-dashboard',
@@ -200,45 +163,38 @@ class Options {
 				$val,
 				$menupage_cap,
 				'prad-dashboard#' . $key,
-				array( __CLASS__, 'render_main' )
+				array( __CLASS__, 'tab_page_content' )
 			);
 		}
 
-		$pro_link      = '';
-		$pro_link_text = '';
-		if ( Xpo::is_lc_expired() ) {
-			$license_key   = Xpo::get_lc_key();
-			$pro_link      = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key . '&renew=1';
-			$pro_link_text = __( 'Renew License', 'product-addons' );
-		} elseif ( ! Xpo::is_lc_active() ) {
-			$pro_link      = Xpo::generate_utm_link(
-				array(
-					'utmKey' => 'sub_menu',
-				)
-			);
-			$pro_link_text = __( 'Upgrade to Pro!', 'product-addons' );
+		$upgrade_link_text = __( 'Upgrade to Pro!', 'product-addons' );
+		$upgrade_link      = Xpo::generate_utm_link(
+			array(
+				'utmKey' => 'sub_menu',
+			)
+		);
 
-			$is_offer_running = true;
-			if ( $is_offer_running ) {
-				$current_time = gmdate( 'U' );
-				$start        = '2026-01-01 00:00 Asia/Dhaka';
-				$end          = '2026-02-15 23:59 Asia/Dhaka';
-				$notice_start = gmdate( 'U', strtotime( $start ) );
-				$notice_end   = gmdate( 'U', strtotime( $end ) );
-				if ( $current_time >= $notice_start && $current_time <= $notice_end ) {
-					$pro_link_text = esc_html__( 'New Year Offer!', 'product-addons' );
-				}
-			}
-		}
+		// Pro decides here whether to override this with a renew link, or suppress
+		// it entirely (valid license) — free never checks license state itself.
+		$link = apply_filters(
+			'prad_pro_renew_link',
+			array(
+				'text' => $upgrade_link_text,
+				'url'  => $upgrade_link,
+			)
+		);
 
-		if ( ! empty( $pro_link ) ) {
+		$upgrade_link      = $link ? $link['url'] : '';
+		$upgrade_link_text = $link ? $link['text'] : '';
+
+		if ( ! empty( $upgrade_link ) ) {
 			ob_start();
 			?>
-				<a href="<?php echo esc_url( $pro_link ); ?>" target="_blank" class="prad-go-pro">
+				<a href="<?php echo esc_url( $upgrade_link ); ?>" target="_blank" class="prad-go-pro">
 					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M2.86 6.553a.5.5 0 01.823-.482l3.02 2.745c.196.178.506.13.64-.098L9.64 4.779a.417.417 0 01.72 0l2.297 3.939a.417.417 0 00.64.098l3.02-2.745a.5.5 0 01.823.482l-1.99 8.63a.833.833 0 01-.813.646H5.663a.833.833 0 01-.812-.646L2.86 6.553z" stroke="currentColor" stroke-width="1.5"></path>
 					</svg>
-					<span><?php echo esc_html( $pro_link_text ); ?></span>
+					<span><?php echo esc_html( $upgrade_link_text ); ?></span>
 				</a>
 			<?php
 			$submenu_content = ob_get_clean();
@@ -258,17 +214,30 @@ class Options {
 	/**
 	 * Go to Pro URL Redirect
 	 *
+	 * Handles the legacy `go_prad_pro` link and the "Upgrade to Pro" submenu slug (`prad-pro`),
+	 * so opening either URL directly lands on the pricing page. It is static because it is also
+	 * registered as that submenu's page callback from a static context, and PHP 8 cannot call a
+	 * non-static method statically.
+	 *
 	 * @since v.1.0.0
-	 * @return NULL
+	 * @return void
 	 */
-	public function handle_external_redirects() {
-        if ( empty( $_GET['page'] ) ) {     // @codingStandardsIgnoreLine
+	public static function handle_external_redirects() {
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing parameter.
+		if ( ! in_array( $page, array( 'go_prad_pro', 'prad-pro' ), true ) ) {
 			return;
 		}
-        if ( 'go_prad_pro' === sanitize_text_field( $_GET['page'] ) ) {   // @codingStandardsIgnoreLine
-			wp_safe_redirect( 'https://www.wpxpo.com/product/wowaddons/' );
-			die();
-		}
+
+		// wp_safe_redirect() only allows the site's own host, so permit the destination for this one redirect.
+		add_filter(
+			'allowed_redirect_hosts',
+			static function ( $hosts ) {
+				$hosts[] = 'www.wpxpo.com';
+				return $hosts;
+			}
+		);
+		wp_safe_redirect( 'https://www.wpxpo.com/product/wowaddons/' );
+		exit;
 	}
 
 	/**
@@ -278,17 +247,21 @@ class Options {
 	 * @return void
 	 */
 	public static function tab_page_content() {
-		echo wp_kses( '<div id="prad-dashboard-wrap"></div>', apply_filters( 'prad_allowed_html_tags', array() ) );// phpcs:ignore
+		echo wp_kses( '<div id="prad-dashboard-wrap"></div>', apply_filters( 'prad_allowed_html_tags', array() ) );
 	}
 
 	/**
 	 * Remove All Notification From Menu Page
 	 *
+	 * WowAddons renders a full-page React builder on the 'prad-dashboard'
+	 * screen. Third-party admin notices/headers render above or inside that
+	 * app root and break its layout, so they're suppressed on this screen only.
+	 *
 	 * @since v.1.0.0
 	 * @return void
 	 */
 	public static function remove_all_notices() {
-		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash($_GET['page']) ) : ''; // phpcs:ignore
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing parameter.
 		if ( 'prad-dashboard' === $page ) {
 			remove_all_actions( 'admin_notices' );
 			remove_all_actions( 'all_admin_notices' );

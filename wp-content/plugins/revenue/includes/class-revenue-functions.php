@@ -2,13 +2,13 @@
 
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 use WC_DateTime;
 use DateTimeZone;
 use Exception;
 use DateTime;
 use Automattic\WooCommerce\Utilities\OrderUtil;
-
-//phpcs:disable WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid, WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.StrictInArray.MissingTrueStrict
 
 /**
  * Contains Common Functions
@@ -48,15 +48,7 @@ class Revenue_Functions {
 		return apply_filters( 'revenue_menu_position', '58' );
 	}
 
-	/**
-	 * Get revenue admin menu capability
-	 *
-	 * @since 1.0.0
-	 * @return string
-	 */
-	public function get_admin_menu_capability() {
-		return apply_filters( 'revenue_menu_capability', 'manage_options' );
-	}
+
 
 	/**
 	 * Is user can see revenue admin menu
@@ -110,10 +102,6 @@ class Revenue_Functions {
 			'bundle_discount'            => _x( 'Bundle Discount', 'Campaign Types', 'revenue' ),
 			'volume_discount'            => _x( 'Volume Discount', 'Campaign Types', 'revenue' ),
 			'buy_x_get_y'                => _x( 'Buy X Get Y Discount', 'Campaign Types', 'revenue' ),
-			'mix_match'                  => _x( 'Product Mix Match', 'Campaign Types', 'revenue' ),
-			'frequently_bought_together' => _x( 'Frequently Bought Together', 'Campaign Types', 'revenue' ),
-			'double_order'               => _x( 'Double Order', 'Campaign Types', 'revenue' ),
-			'spending_goal'              => _x( 'Spending Goal', 'Campaign Types', 'revenue' ),
 			'free_shipping_bar'          => _x( 'Free Shipping', 'Campaign Types', 'revenue' ),
 			'stock_scarcity'             => _x( 'Stock Scarcity', 'Campaign Types', 'revenue' ),
 			'countdown_timer'            => _x( 'Countdown Timer', 'Campaign Types', 'revenue' ),
@@ -121,6 +109,36 @@ class Revenue_Functions {
 		);
 
 		return apply_filters( 'revenue_campaign_types', $types );
+	}
+
+	/**
+	 * Get campaign types implemented by the Free plugin.
+	 *
+	 * This list is the REST write boundary and must not be filterable.
+	 *
+	 * @return string[]
+	 */
+	public function get_free_campaign_types() {
+		return array(
+			'normal_discount',
+			'bundle_discount',
+			'volume_discount',
+			'buy_x_get_y',
+			'free_shipping_bar',
+			'stock_scarcity',
+			'countdown_timer',
+			'next_order_coupon',
+		);
+	}
+
+	/**
+	 * Check whether a campaign type is implemented by the Free plugin.
+	 *
+	 * @param string $type Campaign type.
+	 * @return bool
+	 */
+	public function is_free_campaign_type( $type ) {
+		return in_array( $type, $this->get_free_campaign_types(), true );
 	}
 	/**
 	 * Get campaign type name by key
@@ -131,12 +149,12 @@ class Revenue_Functions {
 	 */
 	public function get_campaign_type_name( $campaign_key ) {
 
-		if ( $campaign_key === 'buy_x_get_y' ) {
+		if ( 'buy_x_get_y' === $campaign_key ) {
 			return _x( 'Buy X Get Y', 'Campaign Types', 'revenue' );
 		}
 
 		$types = $this->get_campaign_types();
-		
+
 		return isset( $types[ $campaign_key ] ) ? $types[ $campaign_key ] : null;
 	}
 	/**
@@ -200,29 +218,7 @@ class Revenue_Functions {
 		return apply_filters( 'revenue_campaign_display_types', $types );
 	}
 
-	/**
-	 * Get Stock scarcity notice positions
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array
-	 */
-	public function get_stock_scarcity_notice_positions() {
-		$positions = array(
-			'before_add_to_cart_button'     => _x( 'Before add to cart button', 'Stock Scarcity Positions', 'revenue' ),
-			'after_add_to_cart_button'      => _x( 'After add to cart button', 'Stock Scarcity Positions', 'revenue' ),
-			'after_add_to_cart_quantity'    => _x( 'After add to cart quantity', 'Stock Scarcity Positions', 'revenue' ),
-			'before_add_to_cart_quantity'   => _x( 'Before add to cart quantity', 'Stock Scarcity Positions', 'revenue' ),
-			'before_add_to_cart_form'       => _x( 'Before add to cart button', 'Stock Scarcity Positions', 'revenue' ),
-			'after_add_to_cart_form'        => _x( 'After add to cart button', 'Stock Scarcity Positions', 'revenue' ),
-			'before_single_product_summary' => _x( 'Before single product summary', 'Stock Scarcity Positions', 'revenue' ),
-			'after_single_product_summary'  => _x( 'After single product summary', 'Stock Scarcity Positions', 'revenue' ),
-			'after_single_product'          => _x( 'After single product', 'Stock Scarcity Positions', 'revenue' ),
-			'before_single_product'         => _x( 'Before single product', 'Stock Scarcity Positions', 'revenue' ),
-		);
 
-		return apply_filters( 'revenue_campaign_stock_scarcity_notice_positions', $positions );
-	}
 	/**
 	 * Get revenue campaign placements
 	 *
@@ -393,18 +389,24 @@ class Revenue_Functions {
 	 * @return void
 	 */
 	public function register_hooks() {
+		// Registered once here rather than inside get_allowed_tag(), which is called on
+		// every render; add_filter dedupes the same callback anyway, but the widened
+		// safe_style_css list still applies to every wp_kses call in the request, ours
+		// and everyone else's, for as long as the process lives.
+		add_filter( 'safe_style_css', array( $this, 'allow_display_in_kses' ) );
+
 		if ( 'astra' === get_option( 'template' ) ) {
 			add_action(
 				'astra_woo_single_title_after',
 				function () {
-					do_action( 'rvex_below_the_product_title' );
+					do_action( 'rvex_below_the_product_title' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- 'rvex_below_the_product_title' uses the plugin's 'rvex' prefix.
 				}
 			);
 		} else {
 			add_action(
 				'woocommerce_single_product_summary',
 				function () {
-					do_action( 'rvex_below_the_product_title' );
+					do_action( 'rvex_below_the_product_title' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- 'rvex_below_the_product_title' uses the plugin's 'rvex' prefix.
 				},
 				10
 			);
@@ -413,7 +415,7 @@ class Revenue_Functions {
 			add_action(
 				'astra_woo_single_price_after',
 				function () {
-					do_action( 'rvex_below_the_product_price' );
+					do_action( 'rvex_below_the_product_price' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- 'rvex_below_the_product_price' uses the plugin's 'rvex' prefix.
 				},
 				11
 			);
@@ -421,7 +423,7 @@ class Revenue_Functions {
 			add_action(
 				'woocommerce_single_product_summary',
 				function () {
-					do_action( 'rvex_below_the_product_price' );
+					do_action( 'rvex_below_the_product_price' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- 'rvex_below_the_product_price' uses the plugin's 'rvex' prefix.
 				},
 				11
 			);
@@ -430,53 +432,21 @@ class Revenue_Functions {
 		add_action(
 			'woocommerce_account_content',
 			function () {
-				do_action( 'rvex_above_my_account' );
+				do_action( 'rvex_above_my_account' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- 'rvex_above_my_account' uses the plugin's 'rvex' prefix.
 			},
 			5
 		);
 		add_action(
 			'woocommerce_account_content',
 			function () {
-				do_action( 'rvex_below_my_account' );
+				do_action( 'rvex_below_my_account' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- 'rvex_below_my_account' uses the plugin's 'rvex' prefix.
 			},
 			25
 		);
 	}
 
-	/**
-	 * Get revenue display in page campaignions
-	 *
-	 * @since 1.0.0
-	 * @return array
-	 */
-	public function get_campaign_popup_positions() {
-		$types = array(
-			'product_page'  => 'before_single_product',
-			'shop_page'     => '',
-			'cart_page'     => 'woocommerce_before_cart',
-			'checkout_page' => 'woocommerce_before_checkout_form',
-			'thankyou_page' => 'woocommerce_before_thankyou',
-		);
 
-		return apply_filters( 'revenue_campaign_popup_display_positions', $types );
-	}
-	/**
-	 * Get revenue display in page campaignions
-	 *
-	 * @since 1.0.0
-	 * @return array
-	 */
-	public function get_campaign_floating_positions_hook() {
-		$types = array(
-			'product_page'  => 'before_single_product',
-			'shop_page'     => '',
-			'cart_page'     => 'woocommerce_before_cart',
-			'checkout_page' => 'woocommerce_before_checkout_form',
-			'thankyou_page' => 'woocommerce_before_thankyou',
-		);
 
-		return apply_filters( 'revenue_campaign_floating_display_positions', $types );
-	}
 	/**
 	 * Get revenue animated add to cart animation types
 	 *
@@ -514,15 +484,6 @@ class Revenue_Functions {
 		);
 
 		return apply_filters( 'revenue_campaign_animated_add_to_cart_animation_types', $types );
-	}
-
-	/**
-	 * Get Pricing Page URL
-	 *
-	 * @return string
-	 */
-	public function get_pricing_page_url() {
-		return 'https://www.wowrevenue.com/#pricing';
 	}
 
 	/**
@@ -591,13 +552,16 @@ class Revenue_Functions {
 			)
 		);
 
-		if ( ! is_array( $args['exclude'] ) ) {
-			$args['exclude'] = array();
+		if ( ! is_array( $args['exclude'] ) ) { //phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
+			$args['exclude'] = array(); //phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 		}
 
-		// Extract arguments.
-		extract( $args );
-
+		// Arguments as local variables (no extract()).
+		$page          = $args['page'];
+		$product_id    = $args['product_id'];
+		$exclude       = $args['exclude'];
+		$trigger_type  = $args['trigger_type'];
+		$campaign_type = $args['campaign_type'];
 		// Generate cache key.
 		$cache_key = 'revenue_campaigns_' . md5( serialize( $args ) );
 
@@ -748,7 +712,7 @@ class Revenue_Functions {
 
 		$included = array_diff( $included, $excluded );
 
-		if ( $placement == 'all_page' ) {
+		if ( 'all_page' == $placement ) {
 			$published_countdown_timer = $this->get_countdown_timer_campaigns();
 
 			foreach ( $published_countdown_timer as $c_id ) {
@@ -786,8 +750,9 @@ class Revenue_Functions {
 
 			if ( ! $is_cart ) {
 				if ( isset( $placement_settings['status'], $placement_settings['display_style'] ) ) {
-					$status    = $placement_settings['status'];
-					$dis_style = $placement_settings['display_style'];
+					$status = $placement_settings['status'];
+					// Campaigns saved without a display style are in-page; anything else never matches.
+					$dis_style = '' !== $placement_settings['display_style'] ? $placement_settings['display_style'] : 'inpage';
 
 					if ( 'drawer' === $dis_style ) {
 						$inpage_position = isset( $placement_settings['drawer_position'] ) ? $placement_settings['drawer_position'] : '';
@@ -798,8 +763,8 @@ class Revenue_Functions {
 
 					}
 
-					if ( $status === 'yes' && $display_type === $dis_style ) {
-						if ( $display_type === 'inpage' && $position !== $inpage_position ) {
+					if ( 'yes' === $status && $display_type === $dis_style ) {
+						if ( 'inpage' === $display_type && $position !== $inpage_position ) {
 							unset( $campaigns[ $camp_id ] );
 						}
 					} else {
@@ -907,47 +872,7 @@ class Revenue_Functions {
 
 
 
-	/**
-	 * Sets a date prop whilst handling formatting and datetime objects.
-	 *
-	 * @since 1.0.0
-	 * @param string|integer $value Value of the prop.
-	 */
-	public function get_revenue_date( $value ) {
-		try {
-			if ( empty( $value ) || '0000-00-00 00:00:00' === $value ) {
 
-				return null;
-			}
-
-			if ( is_a( $value, 'WC_DateTime' ) ) {
-				$datetime = $value;
-			} elseif ( is_numeric( $value ) ) {
-				// Timestamps are handled as UTC timestamps in all cases.
-				$datetime = new WC_DateTime( "@{$value}", new DateTimeZone( 'UTC' ) );
-			} else {
-				// Strings are defined in local WP timezone. Convert to UTC.
-				if ( 1 === preg_match( '/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|((-|\+)\d{2}:\d{2}))$/', $value, $date_bits ) ) {
-					$offset    = ! empty( $date_bits[7] ) ? iso8601_timezone_to_offset( $date_bits[7] ) : wc_timezone_offset();
-					$timestamp = gmmktime( $date_bits[4], $date_bits[5], $date_bits[6], $date_bits[2], $date_bits[3], $date_bits[1] ) - $offset;
-				} else {
-					$timestamp = wc_string_to_timestamp( get_gmt_from_date( gmdate( 'Y-m-d H:i:s', wc_string_to_timestamp( $value ) ) ) );
-				}
-				$datetime = new WC_DateTime( "@{$timestamp}", new DateTimeZone( 'UTC' ) );
-			}
-
-			// Set local timezone or offset.
-			if ( get_option( 'timezone_string' ) ) {
-				$datetime->setTimezone( new DateTimeZone( wc_timezone_string() ) );
-			} else {
-				$datetime->set_utc_offset( wc_timezone_offset() );
-			}
-
-			return $datetime;
-		} catch ( Exception $e ) {
-			return null;
-		} // @codingStandardsIgnoreLine.
-	}
 
 
 
@@ -988,13 +913,6 @@ class Revenue_Functions {
 					'offers',
 					'bundle_with_trigger_products_enabled',
 					'allow_more_than_required_quantity',
-					'mix_match_is_required_products',
-					'mix_match_initial_product_selection',
-					'reward_type',
-					'spending_goal',
-					'spending_goal_calculate_based_on',
-					'spending_goal_discount_type',
-					'spending_goal_discount_value',
 					'banner_heading',
 					'banner_subheading',
 					'stock_scarcity_enabled',
@@ -1017,14 +935,6 @@ class Revenue_Functions {
 					'multiple_variation_selection_enabled',
 					'offered_product_on_cart_action',
 					'offered_product_click_action',
-					'spending_goal_free_shipping_progress_messages',
-					'spending_goal_discount_progress_messages',
-					'spending_goal_is_upsell_enable',
-					'spending_goal_upsell_product_selection_strategy',
-					'spending_goal_upsell_discount_configuration',
-					'spending_goal_on_cta_click',
-					'spending_goal_discount_type',
-					'spending_goal_discount_value',
 					'builder',
 					'buildeMobileData',
 					'campaign_builder_view',
@@ -1044,34 +954,14 @@ class Revenue_Functions {
 					'checkout_btn_text',
 					'no_thanks_button_text',
 					'total_price_text',
-					'mix_match_required_products',
-					'mix_match_is_required_products',
-					'mix_match_initial_product_selection',
 					'campaign_view_id',
 					'campaign_view_class',
 					'campaign_trigger_exclude_items',
 					'campaign_trigger_items',
 					'buy_x_get_y_trigger_qty_status',
-					'fbt_is_trigger_product_required',
 					'placement_settings',
 					'countdown_timer_prefix',
-					'double_order_animation_type',
-					'double_order_animation_delay_between',
-					'double_order_animation_enabled',
-					'double_order_success_message',
-					'double_order_countdown_duration',
 					'free_shipping_label',
-					'upsell_products',
-					'upsell_products_status',
-					'is_show_free_shipping_bar',
-					'show_close_icon',
-					'enable_cta_button',
-					'cta_button_text',
-					'spending_goal_upsell_products',
-					'spending_goal_upsell_product_status',
-					'spending_goal_progress_show_icon',
-					'show_confetti',
-					'all_goals_complete_message',
 					'countdown_timer_type',
 					'countdown_timer_static_settings',
 					'countdown_timer_evergreen_settings',
@@ -1094,7 +984,15 @@ class Revenue_Functions {
 					'builderdata',
 					'activeTemplate',
 					'revx_next_order_coupon',
-					'campaign_version',
+					// free_shipping_bar keys. Free reads these, so Free must register them.
+					'upsell_products',
+					'upsell_products_status',
+					'is_show_free_shipping_bar',
+					'enable_cta_button',
+					'cta_button_text',
+					'show_close_icon',
+					'show_confetti',
+					'all_goals_complete_message',
 				);
 				// code...
 				break;
@@ -1139,6 +1037,10 @@ class Revenue_Functions {
 			default:
 				// code...
 				break;
+		}
+
+		if ( 'meta' === $type ) {
+			$keys = apply_filters( 'revenue_campaign_meta_keys', $keys );
 		}
 
 		return $keys;
@@ -1268,7 +1170,7 @@ class Revenue_Functions {
 	 */
 	public function delete_campaign_meta( $campaign_id, $meta_key, $meta_value = '', $delete_all = false ) {
 		global $wpdb;
-		if ( ! $meta_key || ! is_numeric( $campaign_id ) && ! $delete_all ) {
+		if ( ! $meta_key || ( ! is_numeric( $campaign_id ) && ! $delete_all ) ) {
 			return false;
 		}
 		$meta_key   = wp_unslash( $meta_key );
@@ -1288,7 +1190,7 @@ class Revenue_Functions {
 			$params[] = $meta_value;
 		}
 
-		$meta_ids = $wpdb->get_col( $wpdb->prepare( $query, ...$params ) ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$meta_ids = $wpdb->get_col( $wpdb->prepare( $query, ...$params ) ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is fully parameterised via $wpdb->prepare() above.
 		if ( ! count( $meta_ids ) ) {
 			return false;
 		}
@@ -1406,9 +1308,16 @@ class Revenue_Functions {
 			return $cache;
 		}
 
-		$id_list = implode( ',', $non_cached_ids );
+		$non_cached_ids = array_map( 'absint', $non_cached_ids );
+		$placeholders   = implode( ',', array_fill( 0, count( $non_cached_ids ), '%d' ) );
 
-		$meta_list = $wpdb->get_results( "SELECT campaign_id, meta_key, meta_value FROM {$wpdb->prefix}revenue_campaign_meta WHERE campaign_id IN ($id_list) ORDER BY meta_id ASC", ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$meta_list = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT campaign_id, meta_key, meta_value FROM {$wpdb->prefix}revenue_campaign_meta WHERE campaign_id IN ($placeholders) ORDER BY meta_id ASC", //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- %d placeholders built to match ID count.
+				$non_cached_ids
+			),
+			ARRAY_A
+		); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- cached via wp_cache_* above.
 
 		if ( ! empty( $meta_list ) ) {
 			foreach ( $meta_list as $metarow ) {
@@ -1508,14 +1417,6 @@ class Revenue_Functions {
 
 					break;
 				case 'volume_discount':
-					break;
-
-				case 'mix_match':
-					break;
-				case 'frequently_bought_together':
-					break;
-				case 'spending_goal':
-					// code...
 					break;
 
 				default:
@@ -1661,9 +1562,9 @@ class Revenue_Functions {
 
 		if ( ! $triggers ) {
 			$action_condition = $exclude ? "AND trigger_action = 'exclude'" : '';
-			$triggers         = $wpdb->get_results(
+			$triggers         = $wpdb->get_results( //phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $action_condition is a hardcoded string literal.
 				$wpdb->prepare(
-					"SELECT * FROM {$wpdb->prefix}revenue_campaign_triggers WHERE campaign_id = %d $action_condition;", //phpcs:ignore  WordPress.DB.PreparedSQL.InterpolatedNotPrepared 
+					"SELECT * FROM {$wpdb->prefix}revenue_campaign_triggers WHERE campaign_id = %d {$action_condition}", //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					$campaign_id
 				)
 			);
@@ -1712,41 +1613,7 @@ class Revenue_Functions {
 		return $this->get_raw_campaign_triggers( $campaign_id, $context, true );
 	}
 
-	/**
-	 * Get raw campaign trigger items
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $trigger_id  Trigger id.
-	 * @return object
-	 */
-	public function get_raw_campaign_trigger_items( $trigger_id ) {
-		global $wpdb;
 
-		$trigger_items = wp_cache_get( $trigger_id, 'revenue_campaign_trigger_items' );
-
-		if ( ! $trigger_items ) {
-
-			$trigger_items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}revenue_campaign_trigger_items WHERE trigger_id=%d", $trigger_id ) ); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-
-			if ( ! $trigger_items ) {
-				return false;
-			}
-
-			$data = array();
-
-			foreach ( $trigger_items as $item ) {
-				$item                     = (array) $item;
-				$data[ $item['item_id'] ] = $item;
-			}
-
-			$trigger_items = $data;
-
-			wp_cache_add( $trigger_id, $trigger_items, 'revenue_campaign_trigger_items' );
-		}
-
-		return $trigger_items;
-	}
 
 	/**
 	 * Sanitize campaign
@@ -2056,38 +1923,7 @@ class Revenue_Functions {
 
 		Revenue_Analytics::instance()->update_campaign_stat( $campaign_id, 'order_count' );
 	}
-	/**
-	 * Increment Campaign  count
-	 *
-	 * @param int $campaign_id Campaign.
-	 * @param int $order Order id.
-	 * @return void
-	 */
-	public function track_campaign_order_ids( $campaign_id, $order_id ) {
-		if ( ! $campaign_id ) {
-			return;
-		}
-		$user_id = get_current_user_id();
 
-		$campaign = $this->get_campaign_data( $campaign_id );
-
-		$added_to_cart = $campaign['campaign_order_ids'];
-		++$added_to_cart;
-		$this->update_campaign( $campaign_id, 'campaign_order_ids', $added_to_cart );
-		$campaign['campaign_order_ids'] = $added_to_cart;
-		wp_cache_set( $campaign_id, $campaign, 'revenue_campaigns' );
-
-		$daywise_stats = $this->get_campaign_meta( $campaign_id, 'daywise_order_id_stats', true );
-		if ( ! is_array( $daywise_stats ) ) {
-			$daywise_stats = array();
-		}
-
-		$date                   = gmdate( 'Y-m-d' );
-		$count                  = ( isset( $daywise_stats[ $date ] ) ? $daywise_stats[ $date ] : array() );
-		$count[]                = $order_id;
-		$daywise_stats[ $date ] = $count;
-		$this->update_campaign_meta( $campaign_id, 'daywise_order_id_stats', $daywise_stats );
-	}
 	/**
 	 * Increment Campaign popup rejection count
 	 *
@@ -2305,17 +2141,7 @@ class Revenue_Functions {
 	}
 
 
-	/**
-	 * Check if given cart item is bundle trigger/parent product or not
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $cart_item Cart Item.
-	 * @return boolean
-	 */
-	public function is_bundle_trigger_product( $cart_item ) {
-		return isset( $cart_item['revx_bundle_type'] ) && 'trigger' === $cart_item['revx_bundle_type'] && get_option( 'revenue_bundle_parent_product_id', false ) == $cart_item['product_id'];
-	}
+
 
 	/**
 	 * Given a bundle container cart item, find and return its child cart items - or their cart ids when the $return_ids arg is true.
@@ -2352,140 +2178,14 @@ class Revenue_Functions {
 
 
 
-	/**
-	 * Get bundle container cart item price
-	 *
-	 * @param string|float $price Price.
-	 * @param array        $cart_item Cart item.
-	 * @param boolean      $is_subtotal Is subtotal.
-	 * @return string|float
-	 */
-	public function get_bundle_container_cart_item_price( $price, $cart_item, $is_subtotal = false ) {
-		if ( ! isset( WC()->cart ) ) {
-			return 0.0;
-		}
-		if ( empty( $price ) ) {
-			$price = 0.0;
-		}
-		$price = floatval( $price );
-		$cart  = WC()->cart->get_cart();
-		if ( $this->is_bundle_container_cart_item( $cart_item ) ) {
-			$bundle_items = revenue()->get_bundled_cart_items( $cart_item, false, true );
-
-			foreach ( $bundle_items as $bundle_item_key ) {
-				$bundle_cart_item = ( isset( $cart[ $bundle_item_key ] ) ) ? $cart[ $bundle_item_key ] : false;
-
-				if ( $is_subtotal ) {
-					$price += $bundle_cart_item ? $bundle_cart_item['quantity'] * $bundle_cart_item['data']->get_price() : 0;
-				} else {
-					$price += $bundle_cart_item ? $bundle_cart_item['data']->get_price() : 0;
-				}
-			}
-		}
-
-		return $price;
-	}
 
 
-	/**
-	 * True if an order item appears to be a bundle container item.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  WC_Order_Item $order_item Order item.
-	 * @return boolean
-	 */
-	public function is_bundle_container_order_item( $order_item ) {
-		$is_bundle = false;
-
-		if ( isset( $order_item['revx_bundled_items'] ) ) {
-			$is_bundle = true;
-		}
-
-		return $is_bundle;
-	}
-	/**
-	 * Given a bundle container order item, find and return its child order items - or their order item ids when the $return_ids arg is true.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  WC_Order_Item $container_order_item Container Order Item.
-	 * @param  WC_Order      $order Order.
-	 * @param  boolean       $return_ids Return ids.
-	 * @return mixed
-	 */
-	public function get_bundled_order_items( $container_order_item, $order = false, $return_ids = false ) {
-		$bundled_order_items = array();
-
-		if ( $this->is_bundle_container_order_item( $container_order_item ) ) {
-
-			$bundled_cart_keys = maybe_unserialize( $container_order_item['revx_bundled_items'] );
-
-			if ( ! empty( $bundled_cart_keys ) && is_array( $bundled_cart_keys ) ) {
-
-				if ( false === $order ) {
-					if ( is_callable( array( $container_order_item, 'get_order' ) ) ) {
-
-						$order_id = $container_order_item->get_order_id();
-						$order    = wc_get_order( $order_id );
-
-						if ( null === $order ) {
-							$order = $container_order_item->get_order();
-						}
-					} else {
-						$msg = 'get_order() is not callable on the supplied $order_item. No $order object given.';
-						_doing_it_wrong( __FUNCTION__ . '()', esc_html( $msg ), '1.0.0' );
-					}
-				}
-
-				$order_items = is_object( $order ) ? $order->get_items( 'line_item' ) : $order;
-
-				if ( ! empty( $order_items ) ) {
-					foreach ( $order_items as $order_item_id => $order_item ) {
-
-						$is_child = false;
-
-						if ( isset( $order_item['revx_cart_key'] ) ) {
-							$is_child = in_array( $order_item['revx_cart_key'], $bundled_cart_keys ) ? true : false;
-						} else {
-							$is_child = isset( $order_item['revx_bundle_data'] ) && $order_item['revx_bundle_data'] === $container_order_item['revx_bundle_data'] && isset( $order_item['revx_bundled_by'] ) ? true : false;
-						}
-
-						if ( $is_child ) {
-							$bundled_order_items[ $order_item_id ] = $order_item;
-						}
-					}
-				}
-			}
-		}
-
-		return $return_ids ? array_keys( $bundled_order_items ) : $bundled_order_items;
-	}
 
 
-	/**
-	 * Calculate discount percentage, from regular and sale price
-	 *
-	 * @param string|float $regular_price Regular Price.
-	 * @param string|float $sale_price Sale price.
-	 *
-	 * @since 1.0.0
-	 */
-	public function calculate_discount_percentage( $regular_price, $sale_price ) {
-		// Check if the regular price is greater than zero to avoid division by zero error.
-		if ( $regular_price > 0 ) {
-			// Calculate the discount amount.
-			$discount_amount = floatval( $regular_price ) - floatval( $sale_price );
-			// Calculate the discount percentage.
-			$dis_per = ( $discount_amount / $regular_price ) * 100;
 
-			// Return the discount percentage.
-			return $dis_per;
-		} else {
-			// Return 0 if regular price is not greater than zero.
-			return 0;
-		}
-	}
+
+
+
 
 
 	public function set_product_image_trigger_item_response( $data, $is_clone = false ) {
@@ -2499,14 +2199,14 @@ class Revenue_Functions {
 			$updated_data = array();
 			foreach ( $data[ $key ] as $item ) {
 				$item = (array) $item;
-				if ( $key === 'campaign_trigger_items' && $item['trigger_action'] !== 'include' ) {
+				if ( 'campaign_trigger_items' === $key && 'include' !== $item['trigger_action'] ) {
 					continue;
 				}
 				$image_url = '';
 
 				$updated_item = $item; // No need to use array_merge, direct assignment works
 
-				if ( $item['trigger_type'] === 'products' ) {
+				if ( 'products' === $item['trigger_type'] ) {
 					$product = wc_get_product( $item['item_id'] );
 					if ( ! $product ) {
 						continue;
@@ -2538,16 +2238,16 @@ class Revenue_Functions {
 					} else {
 						$full_name = $product ? $product->get_name() : '';
 					}
-					$image_url                      = wp_get_attachment_url( $product->get_image_id() ) ?: wc_placeholder_img_src();
+					$image_url                      = wp_get_attachment_url( $product->get_image_id() ) ? wp_get_attachment_url( $product->get_image_id() ) : wc_placeholder_img_src();
 					$updated_item['item_name']      = $full_name;
 					$updated_item['regular_price']  = $product->get_regular_price();
 					$updated_item['sale_price']     = $product->get_sale_price();
 					$updated_item['parent_id']      = $product->is_type( 'variation' ) ? $product->get_parent_id() : '';
 					$updated_item['show_attribute'] = 'variable' == $product->get_type();
-				} elseif ( $item['trigger_type'] === 'category' ) {
+				} elseif ( 'category' === $item['trigger_type'] ) {
 					$category                  = get_term( $item['item_id'] );
 					$thumbnail_id              = get_term_meta( $category->term_id, 'thumbnail_id', true );
-					$image_url                 = wp_get_attachment_url( $thumbnail_id ) ?: wc_placeholder_img_src();
+					$image_url                 = wp_get_attachment_url( $thumbnail_id ) ? wp_get_attachment_url( $thumbnail_id ) : wc_placeholder_img_src();
 					$updated_item['item_name'] = rawurldecode( wp_strip_all_tags( $category->name ) );
 				}
 
@@ -2606,27 +2306,7 @@ class Revenue_Functions {
 	}
 
 
-	public function get_item_ids_from_triggers( $triggers ) {
-		$item_ids = array();
 
-		// Check if the 'triggers' key exists and is an array
-		if ( isset( $triggers['triggers'] ) && is_array( $triggers['triggers'] ) ) {
-			// Loop through each trigger
-			foreach ( $triggers['triggers'] as $trigger ) {
-				// Check if 'items' key exists and is an array
-				if ( isset( $trigger['items'] ) && is_array( $trigger['items'] ) ) {
-					// Loop through each item and get the 'item_id'
-					foreach ( $trigger['items'] as $item ) {
-						if ( isset( $item['item_id'] ) ) {
-							$item_ids[] = $item['item_id'];
-						}
-					}
-				}
-			}
-		}
-
-		return $item_ids;
-	}
 
 
 	public function get_cart_product_ids( $contain_parent_id = false ) {
@@ -2703,408 +2383,7 @@ class Revenue_Functions {
 		return $quantities;
 	}
 
-	public function campaign_style_generator( $type = 'inpage', $campaign = array(), $placement = '' ) {
-		$view_mode = revenue()->get_placement_settings( $campaign['id'], $placement, 'builder_view' ) ?? 'list';
-		if ( 'drawer' === $type ) {
-			$styles = revenue()->get_campaign_meta( $campaign['id'], 'builderdata', true )[ $type ];
-		} elseif ( 'spending_goal' === $campaign['campaign_type'] ||
-			'free_shipping_bar' === $campaign['campaign_type'] ||
-			'stock_scarcity' === $campaign['campaign_type'] ||
-			'countdown_timer' === $campaign['campaign_type'] ||
-			'next_order_coupon' === $campaign['campaign_type']
-		) {
-			$styles = revenue()->get_campaign_meta( $campaign['id'], 'builderdata', true )[ $type ];
 
-		} else {
-			$styles = revenue()->get_campaign_meta( $campaign['id'], 'builderdata', true )[ $type ][ $view_mode ];
-		}
-
-		$data = array();
-
-		if ( is_array( $styles ) ) {
-			foreach ( $styles as $key => $style ) {
-				if ( ( 'leftSliderIcon' == $key || 'rightSliderIcon' == $key ) && 'inpage' != $type ) {
-					$data[ $key ] = $this->generate_style( $style, true );
-				} else {
-					$data[ $key ] = $this->generate_style( $style );
-				}
-			}
-		}
-
-		return $data;
-	}
-
-
-	public function generate_style( $style, $use_calc = false ) {
-
-		$generated_styles = array();
-		$tag              = array();
-		$input            = array();
-		$child            = array();
-		$classes          = array();
-
-		foreach ( $style as $sectionKey => $sectionVal ) {
-			switch ( $sectionKey ) {
-				case 'color':
-					foreach ( $sectionVal as $property => $value ) {
-						switch ( $property ) {
-							case 'background':
-								if ( '' != $value ) {
-									$generated_styles['background-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'border':
-								if ( '' != $value ) {
-									$generated_styles['border-color'] = $this->colorStringToHex( $value );
-									$generated_styles['border-style'] = 'solid';
-									// $generated_styles['border-width'] ="1px";
-								}
-								break;
-							case 'text':
-								if ( '' != $value ) {
-									$generated_styles['color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'input':
-								if ( '' != $value ) {
-									$input['color'] = $this->colorStringToHex( $value );
-								}
-							case 'button':
-								if ( '' != $value ) {
-									$child['background-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'iconColor':
-								if ( '' != $value ) {
-									$generated_styles['--revx-icon-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'icon':
-								if ( '' != $value ) {
-									$child['color'] = $this->colorStringToHex( $value );
-
-									// $generated_styles['--revx-icon-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'hover':
-								if ( '' != $value ) {
-									$generated_styles['--revx-hover-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'hoverText':
-								if ( '' != $value ) {
-									$generated_styles['--revx-hover-text-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'emptyColor':
-								if ( '' != $value ) {
-									$generated_styles['--revx-empty-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'filledColor':
-								if ( '' != $value ) {
-									$generated_styles['--revx-filled-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'couponBackground':
-								if ( '' != $value ) {
-									$generated_styles['--revx-background-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'couponBorder':
-								if ( '' != $value ) {
-									$generated_styles['--revx-border-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-							case 'couponIcon':
-								if ( '' != $value ) {
-									$generated_styles['--revx-coupon-color'] = $this->colorStringToHex( $value );
-								}
-							case 'couponSeparator':
-								if ( '' != $value ) {
-									$generated_styles['--revx-separator-color'] = $this->colorStringToHex( $value );
-								}
-								break;
-
-							default:
-								// code...
-								break;
-						}
-					}
-					break;
-				case 'typographyControl':
-					foreach ( $sectionVal as $property => $value ) {
-						switch ( $property ) {
-							case 'borderWidth':
-								if ( '' != $value ) {
-									$generated_styles['border-width'] = "{$value}px";
-									if ( '' != $value ) {
-										$generated_styles['border-style'] = 'solid';
-									}
-								}
-								break;
-							case 'borderRadius':
-								if ( '' != $value ) {
-									$generated_styles['border-radius'] = "{$value}px";
-								}
-								break;
-
-							case 'padding':
-								if ( '' != $value ) {
-									$generated_styles['padding'] = "{$value}px";
-								}
-								break;
-							case 'paddingTopBottom':
-								if ( '' != $value ) {
-									$generated_styles['padding-top']    = "{$value}px";
-									$generated_styles['padding-bottom'] = "{$value}px";
-								}
-								break;
-							case 'paddingTop':
-								if ( '' != $value ) {
-									$generated_styles['padding-top'] = "{$value}px";
-								}
-								break;
-							case 'paddingBottom':
-								if ( '' != $value ) {
-									$generated_styles['padding-bottom'] = "{$value}px";
-								}
-								break;
-							case 'paddingLeftRight':
-								if ( '' != $value ) {
-									$generated_styles['padding-left']  = "{$value}px";
-									$generated_styles['padding-right'] = "{$value}px";
-								}
-								break;
-							case 'gap':
-								if ( '' != $value && intval( $value ) > 0 ) {
-									$generated_styles['gap']     = "{$value}px";
-									$generated_styles['display'] = 'flex';
-								}
-								break;
-							case 'buttonStyle':
-								if ( '' != $value ) {
-									$classes[] = 'revx-btn-' . $value;
-								}
-								break;
-							case 'size':
-								if ( '' != $value ) {
-									$classes[] = 'revx-btn-size-' . $value;
-								}
-								break;
-							case 'maxHeight':
-								$generated_styles['max-height'] = "{$value}px";
-								break;
-							case 'maxWidth':
-								$generated_styles['max-width'] = "{$value}px";
-								break;
-							case 'height':
-								$generated_styles['height'] = "{$value}px";
-								break;
-							case 'width':
-								$generated_styles['width'] = "{$value}px";
-								break;
-							case 'top':
-								if ( '' != $value ) {
-									$generated_styles['margin-top'] = "{$value}px";
-								}
-								break;
-							case 'bottom':
-								if ( '' != $value ) {
-									$generated_styles['margin-bottom'] = "{$value}px";
-								}
-								break;
-							case 'left':
-								if ( '' != $value ) {
-									$generated_styles['margin-left'] = "{$value}px";
-								}
-								break;
-							case 'right':
-								if ( '' != $value ) {
-									$generated_styles['margin-right'] = "{$value}px";
-								}
-								break;
-							case 'numberOfColumn':
-								if ( '' != $value ) {
-									$generated_styles['--revx-grid-column'] = "{$value}";
-								}
-								break;
-							case 'containerSize':
-								if ( '' != $value ) {
-									$generated_styles['--revx-coupon-font-size'] = "{$value}";
-								}
-								break;
-
-							default:
-								// code...
-								break;
-						}
-					}
-					break;
-				case 'padding':
-					foreach ( $sectionVal as $property => $value ) {
-						if ( '' != $value ) {
-							$generated_styles[ "padding-$property" ] = "{$value}px";
-						}
-					}
-					break;
-				case 'spacing':
-					foreach ( $sectionVal as $property => $value ) {
-						if ( '' != $value ) {
-							if ( 'gap' == $property && intval( $value ) > 0 ) {
-								$generated_styles['gap']     = "{$value}px";
-								$generated_styles['display'] = 'flex';
-							} else {
-								$generated_styles[ "margin-$property" ] = "{$value}px";
-							}
-						}
-
-						if ( $use_calc ) {
-							if ( $property == 'left' || $property == 'right' ) {
-								$generated_styles[ "margin-$property" ] = "calc({$value}px/2)";
-							}
-						}
-					}
-					break;
-				case 'typography':
-					foreach ( $sectionVal as $property => $value ) {
-						switch ( $property ) {
-							case 'fontSize':
-								if ( '' != $value ) {
-									$generated_styles['font-size']   = "{$value}px";
-									$generated_styles['line-height'] = 'inherit';
-								}
-								// code...
-								break;
-							case 'fontStyle':
-								foreach ( $value as $val ) {
-									switch ( $val ) {
-										case 'strike':
-											$tag[] = 'strike';
-											break;
-
-										case 'bold':
-											$generated_styles['font-weight'] = 'bold';
-											break;
-										case 'underline':
-											$generated_styles['text-decoration'] = 'underline';
-											break;
-										case 'italic':
-											$tag[] = 'i';
-											break;
-
-										default:
-											// code...
-											break;
-									}
-								}
-								break;
-							case 'tag':
-								$tag[] = $value;
-								break;
-
-							default:
-								// code...
-								break;
-						}
-					}
-					break;
-				case 'align':
-					if ( $sectionVal ) {
-						$generated_styles['text-align']      = $sectionVal;
-						$generated_styles['justify-content'] = $sectionVal;
-					}
-					break;
-				case 'direction':
-					if ( $sectionVal ) {
-						$generated_styles['flex-direction'] = $sectionVal;
-					}
-					break;
-				case 'tabs':
-					foreach ( $sectionVal as $key => $value ) {
-						switch ( $key ) {
-							case 'typography':
-								if ( isset( $value['fontSize'] ) && ! empty( $value['fontSize'] ) ) {
-									$fz                 = $value['fontSize'];
-									$input['font-size'] = "{$fz}px";
-								}
-								break;
-							case 'plusMinus':
-								if ( isset( $value['iconSize'] ) && ! empty( $value['iconSize'] ) ) {
-									$fz                 = $value['iconSize'];
-									$child['font-size'] = "{$fz}px";
-								}
-								break;
-							case 'typographyControl':
-								foreach ( $value as $property => $val ) {
-
-									switch ( $property ) {
-										case 'borderWidth':
-											if ( '' != $val ) {
-												$generated_styles['border-width'] = "{$val}px";
-												$generated_styles['border-style'] = 'solid';
-											}
-											break;
-										case 'borderRadius':
-											if ( '' != $val ) {
-												$generated_styles['border-radius'] = "{$val}px";
-											}
-											break;
-										case 'padding':
-											if ( '' != $val ) {
-												$generated_styles['padding'] = "{$val}px";
-											}
-											break;
-										case 'gap':
-											if ( '' != $val && intval( $val ) > 0 ) {
-												$generated_styles['gap']     = "{$val}px";
-												$generated_styles['display'] = 'flex';
-											}
-											break;
-										case 'size':
-											if ( '' != $val ) {
-												$classes[] = 'revx-btn-size-' . $val[0];
-											}
-
-											break;
-
-										default:
-											// code...
-											break;
-									}
-								}
-								break;
-
-							default:
-								// code...
-								break;
-						}
-					}
-					break;
-				case 'position':
-					foreach ( $sectionVal as $property => $value ) {
-						if ( '' != $value ) {
-							$generated_styles[ "{$property}" ] = "{$value}px";
-						}
-					}
-					break;
-
-				default:
-					// code...
-					break;
-			}
-		}
-
-		$cachedData = array(
-			'css'     => $this->convert_to_inline( $generated_styles ),
-			'tag'     => $tag,
-			'input'   => $this->convert_to_inline( $input ),
-			'child'   => $this->convert_to_inline( $child ),
-			'classes' => $classes,
-		);
-
-		return $cachedData;
-	}
 
 	public function convert_to_inline( $styles ) {
 		$css = '';
@@ -3119,390 +2398,13 @@ class Revenue_Functions {
 	}
 
 
-	public function tag_wrapper( $current_campaign, $styles, $name, $content = '', $class = '', $tag = 'div', $customData = array() ) {
-		$style      = isset( $styles[ $name ] ) ? $styles[ $name ] : array();
-		$css        = isset( $style['css'] ) ? $style['css'] : '';
-		$classes    = isset( $style['classes'] ) ? $style['classes'] : array();
-		$classes    = implode( ' ', $classes );
-		$tags       = array();
-		$p_name     = wp_strip_all_tags( $content );
-		$wrapperTag = '';
-
-		switch ( $name ) {
-			case 'bundleLabel':
-				$content = $this->get_campaign_meta( $current_campaign['id'], 'bundle_label_badge', true ) ?? __( 'BUNDLE OFFER', 'revenue' );
-				break;
-			case 'totalPriceText':
-				$content = $this->get_campaign_meta( $current_campaign['id'], 'total_price_text', true ) ?? __( 'Total', 'revenue' );
-				break;
-			case 'addToCartButton':
-				if ( isset( $current_campaign['skip_add_to_cart'] ) && 'yes' == $current_campaign['skip_add_to_cart'] ) {
-					$content = $this->get_campaign_meta( $current_campaign['id'], 'checkout_btn_text', true ) ?? __( 'Checkout', 'revenue' );
-				} else {
-					$content = $this->get_campaign_meta( $current_campaign['id'], 'add_to_cart_btn_text', true ) ?? __( 'Add To Cart', 'revenue' );
-				}
-				break;
-			case 'noThanksButton':
-				$content = $this->get_campaign_meta( $current_campaign['id'], 'no_thanks_button_text', true ) ?? __( 'No, Thanks', 'revenue' );
-				break;
-			case 'productTag':
-				$content = $this->get_campaign_meta( $current_campaign['id'], 'product_tag_text', true ) ?? __( 'Most Popular', 'revenue' );
-				break;
-			case 'discount_amount':
-				break;
-			default:
-				// code...
-				break;
-		}
-		$wrappedContent = $content;
-		if ( isset( $style['tag'] ) && ! empty( $style['tag'] ) && is_array( $style['tag'] ) ) {
-			$tags = $style['tag'];
-		}
-
-		if ( ! $content && ! ( in_array( $name, array( 'selectedProdTitle', 'selectedProductPrice', 'productregular_price', 'regular_price', 'salePrice', 'rewardedMessage' ) ) ) ) {
-			return '';
-		}
-
-		foreach ( $tags as $idx => $tag ) {
-			if ( $idx == 0 ) {
-				$wrapperTag = $tag;
-			} else {
-				$wrappedContent = "<$tag title='$p_name'>" . $wrappedContent . "</$tag>";
-			}
-		}
-
-		if ( empty( $wrapperTag ) ) {
-			$wrapperTag = $tag;
-		}
-
-		$data_attribute = '';
-		if ( ! empty( $customData ) ) {
-			foreach ( $customData as $key => $value ) {
-				$safe_value      = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
-				$data_attribute .= "data-$key='" . $safe_value . "' ";
-			}
-		}
-
-		// Special case for product title link
-		if ( 'double_order' !== $current_campaign['campaign_type'] ) {
-			$click_action = revenue()->get_campaign_meta( $current_campaign['id'], 'offered_product_click_action', true ) ?? 'go_to_product';
-
-			if ( $name == 'productTitle' && isset( $customData['product_url'] ) && 'go_to_product' == $click_action ) {
-				ob_start();
-				?>
-			<a target="_blank" href="<?php echo esc_url( $customData['product_url'] ); ?>">
-				<?php
-				echo wp_kses(
-					"<$wrapperTag title='$p_name' style='$css' class='$class $classes' $data_attribute>$wrappedContent</$wrapperTag>",
-					revenue()->get_allowed_tag()
-				);
-				?>
-			</a>
-				<?php
-				return ob_get_clean();
-			}
-		}
-
-		// Add spinner for addToCartButton
-		if ( 'addToCartButton' === $name ) {
-			$wrappedContent = '<span class="spinner" style="display: none;"></span>' . $wrappedContent;
-		}
-
-		return "<$wrapperTag title='$p_name' style='$css' class='$class $classes' $data_attribute>$wrappedContent</$wrapperTag>";
-	}
-
-
-	public function popup_container( $current_campaign, $generated_styles, $output_content, $class = '', $without_heading = false, $placement = '' ) {
-
-		$placement_settings = $this->get_placement_settings( $current_campaign['id'], $placement );
-		$view_mode          = $placement_settings['builder_view'] ?? 'list';
-
-		$container_style = revenue()->get_style( $generated_styles, 'container' );
-		$heading_text    = isset( $current_campaign['banner_heading'] ) ? $current_campaign['banner_heading'] : '';
-		$subheading_text = isset( $current_campaign['banner_subheading'] ) ? $current_campaign['banner_subheading'] : '';
-		$campaign_type   = $current_campaign['campaign_type'];
-		$view_id         = revenue()->get_campaign_meta( $current_campaign['id'], 'campaign_view_id', true ) ?? '';
-		$view_class      = revenue()->get_campaign_meta( $current_campaign['id'], 'campaign_view_class', true ) ?? '';
-		$class          .= " $view_class ";
-
-		$animation_delay = 0;
-		$animation_name  = isset( $placement_settings['popup_animation'] ) ? esc_attr( $placement_settings['popup_animation'] ) : '';
-		$animation_class = "revx-animation-$animation_name";
-
-		$animation_delay = isset( $placement_settings['popup_animation_delay'] ) ? $placement_settings['popup_animation_delay'] : 0;
-
-		do_action( "revenue_campaign_{$campaign_type}_inpage_before_rendered_content", $current_campaign );
-		?>
-		<div id="<?php echo esc_attr( $view_id ); ?>" class="revx-popup revx-all-center revx-campaign-<?php echo esc_attr( $current_campaign['id'] ); ?> revx-campaign-view-<?php echo esc_attr( $current_campaign['id'] ); ?> <?php echo esc_attr( $animation_class ); ?>">
-			<div id="revx-popup-overlay" class="revx-popup__overlay"></div>
-			<div class="revx-popup__container" data-campaign-id="<?php echo esc_attr( $current_campaign['id'] ); ?>" data-animation-name="<?php echo esc_attr( $animation_name ); ?>" data-animation-delay="<?php echo esc_attr( $animation_delay ); ?>" id="revx-popup">
-				<div data-campaign-id="<?php echo esc_attr( $current_campaign['id'] ); ?>" data-animation-name="<?php echo esc_attr( $animation_name ); ?>" data-animation-delay="<?php echo esc_attr( $animation_delay ); ?>" class="revx-popup__content revx-campaign-container <?php echo esc_attr( $class ); ?> revx-campaign-<?php echo esc_attr( $view_mode ); ?>" style="<?php echo esc_attr( $container_style ); ?>">
-					<?php
-						echo wp_kses(
-							revenue()->get_template_part(
-								'campaign_close',
-								array(
-									'generated_styles' => $generated_styles,
-									'current_campaign' => $current_campaign,
-								)
-							),
-							revenue()->get_allowed_tag()
-						); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					?>
-					<?php
-					/**
-					 * Executes actions before the header of a revenue campaign.
-					 *
-					 * @param int $current_campaign_id The ID of the current campaign.
-					 * @param string $campaign_type The type of the campaign.
-					 * @param string $position The position of the campaign, in this case 'popup'.
-					 * @param array $current_campaign The current campaign data.
-					 */
-					do_action( 'revenue_campaign_before_header', $current_campaign['id'], $campaign_type, 'popup', $current_campaign );
-
-					?>
-
-					<div class="revx-campaign-header">
-								<?php
-								if ( ! $without_heading ) {
-									if ( $heading_text ) {
-										echo wp_kses( revenue()->tag_wrapper( $current_campaign, $generated_styles, 'heading', $heading_text, 'revx-campaign-view__title' ), revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-									}
-
-									if ( $subheading_text ) {
-										echo wp_kses( revenue()->tag_wrapper( $current_campaign, $generated_styles, 'subHeading', $subheading_text, 'revx-campaign-view__title' ), revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-									}
-								}
-
-								?>
-					</div>
-					<?php
-
-					echo wp_kses(
-						revenue()->get_template_part(
-							'free_shipping',
-							array(
-								'generated_styles' => $generated_styles,
-								'current_campaign' => $current_campaign,
-							)
-						),
-						revenue()->get_allowed_tag()
-					);
-					echo wp_kses(
-						revenue()->get_template_part(
-							'countdown_timer',
-							array(
-								'generated_styles' => $generated_styles,
-								'current_campaign' => $current_campaign,
-							)
-						),
-						revenue()->get_allowed_tag()
-					);
-
-					do_action( "revenue_campaign_{$campaign_type}_inpage_after_header" );
-					echo wp_kses( $output_content, revenue()->get_allowed_tag() );
-					do_action( "revenue_campaign_{$campaign_type}_inpage_after_content" );
-
-					?>
-				</div>
-			</div>
-		</div>
-		<?php
-		do_action( "revenue_campaign_{$campaign_type}_inpage_after_rendered_content", $current_campaign );
-	}
-	public function floating_container( $current_campaign, $generated_styles, $output_content, $class = '', $without_heading = false, $placement = '' ) {
-		$animation_delay = 0;
-		$container_style = revenue()->get_style( $generated_styles, 'container' );
-
-		$placement_settings = $this->get_placement_settings( $current_campaign['id'], $placement );
-		$view_mode          = $placement_settings['builder_view'] ?? 'list';
-
-		$heading_text    = isset( $current_campaign['banner_heading'] ) ? $current_campaign['banner_heading'] : '';
-		$subheading_text = isset( $current_campaign['banner_subheading'] ) ? $current_campaign['banner_subheading'] : '';
-		$campaign_type   = $current_campaign['campaign_type'];
-
-		$view_id    = revenue()->get_campaign_meta( $current_campaign['id'], 'campaign_view_id', true ) ?? '';
-		$view_class = revenue()->get_campaign_meta( $current_campaign['id'], 'campaign_view_class', true ) ?? '';
-		$class     .= " $view_class ";
-
-		$animation_delay = isset( $placement_settings['floating_animation_delay'] ) ? $placement_settings['floating_animation_delay'] : 0;
-
-		$position = isset( $placement_settings['floating_position'] ) ? $placement_settings['floating_position'] : '';
-		// Determine position class based on $position variable
-		switch ( $position ) {
-			case 'top-left':
-			case 'top-right':
-			case 'bottom-left':
-			case 'bottom-right':
-				$position_class = 'revx-floating-' . esc_attr( $position );
-				break;
-			default:
-				$position_class = 'revx-floating-bottom-right'; // Default to bottom-right if position is not specified
-				break;
-		}
-		?>
-			<div id="<?php echo esc_attr( $view_id ); ?>" class="revx-floating-main revx-all-center revx-campaign-<?php echo esc_attr( $current_campaign['id'] ); ?> revx-campaign-view-<?php echo esc_attr( $current_campaign['id'] ); ?> "  data-position-class="<?php echo esc_attr( $position_class ); ?>" data-campaign-id="<?php echo esc_attr( $current_campaign['id'] ); ?>" data-animation-delay="<?php echo esc_attr( $animation_delay ); ?>" >
-				<div class="revx-floating-container">
-					<div id="revx-floating" class="revx-floating revx-campaign-container <?php echo esc_attr( $class ); ?> revx-campaign-<?php echo esc_attr( $view_mode ); ?>" data-campaign-id="<?php echo esc_attr( $current_campaign['id'] ); ?>" style="<?php echo esc_attr( $container_style ); ?>">
-							<?php
-								echo wp_kses(
-									revenue()->get_template_part(
-										'campaign_close',
-										array(
-											'generated_styles' => $generated_styles,
-											'current_campaign' => $current_campaign,
-										)
-									),
-									revenue()->get_allowed_tag()
-								); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-							?>
-						<?php
-						/**
-						 * Executes actions before the header of a revenue campaign.
-						 *
-						 * @param int $current_campaign_id The ID of the current campaign.
-						 * @param string $campaign_type The type of the campaign.
-						 * @param string $position The position of the campaign, in this case 'floating'.
-						 * @param array $current_campaign The current campaign data.
-						 */
-						do_action( 'revenue_campaign_before_header', $current_campaign['id'], $campaign_type, 'floating', $current_campaign );
-
-						?>
-					<div class="revx-campaign-header">
-						<?php
-						if ( ! $without_heading ) {
-							if ( $heading_text ) {
-								echo wp_kses( revenue()->tag_wrapper( $current_campaign, $generated_styles, 'heading', $heading_text, 'revx-campaign-view__title' ), revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-							}
-
-							if ( $subheading_text ) {
-								echo wp_kses( revenue()->tag_wrapper( $current_campaign, $generated_styles, 'subHeading', $subheading_text, 'revx-campaign-view__title' ), revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-							}
-						}
-
-						?>
-					</div>
-					<?php
-
-					echo wp_kses(
-						revenue()->get_template_part(
-							'free_shipping',
-							array(
-								'generated_styles' => $generated_styles,
-								'current_campaign' => $current_campaign,
-							)
-						),
-						revenue()->get_allowed_tag()
-					);
-					echo wp_kses(
-						revenue()->get_template_part(
-							'countdown_timer',
-							array(
-								'generated_styles' => $generated_styles,
-								'current_campaign' => $current_campaign,
-							)
-						),
-						revenue()->get_allowed_tag()
-					);
-
-					do_action( "revenue_campaign_{$campaign_type}_inpage_after_header" );
-					echo wp_kses( $output_content, revenue()->get_allowed_tag() );
-					do_action( "revenue_campaign_{$campaign_type}_inpage_after_content" );
-
-					?>
-				</div>
-			</div>
-		</div>
-		<?php
-		do_action( 'revenue_campaign_after_container', $current_campaign['id'], $campaign_type, 'floating', $current_campaign );
-	}
-
-	public function inpage_container( $current_campaign, $generated_styles, $output_content, $class = '', $placement = '' ) {
-		$placement_settings = $this->get_placement_settings( $current_campaign['id'], $placement );
-		$view_mode          = $placement_settings['builder_view'] ?? 'list';
-
-		$container_style = revenue()->get_style( $generated_styles, 'container' );
-
-		$view_id    = revenue()->get_campaign_meta( $current_campaign['id'], 'campaign_view_id', true ) ?? '';
-		$view_class = revenue()->get_campaign_meta( $current_campaign['id'], 'campaign_view_class', true ) ?? '';
-		$class     .= " $view_class ";
-
-		$heading_text    = isset( $current_campaign['banner_heading'] ) ? $current_campaign['banner_heading'] : '';
-		$subheading_text = isset( $current_campaign['banner_subheading'] ) ? $current_campaign['banner_subheading'] : '';
-		$campaign_type   = $current_campaign['campaign_type'];
-
-		$theme      = wp_get_theme();
-		$theme_name = get_stylesheet();
-
-		$class .= " revx-theme-$theme_name ";
-
-		$position = $placement_settings['inpage_position'];
-
-		do_action( 'revenue_campaign_before_container', $current_campaign['id'], $campaign_type, 'inpage', $current_campaign );
-
-		ob_start();
-		?>
-		<div id="<?php echo esc_attr( $view_id ); ?>" data-campaign-id="<?php echo esc_attr( $current_campaign['id'] ); ?>" class="revx-inpage-container revx-campaign-container <?php echo esc_attr( $class ); ?> revx-campaign-<?php echo esc_attr( $view_mode ); ?>  revx-campaign-<?php echo esc_attr( $current_campaign['id'] ); ?>" style="<?php echo esc_attr( $container_style ); ?>">
 
 
 
-			<?php
-			/**
-			 * Executes actions before the header of a revenue campaign.
-			 *
-			 * @param int $current_campaign_id The ID of the current campaign.
-			 * @param string $campaign_type The type of the campaign.
-			 * @param string $position The position of the campaign, in this case 'inpage'.
-			 * @param array $current_campaign The current campaign data.
-			 */
-			do_action( 'revenue_campaign_before_header', $current_campaign['id'], $campaign_type, 'inpage', $current_campaign );
 
-			?>
 
-			<?php
 
-			if ( $heading_text ) {
-				echo wp_kses( revenue()->tag_wrapper( $current_campaign, $generated_styles, 'heading', $heading_text, 'revx-campaign-view__title' ), revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			}
 
-			if ( $subheading_text ) {
-				echo wp_kses( revenue()->tag_wrapper( $current_campaign, $generated_styles, 'subHeading', $subheading_text, 'revx-campaign-view__title' ), revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			}
-
-			echo wp_kses(
-				revenue()->get_template_part(
-					'free_shipping',
-					array(
-						'generated_styles' => $generated_styles,
-						'current_campaign' => $current_campaign,
-					)
-				),
-				revenue()->get_allowed_tag()
-			);
-			echo wp_kses(
-				revenue()->get_template_part(
-					'countdown_timer',
-					array(
-						'generated_styles' => $generated_styles,
-						'current_campaign' => $current_campaign,
-					)
-				),
-				revenue()->get_allowed_tag()
-			);
-
-			?>
-			<?php echo wp_kses( $output_content, revenue()->get_allowed_tag() ); ?>
-		</div>
-		<?php
-		$output = ob_get_clean();
-
-		?>
-		<div class="revx-container <?php echo esc_attr( $position ); ?> revx-justify-center">
-			<?php echo wp_kses( $output, revenue()->get_allowed_tag() ); ?>
-		</div>
-		<?php
-		do_action( 'revenue_campaign_after_container', $current_campaign['id'], $campaign_type, 'inpage', $current_campaign );
-	}
 
 
 	public function get_style( $styles, $name, $type = '' ) {
@@ -3515,10 +2417,12 @@ class Revenue_Functions {
 					if ( isset( $style['input'] ) ) {
 						return $style['input'];
 					}
+					// no break
 				case 'child':
 					if ( isset( $style['child'] ) ) {
 						return $style['child'];
 					}
+					// no break
 				case 'classes':
 					$classes = isset( $style['classes'] ) ? $style['classes'] : array();
 					$classes = implode( ' ', $classes );
@@ -3533,79 +2437,10 @@ class Revenue_Functions {
 		return $css;
 	}
 
-	/**
-	 * Converts RGB or RGBA color values from string format to hexadecimal color representation.
-	 *
-	 * @param string $colorString Color string in format 'rgb(r, g, b)' or 'rgba(r, g, b, a)'
-	 * @return string Hexadecimal color string, e.g., '#RRGGBB' or '#RRGGBBAA'
-	 */
-	public function colorStringToHex( $colorString ) {
-
-		if ( 'transparent' == $colorString ) {
-			return $colorString;
-		}
-
-		if ( preg_match( '/^#([a-f0-9]{3}([a-f0-9]{3})?([a-f0-9]{2})?)$/i', $colorString ) ) {
-			// If shorthand notation, expand it to full form
-			if ( strlen( $colorString ) == 4 || strlen( $colorString ) == 5 ) {
-				$colorString = preg_replace( '/^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i', '#$1$1$2$2$3$3$4$4', $colorString );
-			}
-			return $colorString; // Return the valid hex color
-		}
-		// Remove spaces and convert to lowercase
-		$colorString = strtolower( str_replace( ' ', '', $colorString ) );
-
-		// Check if the input string matches 'rgba(r,g,b,a)' format
-		if ( preg_match( '/^rgba\((\d+),(\d+),(\d+),([\d.]+)\)$/', $colorString, $matches ) ) {
-			$r = $matches[1];
-			$g = $matches[2];
-			$b = $matches[3];
-			$a = $matches[4];
-		}
-		// Check if the input string matches 'rgb(r,g,b)' format
-		elseif ( preg_match( '/^rgb\((\d+),(\d+),(\d+)\)$/', $colorString, $matches ) ) {
-			$r = $matches[1];
-			$g = $matches[2];
-			$b = $matches[3];
-			$a = 1.0; // Default alpha value for RGB is 1.0 (fully opaque)
-		} else {
-			return ''; // Return empty string if the input format is invalid
-		}
-
-		// Convert RGB or RGBA values to hexadecimal
-		$hex = $this->rgbToHex( $r, $g, $b, $a );
-
-		return $hex;
-	}
 
 
-	/**
-	 * Converts RGB or RGBA color values to hexadecimal color representation.
-	 *
-	 * @param int   $r Red component (0-255)
-	 * @param int   $g Green component (0-255)
-	 * @param int   $b Blue component (0-255)
-	 * @param float $a Alpha component (0.0-1.0), defaults to 1.0 (opaque)
-	 * @return string Hexadecimal color string, e.g., '#RRGGBB' or '#RRGGBBAA'
-	 */
-	public function rgbToHex( $r, $g, $b, $a = 1.0 ) {
-		// Validate input values
-		$r = max( 0, min( 255, (int) $r ) );
-		$g = max( 0, min( 255, (int) $g ) );
-		$b = max( 0, min( 255, (int) $b ) );
-		$a = max( 0.0, min( 1.0, (float) $a ) );
 
-		// Convert RGB to hexadecimal
-		$hex = sprintf( '#%02x%02x%02x', $r, $g, $b );
 
-		// If alpha is provided and it's not fully opaque, add alpha to the hex string
-		if ( $a < 1.0 ) {
-			$alphaHex = str_pad( dechex( (int) round( $a * 255 ) ), 2, '0', STR_PAD_LEFT );
-			$hex     .= $alphaHex;
-		}
-
-		return $hex;
-	}
 
 	/**
 	 * Retrive from cache.
@@ -3613,25 +2448,8 @@ class Revenue_Functions {
 	 * @param string $cache_key Cache key.
 	 * @return mixed
 	 */
-	public function retrieveFromCache( $cache_key ) {
-		// Attempt to retrieve cached data from object cache first.
-		$cached_data = wp_cache_get( 'revenue_' . $cache_key );
+	// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- public method name retained for direct callers.
 
-		if ( false !== $cached_data ) {
-			return $cached_data; // Return cached data if found in object cache.
-		}
-
-		// If not found in object cache, attempt to retrieve from transient.
-		$transient_data = get_transient( 'revenue_' . $cache_key );
-
-		if ( false !== $transient_data ) {
-			// Set retrieved transient data in object cache for future quick access.
-			wp_cache_set( 'revenue_' . $cache_key, $transient_data );
-			return $transient_data; // Return cached data if found in transient.
-		}
-
-		return false; // Return false if data not found in either cache.
-	}
 
 	/**
 	 * Store in cache
@@ -3640,122 +2458,15 @@ class Revenue_Functions {
 	 * @param array  $data Data.
 	 * @return void
 	 */
-	public function storeInCache( $cache_key, $data ) {
-		// Store data in both object cache and transient
-		wp_cache_set( 'revenue_' . $cache_key, $data );
-
-		// Set cached data for 1 days
-		set_transient( 'revenue_' . $cache_key, $data, DAY_IN_SECONDS );
-	}
-
-	/**
-	 * Get template part
-	 *
-	 * @param string $name Template part name.
-	 * @param array  $args Template args.
-	 * @return string
-	 */
-	public function get_template_part( $name, $args = array() ) {
-		if ( ! $name ) {
-			return;
-		}
-		$args = wp_parse_args(
-			$args,
-			array(
-				'min_quantity'     => 1,
-				'max_quantity'     => false,
-				'value'            => 1,
-				'quantity'         => 1,
-				'regular_price'    => 0,
-				'sale_price'       => 0,
-				'quantity'         => 1,
-				'data'             => array(),
-				'view_mode'        => '',
-				'campaign_type'    => '',
-				'class'            => '',
-				'required'         => false,
-				'selected'         => false,
-				'message'          => '',
-				'current_campaign' => false,
-				'generated_styles' => false,
-				'offered_product'  => false,
-				'campaign_type'    => '',
-				'force_show'       => false,
-				'title'            => '',
-				'image'            => '',
-				'product_id'       => false,
-				'offer_qty'        => 0,
-				'offered_price'    => 0,
-				'regular_price'    => 0,
-				'source'           => '',
-				'index'            => '',
-			)
-		);
-
-		$file_path = REVENUE_PATH . "includes/campaigns/views/parts/$name.php";
-		$output    = '';
-		ob_start();
-		if ( file_exists( $file_path ) ) {
-			extract( $args ); //phpcs:ignore WordPress.PHP.DontExtract.extract_extract
-			include $file_path;
-		}
-
-		$output .= ob_get_clean();
-
-		return $output;
-	}
+	// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- public method name retained for direct callers.
 
 
-	/**
-	 * Render templates
-	 *
-	 * @param array  $template_names Template Names.
-	 * @param string $wrapper_class Wrapper Class.
-	 * @return void
-	 */
-	public function render_templates( $template_names = array(), $wrapper_class = '' ) {
 
-		$output = '';
-		ob_start();
-		foreach ( $template_names as $template_name ) {
-			echo wp_kses( revenue()->get_template_part( $template_name ), revenue()->get_allowed_tag() );
-		}
 
-		$output .= ob_get_clean();
 
-		if ( $wrapper_class ) {
-			?>
-			<div class="<?php echo esc_attr( $wrapper_class ); ?>">
-				<?php echo wp_kses( $output, revenue()->get_allowed_tag() ); ?>
-			</div>
-			<?php
-		} else {
-			echo wp_kses( $output, revenue()->get_allowed_tag() );
-		}
-	}
 
-	/**
-	 * Get Slider icon
-	 *
-	 * @param array  $generated_styles Generated Style.
-	 * @param string $direction Slider direction.
-	 * @return string
-	 */
-	public function get_slider_icon( $generated_styles, $direction = 'left' ) {
-		if ( ! $generated_styles ) {
-			return '';
-		}
-		$slide_icon_style = revenue()->get_style( $generated_styles, $direction . 'SliderIcon' );
-		ob_start();
-		?>
-		<div class="revx-builderSlider-<?php echo esc_attr( $direction ); ?> revx-builderSlider-icon revx-justify-center" style="<?php echo esc_attr( $slide_icon_style ); ?>">
-			<svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path d="M1 13L7 7L1 1" stroke="#868C98" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-			</svg>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
+
+
 
 	/**
 	 * Calculate sale price based on offer price
@@ -3766,7 +2477,8 @@ class Revenue_Functions {
 	 * @param integer $quantity Quantity.
 	 * @return array
 	 */
-	function calculateSalePrice( $type, $value, $regular_price, $quantity = 1 ) {
+	// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- public method name retained for direct callers.
+	public function calculateSalePrice( $type, $value, $regular_price, $quantity = 1 ) {
 		$value           = floatval( $value );
 		$save            = array(
 			'type'    => '',
@@ -3808,6 +2520,7 @@ class Revenue_Functions {
 				$save  = array(
 					'type'    => 'amount',
 					'value'   => abs( $regular_price - $value ),
+					/* translators: 1: Currency symbol, 2: Discount amount. */
 					'content' => sprintf( __( 'Save %1$s%2$s', 'revenue' ), $currency_symbol, number_format( abs( $regular_price - $value ) * $quantity, 2 ) ),
 				);
 				break;
@@ -3825,6 +2538,7 @@ class Revenue_Functions {
 	 * @param array $campaign Campaign data containing triggers and offers.
 	 * @return array Array of volume discount builder items data.
 	 */
+	// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- public method name retained for direct callers.
 	public function getMixMatchQuantities( $campaign ) {
 		$offers = $campaign['offers'];
 
@@ -3851,201 +2565,13 @@ class Revenue_Functions {
 	}
 
 	/**
-	 * Function to get mix-match products based on campaign triggers.
+	 * Function to get buy x get y trigger products based on campaign triggers.
 	 *
 	 * @param array $campaign Campaign data containing triggers.
 	 * @return array Array of products matching the campaign triggers.
 	 */
-	public function getMixMatchProducts( $campaign ) {
-		$triggers = $campaign['triggers'];
-		$products = array();
+	// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- public method name retained for direct callers.
 
-		if ( $triggers ) {
-			foreach ( $triggers as $idx => $trigger ) {
-				$items          = $trigger['items'];
-				$trigger_type   = $trigger['trigger_type'];
-				$trigger_action = $trigger['trigger_action'];
-
-				switch ( $trigger_type ) {
-					case 'products':
-						if ( 'include' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $product_id => $item ) {
-								$product = wc_get_product( $product_id );
-								if ( $product ) {
-									$products[] = array(
-										'id'            => $product->get_id(),
-										'name'          => $product->get_name(),
-										'regular_price' => $product->get_regular_price(),
-										'thumbnail'     => get_the_post_thumbnail_url( $product->get_id(), 'thumbnail' ),
-									);
-								}
-							}
-						} elseif ( 'exclude' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $product_id => $item ) {
-
-								$excluded_product_ids[] = $product_id;
-							}
-							// Remove excluded products from $products array.
-							$products = array_filter(
-								$products,
-								function ( $product ) use ( $excluded_product_ids ) {
-									return ! in_array( $product['id'], $excluded_product_ids ); //phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
-								}
-							);
-						}
-						break;
-
-					case 'category':
-						if ( 'include' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $category_id => $category_item ) {
-								$products_in_category = wc_get_products(
-									array(
-										'category' => array( $category_id ),
-										'status'   => 'publish',
-									)
-								);
-
-								foreach ( $products_in_category as $product ) {
-									$products[] = array(
-										'id'            => $product->get_id(),
-										'name'          => $product->get_name(),
-										'regular_price' => $product->get_regular_price(),
-										'thumbnail'     => get_the_post_thumbnail_url( $product->get_id(), 'thumbnail' ),
-									);
-								}
-							}
-						}
-						break;
-
-					case 'tag':
-						if ( 'include' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $tag_id => $tag_item ) {
-								$products_with_tag = wc_get_products(
-									array(
-										'tag'    => array( $tag_id ),
-										'status' => 'publish',
-									)
-								);
-
-								foreach ( $products_with_tag as $product ) {
-									$products[] = array(
-										'id'            => $product->get_id(),
-										'name'          => $product->get_name(),
-										'regular_price' => $product->get_regular_price(),
-										'thumbnail'     => get_the_post_thumbnail_url( $product->get_id(), 'thumbnail' ),
-									);
-								}
-							}
-						}
-						break;
-
-					default:
-						break;
-				}
-			}
-		}
-		return $products;
-	}
-	/**
-	 * Function to get mix-match products based on campaign triggers.
-	 *
-	 * @param array $campaign Campaign data containing triggers.
-	 * @return array Array of products matching the campaign triggers.
-	 */
-	public function getBuyXGetYTriggerProducts( $campaign ) {
-		$triggers = $campaign['triggers'];
-		$products = array();
-
-		if ( $triggers ) {
-			foreach ( $triggers as $idx => $trigger ) {
-				$items          = $trigger['items'];
-				$trigger_type   = $trigger['trigger_type'];
-				$trigger_action = $trigger['trigger_action'];
-
-				if ( ! is_array( $items ) ) {
-					return;
-				}
-
-				switch ( $trigger_type ) {
-					case 'products':
-						if ( 'include' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $product_id => $item ) {
-								$product = wc_get_product( $product_id );
-								if ( $product ) {
-									$products[] = array(
-										'id'            => $product->get_id(),
-										'name'          => $product->get_name(),
-										'regular_price' => $product->get_regular_price(),
-										'thumbnail'     => get_the_post_thumbnail_url( $product->get_id(), 'thumbnail' ),
-									);
-								}
-							}
-						} elseif ( 'exclude' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $product_id => $item ) {
-
-								$excluded_product_ids[] = $product_id;
-							}
-							// Remove excluded products from $products array.
-							$products = array_filter(
-								$products,
-								function ( $product ) use ( $excluded_product_ids ) {
-									return ! in_array( $product['id'], $excluded_product_ids ); //phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
-								}
-							);
-						}
-						break;
-
-					case 'category':
-						if ( 'include' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $category_id => $category_item ) {
-								$products_in_category = wc_get_products(
-									array(
-										'category' => array( $category_id ),
-										'status'   => 'publish',
-									)
-								);
-
-								foreach ( $products_in_category as $product ) {
-									$products[] = array(
-										'id'            => $product->get_id(),
-										'name'          => $product->get_name(),
-										'regular_price' => $product->get_regular_price(),
-										'thumbnail'     => get_the_post_thumbnail_url( $product->get_id(), 'thumbnail' ),
-									);
-								}
-							}
-						}
-						break;
-
-					case 'tag':
-						if ( 'include' === $trigger_action && count( $items ) > 0 ) {
-							foreach ( $items as $tag_id => $tag_item ) {
-								$products_with_tag = wc_get_products(
-									array(
-										'tag'    => array( $tag_id ),
-										'status' => 'publish',
-									)
-								);
-
-								foreach ( $products_with_tag as $product ) {
-									$products[] = array(
-										'id'            => $product->get_id(),
-										'name'          => $product->get_name(),
-										'regular_price' => $product->get_regular_price(),
-										'thumbnail'     => get_the_post_thumbnail_url( $product->get_id(), 'thumbnail' ),
-									);
-								}
-							}
-						}
-						break;
-
-					default:
-						break;
-				}
-			}
-		}
-		return $products;
-	}
 
 
 	/**
@@ -4062,7 +2588,7 @@ class Revenue_Functions {
 			$current_value  = $current_totals[ $key ] ?? 0;
 			$previous_value = $previous_totals[ $key ] ?? 0;
 
-			if ( $previous_value != 0 ) {
+			if ( 0 != $previous_value ) {
 				$growth_data[ $key ] = ( ( $current_value - $previous_value ) / $previous_value ) * 100;
 			} else {
 				$growth_data[ $key ] = 0 == $current_value ? 0 : 100; //phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
@@ -4106,31 +2632,46 @@ class Revenue_Functions {
 	 * @return array
 	 */
 	public function get_allowed_tag() {
-		// Add safecss filter to allow display property
-		add_filter( 'safe_style_css', array( $this, 'allow_display_in_kses' ) );
+		// safe_style_css widening is registered once in register_hooks(), not per call.
 
 		// @todo input is repeated - check back properly
 		$allowed_tags = array_merge(
 			wp_kses_allowed_html( 'post' ),
 			array(
-				'style'  => array(),
-				'input'  => array(),
-				'div'    => array(
-					'id'	=> true,
-					'class' => true,
-					'style' => true,
-					'data-*'=> true,
+				'style'    => array(),
+				'div'      => array(
+					'id'               => true,
+					'class'            => true,
+					'style'            => true,
+					'title'            => true,
+					'role'             => true,
+					'tabindex'         => true,
+					'aria-*'           => true,
+					'data-*'           => true,
+					// Product cards carry these unprefixed attributes; frontend JS
+					// (add-to-cart, campaign-total, variation selection, mix & match) reads them.
+					'campaign_id'      => true,
+					'campaign_type'    => true,
+					'product_type'     => true,
+					'revx-campaign-id' => true,
 				),
-				'svg'     => array(
-					'xmlns'     => true,
-					'width'     => true,
-					'height'    => true,
-					'fill'      => true,
-					'viewbox'   => true,
-					'viewBox'   => true,
-					'transform' => true,
+				'svg'      => array(
+					'xmlns'               => true,
+					'xmlns:xlink'         => true,
+					'width'               => true,
+					'height'              => true,
+					'fill'                => true,
+					'stroke'              => true,
+					'viewbox'             => true,
+					'viewBox'             => true,
+					'preserveaspectratio' => true,
+					'transform'           => true,
+					'class'               => true,
+					'style'               => true,
+					'role'                => true,
+					'aria-*'              => true,
 				),
-				'path'    => array(
+				'path'     => array(
 					'stroke'          => true,
 					'stroke-width'    => true,
 					'stroke-linecap'  => true,
@@ -4140,44 +2681,83 @@ class Revenue_Functions {
 					'strokeWidth'     => true,
 					'd'               => true,
 					'fill'            => true,
+					'fill-rule'       => true,
+					'clip-rule'       => true,
+					'opacity'         => true,
+					'transform'       => true,
 				),
-				'circle'  => array(
+				'g'        => array(
+					'clip-path' => true,
+					'fill'      => true,
+					'opacity'   => true,
+					'transform' => true,
+				),
+				'defs'     => array(),
+				'clippath' => array(
+					'id' => true,
+				),
+				'circle'   => array(
 					'cx'           => true,
 					'cy'           => true,
 					'r'            => true,
 					'stroke'       => true,
 					'stroke-width' => true,
 					'fill'         => true,
+					'opacity'      => true,
+					'transform'    => true,
 				),
-				'rect'    => array(
-					'class'		=> true,
-					'stroke'	=> true,
-					'width'  => true,
-					'height' => true,
-					'x'      => true,
-					'y'      => true,
-					'rx'     => true,
-					'fill'   => true,
+				'rect'     => array(
+					'class'     => true,
+					'stroke'    => true,
+					'width'     => true,
+					'height'    => true,
+					'x'         => true,
+					'y'         => true,
+					'rx'        => true,
+					'ry'        => true,
+					'fill'      => true,
+					'opacity'   => true,
+					'transform' => true,
 				),
-				'select'  => array(
-					'class'  => true,
-					'style'  => true,
-					'data-*' => true,
-				),
-				'option'  => array(
-					'value' => true,
-				),
-				'input'   => array(
+				'select'   => array(
+					'id'     => true,
 					'name'   => true,
-					'type'   => true,
 					'class'  => true,
-					'data-*' => true,
 					'style'  => true,
-					'value'  => true,
-					'min'    => true,
-					'max'    => true,
+					'data-*' => true,
 				),
-				'checked' => array(),
+				'option'   => array(
+					'value'    => true,
+					'selected' => true,
+					'disabled' => true,
+					'class'    => true,
+					'data-*'   => true,
+				),
+				'input'    => array(
+					'id'          => true,
+					'name'        => true,
+					'checked'     => true,
+					'disabled'    => true,
+					'readonly'    => true,
+					'required'    => true,
+					'type'        => true,
+					'class'       => true,
+					'data-*'      => true,
+					'aria-*'      => true,
+					'style'       => true,
+					'value'       => true,
+					'placeholder' => true,
+					'step'        => true,
+					'min'         => true,
+					'max'         => true,
+				),
+				'label'    => array(
+					'for'    => true,
+					'id'     => true,
+					'class'  => true,
+					'style'  => true,
+					'data-*' => true,
+				),
 			)
 		);
 		return apply_filters( 'revenue_kses_notice_allowed_tags', $allowed_tags );
@@ -4190,159 +2770,65 @@ class Revenue_Functions {
 	 * @return array Modified array with additional properties.
 	 */
 	public function allow_display_in_kses( $styles ) {
-		$styles[] = 'display';
-		$styles[] = 'align-items';
-		$styles[] = 'justify-content';
-		$styles[] = 'flex-direction';
-		$styles[] = 'flex-wrap';
-		$styles[] = 'gap';
-		return $styles;
-	}
-
-	/**
-	 * Filters out the same tags as wp_kses_post, but allows tabindex for <a> element.
-	 *
-	 * @since 1.0.0
-	 * @param string $message Content to filter through kses.
-	 * @return string
-	 */
-	public function kses_campaign_view( $message ) {
-		$allowed_tags = array_merge(
-			wp_kses_allowed_html( 'post' ),
-			array(
-				'svg'    => array(
-					'xmlns'     => true,
-					'width'     => true,
-					'height'    => true,
-					'fill'      => true,
-					'viewbox'   => true,
-					'viewBox'   => true,
-					'transform' => true,
-				),
-				'path'   => array(
-					'stroke'          => true,
-					'stroke-width'    => true,
-					'stroke-linecap'  => true,
-					'stroke-linejoin' => true,
-					'strokeLinecap'   => true,
-					'strokeLinejoin'  => true,
-					'strokeWidth'     => true,
-					'd'               => true,
-					'fill'            => true,
-				),
-				'select' => array(
-					'class'  => true,
-					'style'  => true,
-					'data-*' => true,
-
-				),
-				'option' => array(
-					'value' => true,
-				),
-				'input'  => array(
-					'name'    => true,
-					'type'    => true,
-					'class'   => true,
-					'data-*'  => true,
-					'style'   => true,
-					'value'   => true,
-					'min'     => true,
-					'max'     => true,
-					'checked' => true,
-				),
-			)
+		$extra_styles = array(
+			// Layout / flexbox.
+			'display',
+			'align-items',
+			'justify-content',
+			'flex-direction',
+			'flex-wrap',
+			'gap',
+			'column-gap',
+			'row-gap',
+			'box-sizing',
+			// Positioning (used by slider arrows and badge overlays).
+			'position',
+			'top',
+			'right',
+			'bottom',
+			'left',
+			'z-index',
+			// Visibility / interaction (used by floating and popup containers).
+			'visibility',
+			'opacity',
+			'cursor',
+			'pointer-events',
+			'outline',
+			'transition',
+			'transform',
+			// Media sizing (used by product images).
+			'object-fit',
+			'aspect-ratio',
+			// Tables (used by the coupon email template).
+			'border-collapse',
+			'border-spacing',
+			// SVG presentation properties (used by the circular progress ring).
+			'fill',
+			'stroke',
+			'stroke-width',
+			'stroke-dasharray',
+			'stroke-dashoffset',
+			'stroke-linecap',
+			'stroke-linejoin',
+			// Typography extras.
+			'text-shadow',
+			'white-space',
+			'word-break',
+			'text-overflow',
 		);
 
-		/**
-		 * Kses notice allowed tags.
-		 *
-		 * @since 3.9.0
-		 * @param array[]|string $allowed_tags An array of allowed HTML elements and attributes, or a context name such as 'post'.
-		 */
-		return wp_kses( $message, apply_filters( 'revenue_kses_notice_allowed_tags', $allowed_tags ) );
-	}
-
-	/**
-	 * Dropdown Variation attribute options
-	 *
-	 * @param array $generated_styles Generated styles.
-	 * @param array $args Args
-	 * @return string
-	 */
-	public function dropdown_variation_attribute_options( $generated_styles, $args = array() ) {
-		$args = wp_parse_args(
-			apply_filters( 'revenue_dropdown_variation_attribute_options_args', $args ),
-			array(
-				'options'          => false,
-				'attribute'        => false,
-				'product'          => false,
-				'selected'         => false,
-				'required'         => false,
-				'name'             => '',
-				'id'               => '',
-				'class'            => '',
-				'show_option_none' => __( 'Select', 'revenue' ),
-			)
-		);
-
-		$attribute_field_style = revenue()->get_style( $generated_styles, 'productAttrField' );
-
-		// Get selected value.
-		if ( false === $args['selected'] && $args['attribute'] && $args['product'] instanceof WC_Product ) {
-			$selected_key = 'attribute_' . sanitize_title( $args['attribute'] );
-			// phpcs:disable WordPress.Security.NonceVerification.Recommended
-			$args['selected'] = isset( $_REQUEST[ $selected_key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $selected_key ] ) ) : $args['product']->get_variation_default_attribute( $args['attribute'] );
-			// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		}
-
-		$options               = $args['options'];
-		$product               = $args['product'];
-		$attribute             = $args['attribute'];
-		$name                  = $args['name'] ? $args['name'] : 'attribute_' . sanitize_title( $attribute );
-		$id                    = $args['id'] ? $args['id'] : sanitize_title( $attribute );
-		$class                 = $args['class'];
-		$required              = (bool) $args['required'];
-		$show_option_none      = (bool) $args['show_option_none'];
-		$show_option_none_text = $args['show_option_none'] ? $args['show_option_none'] : __( 'Select', 'revenue' );
-
-		if ( empty( $options ) && ! empty( $product ) && ! empty( $attribute ) ) {
-			$attributes = $product->get_variation_attributes();
-			$options    = $attributes[ $attribute ];
-		}
-
-		$html  = '<select id="' . esc_attr( $id ) . '" class="revx-productAttr-wrapper__field revx-full-width ' . esc_attr( $class ) . '" name="' . esc_attr( $name ) . '" data-attribute_name="attribute_' . esc_attr( sanitize_title( $attribute ) ) . '" data-show_option_none="' . ( $show_option_none ? 'yes' : 'no' ) . '"' . ( $required ? ' required' : '' ) . ' style="' . esc_attr( $attribute_field_style ) . '">';
-		$html .= '<option value="">' . esc_html( $show_option_none_text ) . '</option>';
-
-		if ( ! empty( $options ) ) {
-			if ( $product && taxonomy_exists( $attribute ) ) {
-				// Get terms if this is a taxonomy - ordered. We need the names too.
-				$terms = wc_get_product_terms(
-					$product->get_id(),
-					$attribute,
-					array(
-						'fields' => 'all',
-					)
-				);
-
-				foreach ( $terms as $term ) {
-					if ( in_array( $term->slug, $options, true ) ) {
-						$html .= '<option value="' . esc_attr( $term->slug ) . '" ' . selected( sanitize_title( $args['selected'] ), $term->slug, false ) . '>' . esc_html( apply_filters( 'revenue_variation_option_name', $term->name, $term, $attribute, $product ) ) . '</option>';
-					}
-				}
-			} else {
-				foreach ( $options as $option ) {
-					// This handles < 2.4.0 bw compatibility where text attributes were not sanitized.
-					$selected = sanitize_title( $args['selected'] ) === $args['selected'] ? selected( $args['selected'], sanitize_title( $option ), false ) : selected( $args['selected'], $option, false );
-					$html    .= '<option value="' . esc_attr( $option ) . '" ' . $selected . '>' . esc_html( apply_filters( 'revenue_variation_option_name', $option, null, $attribute, $product ) ) . '</option>';
-				}
+		foreach ( $extra_styles as $extra_style ) {
+			if ( ! in_array( $extra_style, $styles, true ) ) {
+				$styles[] = $extra_style;
 			}
 		}
 
-		$html .= '</select>';
-
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo wp_kses( $html, revenue()->get_allowed_tag() );
+		return $styles;
 	}
+
+
+
+
 
 
 	/**
@@ -4369,6 +2855,7 @@ class Revenue_Functions {
 	 * @param array $data Data.
 	 * @return array
 	 */
+	// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- public method name retained for direct callers.
 	public function getOfferProductsData( $data ) {
 		$result = array();
 
@@ -4384,11 +2871,6 @@ class Revenue_Functions {
 					continue;
 				}
 
-				$regularPrice = false;
-				$thumbnail    = false;
-				$itemName     = '';
-
-				// Fetch the product using WC function
 				// Fetch the product using WC function.
 				$product = wc_get_product( $product_id );
 
@@ -4457,6 +2939,7 @@ class Revenue_Functions {
 	 * @param string $is_current_product Is current product.
 	 * @return array
 	 */
+	// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid -- public method name retained for direct callers.
 	public function getTriggerProductsData( $triggers, $relation = 'or', $trigger_product_id = '', $is_current_product = '' ) {
 		$result = array();
 		if ( $is_current_product ) {
@@ -4558,33 +3041,9 @@ class Revenue_Functions {
 		return $result;
 	}
 
-	/**
-	 * Calculate percentage difference.
-	 *
-	 * @param float|string $old_price Old Price.
-	 * @param float|string $new_price New Price.
-	 * @return float
-	 */
-	public function calculate_percentage_difference( $old_price, $new_price ) {
-		if ( 0 == $old_price ) { //phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
-			return 0; // Avoid division by zero.
-		}
-		$difference = $old_price - $new_price;
-		$per_diff   = ( $difference / $old_price ) * 100;
-		return number_format( $per_diff, 2 );
-	}
 
-	/**
-	 * Get page url buy name
-	 *
-	 * @param string $name Page name.
-	 * @return string
-	 */
-	public function get_page_url( $name = '' ) {
-		$slug = revenue()->get_admin_menu_slug();
 
-		return esc_url( admin_url( 'admin.php?page=' . $slug . '#/' . $name ) );
-	}
+
 
 	/**
 	 * Get edit campaign url
@@ -4598,88 +3057,12 @@ class Revenue_Functions {
 		return esc_url( admin_url( 'admin.php?page=' . $slug . '#/campaigns/' . $campaign_id ) );
 	}
 
-	// Licensing System.
-
-	/**
-	 * Check is pro installed or not
-	 */
-	public function is_pro_installed() {
-		return in_array( 'revenue-pro/revenue-pro.php', array_keys( get_plugins() ), true );
-	}
-
-	/**
-	 * Check pro ready or not
-	 *
-	 * @return boolean
-	 */
-	public function is_pro_ready() {
-		return function_exists( 'is_plugin_active' ) && is_plugin_active( 'revenue-pro/revenue-pro.php' );
-	}
-
-	/**
-	 * Check is pro active or not
-	 *
-	 * @return boolean
-	 */
-	public function is_pro_active() {
-		if ( defined( 'XPO_DEV0101' ) ) {
-			return true;
-		}
-		$licese_data = get_option( 'edd_revenue_license_data', array() );
-		return $this->is_pro_ready() && isset( $licese_data['license'] ) && 'valid' === $licese_data['license'];
-	}
-
-	/**
-	 * Get price data.
-	 *
-	 * @param string       $offer_type Offer type.
-	 * @param string|float $offer_value Offer value.
-	 * @param int|string   $offer_qty Offer qty.
-	 * @return string
-	 */
-	public function get_price_data( $offer_type, $offer_value, $offer_qty ) {
-		$save_data = '';
-		switch ( $offer_type ) {
-			case 'percentage':
-				$save_data = 'Save ' . $offer_value . '%';
-				break;
-			case 'fixed_discount':
-				/* translators: %s: Discount percentage value */
-				$save_data = sprintf( __( 'Save $%s', 'revenue' ), $offer_value );
-				break;
-			case 'amount':
-			case 'fixed_price':
-				$save_data = wc_price( intval( $offer_qty ) * floatval( $offer_value ) );
-				break;
-			case 'no_discount':
-				break;
-			case 'free':
-				$save_data = 'Free';
-				break;
-			default:
-				$save_data = '';
-		}
-		return $save_data;
-	}
 
 
-	/**
-	 * Is block based cart page.
-	 *
-	 * @return boolean
-	 */
-	public function is_block_based_cart_page() {
-		return has_block( 'woocommerce/cart', intval( get_option( 'woocommerce_cart_page_id' ) ) );
-	}
 
-	/**
-	 * Is block based checkout page.
-	 *
-	 * @return boolean
-	 */
-	public function is_block_based_checkout_page() {
-		return has_block( 'woocommerce/checkout', intval( get_option( 'woocommerce_checkout_page_id' ) ) );
-	}
+
+
+
 
 	/**
 	 * Get campaign position default values.
@@ -4751,26 +3134,13 @@ class Revenue_Functions {
 	public function is_hide_campaign( $campaign_id, $campaign_type = '' ) {
 		$is_hide = 'hide_campaign' === revenue()->get_campaign_meta( $campaign_id, 'offered_product_on_cart_action', true );
 
-		$is_hidden_appicable = false;
-		switch ( $campaign_type ) {
-			case 'normal_discount':
-			case 'bundle_discount':
-			case 'buy_x_get_y':
-			case 'volume_discount':
-			case 'mix_match':
-			case 'frequently_bought_together':
-				$is_hidden_appicable = true;
-				break;
-			case 'spending_goal':
-				$is_hidden_appicable = false;
-				break;
-			case 'free_shipping_bar':
-				$is_hidden_appicable = false;
-				break;
+		$hideable_types = apply_filters(
+			'revenue_campaign_hideable_on_cart_types',
+			array( 'normal_discount', 'bundle_discount', 'buy_x_get_y', 'volume_discount' )
+		);
 
-			default:
-				break;
-		}
+		$is_hidden_appicable = in_array( $campaign_type, $hideable_types, true );
+
 		return $is_hide && $this->is_campaign_on_cart( $campaign_id ) && $is_hidden_appicable;
 	}
 
@@ -4870,7 +3240,7 @@ class Revenue_Functions {
 			$which_page = 'my_account';
 		} elseif ( is_checkout() ) {
 			$which_page = 'checkout_page';
-		} 
+		}
 
 		return $which_page;
 	}
@@ -4884,42 +3254,7 @@ class Revenue_Functions {
 		return OrderUtil::custom_orders_table_usage_is_enabled();
 	}
 
-	/**
-	 * Retrieve an SVG file content from the assets folder.
-	 *
-	 * @param string $filename The name of the SVG file (without extension).
-	 * @param string $subfolder Optional. A subfolder within the assets directory (e.g., "icons").
-	 * @return string|false The SVG content if found, or false if the file doesn't exist or isn't valid.
-	 */
-	public function get_svg_from_assets( $filename, $subfolder = '' ) {
-		// Define the base assets path.
-		$base_dir = REVENUE_PATH . 'assets/images/icons';
 
-		// Sanitize the filename and subfolder to prevent directory traversal.
-		$sanitized_filename  = sanitize_file_name( $filename ) . '.svg';
-		$sanitized_subfolder = sanitize_file_name( $subfolder );
-
-		// Build the full path to the SVG file.
-		$filepath = trailingslashit( $base_dir );
-		if ( ! empty( $sanitized_subfolder ) ) {
-			$filepath .= trailingslashit( $sanitized_subfolder );
-		}
-		$filepath .= $sanitized_filename;
-
-		// Check if the file exists and is an SVG.
-		if ( ! file_exists( $filepath ) || strtolower( pathinfo( $filepath, PATHINFO_EXTENSION ) ) !== 'svg' ) {
-			return false; // File not found or not an SVG.
-		}
-
-		// Validate the file contents for security.
-		$svg_content = file_get_contents( $filepath );
-		if ( ! $svg_content || stripos( $svg_content, '<svg' ) === false ) {
-			return false; // Invalid or corrupted SVG file.
-		}
-
-		// Return the SVG content, safe to output.
-		return $svg_content;
-	}
 
 	public function get_buyx_gety_individual_product_quantity_trigger_types() {
 
@@ -4988,9 +3323,7 @@ class Revenue_Functions {
 		return apply_filters( 'revenue_get_item_not_found_messages', $messages );
 	}
 
-	public function get_template( $part_name, $args ) {
-		echo wp_kses( revenue()->get_template_part( $part_name, $args ), revenue()->get_allowed_tag() );
-	}
+
 
 	public function is_show_bundle_with_trigger_product() {
 		$data = array(
@@ -5034,6 +3367,30 @@ class Revenue_Functions {
 	}
 
 	/**
+	 * Campaign types whose trigger search returns variations in place of the parent product.
+	 *
+	 * @param string $campaign_type Campaign type slug.
+	 * @return bool
+	 */
+	public function trigger_search_returns_variations( $campaign_type ) {
+		$types = apply_filters( 'revenue_campaign_variation_trigger_search_types', array() );
+
+		return in_array( $campaign_type, (array) $types, true );
+	}
+
+	/**
+	 * Campaign types whose trigger search expands a variable product into its variations.
+	 *
+	 * @param string $campaign_type Campaign type slug.
+	 * @return bool
+	 */
+	public function trigger_search_expands_variable( $campaign_type ) {
+		$types = apply_filters( 'revenue_campaign_expand_variable_trigger_search_types', array() );
+
+		return in_array( $campaign_type, (array) $types, true );
+	}
+
+	/**
 	 * Get campaign default placement page
 	 *
 	 * @param string $campaign_type Campaign Type.
@@ -5059,22 +3416,7 @@ class Revenue_Functions {
 		return $campaign_type ? $data[ $campaign_type ] : $data;
 	}
 
-	public function get_campaign_placement_options( $campaign_type, $campaign_page = '' ) {
-		$data = array(
-			'normal_discount' => array(
-				'product_page'  => 'before_add_to_cart_form',
-				'cart_page'     => 'before_content',
-				'checkout_page' => 'before_content',
-				'thankyou_page' => 'before_thankyou',
-			),
-			'normal_discount' => array(
-				'product_page'  => 'before_add_to_cart_form',
-				'cart_page'     => 'before_content',
-				'checkout_page' => 'before_content',
-				'thankyou_page' => 'before_thankyou',
-			),
-		);
-	}
+
 
 
 	/**
@@ -5095,8 +3437,7 @@ class Revenue_Functions {
 				SUM(CASE WHEN campaign_type = 'stock_scarcity' THEN 1 ELSE 0 END) AS stock_scarcity,
                 SUM(CASE WHEN campaign_type = 'free_shipping_bar' THEN 1 ELSE 0 END) AS free_shipping_bar,
                 SUM(CASE WHEN campaign_type = 'next_order_coupon' THEN 1 ELSE 0 END) AS next_order_coupon,
-                SUM(CASE WHEN campaign_type = 'countdown_timer' THEN 1 ELSE 0 END) AS countdown_timer,
-				 SUM(CASE WHEN campaign_type = 'stock_scarcity' THEN 1 ELSE 0 END) AS stock_scarcity
+                SUM(CASE WHEN campaign_type = 'countdown_timer' THEN 1 ELSE 0 END) AS countdown_timer
             FROM {$wpdb->prefix}revenue_campaigns;"
 		); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -5159,64 +3500,29 @@ class Revenue_Functions {
 	}
 
 	/**
-	 * Get the correct template file path for a campaign based on creation date and plugin version Note Backward Compatibility.
+	 * Get the template file path for a campaign view.
 	 *
-	 * @param array  $campaign Campaign data array (must contain 'date_created').
+	 * @param array  $campaign Campaign data array.
 	 * @param string $view_type The view type (e.g., 'inpage', 'popup', 'floating').
 	 * @param string $folder_path Optional. The folder path for the template.
 	 * @return string File path to the template.
 	 */
 	public function get_campaign_path( $campaign, $view_type = 'inpage', $folder_path = '' ) {
-		// DO NOT CHANGE THE DATE AND TIME BELOW, IT IS USED FOR BACKWARD COMPATIBILITY.
-		$campaign_version = isset( $campaign['campaign_version'] ) ? $campaign['campaign_version'] : '1.0.0';
-		$revenue_version  = REVENUE_VER;
+		$file_path = REVENUE_PATH . 'includes/campaigns/views/' . $folder_path . '/template1.php';
 
-		if ( revenue()->is_pro_active() && defined( 'REVENUE_PRO_PATH' ) ) {
-			$base_pro_path = REVENUE_PRO_PATH . 'includes/campaigns/views/' . $folder_path . '/';
-		}
-		$base_path = REVENUE_PATH . 'includes/campaigns/views/' . $folder_path . '/';
+		$resolved_path = apply_filters( 'revenue_campaign_template_path', $file_path, $campaign, $view_type, $folder_path );
 
-		// Check if the pro version is active and the pro template exists.
-		if ( revenue()->is_pro_active() && defined( 'REVENUE_PRO_PATH' ) && ( 'double-order' === $folder_path || 'mix-match' === $folder_path || 'frequently-bought-together' === $folder_path || 'spending-goal' === $folder_path ) ) {
-			if ( $campaign_version !== '1.0.0' && version_compare( $revenue_version, '2.0.0', '>=' ) ) {
-				return $base_pro_path . 'template1.php';
-			} else {
-				return $base_pro_path . $view_type . '.php';
-			}
-		}
-
-		if ( $campaign_version !== '1.0.0' && version_compare( $revenue_version, '2.0.0', '>=' ) ) {
-			return $base_path . 'template1.php';
-		} else {
-			return $base_path . $view_type . '.php';
-		}
+		return is_string( $resolved_path ) && is_readable( $resolved_path ) ? $resolved_path : $file_path;
 	}
 
-	public function is_for_new_builder( $campaign ) {
-			$campaign_version = isset( $campaign['campaign_version'] ) ? $campaign['campaign_version'] : '1.0.0';
-		return $campaign_version !== '1.0.0';
+	public function load_popup_assets() {
+		wp_enqueue_script( 'revenue-popup' );
+		wp_enqueue_style( 'revenue-popup' );
 	}
 
-	public function load_popup_assets( $campaign ) {
-		$campaign_version = isset( $campaign['campaign_version'] ) ? $campaign['campaign_version'] : '1.0.0';
-		if ( '1.0.0' !== $campaign_version ) {
-			wp_enqueue_script( 'revenue-popup' );
-			wp_enqueue_style( 'revenue-popup' );
-		} else {
-			wp_enqueue_script( 'revenue-v1-popup' );
-			wp_enqueue_style( 'revenue-v1-popup' );
-		}
-	}
-
-	public function load_floating_assets( $campaign ) {
-		$campaign_version = isset( $campaign['campaign_version'] ) ? $campaign['campaign_version'] : '1.0.0';
-		if ( '1.0.0' !== $campaign_version ) {
-			wp_enqueue_script( 'revenue-floating' );
-			wp_enqueue_style( 'revenue-floating' );
-		} else {
-			wp_enqueue_script( 'revenue-v1-floating' );
-			wp_enqueue_style( 'revenue-v1-floating' );
-		}
+	public function load_floating_assets() {
+		wp_enqueue_script( 'revenue-floating' );
+		wp_enqueue_style( 'revenue-floating' );
 	}
 
 	/**

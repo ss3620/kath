@@ -69,15 +69,15 @@ class Render_Product_Fields {
 		}
 
 		// Enqueue necessary assets.
-		// $this->assets->enqueue_frontend_assets();.
 		do_action( 'prad_enqueue_block_css' );
 		do_action( 'prad_enqueue_block_js' );
 		if ( wp_doing_ajax() || wp_is_serving_rest_request() ) {
 			do_action( 'prad_load_script_on_ajax' );
 		}
 
-		// Render the complete addon wrapper.
-		echo $this->render_addon_wrapper( $product, $blocks_data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// Render the complete addon wrapper. The pieces are escaped as they are built, but
+		// the HTML is run through the shared allow-list again at the point of output.
+		echo wp_kses( $this->render_addon_wrapper( $product, $blocks_data ), apply_filters( 'prad_allowed_html_tags', array() ) );
 	}
 
 	/**
@@ -135,8 +135,6 @@ class Render_Product_Fields {
 	 * @return string HTML output.
 	 */
 	private function render_hidden_fields( $product, array $blocks_data ): string {
-		$product_id = $product->get_id();
-
 		// Get price data.
 		$price_data = $this->blocks_service->get_product_price_data( $product );
 
@@ -198,17 +196,23 @@ class Render_Product_Fields {
 		$html .= '<input type="hidden" name="prad_selection" id="prad_selection" />';
 		$html .= '<input type="hidden" name="prad_products_selection" id="prad_products_selection" />';
 
-		$product_dynamic_data = array(
-			'product_weight' => $product->get_weight() ?? 0,
-			'product_length' => $product->get_length() ?? 0,
-			'product_width'  => $product->get_width() ?? 0,
-			'product_height' => $product->get_height() ?? 0,
-		);
-
-		$html .= sprintf(
-			'<input type="hidden" name="prad_product_shipping_dynamic" id="prad_product_shipping_dynamic" value="%s" />',
-			esc_attr( wp_json_encode( $product_dynamic_data ) )
-		);
+		/**
+		 * Filters extra hidden inputs added to the product form, e.g. data another plugin's
+		 * fields need on the product page.
+		 *
+		 * @since 1.8.3
+		 *
+		 * @param array       $inputs  Input id (also used as its name) => value.
+		 * @param \WC_Product $product The product.
+		 */
+		$hidden_inputs = apply_filters( 'prad_product_hidden_inputs', array(), $product );
+		foreach ( (array) $hidden_inputs as $input_id => $input_value ) {
+			$html .= sprintf(
+				'<input type="hidden" name="%1$s" id="%1$s" value="%2$s" />',
+				esc_attr( $input_id ),
+				esc_attr( $input_value )
+			);
+		}
 
 		$html .= sprintf(
 			'<input type="hidden" name="prad_option_published_ids" id="prad_option_published_ids" value="%s"/>',
@@ -276,18 +280,6 @@ class Render_Product_Fields {
 	public function get_product_blocks( int $product_id ): array {
 		return $this->blocks_service->get_product_blocks_data( $product_id );
 	}
-
-	/**
-	 * Render blocks programmatically (for use in other contexts).
-	 *
-	 * @param array $blocks_data Blocks data array.
-	 * @param int   $product_id Product ID.
-	 * @return string HTML output.
-	 */
-	public function render_blocks_html( array $blocks_data, int $product_id ): string {
-		return $this->renderer->render_blocks( $blocks_data, $product_id );
-	}
-
 	/**
 	 * Add custom gallery images for product blocks.
 	 *
@@ -309,7 +301,7 @@ class Render_Product_Fields {
 
 			$custom_image_id = array();
 			foreach ( $image_data as $k => $ids ) {
-				if ( in_array( $k, $published_options['published_ids'] ) ) {
+				if ( in_array( (string) $k, array_map( 'strval', $published_options['published_ids'] ), true ) ) {
 					$custom_image_id = array_merge( $custom_image_id, $ids );
 				}
 			}

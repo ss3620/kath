@@ -2,6 +2,10 @@
 /**
  * Color Switch Block Implementation
  *
+ * Deprecated, kept only as legacy support: the Color Swatches field can no longer be
+ * added in the builder. This class stays so Color Swatches fields that existing users
+ * already saved on their products keep working, and it will be removed in a future release.
+ *
  * @package PRAD
  * @since 1.0.0
  */
@@ -32,23 +36,23 @@ class Color_Switch_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options( true );
+		// Fields made with WowAddons Pro's "Advanced Color Swatches" are Pro fields, rendered by Pro only.
+		if ( $this->get_property( 'isAdvanced', false ) ) {
+			return '';
+		}
+
+		$options = $this->get_field_options();
 		if ( empty( $options ) ) {
 			return '';
 		}
 
 		$attributes = array_merge(
 			$this->get_common_attributes(),
-			$this->get_selection_attributes(),
-			$this->get_same_price_attributes()
+			$this->get_selection_attributes()
 		);
 
-		$html = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_title_description_price_with_position( $this->same_price_info );
-		} else {
-			$html .= $this->render_title_description_noprice();
-		}
+		$html  = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
+		$html .= $this->render_title_description_noprice();
 		$html .= $this->render_swatch_wrapper( $options );
 		$html .= $this->render_description_below_field();
 		$html .= '</div>';
@@ -69,7 +73,6 @@ class Color_Switch_Block extends Abstract_Block {
 		$css_classes = array(
 			'prad-parent',
 			'prad-block-color-switcher',
-			! empty( $this->same_price_info['enabled'] ) ? 'prad-block-same-price' : '',
 			'prad-switcher-count',
 			'prad-switcher-count-' . $input_type,
 			'prad-swatch-layout' . $layout,
@@ -78,9 +81,9 @@ class Color_Switch_Block extends Abstract_Block {
 		);
 
 		$attributes['class'] = $this->build_css_classes( $css_classes );
-		$enableMinMaxRes     = $this->get_property( 'enableMinMaxRes', true );
+		$enable_min_max_res  = $this->get_property( 'enableMinMaxRes', true );
 
-		if ( $multiple && $enableMinMaxRes ) {
+		if ( $multiple && $enable_min_max_res ) {
 			$attributes['data-minselect'] = $this->get_property( 'minSelect', '' );
 			$attributes['data-maxselect'] = $this->get_property( 'maxSelect', '' );
 		}
@@ -110,6 +113,7 @@ class Color_Switch_Block extends Abstract_Block {
 	/**
 	 * Render swatch wrapper with all color options
 	 *
+	 * @param array $options Options to render.
 	 * @return string
 	 */
 	private function render_swatch_wrapper( $options ): string {
@@ -126,43 +130,26 @@ class Color_Switch_Block extends Abstract_Block {
 	/**
 	 * Render a single color swatch
 	 *
-	 * @param object  $item
-	 * @param integer $index
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
 	 * @return string
 	 */
 	private function render_single_swatch( $item, int $index ): string {
-		$price_info   = $this->get_price_info( $item );
-		$layout       = $this->get_property( 'layout', '_default' );
-		$display_item = $item;
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$display_item         = $item;
-			$display_item['type'] = 'no_cost';
-		}
+		$price_info = $this->get_price_info( $item );
+		$layout     = $this->get_property( 'layout', '_default' );
 
 		$html  = '<div class="prad-swatch-item-wrapper prad-relative prad-d-flex prad-flex-column prad-h-full">';
-		$html .= $this->render_swatch_container( $display_item, $index, $price_info );
+		$html .= $this->render_swatch_container( $item, $index, $price_info );
 
-		if ( $layout === '_default' ) {
-			$html .= $this->render_block_content( (object) $display_item, $index, $price_info );
+		if ( '_default' === $layout ) {
+			$html .= $this->render_block_content( (object) $item, $index, $price_info );
 		}
 
-		if ( $layout === '_img' ) {
-			$html .= $this->render_option_description( $item );
-		}
-
-		if ( $layout === '_img' && empty( $this->same_price_info['enabled'] ) ) {
+		if ( '_img' === $layout ) {
 			$html .= sprintf(
 				'<div class="prad-text-center">%s</div>',
 				$this->render_price_html( $price_info, 'beside' )
 			);
-		}
-
-		if ( $this->should_render_quantity_input( $layout ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
-		}
-
-		if ( $this->get_property( 'enableCount', false ) && $this->is_overlay_count_hidden() && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
 		}
 
 		$html .= '</div>';
@@ -170,31 +157,11 @@ class Color_Switch_Block extends Abstract_Block {
 	}
 
 	/**
-	 * Whether the swatch is a small overlay where the quantity input has no room and
-	 * should instead render outside the overlay.
-	 *
-	 * @return boolean
-	 */
-	private function is_overlay_count_hidden(): bool {
-		$layout = $this->get_property( 'layout', '_default' );
-		if ( '_overlay' !== $layout ) {
-			return false;
-		}
-
-		$styles = $this->get_property( '_styles', array() );
-		$height = $styles['height']['val'] ?? null;
-		$width  = $styles['width']['val'] ?? null;
-		$radius = $styles['radius']['val'] ?? null;
-
-		return is_numeric( $height ) && is_numeric( $width ) && ( (float) $height < 100 || (float) $width < 100 ) && (float) $radius > 30;
-	}
-
-	/**
 	 * Render the swatch container
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
+	 * @param array   $price_info Price data for the option.
 	 * @return string
 	 */
 	private function render_swatch_container( $item, int $index, array $price_info ): string {
@@ -209,8 +176,8 @@ class Color_Switch_Block extends Abstract_Block {
 		$html .= $this->render_swatch_label( $item, $index );
 		$html .= $this->render_swatch_mark();
 
-		if ( $layout === '_overlay' ) {
-			$html .= $this->render_block_content( (object) $item, $index, $price_info, '', $this->is_overlay_count_hidden() );
+		if ( '_overlay' === $layout ) {
+			$html .= $this->render_block_content( (object) $item, $index, $price_info );
 		}
 
 		$html .= '</div>';
@@ -220,30 +187,25 @@ class Color_Switch_Block extends Abstract_Block {
 	/**
 	 * Render the swatch input
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
+	 * @param array   $price_info Price data for the option.
 	 * @return string
 	 */
 	private function render_swatch_input( $item, int $index, array $price_info ): string {
-		$multiple           = $this->get_property( 'multiple', false );
-		$enable_count       = $this->get_property( 'enableCount', false );
-		$blockid            = $this->get_block_id();
-		$item_formula_value = $this->is_formula_value_enabled() && ! empty( $item['formulaValue'] ) ? $item['formulaValue'] : '';
+		$multiple = $this->get_property( 'multiple', false );
+		$blockid  = $this->get_block_id();
 
 		$attributes = array(
-			'class'              => 'prad-input-hidden',
-			'type'               => $multiple ? 'checkbox' : 'radio',
-			'data-index'         => $index,
-			'data-uid'           => $item['uid'] ?? '',
-			'data-formula-value' => $item_formula_value,
-			'id'                 => $blockid . $index,
-			'name'               => $blockid,
-			'value'              => $price_info['price'],
-			'data-ptype'         => $item['type'],
-			'data-label'         => $item['value'],
-			'data-count'         => $enable_count ? 'yes' : 'no',
-			'data-counter'       => $blockid . $index . '-switcher-count',
+			'class'      => 'prad-input-hidden',
+			'type'       => $multiple ? 'checkbox' : 'radio',
+			'data-index' => $index,
+			'data-uid'   => $item['uid'] ?? '',
+			'id'         => $blockid . $index,
+			'name'       => $blockid,
+			'value'      => $price_info['price'],
+			'data-ptype' => $item['type'],
+			'data-label' => $item['value'],
 		);
 
 		return sprintf( '<input %s />', $this->build_attributes( $attributes ) );
@@ -252,8 +214,8 @@ class Color_Switch_Block extends Abstract_Block {
 	/**
 	 * Render the swatch label
 	 *
-	 * @param object  $item
-	 * @param integer $index
+	 * @param object  $item Option data.
+	 * @param integer $index Option index.
 	 * @return string
 	 */
 	private function render_swatch_label( $item, int $index ): string {
@@ -284,53 +246,5 @@ class Color_Switch_Block extends Abstract_Block {
                 <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m12.125 5.375-5.25 5.25L4.25 8" />
             </svg>
         </div>';
-	}
-
-	/**
-	 * Render block content using RenderBlocks
-	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
-	 * @return string
-	 */
-	private function render_block_contents( $item, int $index, array $price_info ): string {
-		return parent::render_block_content( $item, $index, $price_info );
-	}
-
-	/**
-	 * Check if quantity input should be rendered
-	 *
-	 * @param string $layout
-	 * @return boolean
-	 */
-	private function should_render_quantity_input( string $layout ): bool {
-		return $this->get_property( 'enableCount', false ) && $layout === '_img';
-	}
-
-	/**
-	 * Render quantity input
-	 *
-	 * @param integer $index
-	 * @return string
-	 */
-	private function render_quantity_input( int $index ): string {
-		$blockid = $this->get_block_id();
-		$min     = $this->get_property( 'min', 1 );
-		$max     = $this->get_property( 'max', 100 );
-
-		$attributes = array(
-			'id'           => 'prad_quantity_' . $blockid . $index,
-			'name'         => 'prad_quantity_' . $blockid . $index,
-			'type'         => 'number',
-			'placeholder'  => $min,
-			'value'        => $min,
-			'min'          => $min,
-			'max'          => $max,
-			'class'        => 'prad-block-input prad-quantity-input switcher-count prad-input prad-w-full prad-mt-6',
-			'data-counter' => $blockid . $index . '-switcher-count',
-		);
-
-		return sprintf( '<input %s />', $this->build_attributes( $attributes ) );
 	}
 }

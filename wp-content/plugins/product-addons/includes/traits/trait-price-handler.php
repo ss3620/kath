@@ -102,27 +102,7 @@ trait Price_Handler {
 			return wc_price( $price );
 		}
 
-		$currency = $currency ?: get_woocommerce_currency_symbol();
+		$currency = '' !== $currency ? $currency : get_woocommerce_currency_symbol();
 		return $currency . number_format( $price, 2 );
-	}
-
-	/**
-	 * Calculate total price based on quantity or multiplier
-	 *
-	 * @param float     $base_price   The base price to be multiplied.
-	 * @param int|float $multiplier   The multiplier (quantity or value).
-	 * @return float
-	 */
-	protected function calculate_total_price( float $base_price, $multiplier = 1 ): float {
-		return $base_price * (float) $multiplier;
-	}
-
-	/**
-	 * Get price position setting
-	 *
-	 * @return string
-	 */
-	protected function get_price_position(): string {
-		return $this->get_property( 'pricePosition', 'with_title' );
 	}
 }

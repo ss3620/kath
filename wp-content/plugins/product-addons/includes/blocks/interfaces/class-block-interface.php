@@ -30,30 +30,9 @@ interface Block_Interface {
 	public function get_type(): string;
 
 	/**
-	 * Validate block data and state
-	 *
-	 * @return bool
-	 */
-	public function validate(): bool;
-
-	/**
-	 * Get the price value for this block
-	 *
-	 * @return float
-	 */
-	public function get_price(): float;
-
-	/**
 	 * Get block configuration data
 	 *
 	 * @return array
 	 */
 	public function get_config(): array;
-
-	/**
-	 * Check if block should be displayed
-	 *
-	 * @return bool
-	 */
-	public function should_display(): bool;
 }

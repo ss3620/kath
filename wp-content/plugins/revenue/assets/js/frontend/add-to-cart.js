@@ -44,51 +44,12 @@ jQuery( function ( $ ) {
 					.find( '.revx-campaign-item[data-revx-selected=true]' )
 					.data( 'quantity' );
 			},
-			frequently_bought_together: () => {
-				data.requiredProduct = productId;
-				data.fbt_data = getFbtData( campaignId );
-			},
-			mix_match: () => {
-				data.mix_match_data = getMixMatchData( campaignId );
-			},
 		};
 
 		if ( typeHandlers[ campaignType ] ) {
 			typeHandlers[ campaignType ]();
 		}
 
-		if ( 'mix_match' === campaignType ) {
-			const requiredProducts = JSON.parse(
-				$( `input[name=revx-required-products-${ campaignId }` ).val()
-			);
-
-			// Check if each required product exists in mixMatchData
-			const missingProducts = requiredProducts.filter(
-				( pid ) => ! data.mix_match_data.hasOwnProperty( pid )
-			);
-
-			if ( missingProducts.length > 0 ) {
-				const message =
-					missingProducts.length === 1
-						? revenue_campaign?.required_product_missing
-						: revenue_campaign?.required_products_missing;
-				const defaultMessage =
-					missingProducts.length === 1
-						? 'Error adding to cart, A required product is missing!'
-						: 'Error adding to cart, Some required products are missing!';
-				showToast( message || defaultMessage, 'error' );
-				return;
-			}
-		} else if ( 'frequently_bought_together' === campaignType ) {
-			if ( Object.keys( data.fbt_data ).length === 0 ) {
-				showToast(
-					revenue_campaign?.select_items_first ||
-						'Please select the item(s) first',
-					'error'
-				);
-				return;
-			}
-		}
 		if ( ! validateData( data ) ) {
 			return null;
 		}
@@ -706,134 +667,6 @@ jQuery( function ( $ ) {
 		} );
 	}
 
-	const getCookieData = ( cookieName ) => {
-		try {
-			return JSON.parse( Revenue.getCookie( cookieName ) || '{}' );
-		} catch ( e ) {
-			console.error(
-				`Failed to parse cookie data for ${ cookieName }:`,
-				e
-			);
-			return {};
-		}
-	};
-
-	const getMixMatchData = ( campaignId ) => {
-		const cookieName = `revx_mix_match_${ campaignId }`;
-		let prevData = getCookieData( cookieName );
-
-		let prevSelectedItems = $(
-			`input[name=revx-selected-items-${ campaignId }]`
-		).val();
-
-		prevSelectedItems = prevSelectedItems
-			? JSON.parse( prevSelectedItems )
-			: {};
-
-		if ( Object.keys( prevData ).length === 0 ) {
-			prevData = prevSelectedItems;
-		}
-
-		const mixMatchData = prevData;
-		const mixMatchProducts = {};
-		Object.values( mixMatchData ).forEach( ( item ) => {
-			mixMatchProducts[ item.id ] = item.quantity;
-		} );
-
-		return mixMatchProducts;
-	};
-
-	// Mix and match add to cart handler
-	function handleMixAndMatch( e ) {
-		e.preventDefault();
-
-		const $button = $( this );
-		prevButtonText = $button.text();
-		const campaignId = $button.data( 'campaignId' ) || '';
-		const campaignType = $button.data( 'campaignType' ) || '';
-		// const $container = $button.closest( '.revx-campaign-product-card' );
-
-		let $container = $button.closest( '.revx-items-wrapper' );
-		if ( ! $container.length ) {
-			// fallback: find parent with multiple .revx-campaign-product-card
-			$container = $button
-				.parents()
-				.filter( function () {
-					return (
-						$( this ).find( '.revx-campaign-product-card' ).length >
-						0
-					);
-				} )
-				.first();
-		}
-		const qtyRaw =
-			$container.find( '.revx-product-input' ).val() ??
-			$container.data( 'productQty' ) ??
-			$container.data( 'quantity' ) ??
-			$container.attr( 'data-product-qty' ) ??
-			1;
-
-		const quantity = toIntOr( qtyRaw, 1 );
-
-		// find all selected items in this campaign.
-		const selectedItems = document.querySelectorAll(
-			'.revx-selected-item:not(.revx-d-none)'
-		);
-
-		const products = Array.from( selectedItems ).map( ( item ) => {
-			const productType = item.getAttribute( 'data-product-type' );
-			const data = {
-				quantity,
-			};
-
-			if ( productType === 'variable' ) {
-				data.product_id = item.getAttribute( 'data-parent-id' );
-				data.variation_id = item.getAttribute( 'data-product-id' );
-				data.selected_attributes = JSON.parse(
-					item.getAttribute( 'data-selected-attribute' ) || '{}'
-				);
-			} else {
-				data.product_id = item.getAttribute( 'data-product-id' );
-			}
-
-			return data;
-		} );
-
-		toggleLoading( $button, true );
-
-		const prevData = getMixMatchData( campaignId );
-
-		const modifiedProducts = products.map( ( p ) => {
-			const newProduct = { ...p };
-			if ( p.variation_id && prevData[ p.variation_id ] ) {
-				newProduct.quantity = parseInt( prevData[ p.variation_id ] );
-			} else if ( prevData[ p.product_id ] ) {
-				newProduct.quantity = parseInt( prevData[ p.product_id ] );
-			}
-			return newProduct;
-		} );
-
-		const data = {
-			action: 'revenue_add_to_cart',
-			_wpnonce: revenue_campaign.nonce || '',
-			campaignType,
-			quantity,
-			campaignId,
-			products: modifiedProducts,
-		};
-		data.mix_match_data = getMixMatchData( campaignId );
-
-		// Send AJAX request
-		addRequest( {
-			type: 'POST',
-			url: revenue_campaign.ajax,
-			data,
-			dataType: 'json',
-			success: ( response ) =>
-				handleAddToCartSuccess( response, $button, data ),
-			error: () => handleError( $container ),
-		} );
-	}
 
 	const handleAddBundleToCart = ( e ) => {
 		e.preventDefault();
@@ -1080,6 +913,27 @@ jQuery( function ( $ ) {
 		}
 	};
 
+	// Providers prepare campaign-specific data and hand it to this shared dispatcher.
+	$( document ).on(
+		'revx-campaign-add-to-cart',
+		function ( event, data, $button ) {
+			if ( ! data || ! $button || ! $button.length ) {
+				return;
+			}
+
+			toggleLoading( $button, true );
+			addRequest( {
+				type: 'POST',
+				url: revenue_campaign.ajax,
+				data,
+				dataType: 'json',
+				success: ( response ) =>
+					handleAddToCartSuccess( response, $button, data ),
+				error: () => handleError( $button ),
+			} );
+		}
+	);
+
 	const hideProduct = ( productId, campaignId ) => {
 		const target = $(
 			`#revenue-campaign-item-${ productId }-${ campaignId }`
@@ -1162,238 +1016,21 @@ jQuery( function ( $ ) {
 		}, duration );
 	}
 
+	$( document ).on(
+		'revx-campaign-notice',
+		function ( event, message, type ) {
+			showToast( message, type );
+		}
+	);
+
 	function clearData( e, data ) {
 		const campaignId = data.campaignId;
-		const campaignType = data.campaignType;
-
-		switch ( campaignType ) {
-			case 'mix_match':
-				Revenue.setCookie( `mix_match_${ campaignId }`, '', -1 );
-				$( `input[name=revx-selected-items-${ campaignId }]` ).val(
-					''
-				);
-				Revenue.updateMixMatchHeaderAndPrices( campaignId, '' );
-				$( `.revx-campaign-${ campaignId }` )
-					.find( '.revx-selected-item' )
-					.each( function () {
-						if ( ! $( this ).hasClass( 'revx-d-none' ) ) {
-							$( this ).remove();
-						}
-					} );
-
-				$(
-					`.revx-campaign-${ campaignId } .revx-empty-selected-products`
-				).removeClass( 'revx-d-none' );
-				$(
-					`.revx-campaign-${ campaignId } .revx-selected-product-container`
-				).addClass( 'revx-empty-selected-items' );
-				$(
-					`.revx-campaign-${ campaignId } .revx-empty-mix-match`
-				).removeClass( 'revx-d-none' );
-				break;
-			// case 'frequently_bought_together': {
-			// 	let hasRequired = false;
-
-			// 	const parent = $( this ).find( '.revx-campaign-container' );
-
-			// 	const productId = $(
-			// 		`button.revx-campaign-add-to-cart-btn[data-campaign-id="${ campaignId }"]`
-			// 	).data( 'product-id' );
-
-			// 	$( `.revx-campaign-${ campaignId }` )
-			// 		.find( '.revx-builder-checkbox' )
-			// 		.each( function () {
-			// 			if (
-			// 				! $( this )
-			// 					.parent()
-			// 					.hasClass( 'revx-item-required' )
-			// 			) {
-			// 				Revenue.updateStyles( $( this ), false );
-			// 			} else {
-			// 				hasRequired = true;
-			// 			}
-			// 		} );
-
-			// 	if ( hasRequired ) {
-			// 		$(
-			// 			`input[name=revx-fbt-selected-items-${ campaignId }]`
-			// 		).val( JSON.stringify( { [ productId ]: 1 } ) );
-			// 		Revenue.setCookie(
-			// 			`campaign_${ campaignId }`,
-			// 			JSON.stringify( { [ productId ]: 1 } ),
-			// 			1
-			// 		);
-			// 	} else {
-			// 		$(
-			// 			`input[name=revx-fbt-selected-items-${ campaignId }]`
-			// 		).val( JSON.stringify( {} ) );
-			// 		Revenue.setCookie(
-			// 			`campaign_${ campaignId }`,
-			// 			JSON.stringify( {} ),
-			// 			1
-			// 		);
-			// 	}
-
-			// 	Revenue.fbtCalculation( parent, campaignId );
-
-			// 	break;
-			// }
-			default:
-				break;
-		}
 
 		$( `.revx-campaign-view-${ campaignId }.revx-floating-main` ).hide();
 		$( `.revx-campaign-view-${ campaignId }.revx-popup` ).hide();
 		$( `.revx-campaign-${ campaignId }.revx-volume-discount` ).hide();
 		$( `.revx-campaign-${ campaignId }.revx-bundle-discount` ).hide();
-		$( `.revx-campaign-${ campaignId }.revx-mix-match` ).hide();
-		$(
-			`.revx-campaign-${ campaignId }.revx-frequently-bought-together`
-		).hide();
 		$( `.revx-campaign-${ campaignId }.revx-buyx-gety` ).hide();
-	}
-
-	function handleFrequentlyBoughtTogetherAddToCart( e ) {
-		e.preventDefault();
-		const $button = $( this );
-		const campaignType =
-			$button.attr( 'campaign_type' ) ??
-			$button.data( 'campaignType' ) ??
-			'';
-
-		const campaignId = $button.data( 'campaign-id' ) ?? '';
-		const dynamicClass = `revx-${ campaignType }-add-to-cart`;
-
-		const $selectedProducts = $button
-			.closest( '.revx-campaign-wrapper' )
-			.find( `.${ dynamicClass }` )
-			.filter( function () {
-				return $( this )
-					.find( '.revx-checkbox-container' )
-					.hasClass( 'revx-active' );
-			} );
-		let hasEmptyAttributes = false;
-		// create array of the required products to pass to the server.
-		const requiredProducts = [];
-
-		const productsData = $selectedProducts
-			.map( function () {
-				const $product = $( this );
-				const productType = $product.attr( 'product_type' );
-				const isChecked = $product
-					.find( '.revx-checkbox-container' )
-					.hasClass( 'revx-active' );
-				const isRequired = $product
-					.find( '.revx-checkbox-wrapper' )
-					.hasClass( 'revx-required-product' );
-
-				if ( isRequired ) {
-					requiredProducts.push( $product.data( 'product-id' ) );
-				}
-
-				let variation_id = $product.data( 'variation-id' ) || 0;
-
-				// Always get live selected attributes from selects
-				let selectedAttr = {};
-				if ( isChecked && productType === 'variable' ) {
-					selectedAttr = getSelectedAttributes( $product );
-					// Sanity check: if any selected attribute value is empty, show warning and return null for this product
-					const hasEmptyAttr = Object.values( selectedAttr ).some(
-						( val ) =>
-							val === '' ||
-							val === null ||
-							typeof val === 'undefined'
-					);
-					if ( hasEmptyAttr ) {
-						hasEmptyAttributes = true;
-						return null;
-					}
-
-					const matchedVariation =
-						getMatchedVariationData( $product );
-
-					if ( matchedVariation ) {
-						variation_id = matchedVariation.id || 0;
-					}
-				}
-
-				return {
-					productId: $product.data( 'product-id' ),
-					productIndex: $product.data( 'product-index' ),
-					selectedAttr,
-					campaignId,
-					campaignType,
-					productType,
-					quantity: parseInt( $product.data( 'product-qty' ) ) || 1,
-					isRequired,
-					isChecked,
-					variation_id: productType === 'variable' ? variation_id : 0,
-				};
-			} )
-			.get()
-			.filter( Boolean );
-
-		if ( hasEmptyAttributes ) {
-			showToast(
-				revenue_campaign?.select_all_attributes ||
-					'Please select all required attributes',
-				'error'
-			);
-			return;
-		}
-
-		if ( productsData.length === 0 ) {
-			showToast(
-				revenue_campaign?.select_at_least_one_product ||
-					'Please select at least one product to add',
-				'error'
-			);
-			return;
-		}
-
-		const products = productsData?.map( ( item ) => {
-			if ( item.productType === 'variable' ) {
-				return {
-					product_id: item.productId,
-					variation_id: item.variation_id,
-					selected_attributes: item.selectedAttr,
-					quantity: item.quantity,
-				};
-			}
-			return {
-				product_id: item.productId,
-				quantity: item.quantity,
-			};
-		} );
-
-		const fbtData = productsData.reduce( ( acc, product ) => {
-			acc[ product.productId ] = product.quantity;
-			return acc;
-		}, {} );
-
-		const data = {
-			action: 'revenue_add_to_cart',
-			productId: productsData[ 0 ]?.productId || 0,
-			campaignId,
-			campaignType,
-			quantity: 1,
-			requiredProducts,
-			_wpnonce: revenue_campaign.nonce,
-			fbt_data: fbtData,
-			products,
-		};
-
-		toggleLoading( $button, true );
-
-		addRequest( {
-			type: 'POST',
-			url: revenue_campaign.ajax,
-			data,
-			dataType: 'json',
-			success: ( response ) =>
-				handleAddToCartSuccess( response, $button, data ),
-			error: () => handleError( $button ),
-		} );
 	}
 
 	function handleFreeShippingBarUpsellAddToCart( e ) {
@@ -1474,83 +1111,6 @@ jQuery( function ( $ ) {
 		} );
 	}
 
-	function handleSpendingGoalUpsellAddToCart( e ) {
-		e.preventDefault();
-		const $button = $( this );
-		prevButtonText = $button.text();
-		const campaignId = $button.data( 'campaign-id' ) ?? '';
-
-		// Find the closest parent with data-product-id (the top-level container)
-		const $container = $button.closest( '.revx-campaign-product-card' );
-		const productId = $container.data( 'product-id' ) ?? '';
-		const productType = $container.attr( 'product_type' );
-
-		const qtyRaw =
-			$container.find( '.revx-product-input' ).val() ??
-			$container.data( 'productQty' ) ??
-			$container.data( 'quantity' ) ??
-			$container.attr( 'data-product-qty' ) ??
-			1;
-
-		const quantity = toIntOr( qtyRaw, 1 );
-
-		const campaignType =
-			$container.data( 'campaign-type' ) ?? 'spending_goal';
-
-		let variationId = $container.data( 'variation-id' ) || 0;
-
-		let selectedAttr = {};
-		if ( productType === 'variable' ) {
-			selectedAttr = getSelectedAttributes( $container );
-			// Sanity check: if any selected attribute value is empty, show warning and return null for this product
-			const hasEmptyAttr = Object.values( selectedAttr ).some(
-				( val ) =>
-					val === '' || val === null || typeof val === 'undefined'
-			);
-			if ( hasEmptyAttr ) {
-				showToast(
-					revenue_campaign?.select_all_attributes ||
-						'Please select all required attributes',
-					'error'
-				);
-				return;
-			}
-
-			const matchedVariation = getMatchedVariationData( $container );
-
-			if ( matchedVariation ) {
-				variationId = matchedVariation.id || 0;
-			}
-		}
-
-		const data = {
-			action: 'revenue_add_to_cart',
-			productId,
-			variationId,
-			selectedAttr,
-			campaignId,
-			_wpnonce: revenue_campaign.nonce || '',
-			quantity,
-			campaignType,
-		};
-		toggleLoading( $button, true );
-
-		// Send AJAX request
-		addRequest( {
-			type: 'POST',
-			url: revenue_campaign.ajax,
-			data,
-			dataType: 'json',
-			success: ( response ) =>
-				handleAddToCartSuccess( response, $button, data ),
-			error: () => {
-				toggleLoading( $button, false ); // Ensure loading state is reset on error
-				handleError( $container );
-			},
-			complete: () => toggleLoading( $button, false ), // Reset loading state after completion
-		} );
-	}
-
 	// Bind click handler
 	const campaigns = [ 'normal_discount' ];
 	campaigns.forEach( ( campaignType ) => {
@@ -1570,28 +1130,11 @@ jQuery( function ( $ ) {
 	// buy x get y handler
 	$( document ).on( 'click', '.revx-buy_x_get_y-btn', handleBuyXGetY );
 
-	// Mix and Match handler
-	$( document ).on( 'click', '.revx-mix_match-btn', handleMixAndMatch );
-
-	// frequently bought together add to cart button handler
-	$( document ).on(
-		'click',
-		'.revx-frequently_bought_together-btn',
-		handleFrequentlyBoughtTogetherAddToCart
-	);
-
 	// Free Shipping Bar handler
 	$( document ).on(
 		'click',
 		'.revx-free_shipping_bar-btn',
 		handleFreeShippingBarUpsellAddToCart
-	);
-
-	// Free Shipping Bar handler
-	$( document ).on(
-		'click',
-		'.revx-spending_goal-btn',
-		handleSpendingGoalUpsellAddToCart
 	);
 
 	const initEventHandlers = () => {

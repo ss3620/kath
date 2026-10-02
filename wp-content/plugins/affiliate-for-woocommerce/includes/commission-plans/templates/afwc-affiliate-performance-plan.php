@@ -4,7 +4,7 @@
  *
  * @package   affiliate-for-woocommerce/includes/commission-plans/templates/
  * @since     8.58.0
- * @version   1.2.0
+ * @version   1.3.1
  */
 
 // Exit if accessed directly.
@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return array(
 	'slug'        => 'affiliate-performance-plan',
-	'name'        => 'Performance-based commissions',
-	'description' => 'Reward affiliates based on customers referred, referral orders, revenue generated, and recent referral activity.',
+	'name'        => 'Performance-based',
+	'description' => 'Reward affiliates based on customers, orders, revenue, and recent active referrals.',
 	'plan-data'   => array(
-		'name'                 => 'Performance-based commissions',
+		'name'                 => 'Performance-based',
 		'status'               => 'Draft',
 		'amount'               => 15.00,
 		'type'                 => 'Percentage',
@@ -59,6 +59,6 @@ return array(
 		'apply_to'             => 'all',
 		'action_for_remaining' => 'continue',
 		'no_of_tiers'          => 1,
-		'distribution'         => '',
+		'distribution'         => array(),
 	),
 );

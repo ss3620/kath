@@ -6,6 +6,10 @@ use function tiktok\admin\tts\common\array_insert_after;
 use function tiktok\admin\tts\common\get_edit_link;
 use function tiktok\admin\tts\common\get_tts_seller_center_origin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * The order list class
  */
@@ -38,7 +42,8 @@ class OrderList {
 					'tts_order_js',
 					plugins_url( '/js/order.js', dirname( __DIR__ ) . '/tiktok-for-woocommerce.php' ),
 					'',
-					'v1'
+					'v1',
+					false
 				);
 			}
 		);
@@ -56,13 +61,13 @@ class OrderList {
 					'order_number',
 					$columns,
 					'order_channel',
-					esc_html__( 'Channel' )
+					esc_html__( 'Channel', 'tiktok-for-business' )
 				);
 				$new_columns = array_insert_after(
 					'order_status',
 					$new_columns,
 					'order_update',
-					esc_html__( 'Update' )
+					esc_html__( 'Update', 'tiktok-for-business' )
 				);
 
 				return $new_columns;
@@ -133,7 +138,7 @@ class OrderList {
 				 * Debug end
 				 */
 				if ( 'order_channel' === $column ) {
-					echo esc_html__( $is_tiktok_order ? 'TikTok' : '-' );
+					echo $is_tiktok_order ? esc_html__( 'TikTok', 'tiktok-for-business' ) : '-';
 					return;
 				}
 
@@ -149,9 +154,9 @@ class OrderList {
 					foreach ( $texts as $key => $value ) {
 						if ( preg_match( '/^\d+$/', $value ) ) {
 							// need to replace utc timestamp with the time in the corresponding time zone
-							echo '<span style="color:red">' . esc_html__( get_date_from_gmt( gmdate( 'Y-m-d H:i:s', $value ) ) ) . '</span>';
+							echo '<span style="color:red">' . esc_html( get_date_from_gmt( gmdate( 'Y-m-d H:i:s', $value ) ) ) . '</span>';
 						} else {
-							echo esc_html__( $value );
+							echo esc_html( $value );
 						}
 					}
 
@@ -167,14 +172,14 @@ class OrderList {
 							'<a class="button" style="%s" target="_blank" href="%s">%s</a>',
 							esc_attr( $style_string ),
 							esc_url( get_tts_seller_center_origin() . '/order' ),
-							esc_html__( $is_highlight_button ? 'Add Tracking Info' : 'Update Tracking Info' )
+							$is_highlight_button ? esc_html__( 'Add Tracking Info', 'tiktok-for-business' ) : esc_html__( 'Update Tracking Info', 'tiktok-for-business' )
 						);
 					} else {
 						printf(
 							'<a class="button" style="%s" target="_blank" href="%s">%s</a>',
 							'padding:0.3em !important;width:7em;height:auto !important;text-indent:0;text-align:center;line-height:normal;white-space:normal',
 							esc_url( get_tts_seller_center_origin() . '/order/detail?order_no=' . $tiktok_order_id ),
-							esc_html__( 'Manage on seller center' )
+							esc_html__( 'Manage on seller center', 'tiktok-for-business' )
 						);
 					}
 				}
@@ -225,7 +230,7 @@ class OrderList {
 								'channel'   => 'tiktok',
 							),
 							'TikTok <span class="count">(' . number_format_i18n( count( $orders ) ) . ')</span>',
-							isset( $_REQUEST['channel'] ) && 'tiktok' === $_REQUEST['channel'] ? 'current' : ''
+							isset( $_REQUEST['channel'] ) && 'tiktok' === $_REQUEST['channel'] ? 'current' : '' // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only list view filter.
 						),
 					)
 				);
@@ -243,12 +248,14 @@ class OrderList {
 				add_action(
 					'pre_get_posts',
 					function ( $query ) use ( $screen ) {
+						// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only list view filter.
 						if (
 							'edit-shop_order' === $screen->id &&
 							'shop_order' === $screen->post_type &&
 							isset( $_GET['channel'] ) &&
 							'tiktok' === $_GET['channel']
 						) {
+							// phpcs:enable WordPress.Security.NonceVerification.Recommended
 							$query->query_vars['meta_key'] = 'tiktok_order';
 						}
 					}

@@ -3,10 +3,10 @@ Contributors: flycart
 Donate link: https://wployalty.net
 Tags: points, rewards, loyalty, referrals, coupons
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 WC requires at least: 9.0
-WC tested up to: 11.0
-Stable tag: 1.4.7
+WC tested up to: 11.1
+Stable tag: 1.4.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -165,6 +165,11 @@ If you have further questions other than this, please feel free to contact our [
 5. Customer reward page
 
 == Changelog ==
+= 1.4.8 =
+- Fixed: Bundle product points not calculated or displayed correctly.
+- Added: WooCommerce 11.1 compatibility.
+- Added: WordPress 7.1 compatibility
+
 = 1.4.7 =
 - Fixed: Store owners can now set customer point overrides to 0.
 - Fixed: PCP issues

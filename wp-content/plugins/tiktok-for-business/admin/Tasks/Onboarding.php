@@ -13,7 +13,7 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 /**
  * Onboarding Task class.
  */
-class Onboarding extends Task {
+class Tt4b_Onboarding extends Task {
 
 
 	/**

@@ -32,7 +32,7 @@ class Checkbox_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 
 		if ( empty( $options ) ) {
 			return '';
@@ -44,15 +44,11 @@ class Checkbox_Block extends Abstract_Block {
 			$this->get_same_price_attributes()
 		);
 
-		$html = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_title_description_price_with_position( $this->same_price_info );
-		} else {
-			$html .= $this->render_title_description_noprice();
-		}
+		$html  = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
+		$html .= $this->render_block_heading();
 		$html .= $this->render_checkbox_group( $options );
 		$html .= $this->render_description_below_field();
-		$html .= $this->render_tooltip();
+		$html .= $this->render_image_preview();
 
 		$html .= '</div>';
 
@@ -76,9 +72,9 @@ class Checkbox_Block extends Abstract_Block {
 			'prad-block-item-img-parent prad-block-img-' . $this->get_property( 'imgStyle', 'normal' ),
 		);
 		$attributes['class'] = $this->build_css_classes( $css_classes );
-		$enableMinMaxRes     = $this->get_property( 'enableMinMaxRes', true );
+		$enable_min_max_res  = $this->get_property( 'enableMinMaxRes', true );
 
-		if ( $enableMinMaxRes ) {
+		if ( $enable_min_max_res ) {
 			$attributes['data-minselect'] = $this->get_property( 'minSelect', 1 );
 			$attributes['data-maxselect'] = $this->get_property( 'maxSelect', 100 );
 		}
@@ -120,6 +116,7 @@ class Checkbox_Block extends Abstract_Block {
 	/**
 	 * Render checkbox group
 	 *
+	 * @param array $options Field options.
 	 * @return string
 	 */
 	private function render_checkbox_group( $options ): string {
@@ -140,6 +137,7 @@ class Checkbox_Block extends Abstract_Block {
 	/**
 	 * Render all checkbox options
 	 *
+	 * @param array $options Field options.
 	 * @return string
 	 */
 	private function render_checkbox_options( $options ): string {
@@ -158,7 +156,6 @@ class Checkbox_Block extends Abstract_Block {
 	 * @return string
 	 */
 	private function get_checkbox_item_wrapper_class(): string {
-		// $price_position = $this->get_property( 'pricePosition', '' );
 		$justify = 'left';
 
 		return sprintf(
@@ -170,38 +167,35 @@ class Checkbox_Block extends Abstract_Block {
 	/**
 	 * Get checkbox input attributes
 	 *
-	 * @param array   $option
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param array   $item       Option item.
+	 * @param integer $index      Option index.
+	 * @param array   $price_info Price information.
 	 * @return array
 	 */
 	private function get_checkbox_input_attributes( $item, int $index, array $price_info ): array {
-		$enable_count       = $this->get_property( 'enableCount', false );
-		$blockid            = $this->get_block_id();
-		$item_formula_value = $this->is_formula_value_enabled() && ! empty( $item['formulaValue'] ) ? $item['formulaValue'] : '';
+		$blockid = $this->get_block_id();
 
-		return array(
-			'class'              => 'prad-input-hidden',
-			'type'               => 'checkbox',
-			'id'                 => $blockid . $index,
-			'name'               => 'prad-checkbox-' . $blockid,
-			'value'              => $price_info['price'],
-			'data-ptype'         => $item['type'],
-			'data-index'         => $index,
-			'data-uid'           => $item['uid'] ?? '',
-			'data-formula-value' => $item_formula_value,
-			'data-label'         => $item['value'],
-			'data-count'         => $enable_count ? 'yes' : 'no',
-			'data-counter'       => $blockid . $index . '-switcher-count',
+		return array_merge(
+			array(
+				'class'      => 'prad-input-hidden',
+				'type'       => 'checkbox',
+				'id'         => $blockid . $index,
+				'name'       => 'prad-checkbox-' . $blockid,
+				'value'      => $price_info['price'],
+				'data-ptype' => $item['type'],
+				'data-index' => $index,
+				'data-uid'   => $item['uid'] ?? '',
+				'data-label' => $item['value'],
+			),
+			$this->get_option_extra_attributes( $item, $index )
 		);
 	}
 
 	/**
 	 * Render single checkbox
 	 *
-	 * @param array   $option
-	 * @param integer $index
-	 * @param boolean $enable_count
+	 * @param array   $item  Option item.
+	 * @param integer $index Option index.
 	 * @return string
 	 */
 	private function render_checkbox_item( array $item, int $index ): string {
@@ -211,8 +205,8 @@ class Checkbox_Block extends Abstract_Block {
 		$html  = sprintf( '<div class="%s">', esc_attr( $wrapper_class ) );
 		$html .= $this->render_checkbox_input_group( $item, $index, $price_info );
 
-		if ( $item['type'] != 'no_cost' || $this->get_property( 'enableCount', false ) ) {
-			$html .= $this->render_price_and_quantity( $item, $index, $price_info );
+		if ( 'no_cost' !== $item['type'] || $this->has_option_input() ) {
+			$html .= $this->render_price_and_input( $item, $index, $price_info );
 		}
 
 		$html .= '</div>';
@@ -223,9 +217,9 @@ class Checkbox_Block extends Abstract_Block {
 	/**
 	 * Render checkbox input with label
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item       Option item.
+	 * @param integer $index      Option index.
+	 * @param array   $price_info Price information.
 	 * @return string
 	 */
 	private function render_checkbox_input_group( $item, int $index, array $price_info ): string {
@@ -260,21 +254,14 @@ class Checkbox_Block extends Abstract_Block {
 	/**
 	 * Render checkbox content
 	 *
-	 * @param object $item
-	 * @param array  $allowed_tags
+	 * @param object $item         Option item.
+	 * @param array  $allowed_tags Allowed HTML tags.
 	 * @return string
 	 */
 	private function render_checkbox_content( $item, array $allowed_tags ): string {
 		$html = '<div class="prad-block-content prad-d-flex prad-item-center">';
 
-		if ( isset( $item['img'] ) && $item['img'] && product_addons()->is_pro_feature_available() ) {
-			$html .= sprintf(
-				'<img class="prad-block-item-img" src="%s" alt="Item" data-tooltip-label="%s" data-tooltip-description="%s" />',
-				esc_url( $item['img'] ),
-				esc_attr( $item['value'] ),
-				esc_attr( $this->get_option_tooltip_description( $item ) ),
-			);
-		}
+		$html .= apply_filters( 'prad_option_image_html', '', $item, $this );
 
 		$html .= '<div class="prad-option-content">';
 		$html .= sprintf(
@@ -290,84 +277,32 @@ class Checkbox_Block extends Abstract_Block {
 	}
 
 	/**
-	 * Render price and quantity section
+	 * Render the option's price and input
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item       Option item.
+	 * @param integer $index      Option index.
+	 * @param array   $price_info Price information.
 	 * @return string
 	 */
-	private function render_price_and_quantity( $item, int $index, array $price_info ): string {
-		$enable_count = $this->get_property( 'enableCount', false );
+	private function render_price_and_input( $item, int $index, array $price_info ): string {
 		$columns      = $this->get_property( 'columns', 1 );
 		$allowed_tags = $this->allowed_html_tags;
 
 		$html = '<div class="prad-d-flex prad-item-start prad-gap-12">';
 
-		if ( $item['type'] != 'no_cost' && ! ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) ) {
+		if ( 'no_cost' !== $item['type'] && ! $this->has_shared_price() ) {
 			$html .= sprintf(
 				'<div class="prad-block-price prad-text-upper">%s</div>',
 				wp_kses( $price_info['html'], $allowed_tags )
 			);
 		}
 
-		if ( $enable_count && $columns == 1 && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
+		if ( 1 === (int) $columns ) {
+			$html .= $this->render_option_input( $index );
 		}
 
 		$html .= '</div>';
 
 		return $html;
-	}
-
-	/**
-	 * Get quantity input attributes
-	 *
-	 * @param integer $index
-	 * @return array
-	 */
-	private function get_quantity_input_attributes( int $index ): array {
-		$blockid = $this->get_block_id();
-		$min     = $this->get_property( 'min', 1 );
-		$max     = $this->get_property( 'max', 100 );
-
-		return array(
-			'id'           => 'prad_quantity_' . $blockid . $index,
-			'name'         => 'prad_quantity_' . $blockid . $index,
-			'type'         => 'number',
-			'placeholder'  => $min,
-			'value'        => $min,
-			'min'          => $min,
-			'max'          => $max,
-			'class'        => 'prad-block-input prad-quantity-input switcher-count prad-input',
-			'data-counter' => $blockid . $index . '-switcher-count',
-		);
-	}
-	/**
-	 * Render quantity input
-	 *
-	 * @param integer $index
-	 * @return string
-	 */
-	private function render_quantity_input( int $index ): string {
-		return sprintf( '<input %s />', $this->build_attributes( $this->get_quantity_input_attributes( $index ) ) );
-	}
-
-	/**
-	 * Render tooltip
-	 *
-	 * @return string
-	 */
-	private function render_tooltip(): string {
-		$enable_preview = $this->get_property( 'enableImagePreview', false );
-		if ( ! $enable_preview ) {
-			return '';
-		}
-		return '
-		<div class="prad-img-tooltip" role="tooltip" aria-hidden="true">
-			<img src="" alt="" />
-			<span class="prad-img-tooltip-label"></span>
-			<span class="prad-img-tooltip-description"></span>
-		</div>';
 	}
 }

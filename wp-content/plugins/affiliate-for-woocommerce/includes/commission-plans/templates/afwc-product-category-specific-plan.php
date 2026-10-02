@@ -1,10 +1,10 @@
 <?php
 /**
- * Commission Plan Templates - Product category specific
+ * Commission Plan Template - Product category specific
  *
- * @package   product-for-woocommerce/includes/commission-plans/templates/
+ * @package   affiliate-for-woocommerce/includes/commission-plans/templates/
  * @since     8.60.0
- * @version   1.1.0
+ * @version   1.2.1
  */
 
 // Exit if accessed directly.
@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return array(
 	'slug'        => 'product-category-specific-plan',
-	'name'        => 'Custom rates for product categories',
+	'name'        => 'Product categories',
 	'description' => 'Set commission rates for specific product categories.',
 	'plan-data'   => array(
-		'name'                 => 'Custom rates for product categories',
+		'name'                 => 'Product categories',
 		'status'               => 'Draft',
 		'amount'               => 15.00,
 		'type'                 => 'Percentage',
@@ -39,6 +39,6 @@ return array(
 		'apply_to'             => 'all',
 		'action_for_remaining' => 'continue',
 		'no_of_tiers'          => 1,
-		'distribution'         => '',
+		'distribution'         => array(),
 	),
 );

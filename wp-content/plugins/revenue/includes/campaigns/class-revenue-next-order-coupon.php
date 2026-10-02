@@ -5,8 +5,7 @@
 
 namespace Revenue;
 
-//phpcs:disable WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.PHP.StrictComparisons.LooseComparison
-
+defined( 'ABSPATH' ) || exit;
 
 /**
  * WowRevenue Campaign: Next Order Coupon
@@ -36,12 +35,10 @@ class Revenue_Next_Order_Coupon {
 	 * Initializes the class.
 	 */
 	public function init() {
-		add_action( 'wp_ajax_custom_save_coupon_action', array( $this, 'custom_save_coupon_action' ) );
+		add_action( 'wp_ajax_revenue_custom_save_coupon_action', array( $this, 'custom_save_coupon_action' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 		add_action( 'edit_form_after_editor', array( $this, 'render_checkbox_after_description' ) );
 		add_action( 'save_post', array( $this, 'save_custom_coupon_checkbox' ), 10, 2 );
-		// add_action( 'wp_ajax_sync_triggered_products_to_coupon', array( $this, 'sync_triggered_products_to_coupon' ) );
-		// add_filter( 'woocommerce_get_item_data', array( $this, 'revx_display_custom_cart_item_meta' ), 10, 2 );
 		add_filter( 'woocommerce_coupon_is_valid', array( $this, 'revx_validate_coupon_eligibility' ), 10, 3 );
 		add_action( 'woocommerce_order_status_completed', array( $this, 'update_user_coupon_eligibility' ) );
 		add_action( 'woocommerce_order_status_on-hold', array( $this, 'update_user_coupon_eligibility' ) );
@@ -239,6 +236,8 @@ class Revenue_Next_Order_Coupon {
 
 		$table_name = $wpdb->prefix . 'revenue_campaign_triggers';
 
+		// Table name is built solely from WordPress's trusted prefix and a fixed plugin suffix.
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$query = $wpdb->prepare(
 			"
 			SELECT trigger_action, trigger_type, item_id
@@ -247,12 +246,13 @@ class Revenue_Next_Order_Coupon {
 		",
 			$campaign_id
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 		// The $query variable above is already prepared via $wpdb->prepare().
 		// Calling get_results() with the prepared query is intentional and safe.
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$results = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional direct DB call.
+		$results = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is fully prepared via $wpdb->prepare() above.
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 
 		// Initialize return structure.
@@ -299,6 +299,7 @@ class Revenue_Next_Order_Coupon {
 		}
 
 		$is_checked = get_post_meta( $post->ID, '_revx_next_order_coupon_enable', true );
+		wp_nonce_field( 'revenue-next-order-coupon', 'revenue_next_order_coupon_nonce' );
 		?>
 		<div class="wsx-coupon-checkbox" style="margin: 20px 0; padding: 10px; background: #fff; border: 1px solid #ccd0d4;">
 			<label>
@@ -318,7 +319,10 @@ class Revenue_Next_Order_Coupon {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
-		if ( get_post_type( $post_id ) !== 'shop_coupon' ) {
+		if ( 'shop_coupon' !== get_post_type( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+		if ( ! isset( $_POST['revenue_next_order_coupon_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['revenue_next_order_coupon_nonce'] ) ), 'revenue-next-order-coupon' ) ) {
 			return;
 		}
 
@@ -339,9 +343,18 @@ class Revenue_Next_Order_Coupon {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_custom_coupons' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'get_custom_coupons_permissions_check' ),
 			)
 		);
+	}
+
+	/**
+	 * Authorize access to the administrative coupon picker.
+	 *
+	 * @return bool
+	 */
+	public function get_custom_coupons_permissions_check() {
+		return current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' );
 	}
 
 	/**
@@ -352,6 +365,14 @@ class Revenue_Next_Order_Coupon {
 	 * @return WP_REST_Response
 	 */
 	public function get_custom_coupons( $request ) {
+		$nonce = '';
+		if ( isset( $request['security'] ) ) {
+			$nonce = sanitize_key( $request['security'] );
+		}
+		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
+			return new \WP_Error( 'revenue_rest_nonce_error', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
+		}
+
 		$coupons = $this->revenue_get_custom_coupons();
 		return rest_ensure_response( $coupons );
 	}
@@ -399,6 +420,17 @@ class Revenue_Next_Order_Coupon {
 	}
 
 	/**
+	 * Send a JSON error response and stop execution.
+	 *
+	 * @param string $message Error message to return.
+	 * @return void
+	 */
+	private function send_error_and_exit( $message ) {
+		wp_send_json_error( array( 'message' => $message ) );
+		exit;
+	}
+
+	/**
 	 * Custom AJAX action to save the coupon.
 	 *
 	 * This method handles the AJAX request to save a coupon.
@@ -408,98 +440,115 @@ class Revenue_Next_Order_Coupon {
 	 */
 	public function custom_save_coupon_action() {
 
-		if ( ! current_user_can( 'manage_options' ) &&
-			( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'revenue-dashboard' ) )
-		) {
-			wp_send_json_error( array( 'message' => 'Unauthorized' ) );
-			exit;
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'revenue-dashboard' ) ) {
+			$this->send_error_and_exit( __( 'Unauthorized', 'revenue' ) );
+		}
+
+		// Ensure the POST index exists and sanitize before comparing.
+		$revx_enable = isset( $_POST['revx_next_order_coupon_enable'] ) ? sanitize_text_field( wp_unslash( $_POST['revx_next_order_coupon_enable'] ) ) : '';
+		if ( 'yes' !== $revx_enable ) {
+			$this->send_error_and_exit( __( 'You must select Enable Custom Coupon Option', 'revenue' ) );
+		}
+
+		$allowed_post_statuses = array( 'publish', 'draft' );
+		$post_status           = isset( $_POST['post_status'] ) ? sanitize_text_field( wp_unslash( $_POST['post_status'] ) ) : 'publish';
+		if ( ! in_array( $post_status, $allowed_post_statuses, true ) ) {
+			$post_status = 'publish';
+		}
+
+		$post_title   = isset( $_POST['post_title'] ) ? sanitize_text_field( wp_unslash( $_POST['post_title'] ) ) : '';
+		$post_excerpt = isset( $_POST['excerpt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['excerpt'] ) ) : '';
+
+		$coupon_post_type_object = get_post_type_object( 'shop_coupon' );
+		if ( ! $coupon_post_type_object ) {
+			$this->send_error_and_exit( __( 'Unauthorized', 'revenue' ) );
+		}
+
+		if ( 'publish' === $post_status && ! current_user_can( $coupon_post_type_object->cap->publish_posts ) ) {
+			$this->send_error_and_exit( __( 'Unauthorized', 'revenue' ) );
 		}
 
 		// Check if it's a valid coupon ID.
 		if ( isset( $_POST['post_ID'] ) && is_numeric( $_POST['post_ID'] ) ) {
 			$coupon_id = intval( $_POST['post_ID'] );
 
+			if ( ! current_user_can( 'edit_post', $coupon_id ) ) {
+				$this->send_error_and_exit( __( 'Unauthorized', 'revenue' ) );
+			}
+
 			// Get the coupon post object.
 			$coupon = get_post( $coupon_id );
 
-			// Ensure the POST index exists and sanitize before comparing.
-			$revx_enable = isset( $_POST['revx_next_order_coupon_enable'] ) ? sanitize_text_field( wp_unslash( $_POST['revx_next_order_coupon_enable'] ) ) : '';
-			if ( 'yes' !== $revx_enable ) {
-				wp_send_json_error( array( 'message' => 'You must select Enable Custom Coupon Option' ) );
+			if ( ! $coupon || 'shop_coupon' !== $coupon->post_type ) {
+				$this->send_error_and_exit( __( 'Invalid coupon ID or data', 'revenue' ) );
 			}
 
-			// Perform the update action for an existing coupon.
-			if ( 'shop_coupon' === $coupon->post_type ) {
-				// Update post title and description if provided.
-				$post_data = array(
-					'ID'          => $coupon_id,
-					'post_status' => isset( $_POST['post_status'] ) ? sanitize_text_field( wp_unslash( $_POST['post_status'] ) ) : 'publish',
-				);
+			// Update post title and description if provided.
+			$post_data = array(
+				'ID'          => $coupon_id,
+				'post_status' => $post_status,
+			);
 
-				if ( isset( $_POST['post_title'] ) ) {
-					$post_data['post_title'] = sanitize_text_field( wp_unslash( $_POST['post_title'] ) );
-				}
-
-				if ( isset( $_POST['excerpt'] ) ) {
-					$post_data['post_excerpt'] = sanitize_textarea_field( wp_unslash( $_POST['excerpt'] ) );
-				}
-
-				wp_update_post( $post_data );
-
-				// Update custom meta fields (example).
-				if ( isset( $_POST['revx_custom_coupon_text'] ) ) {
-					update_post_meta( $coupon_id, '_revx_custom_coupon_text', sanitize_text_field( $_POST['revx_custom_coupon_text'] ) );
-				}
-
-				// You can add more update_post_meta() calls here as needed for other custom fields.
-
-				wp_send_json_success(
-					array(
-						'message'   => 'Coupon updated successfully',
-						'coupon_id' => $coupon_id,
-					)
-				);
+			if ( isset( $_POST['post_title'] ) ) {
+				$post_data['post_title'] = $post_title;
 			}
-		} else {
-			// Handle creating a new coupon.
-			$new_coupon_id = wp_insert_post(
+
+			if ( isset( $_POST['excerpt'] ) ) {
+				$post_data['post_excerpt'] = $post_excerpt;
+			}
+
+			$updated = wp_update_post( $post_data, true );
+
+			if ( is_wp_error( $updated ) ) {
+				$this->send_error_and_exit( $updated->get_error_message() );
+			}
+
+			// Update custom meta fields (example).
+			if ( isset( $_POST['revx_custom_coupon_text'] ) ) {
+				update_post_meta( $coupon_id, '_revx_custom_coupon_text', sanitize_text_field( wp_unslash( $_POST['revx_custom_coupon_text'] ) ) );
+			}
+
+			// You can add more update_post_meta() calls here as needed for other custom fields.
+
+			wp_send_json_success(
 				array(
-					'post_title'   => isset( $_POST['post_title'] ) ? sanitize_text_field( wp_unslash( $_POST['post_title'] ) ) : '',
-					'post_content' => isset( $_POST['post_content'] ) ? sanitize_textarea_field( wp_unslash( $_POST['post_content'] ) ) : '',
-					'post_excerpt' => isset( $_POST['excerpt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['excerpt'] ) ) : '', // Save the excerpt.
-					'post_type'    => 'shop_coupon',
-					'post_status'  => isset( $_POST['post_status'] ) ? sanitize_text_field( wp_unslash( $_POST['post_status'] ) ) : 'publish',
+					'message'   => __( 'Coupon updated successfully', 'revenue' ),
+					'coupon_id' => $coupon_id,
 				)
 			);
-			if ( $new_coupon_id ) {
-				update_post_meta( $new_coupon_id, '_revx_next_order_coupon_enable', 'yes' );
-
-				wp_send_json_success(
-					array(
-						'message'   => 'Coupon created successfully',
-						'coupon_id' => $new_coupon_id,
-					)
-				);
-			} else {
-				wp_send_json_error( array( 'message' => 'Failed to create coupon' ) );
-			}
+			exit;
 		}
 
-		wp_send_json_error( array( 'message' => 'Invalid coupon ID or data' ) );
+		// Handle creating a new coupon.
+		if ( ! current_user_can( $coupon_post_type_object->cap->create_posts ) ) {
+			$this->send_error_and_exit( __( 'Unauthorized', 'revenue' ) );
+		}
+
+		$new_coupon_id = wp_insert_post(
+			array(
+				'post_title'   => $post_title,
+				'post_content' => isset( $_POST['post_content'] ) ? sanitize_textarea_field( wp_unslash( $_POST['post_content'] ) ) : '',
+				'post_excerpt' => $post_excerpt, // Save the excerpt.
+				'post_type'    => 'shop_coupon',
+				'post_status'  => $post_status,
+			)
+		);
+		if ( $new_coupon_id ) {
+			update_post_meta( $new_coupon_id, '_revx_next_order_coupon_enable', 'yes' );
+
+			wp_send_json_success(
+				array(
+					'message'   => __( 'Coupon created successfully', 'revenue' ),
+					'coupon_id' => $new_coupon_id,
+				)
+			);
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to create coupon', 'revenue' ) ) );
+		}
+		exit;
 	}
 
-	/**
-	 * Localize data for countdown timer using Hiding File .
-	 *
-	 * @param array $campaign The campaign data.
-	 *
-	 * @return array
-	 */
-	public function stock_scarcity_hidden_data( $campaign = array() ) {
-		$data = array();
 
-		return $data;
-	}
 
 	/**
 	 * Validate coupon eligibility for the next order.
@@ -512,15 +561,18 @@ class Revenue_Next_Order_Coupon {
 	 */
 	public function revx_validate_coupon_eligibility( $is_valid, $coupon, $discount ) {
 
-		$is_revx_campaign = get_post_meta( $coupon->get_id(), '_revx_next_order_coupon_enable', true );
+		// WooCommerce validates coupon submissions; this filter only compares the submitted code.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
+		$submitted_coupon_code = isset( $_POST['coupon_code'] ) ? sanitize_text_field( wp_unslash( $_POST['coupon_code'] ) ) : '';
+		$is_revx_campaign      = get_post_meta( $coupon->get_id(), '_revx_next_order_coupon_enable', true );
 		if ( 'yes' === $is_revx_campaign && is_user_logged_in() ) {
 				$user_id = get_current_user_id();
 
 				// Support both classic and block cart: check $_POST, then fallback to cart object (blocks).
 				$coupon_code = '';
 				$coupon_id   = '';
-			if ( isset( $_POST['coupon_code'] ) ) {
-				$coupon_code = $_POST['coupon_code'];
+			if ( '' !== $submitted_coupon_code ) {
+				$coupon_code = $submitted_coupon_code;
 			} elseif ( function_exists( 'WC' ) && WC()->cart ) {
 				$applied_coupons = WC()->cart->get_applied_coupons();
 
@@ -541,27 +593,26 @@ class Revenue_Next_Order_Coupon {
 					}
 				}
 			}
-				$coupon_id     = isset( $_POST['coupon_code'] ) ? $coupon->get_id() : $coupon_id;
+				$coupon_id     = '' !== $submitted_coupon_code ? $coupon->get_id() : $coupon_id;
 				$campaign_id   = get_user_meta( $user_id, '_revx_next_order_campaign_id_' . $coupon_id, true );
 				$eligible      = get_user_meta( $user_id, '_revx_next_order_coupon_eligible_' . $campaign_id, true );
-				$p_coupon_code = isset( $_POST['coupon_code'] ) ? $_POST['coupon_code'] : $coupon_code;
+				$p_coupon_code = '' !== $submitted_coupon_code ? $submitted_coupon_code : $coupon_code;
 
 			if ( $p_coupon_code && strtolower( $coupon->get_code() ) === strtolower( $p_coupon_code ) && 'yes' !== $eligible ) {
 				return false; // Invalidate the coupon if not eligible.
 			}
-		} else {
+		} elseif ( 'yes' === $is_revx_campaign && ! is_user_logged_in() ) {
 			// Guest user logic.
-			if ( 'yes' === $is_revx_campaign && ! is_user_logged_in() ) {
-				$coupon_id     = $coupon->get_id();
-				$campaign_id   = $this->get_guest_meta( '_revx_next_order_campaign_id_' . $coupon_id );
-				$eligible      = $this->get_guest_meta( '_revx_next_order_coupon_eligible_' . $campaign_id );
-				$p_coupon_code = isset( $_POST['coupon_code'] ) ? $_POST['coupon_code'] : $coupon->get_code();
+			$coupon_id     = $coupon->get_id();
+			$campaign_id   = $this->get_guest_meta( '_revx_next_order_campaign_id_' . $coupon_id );
+			$eligible      = $this->get_guest_meta( '_revx_next_order_coupon_eligible_' . $campaign_id );
+			$p_coupon_code = '' !== $submitted_coupon_code ? $submitted_coupon_code : $coupon->get_code();
 
-				if ( $p_coupon_code && strtolower( $coupon->get_code() ) === strtolower( $p_coupon_code ) && 'yes' !== $eligible ) {
-					return false;
-				}
+			if ( $p_coupon_code && strtolower( $coupon->get_code() ) === strtolower( $p_coupon_code ) && 'yes' !== $eligible ) {
+				return false;
 			}
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 		return $is_valid;
 	}
 
@@ -600,7 +651,7 @@ class Revenue_Next_Order_Coupon {
 			$user_id  = get_current_user_id();
 			$eligible = get_user_meta( $user_id, '_revx_next_order_coupon_eligible_' . $campaign_id, true );
 
-			if ( isset( $campaign_position['thankyou_page'] ) && $eligible === 'yes' ) {
+			if ( isset( $campaign_position['thankyou_page'] ) && 'yes' === $eligible ) {
 				$coupon_id = get_user_meta( $user_id, '_revx_next_order_coupon_id', true );
 				if ( $coupon_id ) {
 					$coupon          = new \WC_Coupon( $coupon_id );
@@ -641,7 +692,7 @@ class Revenue_Next_Order_Coupon {
 			$thankyou_page     = $campaign_position['thankyou_page']['inpage_position'] ?? 'before_thankyou';
 
 			$eligible = $this->get_guest_meta( '_revx_next_order_coupon_eligible_' . $campaign_id );
-			if ( isset( $campaign_position['thankyou_page'] ) && $eligible === 'yes' ) {
+			if ( isset( $campaign_position['thankyou_page'] ) && 'yes' === $eligible ) {
 				if ( $coupon_id ) {
 					$coupon          = new \WC_Coupon( $coupon_id );
 					$discount_type   = $coupon->get_discount_type();
@@ -707,7 +758,7 @@ class Revenue_Next_Order_Coupon {
 			$campaign_id = $this->get_guest_meta( '_revx_next_order_campaign_id_' . $coupon_id );
 			$eligible    = $this->get_guest_meta( '_revx_next_order_coupon_eligible_' . $campaign_id );
 		}
-		if ( $eligible === 'yes' ) {
+		if ( 'yes' === $eligible ) {
 			if ( $coupon_id ) {
 				$coupon          = new \WC_Coupon( $coupon_id );
 				$discount_type   = $coupon->get_discount_type();
@@ -825,9 +876,9 @@ class Revenue_Next_Order_Coupon {
 
 			// Include products validation.
 			$product_match = false;
-			if ( $relation === 'or' ) {
+			if ( 'or' === $relation ) {
 				$product_match = ! empty( array_intersect( $triggered_items['include_products'], $ordered_product_ids ) );
-			} elseif ( $relation === 'and' ) {
+			} elseif ( 'and' === $relation ) {
 				$product_match = empty( array_diff( $triggered_items['include_products'], $ordered_product_ids ) );
 			} else {
 				$product_match = false;
@@ -889,9 +940,9 @@ class Revenue_Next_Order_Coupon {
 				return;
 			}
 			$product_match = false;
-			if ( $relation === 'or' ) {
+			if ( 'or' === $relation ) {
 				$product_match = ! empty( array_intersect( $triggered_items['include_products'], $ordered_product_ids ) );
-			} elseif ( $relation === 'and' ) {
+			} elseif ( 'and' === $relation ) {
 				$product_match = empty( array_diff( $triggered_items['include_products'], $ordered_product_ids ) );
 			} else {
 				$product_match = false;
@@ -928,89 +979,17 @@ class Revenue_Next_Order_Coupon {
 		$discount_with_title   = str_replace( '{discount_value}', $discount, $coupon_settings['coupon_title'] );
 		$coupon_banner_message = $coupon_settings['coupon_icon_text'] ?? 'COUPON';
 
-		// ADDED BACKWARD COMPATIBILITY FOR REVENUE 2.0.0. DO NOT MODIFY THIS CODE WITHOUT PERMISSION.
-		$campaign_modified = strtotime( $campaign['date_modified'] );
-		$release_time      = strtotime( '2025-10-15 09:20:00' );
-		$revenue_version   = REVENUE_VER;
+		$file_path = apply_filters(
+			'revenue_campaign_view_path',
+			REVENUE_PATH . 'includes/campaigns/views/next-order-coupon/template1.php',
+			'next_order_coupon',
+			'inpage',
+			$campaign
+		);
 
-		$campaign_version = revenue()->get_campaign_meta( $campaign_id, 'campaign_version', true ) ?? '1.0.0';
-
-		if ( '2.0.0' === $campaign_version && version_compare( $revenue_version, '2.0.0', '>=' ) ) {
-			$file_path = apply_filters(
-				'revenue_campaign_view_path',
-				REVENUE_PATH . 'includes/campaigns/views/next-order-coupon/template1.php',
-				'next_order_coupon',
-				'inpage',
-				$campaign
-			);
-
-			if ( file_exists( $file_path ) ) {
-				do_action( 'revenue_before_campaign_render', $campaign_id, $campaign );
-				include $file_path;
-			}
-		} else {
-			// for older campaigns created before 24th Sept 2025. revenue version < 2.0.0
-			$generated_styles = revenue()->campaign_style_generator( 'inpage', $campaign );
-
-			$container_style                 = revenue()->get_style( $generated_styles, 'CouponContainer' );
-			$coupon_button_style             = revenue()->get_style( $generated_styles, 'CouponButton' );
-			$coupon_buttons_style            = revenue()->get_style( $generated_styles, 'CouponButtons' );
-			$coupon_content_style            = revenue()->get_style( $generated_styles, 'couponContent' );
-			$coupon_content_container_style  = revenue()->get_style( $generated_styles, 'couponContentContainer' );
-			$paragraph_coupon_title_style    = revenue()->get_style( $generated_styles, 'paragraphCouponTitle' );
-			$paragraph_coupon_subtitle_style = revenue()->get_style( $generated_styles, 'paragraphCouponSubTitle' );
-			?>
-
-		<div style="width: 100%; margin-left: auto; margin-right: auto;">
-			<div>
-				<div style="<?php echo esc_attr( $container_style ); ?> border: 0px; background-color: unset; position: relative; z-index: 1; margin: 0 auto; overflow: hidden; display: flex; align-items: center; width: fit-content;">
-					<div style="height: 42px; width: 52px; background-color: transparent; border-radius: 50%; position: absolute; left: -28px; border: 1px dashed var(--revx-border-color, #6c5ce7);"></div>
-					<div style="height: 42px; width: 52px; background-color: transparent; border-radius: 50%; position: absolute; right: -28px; border: 1px dashed var(--revx-border-color, #6c5ce7);"></div>
-					<div style="box-sizing: border-box; padding: 4px; width: 100%; max-width: 440px; border: 1px dashed var(--revx-border-color, #6c5ce7);mask-image: radial-gradient(circle at 0% 50%, transparent 25px, black 26px), radial-gradient(circle at 100% 50%, transparent 25px, black 26px); mask-composite: intersect;">
-						<div class="revx-coupon-template-wrapper" style="position: relative; z-index: 0; box-sizing: border-box; width: auto; height: 100%; display: flex; max-width: 440px; border: 1px dashed var(--revx-border-color, #6c5ce7);">
-							<div class="revx-coupon-template-container" style="background-color: var(--revx-background-color, #6c5ce7);">
-							<?php	echo wp_kses( revenue()->tag_wrapper( $campaign, $generated_styles, 'couponIconText', $coupon_banner_message, 'revx-coupon-icon-rich-text' ), revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-								<div class="revx-coupon-template-1-content" style="<?php echo esc_attr( $coupon_content_container_style ); ?> border-left: 2px dashed var(--revx-separator-color, #ffffff);">
-									<div class="revx-coupon-content" style="<?php echo esc_attr( $coupon_content_style ); ?>">
-										<div class="paragraphCouponTitle" style="<?php echo esc_attr( $paragraph_coupon_title_style ); ?>">
-											<?php echo wp_kses( $discount_with_title, revenue()->get_allowed_tag() ); ?>
-										</div>
-										<p class="paragraphCouponSubTitle" style="<?php echo esc_attr( $paragraph_coupon_subtitle_style ); ?>">
-											<?php echo wp_kses( $coupon_settings['coupon_subheading'], revenue()->get_allowed_tag() ); ?>
-										</p>
-									</div>
-
-									<div class="revx-coupon-buttons" style="<?php echo esc_attr( $coupon_buttons_style ); ?>">
-										<div class="revx-Coupon-button" style="<?php echo esc_attr( $coupon_button_style ); ?> text-transform: uppercase;">
-											<?php echo esc_html( $coupon_code ); ?>
-											<span class="revx-coupon-copy-btn" style="display: flex; align-items: center; cursor:pointer;" >
-												<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<g clipPath="url(#clip0_1180_32578)">
-													<path d="M13.3333 6H7.33333C6.59695 6 6 6.59695 6 7.33333V13.3333C6 14.0697 6.59695 14.6667 7.33333 14.6667H13.3333C14.0697 14.6667 14.6667 14.0697 14.6667 13.3333V7.33333C14.6667 6.59695 14.0697 6 13.3333 6Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-													<path d="M3.33301 9.99967H2.66634C2.31272 9.99967 1.97358 9.8592 1.72353 9.60915C1.47348 9.3591 1.33301 9.01996 1.33301 8.66634V2.66634C1.33301 2.31272 1.47348 1.97358 1.72353 1.72353C1.97358 1.47348 2.31272 1.33301 2.66634 1.33301H8.66634C9.01996 1.33301 9.3591 1.47348 9.60915 1.72353C9.8592 1.97358 9.99967 2.31272 9.99967 2.66634V3.33301" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-													</g>
-													<defs>
-													<clipPath id="clip0_1180_32578">
-													<rect width="16" height="16" fill="currentColor"/>
-													</clipPath>
-													</defs>
-												</svg>
-											</span>
-										</div>
-										<a href="<?php echo esc_url( $coupon_settings['coupon_button_link'] ); ?>" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-											<div style="font-size: 14px; font-weight: 500; background-color: #FFFFFF; color: #6E3FF3; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; transition: all 0.2s ease-in-out; padding: 8px 24px; cursor: pointer;">
-												<?php echo esc_html( $campaign['cta_button_text'] ?? __( 'Shop Now', 'revenue' ) ); ?>
-											</div>
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-			<?php
+		if ( file_exists( $file_path ) ) {
+			do_action( 'revenue_before_campaign_render', $campaign_id, $campaign );
+			include $file_path;
 		}
 	}
 
@@ -1023,101 +1002,49 @@ class Revenue_Next_Order_Coupon {
 	 * @param string $campaign_id     The campaign ID.
 	 */
 	public function render_coupon_banner_for_email( $coupon_settings, $coupon_code = '', $discount = '', $campaign_id = '' ) {
-		$campaign             = revenue()->get_campaign_data( $campaign_id );
-		$discount_with_title  = str_replace( '{discount_value}', $discount, $coupon_settings['coupon_title'] );
-		$generated_styles     = revenue()->campaign_style_generator( 'inpage', $campaign );
-		$container_style      = revenue()->get_style( $generated_styles, 'containerEmail' );
-		$paragraph_main_style = revenue()->get_style( $generated_styles, 'paragraphMainEmail' );
-		$paragraph_sub_style  = revenue()->get_style( $generated_styles, 'paragraphSubEmail' );
-		$coupon_button_style  = revenue()->get_style( $generated_styles, 'emailCouponButton' );
-		$shop_button_style    = revenue()->get_style( $generated_styles, 'emailShopButton' );
+		$campaign            = revenue()->get_campaign_data( $campaign_id );
+		$discount_with_title = str_replace( '{discount_value}', $discount, $coupon_settings['coupon_title'] );
 
 		ob_start();
 
-		// ADDED BACKWARD COMPATIBILITY FOR REVENUE 2.0.0. DO NOT MODIFY THIS CODE WITHOUT PERMISSION.
-		// $campaign_modified = strtotime( $campaign['date_modified'] );
-		// $release_time      = strtotime( '2025-10-15 09:20:00' );
-		// $revenue_version   = REVENUE_VER;.
-		$campaign_version = revenue()->get_campaign_meta( $campaign_id, 'campaign_version', true );
+		?>
+		<p style="width: fit-content; margin: 0px auto;">
+			<table role="presentation" border="0" cellpadding="10" cellspacing="0" style="border-collapse: collapse; max-width: 600px;">
+				<tr style="display: block; border: 2px dashed var(--revx-border-color, #6c5ce7); overflow: hidden;">
+					<td class="revx-coupon-email-wrapper" style="padding: 20px; text-align: center; color: white; position: relative; background-color: var(--revx-coupon-bg-color, #6c5ce7);">
+						<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+							<tr>
+								<td style="text-align: center;">
+									<h2 class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'heading' ) ); ?>">
+										<?php echo esc_html( $discount_with_title ); ?>
+									</h2>
 
-		if ( '2.0.0' === $campaign_version ) {
-			?>
-			<p style="width: fit-content; margin: 0px auto;">
-				<table role="presentation" border="0" cellpadding="10" cellspacing="0" style="border-collapse: collapse; max-width: 600px;">
-					<tr style="display: block; border: 2px dashed var(--revx-border-color, #6c5ce7); overflow: hidden;">
-						<td class="revx-coupon-email-wrapper" style="padding: 20px; text-align: center; color: white; position: relative; background-color: var(--revx-coupon-bg-color, #6c5ce7);">
-							<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
-								<tr>
-									<td style="text-align: center;">
-										<h2 class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'heading' ) ); ?>">
-											<?php echo esc_html( $discount_with_title ); ?>
-										</h2>
+									<p class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'subHeading' ) ); ?>">
+										<?php echo esc_html( $coupon_settings['coupon_subheading'] ); ?>
+									</p>
 
-										<p class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'subHeading' ) ); ?>">
-											<?php echo esc_html( $coupon_settings['coupon_subheading'] ); ?>
-										</p>
-
-										<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 10px auto; border-collapse: separate;">
-											<tr>
-												<td>
-													<p class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'couponCodeContainer' ) ); ?>">
-														<?php echo esc_html( $coupon_code ); ?>
-													</p>
-												</td>
-												<td>
-													<a target="_blank" href="<?php echo esc_url( $coupon_settings['coupon_button_link'] ); ?>" class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'shopNowButton' ) ); ?>">
-														<?php echo esc_html( $campaign['cta_button_text'] ?? 'Shop Now' ); ?>
-													</a>
-												</td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
-			</p>
-			<?php
-		} else {
-			// Old email template.
-			?>
-			<p>
-				<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; max-width: 600px; width: 100%; margin: 0 auto;">
-					<tr>
-						<td style="<?php echo esc_attr( $container_style ); ?> border: 2px dashed #ffffff; padding: 20px; text-align: center; position: relative;">
-							<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
-								<tr>
-									<td style="text-align: center;">
-										<h2 style="<?php echo esc_attr( $paragraph_main_style ); ?> margin: 0 0 12px 0; font-weight: bold;">
-											<?php echo esc_html( $discount_with_title ); ?>
-										</h2>
-
-										<p style="<?php echo esc_attr( $paragraph_sub_style ); ?> margin: 0 0 12px 0;">
-											<?php echo esc_html( $coupon_settings['coupon_subheading'] ); ?>
-										</p>
-
-										<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 10px auto; border-collapse: separate;">
-											<tr>
-												<td style="<?php echo esc_attr( $coupon_button_style ); ?> border: 2px dashed #ffffff; border-radius: 8px; padding: 12px 24px;">
+									<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 10px auto; border-collapse: separate;">
+										<tr>
+											<td>
+												<p class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'couponCodeContainer' ) ); ?>">
 													<?php echo esc_html( $coupon_code ); ?>
-												</td>
-												<td style="padding-left: 15px;">
-													<a target="_blank" href="<?php echo esc_url( $coupon_settings['coupon_button_link'] ); ?>" style="<?php echo esc_attr( $shop_button_style ); ?> text-decoration: none; padding: 12px 24px; display: inline-block;">
-														<?php echo esc_html( $campaign['cta_button_text'] ?? 'Shop Now' ); ?>
-													</a>
-												</td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
-			</p>
-			<?php
-		}
+												</p>
+											</td>
+											<td>
+												<a target="_blank" href="<?php echo esc_url( $coupon_settings['coupon_button_link'] ); ?>" class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'shopNowButton' ) ); ?>">
+													<?php echo esc_html( $campaign['cta_button_text'] ?? 'Shop Now' ); ?>
+												</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</p>
+		<?php
 
 		$html = ob_get_clean();
 		// Minify the HTML before returning or sending in email.
@@ -1139,7 +1066,7 @@ class Revenue_Next_Order_Coupon {
 			$campaign_setting  = revenue()->get_campaign_meta( $campaign_id, 'revx_next_order_coupon', true );
 			$auto_coupon_apply = $campaign_setting['coupon_apply_automatically'] ?? 'no';
 			$eligible          = get_user_meta( $user_id, '_revx_next_order_coupon_eligible_' . $campaign_id, true );
-			if ( $eligible === 'yes' && $auto_coupon_apply === 'yes' && $coupon_id ) {
+			if ( 'yes' === $eligible && 'yes' === $auto_coupon_apply && $coupon_id ) {
 				$coupon = new \WC_Coupon( $coupon_id );
 				if ( $coupon->get_id() && $coupon->get_status() === 'publish' ) {
 					$coupon_code = $coupon->get_code();
@@ -1160,7 +1087,7 @@ class Revenue_Next_Order_Coupon {
 			$campaign_setting  = revenue()->get_campaign_meta( $campaign_id, 'revx_next_order_coupon', true );
 			$auto_coupon_apply = $campaign_setting['coupon_apply_automatically'] ?? 'no';
 			$eligible          = $this->get_guest_meta( '_revx_next_order_coupon_eligible_' . $campaign_id );
-			if ( $eligible === 'yes' && $auto_coupon_apply === 'yes' && $coupon_id ) {
+			if ( 'yes' === $eligible && 'yes' === $auto_coupon_apply && $coupon_id ) {
 				$coupon = new \WC_Coupon( $coupon_id );
 				if ( $coupon->get_id() && $coupon->get_status() === 'publish' ) {
 					$coupon_code = $coupon->get_code();
@@ -1268,26 +1195,7 @@ class Revenue_Next_Order_Coupon {
 		}
 	}
 
-	/**
-	 * Helper: Get guest key (email or session).
-	 *
-	 * @param WC_Order|null $order The order object.
-	 */
-	private function get_guest_key( $order = null ) {
-		if ( $order && is_object( $order ) ) {
-			$email = $order->get_billing_email();
-			if ( $email ) {
-				return sanitize_email( $email );
-			}
-		}
-		if ( isset( $_REQUEST['billing_email'] ) ) {
-			return sanitize_email( wp_unslash( $_REQUEST['billing_email'] ) );
-		}
-		if ( WC()->session ) {
-			return WC()->session->get_customer_id();
-		}
-		return null;
-	}
+
 
 	/**
 	 * Helper: Set guest meta in session.
@@ -1321,44 +1229,5 @@ class Revenue_Next_Order_Coupon {
 	 */
 	public function minify_email_html( $html ) {
 		return preg_replace( '/>\s+(?=<)/', '>', $html );
-	}
-
-	/**
-	 * Get the current user's next-order coupon code if one is set and published.
-	 *
-	 * Returns the coupon code string when a valid published coupon is found for the
-	 * current logged-in user, or false when no valid published coupon exists.
-	 *
-	 * @return string|false Coupon code string if available and published, false otherwise.
-	 */
-	public function get_coupon_code() {
-		$user_id   = get_current_user_id();
-		$coupon_id = get_user_meta( $user_id, '_revx_next_order_coupon_id', true );
-
-		if ( $coupon_id ) {
-			$coupon = new \WC_Coupon( $coupon_id );
-			if ( $coupon->get_id() && $coupon->get_status() === 'publish' ) {
-				$coupon_code = $coupon->get_code();
-				return $coupon_code;
-			} else {
-				return false; // Return false if the coupon is invalid or not published.
-			}
-		}
-	}
-	/**
-	 * Get the coupon button link for a campaign.
-	 *
-	 * Retrieves the configured "coupon_button_link" from the campaign's
-	 * revx_next_order_coupon settings.
-	 *
-	 * @param int|string $campaign_id Campaign ID.
-	 * @return string|null URL of the coupon button link or null if not set.
-	 */
-	public function get_coupon_link( $campaign_id ) {
-		$campaign_setting = revenue()->get_campaign_meta( $campaign_id, 'revx_next_order_coupon', true );
-		if ( isset( $campaign_setting['coupon_button_link'] ) ) {
-			return $campaign_setting['coupon_button_link'];
-		}
-		return null;
 	}
 }

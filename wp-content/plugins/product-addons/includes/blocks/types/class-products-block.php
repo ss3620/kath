@@ -2,6 +2,10 @@
 /**
  * Products Block Implementation
  *
+ * Deprecated, kept only as legacy support: the Products field can no longer be added in
+ * the builder. This class stays so Products fields that existing users already saved on
+ * their products keep working, and it will be removed in a future release.
+ *
  * @package PRAD
  * @since 1.0.0
  */
@@ -40,6 +44,11 @@ class Products_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
+		// Fields made with WowAddons Pro's "Advanced Products" are Pro fields, rendered by Pro only.
+		if ( $this->get_property( 'isAdvanced', false ) ) {
+			return '';
+		}
+
 		$options = $this->process_product_options();
 		if ( empty( $options ) ) {
 			return '';
@@ -75,6 +84,10 @@ class Products_Block extends Abstract_Block {
 
 		foreach ( $manual_products as $item ) {
 
+			if ( $this->is_option_hidden( $item ) ) {
+				continue;
+			}
+
 			if ( isset( $item['variation'] ) ) {
 				if ( $merge_variation ) {
 					$product_data = $this->get_product_data( $item['id'], true );
@@ -90,15 +103,11 @@ class Products_Block extends Abstract_Block {
 					}
 				}
 			} else {
-				$product_data = $product_id == $item['id'] ? '' : $this->get_product_data( $item['id'], false );
+				$product_data = (int) $product_id === (int) $item['id'] ? '' : $this->get_product_data( $item['id'], false );
 				if ( $product_data && $product_data->is_in_stock && $product_data->is_purchasable ) {
 					$options[] = $product_data;
 				}
 			}
-		}
-
-		if ( ! product_addons()->is_pro_feature_available() && is_array( $options ) && count( $options ) > 2 ) {
-			$options = array_slice( $options, 0, 2 );
 		}
 
 		return $options;
@@ -107,12 +116,12 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Get product data
 	 *
-	 * @param integer $product_id
-	 * @param boolean $with_variations
+	 * @param integer $product_id Product ID.
+	 * @param boolean $with_variations Whether to include variation data.
 	 * @return object|null
 	 */
 	private function get_product_data( int $product_id, bool $with_variations ) {
-		return \product_addons()->get_product_block_product_attr( $product_id, $with_variations );
+		return $this->get_product_block_product_attr( $product_id, $with_variations );
 	}
 
 	/**
@@ -141,8 +150,8 @@ class Products_Block extends Abstract_Block {
 		$attributes['data-input-type'] = $input_type;
 		$attributes['class']           = $this->build_css_classes( $css_classes );
 
-		$enableMinMaxRes = $this->get_property( 'enableMinMaxRes', true );
-		if ( 'checkbox' === $input_type && $enableMinMaxRes ) {
+		$enable_min_max_res = $this->get_property( 'enableMinMaxRes', true );
+		if ( 'checkbox' === $input_type && $enable_min_max_res ) {
 			$attributes['data-minselect'] = $this->get_property( 'minSelect', '' );
 			$attributes['data-maxselect'] = $this->get_property( 'maxSelect', '' );
 		}
@@ -197,6 +206,7 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render products wrapper
 	 *
+	 * @param array $options Options to render.
 	 * @return string
 	 */
 	private function render_products_wrapper( $options ) {
@@ -215,6 +225,7 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render product items
 	 *
+	 * @param array $options Options to render.
 	 * @return string
 	 */
 	private function render_product_items( $options ) {
@@ -230,8 +241,8 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render single product item
 	 *
-	 * @param object  $item
-	 * @param integer $index
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
 	 * @return string
 	 */
 	private function render_product_item( $item, int $index ): string {
@@ -246,12 +257,12 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Get variation HTML
 	 *
-	 * @param object  $item
-	 * @param integer $index
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
 	 * @return string
 	 */
 	private function get_variation_html( $item, int $index ): string {
-		return \product_addons()->generate_products_block_variation_section_html(
+		return $this->generate_products_block_variation_section_html(
 			array(
 				'item'  => $item,
 				'index' => $index,
@@ -262,36 +273,28 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render swatch item
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param string  $variation_html
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
+	 * @param string  $variation_html Pre-rendered variation section HTML.
 	 * @return string
 	 */
 	private function render_swatch_item( $item, int $index, string $variation_html ): string {
-		$price_info  = product_addons()->get_price_object( $item->regular, $item->sale );
+		$price_info  = $this->get_price_object( $item->regular, $item->sale );
 		$layout      = $this->get_property( 'layout', '_default' );
 		$hover_class = $this->get_hover_class();
 
 		$html  = '<div class="prad-products-item-wrapper prad-swatch-item-wrapper prad-relative prad-d-flex prad-flex-column prad-h-full">';
 		$html .= $this->render_swatch_container( $item, $index, $price_info, $hover_class, $layout );
 
-		if ( $layout === '_default' ) {
+		if ( '_default' === $layout ) {
 			$html .= $this->render_block_content( $item, $index, $price_info, $variation_html );
 		}
 
-		if ( $layout === '_img' && empty( $this->same_price_info['enabled'] ) && ! empty( $price_info['html'] ) ) {
+		if ( '_img' === $layout && ! empty( $price_info['html'] ) ) {
 			$html .= sprintf(
 				'<div class="prad-block-price prad-text-upper prad-text-center">%s</div>',
 				wp_kses( $price_info['html'], $this->allowed_html_tags )
 			);
-		}
-
-		if ( $this->should_render_quantity_input( $layout ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
-		}
-
-		if ( $this->get_property( 'enableCount', false ) && $this->is_overlay_count_hidden() && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
 		}
 
 		if ( '_overlay' === $layout || '_img' === $layout ) {
@@ -303,33 +306,13 @@ class Products_Block extends Abstract_Block {
 	}
 
 	/**
-	 * Whether the swatch is a small overlay where the quantity input has no room and
-	 * should instead render outside the overlay.
-	 *
-	 * @return boolean
-	 */
-	private function is_overlay_count_hidden(): bool {
-		$layout = $this->get_property( 'layout', '_default' );
-		if ( '_overlay' !== $layout ) {
-			return false;
-		}
-
-		$styles = $this->get_property( '_styles', array() );
-		$height = $styles['height']['val'] ?? null;
-		$width  = $styles['width']['val'] ?? null;
-		$radius = $styles['radius']['val'] ?? null;
-
-		return is_numeric( $height ) && is_numeric( $width ) && ( (float) $height < 100 || (float) $width < 100 ) && (float) $radius > 30;
-	}
-
-	/**
 	 * Render swatch container
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
-	 * @param string  $hover_class
-	 * @param string  $layout
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
+	 * @param array   $price_info Price data for the product.
+	 * @param string  $hover_class Hover effect CSS class.
+	 * @param string  $layout Swatch layout key.
 	 * @return string
 	 */
 	private function render_swatch_container( $item, int $index, array $price_info, string $hover_class, string $layout ): string {
@@ -341,8 +324,8 @@ class Products_Block extends Abstract_Block {
 		$html .= $this->render_swatch_label( $item, $index );
 		$html .= $this->render_swatch_mark();
 
-		if ( $layout === '_overlay' ) {
-			$html .= $this->render_block_content( $item, $index, $price_info, '', $this->is_overlay_count_hidden() );
+		if ( '_overlay' === $layout ) {
+			$html .= $this->render_block_content( $item, $index, $price_info );
 		}
 
 		$html .= '</div>';
@@ -352,16 +335,15 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render swatch input
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
+	 * @param array   $price_info Price data for the product.
 	 * @return string
 	 */
 	private function render_swatch_input( $item, int $index, array $price_info ): string {
-		$enable_count = $this->get_property( 'enableCount', false );
-		$input_type   = $this->get_input_type();
-		$blockid      = $this->get_block_id();
-		$item_id      = $blockid . $index;
+		$input_type = $this->get_input_type();
+		$blockid    = $this->get_block_id();
+		$item_id    = $blockid . $index;
 
 		$attributes = array(
 			'class'           => 'prad-input-hidden',
@@ -373,8 +355,6 @@ class Products_Block extends Abstract_Block {
 			'data-ptype'      => $item->type,
 			'data-product-id' => $item->id,
 			'data-label'      => $item->value,
-			'data-count'      => $enable_count ? 'yes' : 'no',
-			'data-counter'    => $item_id . '-switcher-count',
 		);
 
 		return sprintf( '<input %s />', $this->build_attributes( $attributes ) );
@@ -383,8 +363,8 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render swatch label
 	 *
-	 * @param object  $item
-	 * @param integer $index
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
 	 * @return string
 	 */
 	private function render_swatch_label( $item, int $index ): string {
@@ -415,15 +395,14 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render input item
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param string  $variation_html
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
+	 * @param string  $variation_html Pre-rendered variation section HTML.
 	 * @return string
 	 */
 	private function render_input_item( $item, int $index, string $variation_html ): string {
-		$price_info   = product_addons()->get_price_object( $item->regular, $item->sale );
+		$price_info   = $this->get_price_object( $item->regular, $item->sale );
 		$input_type   = $this->get_input_type();
-		$enable_count = $this->get_property( 'enableCount', false );
 		$column_class = $this->get_column_class();
 
 		$wrapper_class = 'prad-products-item-wrapper prad-d-flex prad-item-center prad-gap-8 prad-column-' . $column_class;
@@ -432,8 +411,8 @@ class Products_Block extends Abstract_Block {
 		$html .= '<div class="prad-d-flex ' . ( $variation_html ? 'prad-item-start' : 'prad-item-center' ) . ' prad-gap-8">';
 		$html .= $this->render_input_group( $item, $index, $input_type, $variation_html );
 
-		if ( $item->type != 'no_cost' || $enable_count ) {
-			$html .= $this->render_price_and_quantity( $item, $index, $price_info );
+		if ( 'no_cost' !== $item->type ) {
+			$html .= $this->render_price( $price_info );
 		}
 
 		$html .= '</div></div>';
@@ -444,21 +423,20 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render input group with label
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param string  $input_type
-	 * @param string  $variation_html
+	 * @param object  $item Product data.
+	 * @param integer $index Product index.
+	 * @param string  $input_type Input type (radio or checkbox).
+	 * @param string  $variation_html Pre-rendered variation section HTML.
 	 * @return string
 	 */
 	private function render_input_group( $item, int $index, string $input_type, string $variation_html ): string {
-		$price_info   = product_addons()->get_price_object( $item->regular, $item->sale );
-		$enable_count = $this->get_property( 'enableCount', false );
+		$price_info   = $this->get_price_object( $item->regular, $item->sale );
 		$blockid      = $this->get_block_id();
 		$allowed_tags = $this->allowed_html_tags;
 
 		$html = sprintf( '<div class="prad-%s-item prad-d-flex prad-item-center prad-gap-10">', esc_attr( $input_type ) );
 
-		// Input
+		// Input.
 		$input_attributes = array(
 			'class'           => 'prad-input-hidden',
 			'type'            => $input_type,
@@ -469,13 +447,11 @@ class Products_Block extends Abstract_Block {
 			'data-product-id' => $item->id,
 			'data-index'      => $index,
 			'data-label'      => $item->value,
-			'data-count'      => $enable_count ? 'yes' : 'no',
-			'data-counter'    => $blockid . $index . '-switcher-count',
 		);
 
 		$html .= sprintf( '<input %s />', $this->build_attributes( $input_attributes ) );
 
-		// Label
+		// Label.
 		$html .= sprintf( '<label for="%s" class="prad-d-flex prad-item-center prad-gap-10">', esc_attr( $blockid . $index ) );
 		$html .= $this->render_input_mark( $input_type );
 		$html .= $this->render_input_content( $item, $variation_html, $allowed_tags );
@@ -489,17 +465,17 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render input mark (radio/checkbox)
 	 *
-	 * @param string $input_type
+	 * @param string $input_type Input type (radio or checkbox).
 	 * @return string
 	 */
 	private function render_input_mark( string $input_type ): string {
-		if ( $input_type === 'radio' ) {
+		if ( 'radio' === $input_type ) {
 			return '<div class="prad-radio-mark prad-br-round prad-realtive prad-selection-none"></div>';
 		}
 
 		return '<div class="prad-checkbox-mark prad-selection-none">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="m10.125 3.375-5.25 5.25L2.25 6" stroke="currentColor" stroke-width="1.5" 
+                <path d="m10.125 3.375-5.25 5.25L2.25 6" stroke="currentColor" stroke-width="1.5"
                     stroke-linecap="round" stroke-linejoin="round" />
             </svg>
         </div>';
@@ -508,18 +484,16 @@ class Products_Block extends Abstract_Block {
 	/**
 	 * Render input content
 	 *
-	 * @param object $item
-	 * @param string $variation_html
-	 * @param array  $allowed_tags
+	 * @param object $item Product data.
+	 * @param string $variation_html Pre-rendered variation section HTML.
+	 * @param array  $allowed_tags Allowed HTML tags for output escaping.
 	 * @return string
 	 */
 	private function render_input_content( $item, string $variation_html, array $allowed_tags ): string {
 		$p_url = isset( $item->url ) ? $item->url : '';
 		$html  = '<div class="prad-block-content prad-d-flex prad-item-center">';
 
-		if ( isset( $item->img ) && $item->img && product_addons()->is_pro_feature_available() ) {
-			$html .= sprintf( '<img class="prad-block-item-img" src="%s" alt="Item" data-tooltip-label="%s" />', esc_url( $item->img ), esc_attr( $item->value ) );
-		}
+		$html .= apply_filters( 'prad_option_image_html', '', $item, $this );
 
 		$class      = 'prad-ellipsis-2';
 		$attributes = array(
@@ -553,95 +527,24 @@ class Products_Block extends Abstract_Block {
 	}
 
 	/**
-	 * Render price and quantity section
+	 * Render the product's price
 	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
+	 * @param array $price_info Price data for the product.
 	 * @return string
 	 */
-	private function render_price_and_quantity( $item, int $index, array $price_info ): string {
-		$enable_count = $this->get_property( 'enableCount', false );
-		$allowed_tags = $this->allowed_html_tags;
-
-		$html = '<div class="prad-d-flex prad-item-center prad-gap-12">';
-
-		if ( $item->type != 'no_cost' ) {
-			$html .= sprintf(
-				'<div class="prad-block-price prad-text-upper ssss">%s</div>',
-				wp_kses( $price_info['html'], $allowed_tags )
-			);
-		}
-
-		if ( $enable_count && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_quantity_input( $index );
-		}
-
-		$html .= '</div>';
-
-		return $html;
-	}
-
-	/**
-	 * Check if quantity input should be rendered
-	 *
-	 * @param string $layout
-	 * @return boolean
-	 */
-	private function should_render_quantity_input( string $layout ): bool {
-		return $this->get_property( 'enableCount', false ) && $layout === '_img';
-	}
-
-	/**
-	 * Get quantity input attributes
-	 *
-	 * @param integer $index
-	 * @return array
-	 */
-	private function get_quantity_input_attributes( int $index ): array {
-		$blockid = $this->get_block_id();
-		$min     = $this->get_property( 'min', 1 );
-		$max     = $this->get_property( 'max', 100 );
-		$item_id = $blockid . $index;
-
-		return array(
-			'id'           => 'prad_quantity_' . $item_id,
-			'name'         => 'prad_quantity_' . $item_id,
-			'type'         => 'number',
-			'placeholder'  => $min,
-			'value'        => $min,
-			'min'          => $min,
-			'max'          => $max,
-			'class'        => 'prad-block-input prad-quantity-input switcher-count prad-input prad-w-full prad-mt-6',
-			'data-counter' => $item_id . '-switcher-count',
+	private function render_price( array $price_info ): string {
+		return sprintf(
+			'<div class="prad-d-flex prad-item-center prad-gap-12"><div class="prad-block-price prad-text-upper">%s</div></div>',
+			wp_kses( $price_info['html'], $this->allowed_html_tags )
 		);
 	}
 
 	/**
-	 * Render quantity input
+	 * Render the hidden image preview tooltip container.
 	 *
-	 * @param integer $index
-	 * @return string
-	 */
-	private function render_quantity_input( int $index ): string {
-		return sprintf( '<input %s />', $this->build_attributes( $this->get_quantity_input_attributes( $index ) ) );
-	}
-
-	/**
-	 * Render block content using parent method
-	 *
-	 * @param object  $item
-	 * @param integer $index
-	 * @param array   $price_info
-	 * @param string  $variation_html
-	 * @return string
-	 */
-	private function render_block_contents( $item, int $index, array $price_info, string $variation_html = '' ): string {
-		return parent::render_block_content( $item, $index, $price_info, $variation_html );
-	}
-
-	/**
-	 * Render tooltip
+	 * Deprecated, legacy support: "Enable Image Preview" has always been a free setting of
+	 * the Products field, so Products fields existing users already saved keep their image
+	 * preview. It goes away with this field type in a future release.
 	 *
 	 * @return string
 	 */
@@ -655,5 +558,153 @@ class Products_Block extends Abstract_Block {
 			<img src="" alt="" />
 			<span class="prad-img-tooltip-label"></span>
 		</div>';
+	}
+
+	/**
+	 * Generates the HTML for the product block variation section.
+	 *
+	 * This function outputs the variation selection UI for a given product block item.
+	 *
+	 * @param array $args Arguments containing the product item.
+	 * @return string The generated HTML for the variation section.
+	 */
+	private function generate_products_block_variation_section_html( $args ) {
+		$item              = $args['item'];
+		$allowed_html_tags = apply_filters( 'prad_allowed_html_tags', array() );
+		ob_start();
+		if ( isset( $item->variation ) && $item->variation ) {
+			$select_options       = '';
+			$product              = wc_get_product( $item->id );
+			$available_variations = $product->get_available_variations();
+			foreach ( $available_variations as $variation_data ) {
+				$variation_id = $variation_data['variation_id'];
+				$variation    = wc_get_product( $variation_id );
+
+				if ( $variation && $variation->is_purchasable() && $variation->is_in_stock() ) {
+					$variation_attributes = $variation->get_attributes();
+					$option_label         = '';
+					$valid_variation      = true;
+					$i                    = 0;
+					$regular_price        = $variation->get_regular_price( '' );
+					$sale_price           = $variation->get_sale_price( '' );
+
+					$regular_price = apply_filters(
+						'prad_raw_tax_compitable_price',
+						array(
+							'product_id' => $variation_id,
+							'price'      => $variation->get_regular_price(),
+							'source'     => 'product_page',
+						)
+					);
+					$sale_price    = apply_filters(
+						'prad_raw_tax_compitable_price',
+						array(
+							'product_id' => $variation_id,
+							'price'      => $variation->get_sale_price(),
+							'source'     => 'product_page',
+						)
+					);
+					$price_obj     = $this->get_price_object( $regular_price, $sale_price );
+					foreach ( $variation_attributes as $key => $value ) {
+						$label = str_replace( '_', ' ', str_replace( 'pa_', '', $key ) );
+						if ( ! empty( $value ) ) {
+							$option_label .= ( $i > 0 ? ' , ' : '' ) . ucfirst( $label ) . ' - ' . ucfirst( $value );
+							++$i;
+						} else {
+							$valid_variation = false;
+						}
+					}
+					if ( $valid_variation ) {
+						$option_label    = rawurldecode( wp_strip_all_tags( $option_label ) );
+						$select_options .= '<div class="prad-select-option" title="' . esc_attr( $option_label ) . '" value="' . esc_attr( $price_obj['price'] ) . '" data-variation-id="' . esc_attr( $variation_id ) . '"  data-pricehtml="' . esc_attr( $price_obj['html'] ) . '">' . esc_html( $option_label ) . '</div>';
+					}
+				}
+			}
+
+			if ( $select_options ) {
+				?>
+				<div class="prad-product-block-variation-select prad-mt-10">
+					<div class="prad-custom-select prad-w-full prad-product-variation-select-comp">
+						<div class="prad-select-box prad-block-input prad-block-content" readonly="readonly"><div style="max-width: 120px" class="prad-select-box-item prad-mr-12 prad-ellipsis"><?php esc_html_e( 'Select an option', 'product-addons' ); ?></div> <div class="prad-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m1 1 6 6 6-6"></path></svg></div></div>
+						<div class="prad-select-options">
+							<?php echo wp_kses( $select_options, $allowed_html_tags ); ?>
+						</div>
+					</div>
+				</div>
+
+				<?php
+			}
+		}
+		return ob_get_clean();
+	}
+
+	/**
+	 * Retrieves product block attributes for a given product ID.
+	 *
+	 * Returns an object containing product details such as ID, type, variation status,
+	 * URL, name, image, regular and sale prices, stock status, and purchasable status.
+	 *
+	 * @param int  $p_id   Product ID.
+	 * @param bool $var_p  Whether the product is a variation.
+	 * @return object|null Product attributes object or null if not found.
+	 */
+	private function get_product_block_product_attr( $p_id, $var_p = false ) {
+		$product = wc_get_product( $p_id );
+		if ( $product ) {
+			$formatted_variation = wc_get_formatted_variation( $product, true, false, true );
+			$product_value       = $product->get_name() . ( $formatted_variation ? ' - ' . $formatted_variation : '' );
+			$data                = array(
+				'id'             => $p_id,
+				'type'           => 'fixed',
+				'variation'      => $var_p,
+				'url'            => get_permalink( $p_id ),
+				'value'          => rawurldecode( wp_strip_all_tags( $product_value ) ),
+				'img'            => wp_get_attachment_url( $product->get_image_id() ),
+				'regular'        => apply_filters(
+					'prad_raw_tax_compitable_price',
+					array(
+						'product_id' => $p_id,
+						'ppType'     => 'reg',
+						'price'      => $product->get_regular_price(),
+						'source'     => 'product_page',
+					)
+				),
+				'sale'           => apply_filters(
+					'prad_raw_tax_compitable_price',
+					array(
+						'product_id' => $p_id,
+						'ppType'     => 'sale',
+						'price'      => $product->get_sale_price(),
+						'source'     => 'product_page',
+					)
+				),
+				'is_in_stock'    => $product->is_in_stock(),
+				'is_purchasable' => $product->is_purchasable(),
+			);
+			return (object) $data;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns a structured price object with numeric and formatted HTML price.
+	 *
+	 * If a sale price is provided, the returned price is the sale price, and the
+	 * HTML includes both the regular and sale prices. Otherwise, it returns only
+	 * the regular price.
+	 *
+	 * @param float|string $regular The regular price.
+	 * @param float|string $sale    The sale price. If empty or false, regular price is used.
+	 * @return array {
+	 *     @type float  $price The numeric value of the applicable price.
+	 *     @type string $html  The formatted HTML price string.
+	 * }
+	 */
+	private function get_price_object( $regular, $sale ) {
+		return array(
+			'price' => $sale ? floatval( $sale ) : floatval( $regular ),
+			'html'  => $sale ? '<span class="pricex"><del>' . wc_price( $regular ) . '</del> <ins>' . wc_price( $sale ) . '</ins></span>' : '<span class="pricex">' . wc_price( $regular ) . '</span>',
+		);
 	}
 }

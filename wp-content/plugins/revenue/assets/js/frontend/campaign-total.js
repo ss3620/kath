@@ -14,7 +14,7 @@
 		$priceContainer.text( Revenue.formatPrice( price ) );
 	}
 
-	// can handle both buy x get y and bundle discount
+	// Can handle both buy x get y and bundle discount.
 	function setBundleTotal( $campaignItems ) {
 		let totalRegular = 0;
 		let totalOffer = 0;
@@ -69,14 +69,10 @@
 	}
 
 	// Create observer
-	function observeQtyChnages( $campaignItems, campaignType = null ) {
+	function observeQtyChnages( $campaignItems ) {
 		const observer = new MutationObserver( () => {
-			if ( 'frequently_bought_together' === campaignType ) {
-				$campaignItems.first().trigger( 'revx-quantity-changed' );
-			} else {
-				// whenever any qty changes, re-calc totals for this campaign
-				setBundleTotal( $campaignItems );
-			}
+			// Whenever any quantity changes, re-calculate totals for this campaign.
+			setBundleTotal( $campaignItems );
 		} );
 
 		$campaignItems.each( function () {
@@ -103,20 +99,11 @@
 				const $buyXGetYDiscounts = $( this ).find(
 					'[campaign_type="buy_x_get_y"]'
 				);
-				const $fbtDiscounts = $( this ).find(
-					'[campaign_type="frequently_bought_together"]'
-				);
 				if ( $bundleDiscounts.length ) {
 					setBundleTotal( $bundleDiscounts );
 				} else if ( $buyXGetYDiscounts.length ) {
 					setBundleTotal( $buyXGetYDiscounts );
 					observeQtyChnages( $buyXGetYDiscounts ); // need to handle quantity change for buy x get y
-				} else if ( $fbtDiscounts.length ) {
-					$fbtDiscounts.first().trigger( 'revx-fbt-init' );
-					observeQtyChnages(
-						$fbtDiscounts,
-						'frequently_bought_together'
-					);
 				}
 			} );
 	}

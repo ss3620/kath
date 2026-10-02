@@ -57,7 +57,7 @@ class Block_Renderer {
 	 * @param int   $index Block index in the collection.
 	 * @return string Rendered HTML.
 	 */
-	public function render_single_block( array $block_data, int $product_id, int $index = 0 ): string {
+	public function render_single_block( array $block_data, int $product_id, int $index = 0 ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- part of this public method's signature, called with the loop index from render_blocks().
 		$type = $block_data['type'] ?? '';
 
 		if ( empty( $type ) ) {
@@ -86,13 +86,15 @@ class Block_Renderer {
 			return $html;
 
 		} catch ( \Exception $e ) {
-			error_log(//phpcs:ignore
-				sprintf(
-					'PRAD Block Render Error: Failed to render block type "%s". Error: %s',
-					$type,
-					$e->getMessage()
-				)
-			);
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Only logged when WP_DEBUG is enabled.
+					sprintf(
+						'PRAD Block Render Error: Failed to render block type "%s". Error: %s',
+						$type,
+						$e->getMessage()
+					)
+				);
+			}
 
 			do_action( 'prad_block_render_exception', $e, $block, $product_id );
 

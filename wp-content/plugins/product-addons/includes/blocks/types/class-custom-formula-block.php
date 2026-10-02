@@ -56,7 +56,7 @@ class Custom_Formula_Block extends Abstract_Block {
 	/**
 	 * Check if formula data is valid
 	 *
-	 * @param object|null $formula_data
+	 * @param object|null $formula_data Formula data.
 	 * @return boolean
 	 */
 	private function is_valid_formula( $formula_data ): bool {
@@ -69,7 +69,7 @@ class Custom_Formula_Block extends Abstract_Block {
 	/**
 	 * Get formula specific attributes
 	 *
-	 * @param object $formula_data
+	 * @param object $formula_data Formula data.
 	 * @return array
 	 */
 	private function get_formula_attributes( $formula_data ): array {

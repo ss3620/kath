@@ -1,6 +1,8 @@
 <?php
 namespace RevenuePro;
 
+defined( 'ABSPATH' ) || exit;
+
 use Revenue;
 
 /**
@@ -358,8 +360,6 @@ class Revenue_Mix_Match {
 
 		// Rendering for popup views.
 		if ( ! empty( $this->campaigns['popup'] ) ) {
-			// wp_enqueue_script( 'revenue-popup' );
-			// wp_enqueue_style( 'revenue-popup' );
 
 			$output    = '';
 			$campaigns = $this->campaigns['popup'];
@@ -367,7 +367,7 @@ class Revenue_Mix_Match {
 				$current_campaign = $campaign;
 				revenue()->update_campaign_impression( $campaign['id'], $post->ID );
 
-				revenue()->load_popup_assets($campaign);
+				revenue()->load_popup_assets();
 
 				$file_path = revenue_pro()->get_campaign_path( $campaign, 'popup', 'mix-match' );
 				$file_path = apply_filters( 'revenue_campaign_view_path', $file_path, 'mix_match', 'popup', $campaign );
@@ -382,27 +382,13 @@ class Revenue_Mix_Match {
 
 		// Rendering for floating views.
 		if ( ! empty( $this->campaigns['floating'] ) ) {
-			// wp_enqueue_script( 'revenue-floating' );
 
 			$output    = '';
 			$campaigns = $this->campaigns['floating'];
 			foreach ( $campaigns as $campaign ) {
 				$current_campaign = $campaign;
 
-				// $campaign_modified = strtotime( $campaign['date_modified'] );
-				// $is_new_version    = false;
-				// $release_time      = strtotime( '2025-10-15 09:10:00' );
-				// $revenue_version   = REVENUE_VER;
-
-				// if ( $campaign_modified >= $release_time && version_compare( $revenue_version, '2.0.0', '>=' ) ) {
-				// 	$is_new_version = true;
-				// }
-
-				// if ( ! $is_new_version ) {
-				// 	wp_enqueue_style( 'revenue-floating' );
-				// }
-
-				revenue()->load_floating_assets($campaign);
+				revenue()->load_floating_assets();
 				revenue()->update_campaign_impression( $campaign['id'], $post->ID );
 
 				$file_path = revenue_pro()->get_campaign_path( $campaign, 'floating', 'mix-match' );

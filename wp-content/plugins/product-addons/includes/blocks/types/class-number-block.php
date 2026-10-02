@@ -32,7 +32,7 @@ class Number_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 		if ( empty( $options ) ) {
 			return '';
 		}
@@ -68,6 +68,7 @@ class Number_Block extends Abstract_Block {
 	/**
 	 * Render number input section
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_number_input( array $price_info ): string {
@@ -81,8 +82,8 @@ class Number_Block extends Abstract_Block {
 			'data-val'    => $price_info['price'],
 		);
 
-		$enableMinMaxRes = $this->get_property( 'enableMinMaxRes', true );
-		if ( $enableMinMaxRes ) {
+		$enable_min_max_res = $this->get_property( 'enableMinMaxRes', true );
+		if ( $enable_min_max_res ) {
 			$input_attributes['min'] = $this->get_property( 'min', 0 );
 			$input_attributes['max'] = $this->get_property( 'max', 100 );
 		}

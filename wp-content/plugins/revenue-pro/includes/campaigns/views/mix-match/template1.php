@@ -41,7 +41,7 @@ $template_data          = revenue()->get_campaign_meta( $campaign['id'], 'builde
 $offers                 = revenue()->get_campaign_meta( $campaign['id'], 'offers', true );
 $placement_settings     = revenue()->get_placement_settings( $campaign['id'] );
 $display_style          = isset( $placement_settings['display_style'] ) ? $placement_settings['display_style'] : 'inpage';
-$slider_columns         = json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
+$slider_columns         = wp_json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
 $products_wrapper_class = 'grid' == $view_mode ? 'revx-slider-wrapper' : '';
 $is_grid_view           = 'grid' === $view_mode;
 $tier_items             = $campaign['offers'];
@@ -93,15 +93,15 @@ foreach ( $selected_items as $item ) {
 	$filtered_items[ $item['id'] ] = $item;
 }
 
-$selected_items = $filtered_items;
-$selected_item_ids      = array_keys( $selected_items );
+$selected_items    = $filtered_items;
+$selected_item_ids = array_keys( $selected_items );
 
 $required_product_arr = array();
 $mix_match_quantity   = revenue()->getMixMatchQuantities( $campaign );
 
 $is_all_product_selection = 'all_products' === $initial_product_selection;
 
-$pre_selected_ids = array(); 
+$pre_selected_ids = array();
 
 $offer_data = array();
 foreach ( $trigger_items as $offer ) {
@@ -275,20 +275,24 @@ ob_start();
 
 ?>
 
-<div 
+<div
 	class="
-		<?php echo esc_attr( Revenue_Template_Utils::get_element_class(
-			$template_data,
-			'productBodyWrapper'
-		) ); ?> 
-		<?php echo esc_attr( $display_style ); ?> 
-		<?php echo esc_attr( $device_manager_class ); ?> 
+		<?php
+		echo esc_attr(
+			Revenue_Template_Utils::get_element_class(
+				$template_data,
+				'productBodyWrapper'
+			)
+		);
+		?>
+				<?php echo esc_attr( $display_style ); ?>
+		<?php echo esc_attr( $device_manager_class ); ?>
 		<?php echo esc_attr( $extra_class ); ?>
 	"
 	data-container-level="mix_match_file"
 >
 	<div class="revx-product-body-wrapper">
-		
+
 		<?php Revenue_Template_Utils::render_wrapper_header( $campaign, $template_data ); ?>
 
 		<div class="revx-tiers-container revx-gap-8 revx-mixmatch-quantity">
@@ -300,13 +304,13 @@ ob_start();
 				);
 				$quantity       = $tier_item['quantity'];
 				$discount_value = $tier_item['value'] ?? '';
-				$discount_type  = $tier_item[ 'type' ];
+				$discount_type  = $tier_item['type'];
 				$next_quantity  = $tier_items[ $tier_item_idx + 1 ]['quantity'] ?? null;
 				$is_selected    = $next_quantity
 					? ( $selected_product_count >= $quantity && $selected_product_count < $next_quantity )
 					: ( $selected_product_count >= $quantity );
 
-				$tier_class     = 'revx-tier-regular';
+				$tier_class = 'revx-tier-regular';
 				if ( $is_selected && $is_enable_tag ) {
 					$tier_class = 'revx-tier-selected revx-tier-enable';
 				} elseif ( $is_selected ) {
@@ -336,34 +340,32 @@ ob_start();
 				>
 					<?php
 					if ( $is_enable_tag ) {
-							echo Revenue_Template_Utils::render_tag( $template_data );
+							echo wp_kses( Revenue_Template_Utils::render_tag( $template_data ), revenue()->get_allowed_tag() );
 					}
 					?>
 					<div
 						class="revx-d-flex revx-flex-wrap revx-item-center revx-justify-between revx-relative revx-w-full"
 					>
 						<div class="revx-mix-title-badge">
-							<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'mixMatchTitle', $title_to_show, 'revx-mix-match-title' ); ?>
+							<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'mixMatchTitle', $title_to_show, 'revx-mix-match-title' ), revenue()->get_allowed_tag() ); ?>
 							<?php Revenue_Template_Utils::render_save_badge( $template_data, $badge_to_show ?? '', 'revx-mix-match-badge', 'mixMatchBadge' ); ?>
 						</div>
-						<div class="<?php echo $is_enable_tag ? 'revx-tag-text-color' : ''; ?> revx-checkbox-wrapper">
-							<div 
-								class="revx-checkbox-container <?php echo $is_selected ? 'revx-active' : 'revx-inactive revx-d-none' ?>" 
-								style="font-size: 24px; pointer-events: none;" 
+						<div class="<?php echo $is_enable_tag ? 'revx-tag-text-color' : '';  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded two-branch ternary, both branches literal strings. ?> revx-checkbox-wrapper">
+							<div
+								class="revx-checkbox-container <?php echo $is_selected ? 'revx-active' : 'revx-inactive revx-d-none';  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded two-branch ternary, both branches literal strings. ?>"
+								style="font-size: 24px; pointer-events: none;"
 								data-is-checked="<?php echo esc_attr( $is_selected ? 'yes' : 'no' ); ?>"
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 16 16">
 									<rect width="11.8" height="11.8" x="2.102" y="2.1"
-										<?php #old code: echo $is_enable_tag ? '-tag' : ''; ?>
 										stroke="var(--revx-checkbox-bg-color,#000000)"
 										rx="2.7"></rect>
 									<rect width="11.4" height="11.4" x="2.502" y="2.5"
-										<?php #old code - color was unxpected: echo $is_enable_tag ? '-tag' : ''; ?>										
+										<?php #old code - color was unxpected: echo $is_enable_tag ? '-tag' : ''; ?>
 										fill="var(--revx-checkbox-bg-color,#000000)"
 										class="revx-checkbox-inactive"
 										rx="2"></rect>
-									<path 
-										<?php #old code: echo $is_enable_tag ? '-tag' : ''; ?>
+									<path
 										stroke="var(--revx-checkbox-icon-color,#fff)"
 										stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
 										d="m11.4 5.9-4.2 4.2-2-2"
@@ -375,15 +377,15 @@ ob_start();
 				</div>
 			<?php } ?>
 		</div>
-		<?php echo esc_attr( Revenue_Template_Utils::render_mix_match_products_container( $campaign, $template_data, $placement, true ) ); ?>
+		<?php echo esc_attr( Revenue_Pro_Template_Utils::render_mix_match_products_container( $campaign, $template_data, $placement, true ) ); ?>
 	</div>
-	<?php Revenue_Template_Utils::render_mix_match_products_footer( $campaign, $template_data, 'mixMatchFooter', $selected_items, $campaign['id'], $campaign['campaign_type'] ); ?>
+	<?php Revenue_Pro_Template_Utils::render_mix_match_products_footer( $campaign, $template_data, 'mixMatchFooter', $selected_items, $campaign['id'], $campaign['campaign_type'] ); ?>
 </div>
 
-<input type="hidden" name="<?php echo 'revx-offer-data-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo htmlspecialchars( wp_json_encode( $offer_data ) ); ?>" />
-<input type="hidden" name="<?php echo 'revx-selected-items-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo htmlspecialchars( wp_json_encode( $selected_items ) ); ?>" />
-<input type="hidden" name="<?php echo 'revx-qty-data-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo htmlspecialchars( wp_json_encode( $mix_match_quantity ) ); ?>" />
-<input type="hidden" name="<?php echo 'revx-required-products-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo htmlspecialchars( wp_json_encode( $required_products ) ); ?>" />
+<input type="hidden" name="<?php echo 'revx-offer-data-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo esc_attr( wp_json_encode( $offer_data ) ); ?>" />
+<input type="hidden" name="<?php echo 'revx-selected-items-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo esc_attr( wp_json_encode( $selected_items ) ); ?>" />
+<input type="hidden" name="<?php echo 'revx-qty-data-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo esc_attr( wp_json_encode( $mix_match_quantity ) ); ?>" />
+<input type="hidden" name="<?php echo 'revx-required-products-' . esc_attr( $campaign['id'] ); ?>" value="<?php echo esc_attr( wp_json_encode( $required_products ) ); ?>" />
 
 
 <?php

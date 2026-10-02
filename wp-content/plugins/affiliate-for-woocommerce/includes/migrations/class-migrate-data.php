@@ -4,13 +4,15 @@
  *
  * @package     affiliate-for-woocommerce/includes/migration
  * @since       8.34.0
- * @version     1.3.0
+ * @version     1.4.0
  */
 
 namespace AFWC\Migrations;
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! class_exists( Migrate_Data::class ) ) {
 
@@ -64,7 +66,6 @@ if ( ! class_exists( Migrate_Data::class ) ) {
 		 * Load available migration sources.
 		 */
 		public function load_sources() {
-
 			if ( ! class_exists( Indeed_Affiliate_Pro::class ) ) {
 				require_once AFWC_PLUGIN_DIRPATH . '/includes/migrations/sources/class-indeed-affiliate-pro.php';
 			}
@@ -95,7 +96,6 @@ if ( ! class_exists( Migrate_Data::class ) ) {
 		 * @return void
 		 */
 		public function import_data( $plugin = '' ) {
-
 			// If no plugin is specified, run import for all available source plugins.
 			if ( empty( $plugin ) && ! empty( $this->source_plugins ) && is_array( $this->source_plugins ) ) {
 				foreach ( $this->source_plugins as $plugin_slug => $plugin_data ) {
@@ -130,12 +130,54 @@ if ( ! class_exists( Migrate_Data::class ) ) {
 		}
 
 		/**
+		 * Re-trigger the background process for any source whose migration has started but not
+		 * completed, so a stalled migration can resume and finalize on its own.
+		 *
+		 * @param string $source Optional source slug. Empty resumes all active incomplete sources.
+		 *
+		 * @return void
+		 */
+		public function resume_incomplete( $source = '' ) {
+			if ( empty( $this->source_plugins ) || ! is_array( $this->source_plugins ) ) {
+				return;
+			}
+
+			foreach ( $this->source_plugins as $plugin_slug => $plugin_data ) {
+
+				if ( ! empty( $source ) && $plugin_slug !== $source ) {
+					continue; // Skip if a specific source is requested and this isn't it.
+				}
+
+				if ( empty( $plugin_data['is_active'] )
+					|| empty( $plugin_data['instance'] )
+					|| ! $plugin_data['instance'] instanceof \AFWC_Migration
+					|| ! is_callable( array( $plugin_data['instance'], 'is_running' ) )
+					|| ! is_callable( array( $plugin_data['instance'], 'init' ) )
+				) {
+					continue;
+				}
+
+				$instance = $plugin_data['instance'];
+
+				// Only resume sources that have started but not yet completed.
+				if ( ! $instance->is_running() ) {
+					continue;
+				}
+
+				if ( is_callable( array( $instance, 'setup_action' ) ) ) {
+					$instance->setup_action();
+				}
+
+				$instance->init();
+			}
+		}
+
+		/**
 		 * Check if any migration is currently running.
 		 *
 		 * @return bool True if migration is in progress, otherwise false.
 		 */
 		public function is_running() {
-
 			if ( empty( $this->source_plugins ) || ! is_array( $this->source_plugins ) ) {
 				return false;
 			}

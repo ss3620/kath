@@ -7,10 +7,15 @@
  *
  * @package TikTok
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 require_once __DIR__ . '/../utils/utilities.php';
 require_once 'Tt4b_Menu_Class.php';
 add_action( 'admin_menu', array( 'tt4b_menu_class', 'tt4b_admin_menu' ) );
-add_action( 'wp_loaded', array( 'tt4b_menu_class', 'tt4b_store_access_token' ) );
+add_action( 'admin_init', array( 'tt4b_menu_class', 'tt4b_store_access_token' ) );
 add_action( 'before_delete_post', 'tt4b_product_delete', 10, 2 );
 add_action( 'wp_trash_post', 'tt4b_product_trashed' );
 add_action( 'woocommerce_before_delete_product_variation', 'tt4b_variation_delete' );
@@ -156,7 +161,7 @@ function tt4b_product_delete( $post_id, $post ) {
 		$parent_sku        = $parent_product->get_sku() ? $parent_product->get_sku() : (string) $parent_product->get_id();
 		// if the child product sku is the same as the parent product, make sure to use the same concatenation logic as in catalog sync
 		// otherwise use the unique child product sku for deletion
-		$sku_key = variation_content_id_helper( Method::DELETE, $parent_sku, $sku_id, $id );
+		$sku_key = tt4b_variation_content_id_helper( Method::DELETE, $parent_sku, $sku_id, $id );
 	}
 
 	// add the sku to array of skus to be deleted - stored as an option to be processed during scheduled syncs & management page syncs

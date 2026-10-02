@@ -76,13 +76,15 @@ class Block_Factory {
 			return $block;
 
 		} catch ( \Exception $e ) {
-			error_log(//phpcs:ignore
-				sprintf(
-					'PRAD Block Factory Error: Failed to create block type "%s". Error: %s',
-					$type,
-					$e->getMessage()
-				)
-			);
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Only logged when WP_DEBUG is enabled.
+					sprintf(
+						'PRAD Block Factory Error: Failed to create block type "%s". Error: %s',
+						$type,
+						$e->getMessage()
+					)
+				);
+			}
 
 			do_action( 'prad_block_creation_failed', $type, $data, $e );
 
@@ -98,47 +100,46 @@ class Block_Factory {
 	 */
 	public static function get_block_class_name_by_type( $type ) {
 		$blocks_array = array(
-			'textfield'        => 'PRAD\Includes\Blocks\Types\Textfield_Block',
-			'section'          => 'PRAD\Includes\Blocks\Types\Section_Block',
-			'radio'            => 'PRAD\Includes\Blocks\Types\Radio_Block',
-			'checkbox'         => 'PRAD\Includes\Blocks\Types\Checkbox_Block',
-			'custom_formula'   => 'PRAD\Includes\Blocks\Types\Custom_Formula_Block',
-			'switch'           => 'PRAD\Includes\Blocks\Types\Switch_Block',
-			'select'           => 'PRAD\Includes\Blocks\Types\Select_Block',
-			'products'         => 'PRAD\Includes\Blocks\Types\Products_Block',
-			'upload'           => 'PRAD\Includes\Blocks\Types\Upload_Block',
-			'button'           => 'PRAD\Includes\Blocks\Types\Button_Block',
-			'img_switch'       => 'PRAD\Includes\Blocks\Types\Image_Switch_Block',
-			'color_switch'     => 'PRAD\Includes\Blocks\Types\Color_Switch_Block',
-			'color_picker'     => 'PRAD\Includes\Blocks\Types\Color_Picker_Block',
-			'date'             => 'PRAD\Includes\Blocks\Types\Date_Block',
-			'time'             => 'PRAD\Includes\Blocks\Types\Time_Block',
-			'datetime'         => 'PRAD\Includes\Blocks\Types\Date_Time_Block',
-			'range'            => 'PRAD\Includes\Blocks\Types\Range_Block',
-			'url'              => 'PRAD\Includes\Blocks\Types\Url_Block',
-			'email'            => 'PRAD\Includes\Blocks\Types\Email_Block',
-			'number'           => 'PRAD\Includes\Blocks\Types\Number_Block',
-			'telephone'        => 'PRAD\Includes\Blocks\Types\Telephone_Block',
-			'textarea'         => 'PRAD\Includes\Blocks\Types\Textarea_Block',
-			'heading'          => 'PRAD\Includes\Blocks\Types\Heading_Block',
-			'shortcode'        => 'PRAD\Includes\Blocks\Types\Shortcode_Block',
-			'separator'        => 'PRAD\Includes\Blocks\Types\Separator_Block',
-			'spacer'           => 'PRAD\Includes\Blocks\Types\Spacer_Block',
-			'content'          => 'PRAD\Includes\Blocks\Types\Content_Block',
-			'popup'            => 'PRAD\Includes\Blocks\Types\Popup_Block',
-			'font_picker'      => 'PRAD\Includes\Blocks\Types\Font_Picker_Block',
-			'advanced_formula' => 'PRAD\Includes\Blocks\Types\Advanced_Formula_Block',
+			'textfield'      => 'PRAD\Includes\Blocks\Types\Textfield_Block',
+			'section'        => 'PRAD\Includes\Blocks\Types\Section_Block',
+			'radio'          => 'PRAD\Includes\Blocks\Types\Radio_Block',
+			'checkbox'       => 'PRAD\Includes\Blocks\Types\Checkbox_Block',
+			'custom_formula' => 'PRAD\Includes\Blocks\Types\Custom_Formula_Block',
+			'switch'         => 'PRAD\Includes\Blocks\Types\Switch_Block',
+			'select'         => 'PRAD\Includes\Blocks\Types\Select_Block',
+			'color_picker'   => 'PRAD\Includes\Blocks\Types\Color_Picker_Block',
+			'date'           => 'PRAD\Includes\Blocks\Types\Date_Block',
+			'time'           => 'PRAD\Includes\Blocks\Types\Time_Block',
+			'datetime'       => 'PRAD\Includes\Blocks\Types\Date_Time_Block',
+			'range'          => 'PRAD\Includes\Blocks\Types\Range_Block',
+			'url'            => 'PRAD\Includes\Blocks\Types\Url_Block',
+			'email'          => 'PRAD\Includes\Blocks\Types\Email_Block',
+			'number'         => 'PRAD\Includes\Blocks\Types\Number_Block',
+			'telephone'      => 'PRAD\Includes\Blocks\Types\Telephone_Block',
+			'textarea'       => 'PRAD\Includes\Blocks\Types\Textarea_Block',
+			'heading'        => 'PRAD\Includes\Blocks\Types\Heading_Block',
+			'shortcode'      => 'PRAD\Includes\Blocks\Types\Shortcode_Block',
+			'separator'      => 'PRAD\Includes\Blocks\Types\Separator_Block',
+			'spacer'         => 'PRAD\Includes\Blocks\Types\Spacer_Block',
+			'content'        => 'PRAD\Includes\Blocks\Types\Content_Block',
+			'popup'          => 'PRAD\Includes\Blocks\Types\Popup_Block',
+			// Legacy support: Button, Color Swatches, Image Swatches and Products are
+			// deprecated free fields. They can no longer be added in the builder, but
+			// are still rendered here so fields existing users already saved on their
+			// products keep working. They'll be removed in a future release. The
+			// "Advanced" (Pro) versions shown in the builder are added by WowAddons
+			// Pro, which also registers its own renderers for these types through
+			// register_block(). No Pro logic for them lives in this plugin.
+			'button'         => 'PRAD\Includes\Blocks\Types\Button_Block',
+			'color_switch'   => 'PRAD\Includes\Blocks\Types\Color_Switch_Block',
+			'img_switch'     => 'PRAD\Includes\Blocks\Types\Image_Switch_Block',
+			'products'       => 'PRAD\Includes\Blocks\Types\Products_Block',
+			'upload'         => 'PRAD\Includes\Blocks\Types\Upload_Block',
 		);
 
-		// if ( product_addons()->is_pro_feature_available() ) {
-			// $blocks_array['button']       = class_exists( 'PRAD_PRO_Block\Frontend\Blocks\Types\Button_Block' ) ? 'PRAD_PRO_Block\Frontend\Blocks\Types\Button_Block' : $blocks_array['button'];
-			// $blocks_array['checkbox']     = class_exists( 'PRAD_PRO_Block\Frontend\Blocks\Types\Checkbox_Block' ) ? 'PRAD_PRO_Block\Frontend\Blocks\Types\Checkbox_Block' : $blocks_array['checkbox'];
-			// $blocks_array['color_switch'] = class_exists( 'PRAD_PRO_Block\Frontend\Blocks\Types\Color_Switch_Block' ) ? 'PRAD_PRO_Block\Frontend\Blocks\Types\Color_Switch_Block' : $blocks_array['color_switch'];
-			// $blocks_array['img_switch']   = class_exists( 'PRAD_PRO_Block\Frontend\Blocks\Types\Image_Switch_Block' ) ? 'PRAD_PRO_Block\Frontend\Blocks\Types\Image_Switch_Block' : $blocks_array['img_switch'];
-			// $blocks_array['switch']       = class_exists( 'PRAD_PRO_Block\Frontend\Blocks\Types\Switch_Block' ) ? 'PRAD_PRO_Block\Frontend\Blocks\Types\Switch_Block' : $blocks_array['switch'];
-			// $blocks_array['upload']       = class_exists( 'PRAD_PRO_Block\Frontend\Blocks\Types\Upload_Block' ) ? 'PRAD_PRO_Block\Frontend\Blocks\Types\Upload_Block' : $blocks_array['upload'];
-			// $blocks_array['radio']        = class_exists( 'PRAD_PRO_Block\Frontend\Blocks\Types\Radio_Block' ) ? 'PRAD_PRO_Block\Frontend\Blocks\Types\Radio_Block' : $blocks_array['radio'];
-		// }.
+		// Types registered via register_block() (e.g. by product-addons-pro) take priority,
+		// and are also how block types not shipped in the free plugin (e.g. pro-only ones) get added.
+		$blocks_array = array_merge( $blocks_array, self::$block_types );
 
 		return $blocks_array[ $type ] ?? null;
 	}

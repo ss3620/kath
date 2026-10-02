@@ -351,7 +351,11 @@ class WC_Zipmoney_Payment_Gateway_Util {
 		self::log( $exception->getCode() . $exception->getMessage() );
 		self::log( $exception->getResponseBody() );
 
-		$error_code = $exception->getResponseObject()->getError()->getCode();
+		// Same guard as on the create side: a Zip failure without an error object in the
+		// body used to turn this handler into a fatal error of its own.
+		$response_object = $exception->getResponseObject();
+		$error           = ( is_object( $response_object ) && method_exists( $response_object, 'getError' ) ) ? $response_object->getError() : null;
+		$error_code      = ( is_object( $error ) && method_exists( $error, 'getCode' ) ) ? $error->getCode() : 0;
 
 		if ( ! empty( $error_codes_map[ $error_code ] ) ) {
 			$order->add_order_note( $error_codes_map[ $error_code ] );
@@ -387,9 +391,14 @@ class WC_Zipmoney_Payment_Gateway_Util {
 
 		$error_code = 0;
 
+		// Zip answers some failures with a body that carries no error object at all,
+		// and reading the code off it turned the failure into a fatal error — a blank
+		// 500 where the shopper should have seen the payment error page.
 		$response_object = $exception->getResponseObject();
-		if ( ! empty( $response_object ) ) {
-			$error_code = $response_object->getError()->getCode();
+		$error           = ( is_object( $response_object ) && method_exists( $response_object, 'getError' ) ) ? $response_object->getError() : null;
+
+		if ( is_object( $error ) && method_exists( $error, 'getCode' ) ) {
+			$error_code = $error->getCode();
 		}
 
 		if ( $exception->getCode() == 402 && ! empty( $error_codes_map[ $error_code ] ) ) {
@@ -525,5 +534,92 @@ class WC_Zipmoney_Payment_Gateway_Util {
 			$output = openssl_decrypt( base64_decode( $stringToHandle ), 'AES-256-CBC', $key, 0, $iv );
 		}
 		return $output;
+	}
+
+	/**
+	 * Prefix of the options table rows that map a Zip checkout id to an order id.
+	 *
+	 * These rows used to be written under the bare checkout id, which is why the
+	 * housekeeping routes had to accept an option name from the request. Everything
+	 * written from here on carries the prefix, so a name arriving from outside can
+	 * only ever address a row of ours.
+	 */
+	const CHECKOUT_OPTION_PREFIX = 'zip_checkout_';
+
+
+	/**
+	 * Option name for a checkout id, or an empty string when the id cannot have come
+	 * from a checkout of ours.
+	 *
+	 * Zip checkout ids are opaque, but they are ids: letters, digits, dash, underscore.
+	 * Anything with a slash, a dot or a space in it was not issued by Zip.
+	 *
+	 * @param string $checkout_id
+	 * @return string
+	 */
+	private static function _checkout_option_name( $checkout_id ) {
+		if ( ! is_string( $checkout_id ) || preg_match( '/^[A-Za-z0-9_-]{1,120}$/', $checkout_id ) !== 1 ) {
+			return '';
+		}
+
+		return self::CHECKOUT_OPTION_PREFIX . $checkout_id;
+	}
+
+	/**
+	 * Remember which order a Zip checkout belongs to.
+	 *
+	 * @param string $checkout_id
+	 * @param int    $order_id
+	 * @return bool
+	 */
+	public static function set_checkout_order_id( $checkout_id, $order_id ) {
+		$option_name = self::_checkout_option_name( $checkout_id );
+
+		if ( empty( $option_name ) ) {
+			return false;
+		}
+
+		return update_option( $option_name, $order_id, false );
+	}
+
+	/**
+	 * Order id remembered for a checkout, or false when there is none.
+	 *
+	 * Only the prefixed row is consulted: a name arriving in a request has no way to
+	 * address anything else.
+	 *
+	 * @param string $checkout_id
+	 * @return mixed
+	 */
+	public static function get_checkout_order_id( $checkout_id ) {
+		$option_name = self::_checkout_option_name( $checkout_id );
+
+		if ( empty( $option_name ) ) {
+			return false;
+		}
+
+		$order_id = get_option( $option_name );
+
+		return empty( $order_id ) ? false : $order_id;
+	}
+
+	/**
+	 * Drop the lookup row for a checkout that can no longer be charged.
+	 *
+	 * Only prefixed rows are removed. A row written before the prefix existed is
+	 * indistinguishable by name from any other option in the table, and the request
+	 * asking for the deletion is not in a position to tell them apart.
+	 *
+	 * @param string $checkout_id
+	 * @return bool
+	 */
+	public static function delete_checkout_order_id( $checkout_id ) {
+		$option_name = self::_checkout_option_name( $checkout_id );
+
+		if ( empty( $option_name ) ) {
+			return false;
+		}
+
+		return delete_option( $option_name );
 	}
 }

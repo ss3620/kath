@@ -30,12 +30,21 @@ jQuery(
 			}
 		);
 		jQuery( 'form' ).on(
-			'keydown',
+			'input',
 			'#afwc_pname',
 			function( event ){
-				let key = event.which;
-				if ( ! ( ( key == 8 ) || ( key == 46 ) || ( key >= 35 && key <= 40 ) || ( key >= 65 && key <= 90 ) ) ) {
-					event.preventDefault();
+				let pattern = afwcSettingParams.pnameAllowedCharsRegex || '';
+				if ( ! pattern ) {
+					return;
+				}
+				let regex    = new RegExp( pattern );
+				let oldValue = jQuery( this ).val() || '';
+				let newValue = oldValue.split( '' ).filter( function( char ){
+					return regex.test( char );
+				} ).join( '' );
+				newValue = newValue.replace( /^[0-9]+/, '' );
+				if ( newValue !== oldValue ) {
+					jQuery( this ).val( newValue );
 				}
 			}
 		);

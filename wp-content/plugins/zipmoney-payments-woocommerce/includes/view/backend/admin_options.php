@@ -5,4 +5,5 @@
 </table>
 <script>
 	var ZipApiKeyCheckUrl = '<?php echo WC_Zipmoney_Payment_Gateway_Util::get_priavte_key_validation_url(); ?>';
+	var ZipApiKeyCheckNonce = '<?php echo esc_js( wp_create_nonce( 'zip_key_validation' ) ); ?>';
 </script>

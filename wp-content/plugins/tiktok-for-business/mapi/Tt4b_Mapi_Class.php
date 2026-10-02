@@ -297,7 +297,7 @@ class Tt4b_Mapi_Class {
 			if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 				$this->logger->log_response( __METHOD__, $response );
 			} else {
-				$this->logger->log_response( __METHOD__, $response );
+				$this->logger->log( __METHOD__, 'Response code: 200' );
 				return wp_remote_retrieve_body( $response );
 			}
 		}
@@ -328,11 +328,14 @@ class Tt4b_Mapi_Class {
 			'headers'     => array( 'Content-Type' => 'application/json' ),
 			'body'        => json_encode( $params ),
 		);
-		$this->logger->log_request( $url, $args );
+		$this->logger->log( __METHOD__, "POST {$url}" );
 		$response = wp_remote_post( $url, $args );
-		$this->logger->log_response( __METHOD__, $response );
-		$body = wp_remote_retrieve_body( $response );
-		return $body;
+		if ( is_wp_error( $response ) ) {
+			$this->logger->log( __METHOD__, $response->get_error_message(), 'error' );
+			return '';
+		}
+		$this->logger->log( __METHOD__, 'Response code: ' . wp_remote_retrieve_response_code( $response ) );
+		return wp_remote_retrieve_body( $response );
 	}
 
 	/**
@@ -341,8 +344,8 @@ class Tt4b_Mapi_Class {
 	 * @return string
 	 */
 	private function generate_cron_string() {
-		$minute = rand( 0, 59 );
-		$hour   = rand( 0, 23 );
+		$minute = wp_rand( 0, 59 );
+		$hour   = wp_rand( 0, 23 );
 		return '' . $minute . ' ' . $hour . ' * * 0-6';
 	}
 

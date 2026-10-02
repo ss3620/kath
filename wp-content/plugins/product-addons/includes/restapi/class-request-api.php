@@ -8,7 +8,6 @@
 
 namespace PRAD\Includes\Restapi;
 
-use PRAD\Includes\Admin\Durbin\DurbinClient;
 use PRAD\Includes\Analytics;
 use PRAD\Includes\Xpo;
 use WP_REST_Response;
@@ -21,9 +20,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.0.0
  */
 class RequestApi {
-
-
-	private $extra_upload_field_mimes = array();
 
 	/**
 	 * Initialize the RequestAPI class
@@ -174,15 +170,6 @@ class RequestApi {
 				'callback'            => array( $this, 'set_settings_callback' ),
 				'permission_callback' => array( $this, 'prad_get_admin_permissions' ),
 			),
-			// Set Global Settings.
-			array(
-				'endpoint'            => 'install_plugin',
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'install_plugin_callback' ),
-				'permission_callback' => function () {
-					return current_user_can( 'manage_options' );
-				},
-			),
 			// Product Image Compatibility.
 			array(
 				'endpoint'            => 'product_image',
@@ -190,45 +177,6 @@ class RequestApi {
 				'callback'            => array( $this, 'product_image_callback' ),
 				'permission_callback' => array( $this, 'prad_get_admin_permissions' ),
 			),
-			// Sideload External Image to Media Library.
-			array(
-				'endpoint'            => 'sideload_image',
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'sideload_image_callback' ),
-				'permission_callback' => function () {
-					return current_user_can( 'manage_options' );
-				},
-			),
-
-			// Font Upload.
-			array(
-				'endpoint'            => 'upload_font',
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'upload_font_callback' ),
-				'permission_callback' => array( $this, 'prad_get_admin_permissions' ),
-			),
-			// Get Fonts List.
-			array(
-				'endpoint'            => 'get_fonts',
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_fonts_callback' ),
-				'permission_callback' => array( $this, 'prad_get_view_only_permissions' ),
-			),
-			// Delete Font.
-			array(
-				'endpoint'            => 'delete_font',
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'delete_font_callback' ),
-				'permission_callback' => array( $this, 'prad_get_admin_permissions' ),
-			),
-			// Update Font.
-			array(
-				'endpoint'            => 'update_font',
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'update_font_callback' ),
-				'permission_callback' => array( $this, 'prad_get_admin_permissions' ),
-			),
-
 			array(
 				'endpoint'            => 'product_link',
 				'methods'             => 'POST',
@@ -241,12 +189,6 @@ class RequestApi {
 				'endpoint'            => 'dismiss_tour',
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'dismiss_tour_callback' ),
-				'permission_callback' => array( $this, 'prad_get_admin_permissions' ),
-			),
-			array(
-				'endpoint'            => 'durbin_subscribe',
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'durbin_subscribe_callback' ),
 				'permission_callback' => array( $this, 'prad_get_admin_permissions' ),
 			),
 		);
@@ -341,7 +283,7 @@ class RequestApi {
 		$status          = isset( $params['status'] ) ? sanitize_text_field( $params['status'] ) : 'draft';
 		$content         = isset( $params['content'] ) && is_array( $params['content'] ) ? product_addons()->sanitize_rest_params( $params['content'] ) : '';
 		$required_fields = isset( $params['required_fields'] ) && is_array( $params['required_fields'] ) ? product_addons()->sanitize_rest_params( $params['required_fields'] ) : '';
-		$css             = isset( $params['css'] ) ? product_addons()->sanitize_rest_params( $params['css'] ) : '';
+		$css             = isset( $params['css'] ) && is_string( $params['css'] ) ? sanitize_textarea_field( $params['css'] ) : '';
 		$nonce           = isset( $params['wpnonce'] ) ? sanitize_text_field( $params['wpnonce'] ) : '';
 
 		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'prad-nonce' ) ) {
@@ -355,13 +297,15 @@ class RequestApi {
 		}
 
 		// Prepare the attributes for the post.
-		$attr = array(
+		$attr    = array(
 			'post_title'   => $title,
 			'post_status'  => $status,
 			'post_content' => $title,
 			'post_type'    => 'prad_option',
 		);
-
+		$message = 'publish' === $status
+				? __( 'Option set updated & published.', 'product-addons' )
+				: __( 'Option set updated & saved as a draft.', 'product-addons' );
 		if ( 'new' === $id ) {
 			$id = wp_insert_post( $attr );
 			if ( is_wp_error( $id ) ) {
@@ -386,7 +330,7 @@ class RequestApi {
 			return new WP_REST_Response(
 				array(
 					'success' => true,
-					'message' => __( 'New option added.', 'product-addons' ),
+					'message' => $message,
 					'id'      => $id,
 				),
 				200
@@ -418,7 +362,7 @@ class RequestApi {
 				array(
 					'success' => true,
 					'content' => $content,
-					'message' => __( 'Option updated.', 'product-addons' ),
+					'message' => $message,
 				),
 				200
 			);
@@ -806,11 +750,7 @@ class RequestApi {
 		$tax_type         = isset( $params['tax_type'] ) ? sanitize_text_field( $params['tax_type'] ) : '';
 		$tax_term_ids_raw = isset( $params['tax_term_ids'] ) && is_array( $params['tax_term_ids'] ) ? $params['tax_term_ids'] : array();
 		$tax_term_ids     = array_map( 'absint', $tax_term_ids_raw );
-		$taxonomy_map     = array(
-			'cat'   => 'product_cat',
-			'tag'   => 'product_tag',
-			'brand' => 'product_brand',
-		);
+		$taxonomy_map     = product_addons()->get_assign_trigger_taxonomies();
 
 		$response_data = array();
 		switch ( $trigger_type ) {
@@ -824,19 +764,17 @@ class RequestApi {
 				}
 				$response_data = product_addons()->get_searched_products( $search_keyword, false, $limit, array(), $tax_filter );
 				break;
-			case 'cat':
-			case 'tag':
-			case 'brand':
-				$response_data = product_addons()->get_searched_categories(
-					array(
-						'term'         => $search_keyword,
-						'limit'        => $limit,
-						'includes'     => '',
-						'trigger_type' => $trigger_type,
-					)
-				);
-				break;
 			default:
+				if ( isset( $taxonomy_map[ $trigger_type ] ) ) {
+					$response_data = product_addons()->get_searched_categories(
+						array(
+							'term'         => $search_keyword,
+							'limit'        => $limit,
+							'includes'     => '',
+							'trigger_type' => $trigger_type,
+						)
+					);
+				}
 				break;
 		}
 
@@ -969,13 +907,10 @@ class RequestApi {
 		switch ( $assigned_data['aType'] ) {
 			case 'all_product':
 				return $this->get_first_simple_product_link( $exclude_ids );
-			case 'specific_category':
-			case 'specific_tag':
-			case 'specific_brand':
-				return $this->get_first_taxonomy_product_link( $assigned_data, $exclude_ids );
-
 			default:
-				return '';
+				return isset( product_addons()->get_assign_taxonomies()[ $assigned_data['aType'] ] )
+					? $this->get_first_taxonomy_product_link( $assigned_data, $exclude_ids )
+					: '';
 		}
 	}
 
@@ -1036,13 +971,7 @@ class RequestApi {
 			return '';
 		}
 
-		$taxonomy_map = array(
-			'specific_category' => 'product_cat',
-			'specific_tag'      => 'product_tag',
-			'specific_brand'    => 'product_brand',
-		);
-
-		$taxonomy = $taxonomy_map[ $assigned_data['aType'] ] ?? '';
+		$taxonomy = product_addons()->get_assign_taxonomies()[ $assigned_data['aType'] ] ?? '';
 		if ( ! $taxonomy ) {
 			return '';
 		}
@@ -1140,7 +1069,7 @@ class RequestApi {
 							'attributes' => wc_get_product_variation_attributes( $variation_id ),
 							'regular'    => $variation->get_regular_price( 'edit' ),
 							'sale'       => $variation->get_sale_price( 'edit' ),
-							'enable'     => in_array( $variation_id, $variation_ids_input ),
+							'enable'     => in_array( $variation_id, $variation_ids_input, true ),
 						);
 					}
 				}
@@ -1224,11 +1153,26 @@ class RequestApi {
 			);
 		}
 
+		$raw_data = isset( $params['raw_data'] ) ? product_addons()->sanitize_rest_params( $params['raw_data'] ) : array();
+
+		// Only the assignment types this install supports are accepted; more are added through prad_assign_taxonomies.
+		$assign_taxonomies = product_addons()->get_assign_taxonomies();
+		$assign_type       = isset( $raw_data['aType'] ) ? $raw_data['aType'] : '';
+		if ( ! in_array( $assign_type, array( 'specific_product', 'all_product' ), true ) && ! isset( $assign_taxonomies[ $assign_type ] ) ) {
+			return new WP_REST_Response(
+				array(
+					'success'  => false,
+					'response' => array(
+						'message' => __( 'Invalid assignment type.', 'product-addons' ),
+					),
+				),
+				400
+			);
+		}
+
 		$new_image_data               = get_option( 'prad_product_image_update_data', array() );
 		$new_image_data[ $option_id ] = $product_image;
 		update_option( 'prad_product_image_update_data', $new_image_data );
-
-		$raw_data = isset( $params['raw_data'] ) ? product_addons()->sanitize_rest_params( $params['raw_data'] ) : array();
 
 		/* First Remove existing assign include / excludes meta */
 		$this->handle_existing_assign_meta( $option_id );
@@ -1240,19 +1184,19 @@ class RequestApi {
 					$meta_inc = json_decode( product_addons()->safe_stripslashes( get_post_meta( $include, 'prad_product_assigned_meta_inc', true ) ), true );
 					$meta_inc = is_array( $meta_inc ) ? $meta_inc : array();
 
-					if ( ! in_array( $option_id, $meta_inc, false ) ) {
+					if ( ! in_array( $option_id, array_map( 'strval', $meta_inc ), true ) ) {
 						$meta_inc[] = $option_id;
 					}
 					update_post_meta( $include, 'prad_product_assigned_meta_inc', wp_json_encode( $meta_inc ) );
 				}
 			}
-		} elseif ( 'specific_category' === $raw_data['aType'] || 'specific_tag' === $raw_data['aType'] || 'specific_brand' === $raw_data['aType'] ) {  /* Update meta for Terms */
+		} elseif ( isset( $assign_taxonomies[ $raw_data['aType'] ] ) ) {  /* Update meta for Terms */
 			if ( is_array( $raw_data['includes'] ) && ! empty( $raw_data['includes'] ) ) {
 				foreach ( $raw_data['includes'] as $include ) {
 					$meta_inc = json_decode( product_addons()->safe_stripslashes( get_term_meta( $include, 'prad_term_assigned_meta_inc', true ) ), true );
 					$meta_inc = is_array( $meta_inc ) ? $meta_inc : array();
 
-					if ( ! in_array( $option_id, $meta_inc, false ) ) {
+					if ( ! in_array( $option_id, array_map( 'strval', $meta_inc ), true ) ) {
 						$meta_inc[] = $option_id;
 					}
 					update_term_meta( $include, 'prad_term_assigned_meta_inc', wp_json_encode( $meta_inc ) );
@@ -1262,7 +1206,7 @@ class RequestApi {
 			$option_settings = json_decode( product_addons()->safe_stripslashes( get_option( 'prad_option_assign_all', '[]' ) ), true );
 			$option_settings = is_array( $option_settings ) ? $option_settings : array();
 
-			if ( ! in_array( $option_id, $option_settings, false ) ) {
+			if ( ! in_array( $option_id, array_map( 'strval', $option_settings ), true ) ) {
 				$option_settings[] = $option_id;
 			}
 			update_option( 'prad_option_assign_all', wp_json_encode( $option_settings ) );
@@ -1274,28 +1218,26 @@ class RequestApi {
 				$meta_exc = json_decode( product_addons()->safe_stripslashes( get_post_meta( $exclude, 'prad_product_assigned_meta_exc', true ) ), true );
 				$meta_exc = is_array( $meta_exc ) ? $meta_exc : array();
 
-				if ( ! in_array( $option_id, $meta_exc, false ) ) {
+				if ( ! in_array( $option_id, array_map( 'strval', $meta_exc ), true ) ) {
 					$meta_exc[] = $option_id;
 				}
 				update_post_meta( $exclude, 'prad_product_assigned_meta_exc', wp_json_encode( $meta_exc ) );
 			}
 		}
 
-		// Update Meta for Exclude Categories.
-		if ( isset( $raw_data['excludeCategories'] ) && is_array( $raw_data['excludeCategories'] ) && count( $raw_data['excludeCategories'] ) > 0 ) {
-			foreach ( $raw_data['excludeCategories'] as $exclude_cat ) {
-				$meta_exc_cat = json_decode( product_addons()->safe_stripslashes( get_term_meta( $exclude_cat, 'prad_term_assigned_meta_exc', true ) ), true );
-				$meta_exc_cat = is_array( $meta_exc_cat ) ? $meta_exc_cat : array();
-
-				if ( ! in_array( $option_id, $meta_exc_cat, false ) ) {
-					$meta_exc_cat[] = $option_id;
-				}
-				update_term_meta( $exclude_cat, 'prad_term_assigned_meta_exc', wp_json_encode( $meta_exc_cat ) );
-			}
-		}
-
 		// Update the option meta with the assigned data.
 		update_post_meta( $option_id, 'prad_base_assigned_data', wp_json_encode( $raw_data ) );
+
+		/**
+		 * Fires after an option set's assignment is saved, so extensions can store their own
+		 * assignment settings.
+		 *
+		 * @since 1.8.3
+		 *
+		 * @param int   $option_id Option set ID.
+		 * @param array $raw_data  The saved assignment data.
+		 */
+		do_action( 'prad_option_assignment_saved', $option_id, $raw_data );
 
 		return new WP_REST_Response(
 			array(
@@ -1325,7 +1267,7 @@ class RequestApi {
 			$option_settings = json_decode( product_addons()->safe_stripslashes( get_option( 'prad_option_assign_all', '[]' ) ), true );
 			$option_settings = is_array( $option_settings ) ? $option_settings : array();
 
-			if ( in_array( $option_id, $option_settings, false ) ) {
+			if ( in_array( $option_id, array_map( 'strval', $option_settings ), true ) ) {
 				$option_settings = array_diff( $option_settings, array( $option_id ) );
 			}
 			update_option( 'prad_option_assign_all', wp_json_encode( $option_settings ) );
@@ -1335,19 +1277,20 @@ class RequestApi {
 					$meta_inc = json_decode( product_addons()->safe_stripslashes( get_post_meta( $include, 'prad_product_assigned_meta_inc', true ) ), true );
 					$meta_inc = is_array( $meta_inc ) ? $meta_inc : array();
 
-					if ( in_array( $option_id, $meta_inc, false ) ) {
+					if ( in_array( $option_id, array_map( 'strval', $meta_inc ), true ) ) {
 						$meta_inc = array_diff( $meta_inc, array( $option_id ) );
 					}
 					update_post_meta( $include, 'prad_product_assigned_meta_inc', wp_json_encode( $meta_inc ) );
 				}
 			}
-		} elseif ( isset( $assigned_data['aType'] ) && ( 'specific_category' === $assigned_data['aType'] || 'specific_tag' === $assigned_data['aType'] || 'specific_brand' === $assigned_data['aType'] ) ) {
+		} elseif ( isset( $assigned_data['aType'] ) && 0 === strpos( (string) $assigned_data['aType'], 'specific_' ) ) {
+			// Clean up every term type ("specific_*", including ones no longer assignable), so no stale meta is left behind.
 			if ( is_array( $assigned_data['includes'] ) && ! empty( $assigned_data['includes'] ) ) {
 				foreach ( $assigned_data['includes'] as $include ) {
 					$meta_inc = json_decode( product_addons()->safe_stripslashes( get_term_meta( $include, 'prad_term_assigned_meta_inc', true ) ), true );
 					$meta_inc = is_array( $meta_inc ) ? $meta_inc : array();
 
-					if ( in_array( $option_id, $meta_inc, false ) ) {
+					if ( in_array( $option_id, array_map( 'strval', $meta_inc ), true ) ) {
 						$meta_inc = array_diff( $meta_inc, array( $option_id ) );
 					}
 					update_term_meta( $include, 'prad_term_assigned_meta_inc', wp_json_encode( $meta_inc ) );
@@ -1359,22 +1302,24 @@ class RequestApi {
 				$meta_exc = json_decode( product_addons()->safe_stripslashes( get_post_meta( $exclude, 'prad_product_assigned_meta_exc', true ) ), true );
 				$meta_exc = is_array( $meta_exc ) ? $meta_exc : array();
 
-				if ( in_array( $option_id, $meta_exc, false ) ) {
+				if ( in_array( $option_id, array_map( 'strval', $meta_exc ), true ) ) {
 					$meta_exc = array_diff( $meta_exc, array( $option_id ) );
 				}
 				update_post_meta( $exclude, 'prad_product_assigned_meta_exc', wp_json_encode( $meta_exc ) );
 			}
 		}
-		if ( isset( $assigned_data['excludeCategories'] ) && is_array( $assigned_data['excludeCategories'] ) && count( $assigned_data['excludeCategories'] ) > 0 ) {
-			foreach ( $assigned_data['excludeCategories'] as $exclude_cat ) {
-				$meta_exc_cat = json_decode( product_addons()->safe_stripslashes( get_term_meta( $exclude_cat, 'prad_term_assigned_meta_exc', true ) ), true );
-				$meta_exc_cat = is_array( $meta_exc_cat ) ? $meta_exc_cat : array();
 
-				if ( in_array( $option_id, $meta_exc_cat, false ) ) {
-					$meta_exc_cat = array_diff( $meta_exc_cat, array( $option_id ) );
-				}
-				update_term_meta( $exclude_cat, 'prad_term_assigned_meta_exc', wp_json_encode( $meta_exc_cat ) );
-			}
+		if ( is_array( $assigned_data ) ) {
+			/**
+			 * Fires when an option set's assignment is removed (before it is saved again, or when the
+			 * option set is deleted), so extensions can remove their own assignment settings.
+			 *
+			 * @since 1.8.3
+			 *
+			 * @param int   $option_id     Option set ID.
+			 * @param array $assigned_data The assignment data being removed.
+			 */
+			do_action( 'prad_option_assignment_removed', $option_id, $assigned_data );
 		}
 	}
 
@@ -1502,79 +1447,6 @@ class RequestApi {
 	}
 
 	/**
-	 * Upload image from URL and sideload it to the media library.
-	 *
-	 * @since 1.0.5
-	 *
-	 * @param \WP_REST_Request $request The request object containing the data.
-	 *
-	 * @return \WP_REST_Response The REST response with success or error message.
-	 */
-	public function sideload_image_callback( \WP_REST_Request $request ) {
-		$request_params = $request->get_params();
-		$nonce          = isset( $request_params['wpnonce'] ) ? sanitize_text_field( $request_params['wpnonce'] ) : '';
-
-		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'prad-nonce' ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Invalid or missing nonce.', 'product-addons' ),
-				),
-				403
-			);
-		}
-
-		$images = isset( $request_params['images'] ) && is_array( $request_params['images'] ) ? $request_params['images'] : array();
-
-		if ( empty( $images ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => 'No images provided.',
-				),
-				400
-			);
-		}
-
-		require_once ABSPATH . 'wp-admin/includes/media.php';
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		require_once ABSPATH . 'wp-admin/includes/image.php';
-
-		$results = array();
-
-		foreach ( $images as $raw_url => $raw_desc ) {
-			$url = esc_url_raw( $raw_url );
-			if ( ! $url ) {
-				$results[ $raw_url ] = array( 'success' => false );
-				continue;
-			}
-
-			$desc          = sanitize_text_field( $raw_desc );
-			$attachment_id = media_sideload_image( $url, 0, $desc, 'id' );
-			if ( is_wp_error( $attachment_id ) ) {
-				$results[ $raw_url ] = array(
-					'success' => false,
-					'message' => $attachment_id->get_error_message(),
-				);
-			} else {
-				$results[ $raw_url ] = array(
-					'success'    => true,
-					'source_url' => wp_get_attachment_url( $attachment_id ),
-					'id'         => $attachment_id,
-				);
-			}
-		}
-
-		return new WP_REST_Response(
-			array(
-				'success' => true,
-				'results' => $results,
-			),
-			200
-		);
-	}
-
-	/**
 	 * Product Image Compability
 	 *
 	 * @since 1.0.5
@@ -1606,21 +1478,26 @@ class RequestApi {
 	}
 
 	/**
-	 * Allowed file extensions and MIME types.
+	 * The free plugin's hardcoded allowed upload types — jpg/jpeg/png only.
 	 *
-	 * @param array $mimes Existing allowed MIME types.
+	 * No filter, no extension points: this endpoint only ever needs to accept
+	 * these three image types, so the list is a fixed constant rather than a
+	 * pro-extensible one.
+	 *
 	 * @return array
 	 */
-	public function prad_handle_upload_field_mimes( $mimes ) {
-		$prad_mimes = product_addons()->prad_get_upload_allowed_file_types( $this->extra_upload_field_mimes );
-
-		return array_merge( $mimes, $prad_mimes );
+	private function get_allowed_upload_mime_types(): array {
+		return array(
+			'jpg'  => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'png'  => 'image/png',
+		);
 	}
 
 	/**
 	 * Retrieve and validate uploaded file.
 	 *
-	 * @return array|WP_Error
+	 * @return array|\WP_Error
 	 */
 	protected function get_uploaded_file() {
 
@@ -1636,48 +1513,62 @@ class RequestApi {
 			return new \WP_Error( 'no_file', __( 'No file found.', 'product-addons' ) );
 		}
 
-		$file = $_FILES['prad_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		// Sanitize the uploaded file entry field by field.
+		$file = array(
+			'name'     => isset( $_FILES['prad_file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['prad_file']['name'] ) ) : '',
+			'type'     => isset( $_FILES['prad_file']['type'] ) ? sanitize_mime_type( wp_unslash( $_FILES['prad_file']['type'] ) ) : '',
+			'tmp_name' => isset( $_FILES['prad_file']['tmp_name'] ) ? sanitize_text_field( $_FILES['prad_file']['tmp_name'] ) : '', // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Server-generated temp path; unslashing would break Windows paths. Validated with is_uploaded_file() below.
+			'error'    => isset( $_FILES['prad_file']['error'] ) ? absint( $_FILES['prad_file']['error'] ) : UPLOAD_ERR_NO_FILE,
+			'size'     => isset( $_FILES['prad_file']['size'] ) ? absint( $_FILES['prad_file']['size'] ) : 0,
+		);
+
+		if ( UPLOAD_ERR_OK !== $file['error'] || '' === $file['name'] || empty( $file['tmp_name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
+			return new \WP_Error( 'upload_failed', __( 'File upload failed. Please try again.', 'product-addons' ) );
+		}
 
 		$max_file_size = 25 * 1024 * 1024; // 25MB
 
-		if ( (int) $file['size'] > $max_file_size ) {
+		if ( $file['size'] > $max_file_size || filesize( $file['tmp_name'] ) > $max_file_size ) {
 			return new \WP_Error(
 				'file_size',
 				__( 'File size exceeds the maximum allowed limit (25MB).', 'product-addons' )
 			);
 		}
-		if ( 'cdr' === strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) ) ) {
-			$finfo = finfo_open( FILEINFO_MIME_TYPE );
-			$mime  = finfo_file( $finfo, $file['tmp_name'] );
-			finfo_close( $finfo );
 
-			if ( 'application/x-vnd.corel.zcf.draw.document+zip' === $mime ) {
-				$this->extra_upload_field_mimes = array(
-					'cdr' => 'application/x-vnd.corel.zcf.draw.document+zip',
-				);
-			}
-		}
+		$allowed_types = $this->get_allowed_upload_mime_types();
 
-		add_filter( 'upload_mimes', array( $this, 'prad_handle_upload_field_mimes' ) );
-
-		$allowed_types = product_addons()->prad_get_upload_allowed_file_types( $this->extra_upload_field_mimes );
-
+		// wp_check_filetype_and_ext() sniffs the file's real content (via the
+		// fileinfo extension) against $allowed_types, rejecting anything whose
+		// actual bytes don't match one of the three allowed image types —
+		// this catches a disallowed file simply renamed with a .jpg/.png
+		// extension.
 		$filetype = wp_check_filetype_and_ext(
 			$file['tmp_name'],
 			$file['name'],
 			$allowed_types
 		);
 
-		if ( empty( $filetype['ext'] ) || empty( $filetype['type'] ) ) {
+		if ( empty( $filetype['ext'] ) || empty( $filetype['type'] ) || ! isset( $allowed_types[ $filetype['ext'] ] ) ) {
 			return new \WP_Error(
 				'invalid_type',
-				__( 'Invalid file type.', 'product-addons' )
+				__( 'Invalid file type. Only JPG, JPEG and PNG files are allowed.', 'product-addons' )
+			);
+		}
+
+		// Defense in depth: confirm the file actually decodes as an image.
+		// wp_check_filetype_and_ext() only checks the declared MIME signature;
+		// a polyglot file can carry a valid image signature followed by
+		// unrelated (potentially executable) content. getimagesize() parses
+		// the real image structure and fails on anything that isn't one.
+		if ( ! @getimagesize( $file['tmp_name'] ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors
+			return new \WP_Error(
+				'invalid_image',
+				__( 'The uploaded file is not a valid image.', 'product-addons' )
 			);
 		}
 
 		return $file;
 	}
-
 
 	/**
 	 * Handles file uploads via REST API.
@@ -1699,20 +1590,9 @@ class RequestApi {
 			);
 		}
 
-		if ( ! $this->prad_check_upload_rate_limit() ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Upload limit exceeded. Please try again later.', 'product-addons' ),
-				),
-				429
-			);
-		}
-
 		$file = $this->get_uploaded_file();
 
 		if ( is_wp_error( $file ) ) {
-			remove_filter( 'upload_mimes', array( $this, 'prad_handle_upload_field_mimes' ) );
 			return new WP_REST_Response(
 				array(
 					'success' => false,
@@ -1726,32 +1606,20 @@ class RequestApi {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
 
-		// Validate and sanitize SVG content on the temp file before uploading.
-		$filetype = wp_check_filetype( $file['name'] );
-		if ( 'image/svg+xml' === $filetype['type'] ) {
-			if ( ! $this->prad_sanitize_svg_file( $file['tmp_name'] ) ) {
-				remove_filter( 'upload_mimes', array( $this, 'prad_handle_upload_field_mimes' ) );
-				return new WP_REST_Response(
-					array(
-						'success' => false,
-						'message' => __( 'SVG file could not be processed. Please check the file and try again.', 'product-addons' ),
-					),
-					400
-				);
-			}
-		}
-
 		add_filter( 'upload_dir', array( $this, 'prad_handle_upload_dir' ) );
 
+		// Passing 'mimes' directly restricts wp_handle_upload()'s own internal
+		// filetype check to exactly these three types, without touching the
+		// site-wide 'upload_mimes' filter.
 		$uploaded = wp_handle_upload(
 			$file,
 			array(
 				'test_form' => false,
+				'mimes'     => $this->get_allowed_upload_mime_types(),
 			)
 		);
 
 		remove_filter( 'upload_dir', array( $this, 'prad_handle_upload_dir' ) );
-		remove_filter( 'upload_mimes', array( $this, 'prad_handle_upload_field_mimes' ) );
 
 		if ( isset( $uploaded['error'] ) ) {
 			return new WP_REST_Response(
@@ -1777,260 +1645,14 @@ class RequestApi {
 	}
 
 	/**
-	 * Enforce a per-IP upload rate limit using a fixed hourly window.
+	 * Write a .htaccess to the upload directory with baseline security hardening.
 	 *
-	 * @return bool True if the request is within the allowed limit, false otherwise.
-	 */
-	private function prad_check_upload_rate_limit() {
-		$ip   = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : 'unknown'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-		$hour = gmdate( 'YmdH' );
-		$key  = 'prad_upload_' . md5( $ip . $hour );
-
-		$count = (int) get_transient( $key );
-		if ( $count >= 20 ) {
-			return false;
-		}
-
-		set_transient( $key, $count + 1, HOUR_IN_SECONDS );
-		return true;
-	}
-
-	/**
-	 * Sanitize an uploaded SVG file in-place, removing all executable content.
-	 *
-	 * Parses the SVG as XML, strips dangerous elements (script, foreignObject, …),
-	 * event-handler attributes (on*), javascript:/vbscript: URIs, and inline CSS
-	 * expressions, then writes the cleaned document back to disk.
-	 *
-	 * @param string $file_path Absolute path to the uploaded SVG file.
-	 * @return bool True on success, false if the file could not be parsed or written.
-	 */
-	private function prad_sanitize_svg_file( $file_path ) {
-		$content = @file_get_contents( $file_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-
-		if ( false === $content ) {
-			return false;
-		}
-
-		$dom                     = new \DOMDocument();
-		$dom->formatOutput       = false;
-		$dom->preserveWhiteSpace = true;
-
-		// Prevent XXE on PHP < 8.0 (libxml 2.9+ disables external entities by default).
-		$prev_loader = null;
-
-		if ( version_compare( PHP_VERSION, '8.0.0', '<' ) && function_exists( 'libxml_disable_entity_loader' ) ) {
-			$prev_loader = libxml_disable_entity_loader( true ); // phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions
-		}
-
-		$loaded = @$dom->loadXML( $content, 2048 | 32 | 64 ); // LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING
-
-		if ( null !== $prev_loader && function_exists( 'libxml_disable_entity_loader' ) ) {
-			libxml_disable_entity_loader( $prev_loader ); // phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions
-		}
-
-		if ( ! $loaded ) {
-			@unlink( $file_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-			return false;
-		}
-
-		// Reject files that are not SVGs.
-		$root = $dom->documentElement;
-		if ( ! $root || 'svg' !== strtolower( $root->localName ) ) {
-			@unlink( $file_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-			return false;
-		}
-
-		// Remove elements that can embed or execute code.
-		$blocked_tags = array(
-			'script',
-			'foreignObject',
-			'foreignobject',
-			'iframe',
-			'object',
-			'embed',
-			'video',
-			'audio',
-			'frame',
-			'frameset',
-			'applet',
-			'animate',
-			'animateMotion',
-			'animatemotion',
-			'animateTransform',
-			'animatetransform',
-			'set',
-		);
-
-		foreach ( $blocked_tags as $tag ) {
-			$nodes = $dom->getElementsByTagName( $tag );
-
-			for ( $i = $nodes->length - 1; $i >= 0; $i-- ) {
-				$node = $nodes->item( $i );
-
-				if ( $node && $node->parentNode ) {
-					$node->parentNode->removeChild( $node );
-				}
-			}
-		}
-
-		// Remove processing instructions (e.g. xml-stylesheet declarations).
-		$xpath = new \DOMXPath( $dom );
-		$pis   = $xpath->query( '//processing-instruction()' );
-
-		if ( $pis ) {
-			for ( $i = $pis->length - 1; $i >= 0; $i-- ) {
-				$pi = $pis->item( $i );
-
-				if ( $pi && $pi->parentNode ) {
-					$pi->parentNode->removeChild( $pi );
-				}
-			}
-		}
-
-		// URL-bearing attributes that may carry javascript: or external URLs.
-		$url_attrs = array(
-			'href',
-			'xlink:href',
-			'src',
-			'action',
-			'formaction',
-			'data',
-			'poster',
-			'dynsrc',
-			'lowsrc',
-		);
-
-		$all_nodes = $dom->getElementsByTagName( '*' );
-
-		for ( $i = 0; $i < $all_nodes->length; $i++ ) {
-			$el = $all_nodes->item( $i );
-
-			if ( ! ( $el instanceof \DOMElement ) ) {
-				continue;
-			}
-
-			$tag_name     = strtolower( $el->localName );
-			$remove_attrs = array();
-			$attributes   = array();
-
-			foreach ( $el->attributes as $attr ) {
-				$attributes[] = $attr;
-			}
-
-			foreach ( $attributes as $attr ) {
-				$node_local_name = $attr->localName; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$node_ns_uri     = $attr->namespaceURI; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$node_qname      = $attr->name;
-
-				// Use the local name (namespace prefix stripped) for matching so
-				// namespaced attributes like xlink:href are not missed, but keep
-				// the namespace URI so removal can target the correct node.
-				$attr_name  = strtolower( $node_local_name ? $node_local_name : $node_qname );
-				$attr_value = $attr->value;
-
-				$mark_for_removal = static function () use ( &$remove_attrs, $node_qname, $node_ns_uri, $attr_name ) {
-					$remove_attrs[] = array(
-						'name'  => $node_qname,
-						'ns'    => $node_ns_uri,
-						'local' => $attr_name,
-					);
-				};
-
-				// Remove all event-handler attributes (onclick, onload, onerror, etc.).
-				if ( 0 === strpos( $attr_name, 'on' ) ) {
-					$mark_for_removal();
-					continue;
-				}
-
-				if ( in_array( $attr_name, $url_attrs, true ) ) {
-					// Collapse whitespace to catch tab/newline encoded variants.
-					$normalized = strtolower(
-						preg_replace( '/[\x00-\x20]+/', '', $attr_value )
-					);
-
-					if ( preg_match( '/^(javascript|vbscript|data):/i', $normalized ) ) {
-						$mark_for_removal();
-						continue;
-					}
-
-					// <use> elements must only reference same-document fragments (#id).
-					if ( 'use' === $tag_name && '#' !== substr( ltrim( $attr_value ), 0, 1 ) ) {
-						$mark_for_removal();
-						continue;
-					}
-				}
-
-				// Remove style attributes containing javascript: or CSS expression().
-				if ( 'style' === $attr_name ) {
-					$clean = preg_replace( '/\/\*.*?\*\//s', '', $attr_value );
-
-					if (
-						preg_match( '/javascript:/i', $clean ) ||
-						preg_match( '/expression\s*\(/i', $clean )
-					) {
-						$mark_for_removal();
-						continue;
-					}
-				}
-
-				// xml:base can redirect relative references to an attacker-controlled URL.
-				if ( 'base' === $attr_name && 'http://www.w3.org/XML/1998/namespace' === $node_ns_uri ) {
-					$mark_for_removal();
-				}
-			}
-
-			foreach ( $remove_attrs as $target ) {
-				if ( $target['ns'] ) {
-					$el->removeAttributeNS( $target['ns'], $target['local'] );
-				}
-
-				// Also remove any non-namespaced attribute sharing the qualified name.
-				$el->removeAttribute( $target['name'] );
-			}
-		}
-
-		// Strip dangerous constructs from inline <style> blocks.
-		$style_nodes = $dom->getElementsByTagName( 'style' );
-
-		for ( $i = 0; $i < $style_nodes->length; $i++ ) {
-			$style_node = $style_nodes->item( $i );
-
-			if ( ! $style_node ) {
-				continue;
-			}
-
-			$css = $style_node->textContent;
-
-			$css = preg_replace( '/@import\b[^;]*;?/i', '', $css );
-			$css = preg_replace( '/url\s*\(\s*["\']?\s*javascript:[^)]*\)/i', 'url()', $css );
-			$css = preg_replace( '/expression\s*\([^)]*\)/i', 'none', $css );
-			$css = preg_replace( '/\bbehavior\s*:[^;]+;?/i', '', $css );
-
-			while ( $style_node->firstChild ) {
-				$style_node->removeChild( $style_node->firstChild );
-			}
-
-			$style_node->appendChild( $dom->createTextNode( $css ) );
-		}
-
-		$sanitized = $dom->saveXML( $dom->documentElement );
-
-		if ( false === $sanitized ) {
-			@unlink( $file_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-			return false;
-		}
-
-		$result = file_put_contents( $file_path, $sanitized ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-
-		return false !== $result;
-	}
-
-	/**
-	 * Write a .htaccess to the upload directory that forces SVGs to download
-	 * rather than render inline, preventing stored XSS via SVG files.
-	 *
-	 * Only creates the file if it does not already exist; safe to call on every upload.
+	 * Only creates the file if it does not already exist; safe to call on every
+	 * upload. Sets X-Content-Type-Options to stop browsers from ever sniffing an
+	 * uploaded file into executing as a different content type than declared, and
+	 * denies execution of any PHP-family file that might end up in this directory —
+	 * this is unconditional, hardcoded hardening (not tied to any filter), since
+	 * jpg/jpeg/png uploads never legitimately need to run as PHP.
 	 *
 	 * @param string $dir_path Absolute filesystem path to the upload directory.
 	 */
@@ -2041,13 +1663,17 @@ class RequestApi {
 		}
 
 		$rules  = "<IfModule mod_headers.c>\n";
-		$rules .= "  <FilesMatch \"\\.svgz?$\">\n";
-		$rules .= "    Header set Content-Disposition \"attachment\"\n";
-		$rules .= "    Header set X-Content-Type-Options \"nosniff\"\n";
-		$rules .= "    Header set Content-Security-Policy \"default-src 'none'\"\n";
-		$rules .= "  </FilesMatch>\n";
 		$rules .= "  Header set X-Content-Type-Options \"nosniff\"\n";
 		$rules .= "</IfModule>\n";
+		$rules .= "<FilesMatch \"\\.(?:php|phtml|php\\d|pht|phar)$\">\n";
+		$rules .= "  <IfModule mod_authz_core.c>\n";
+		$rules .= "    Require all denied\n";
+		$rules .= "  </IfModule>\n";
+		$rules .= "  <IfModule !mod_authz_core.c>\n";
+		$rules .= "    Order allow,deny\n";
+		$rules .= "    Deny from all\n";
+		$rules .= "  </IfModule>\n";
+		$rules .= "</FilesMatch>\n";
 
 		file_put_contents( $htaccess, $rules ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	}
@@ -2120,16 +1746,13 @@ class RequestApi {
 	 * @param \WP_REST_Request $request The REST API request object.
 	 * @return WP_REST_Response Response containing the list of options and pagination info.
 	 */
-	public function get_analytics_data_callback( \WP_REST_Request $request ) {
-		$params = $request->get_params();
-		$search = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
-
+	public function get_analytics_data_callback( \WP_REST_Request $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- REST callback signature.
 		global $wpdb;
 
 		$table_name   = $wpdb->prefix . 'prad_stats_graph';
 		$table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ); // phpcs:ignore
 		if ( $table_exists ) {
-			$stats_graph = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM `%1$s` ORDER BY id ASC', $table_name ) ); // phpcs:ignore
+			$stats_graph = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i ORDER BY id ASC', $table_name ) ); // phpcs:ignore
 		} else {
 			$wpdb->hide_errors();
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -2222,365 +1845,6 @@ class RequestApi {
 	}
 
 	/**
-	 * Customize the upload directory path for font files.
-	 *
-	 * @param array $upload The existing upload directory data.
-	 * @return array The modified upload directory data.
-	 */
-	public function prad_handle_font_upload_dir( $upload ) {
-		$directory        = 'prad_font_files';
-		$upload['subdir'] = '/' . $directory;
-		$upload['path']   = $upload['basedir'] . $upload['subdir'];
-		$upload['url']    = $upload['baseurl'] . $upload['subdir'];
-		return $upload;
-	}
-
-	/**
-	 * Upload Font File Callback
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param \WP_REST_Request $request The REST API request object.
-	 * @return WP_REST_Response Response indicating success or failure.
-	 */
-	public function upload_font_callback( \WP_REST_Request $request ) {
-		// Verify nonce and file.
-		if (
-			empty( $_FILES['font_file'] ) ||
-			! isset( $_FILES['font_file']['name'] ) ||
-			( ! ( isset( $_POST['pradnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['pradnonce'] ) ), 'prad-nonce' ) ) )
-		) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'No file found or invalid nonce.', 'product-addons' ),
-				),
-				400
-			);
-		}
-
-		$params      = $request->get_params();
-		$font_title  = isset( $params['font_title'] ) ? sanitize_text_field( $params['font_title'] ) : '';
-		$font_family = isset( $params['font_family'] ) ? sanitize_text_field( $params['font_family'] ) : '';
-
-		if ( empty( $font_title ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Font title is required.', 'product-addons' ),
-				),
-				400
-			);
-		}
-
-		$uploaded_file = $_FILES['font_file']; // phpcs:ignore
-
-		// Check if the wp_handle_upload function exists.
-		if ( ! function_exists( 'wp_handle_upload' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-		}
-
-		// Allowed font file types.
-		$allowed_extensions = array( 'woff', 'woff2', 'ttf' );
-		$allowed_mime_types = array(
-			'font/woff',
-			'font/woff2',
-			'application/x-font-woff',
-			'application/font-woff',
-			'application/x-font-ttf',
-			'application/x-font-truetype',
-			'font/ttf',
-		);
-		$max_file_size      = 10 * 1024 * 1024; // 10MB
-		$file_error         = '';
-
-		// Validate file size.
-		if ( $uploaded_file['size'] > $max_file_size ) {
-			$file_error = __( 'File size exceeds the maximum allowed limit (10MB).', 'product-addons' );
-		}
-
-		// Validate file extension.
-		$file_extension = strtolower( pathinfo( $uploaded_file['name'], PATHINFO_EXTENSION ) );
-		if ( ! in_array( $file_extension, $allowed_extensions, true ) ) {
-			$file_error = __( 'Invalid file extension. Allowed types are: woff, woff2, ttf.', 'product-addons' );
-		}
-
-		// Return error response if validation fails.
-		if ( $file_error ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => $file_error,
-				),
-				400
-			);
-		}
-
-		// Add custom upload directory filter.
-		add_filter( 'upload_dir', array( $this, 'prad_handle_font_upload_dir' ) );
-
-		// Check if file with same name exists and rename if necessary.
-		$upload_dir = wp_upload_dir();
-		$target_dir = $upload_dir['basedir'] . '/prad_font_files';
-
-		if ( ! file_exists( $target_dir ) ) {
-			wp_mkdir_p( $target_dir );
-		}
-
-		$original_filename = $uploaded_file['name'];
-		$filename          = basename( $original_filename );
-		$target_file       = $target_dir . '/' . $filename;
-		$counter           = 1;
-
-		// Rename if file exists.
-		while ( file_exists( $target_file ) ) {
-			$file_info   = pathinfo( $original_filename );
-			$filename    = $file_info['filename'] . '-' . $counter . '.' . $file_info['extension'];
-			$target_file = $target_dir . '/' . $filename;
-			++$counter;
-		}
-
-		$uploaded_file['name'] = $filename;
-
-		$upload_overrides = array(
-			'test_form' => false,
-			'test_type' => false,
-			'mimes'     => array(
-				'woff'  => 'font/woff|application/font-woff|application/x-font-woff',
-				'woff2' => 'font/woff2',
-				'ttf'   => 'font/ttf|application/x-font-ttf|application/x-font-truetype',
-			),
-		);
-
-		// Handle the file upload.
-		$uploaded = wp_handle_upload( $uploaded_file, $upload_overrides );      // Remove the custom upload directory filter after processing.
-		remove_filter( 'upload_dir', array( $this, 'prad_handle_font_upload_dir' ) );
-
-		if ( isset( $uploaded['error'] ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => $uploaded['error'],
-				),
-				400
-			);
-		}
-
-		// Save font data to options.
-		$fonts = get_option( 'prad_custom_fonts', array() );
-
-		if ( ! is_array( $fonts ) ) {
-			$fonts = array();
-		}
-
-		// Generate font face name if not provided.
-		if ( empty( $font_family ) ) {
-			$font_family = sanitize_title( $font_title );
-		}
-
-		$font_data = array(
-			'id'        => uniqid( 'font_' ),
-			'title'     => $font_title,
-			'src'       => $uploaded['url'],
-			'family'    => $font_family,
-			'file_type' => $file_extension,
-		);
-
-		$fonts[] = $font_data;
-		update_option( 'prad_custom_fonts', $fonts );
-
-		return new WP_REST_Response(
-			array(
-				'success' => true,
-				'message' => __( 'Font uploaded successfully.', 'product-addons' ),
-				'data'    => $font_data,
-			),
-			200
-		);
-	}
-
-	/**
-	 * Get Fonts List Callback
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return WP_REST_Response Response containing the fonts list.
-	 */
-	public function get_fonts_callback() {
-		$fonts = get_option( 'prad_custom_fonts', array() );
-
-		if ( ! is_array( $fonts ) ) {
-			$fonts = array();
-		}
-
-		return new WP_REST_Response(
-			array(
-				'success' => true,
-				'data'    => $fonts,
-			),
-			200
-		);
-	}
-
-	/**
-	 * Delete Font Callback
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param \WP_REST_Request $request The REST API request object.
-	 * @return WP_REST_Response Response indicating success or failure.
-	 */
-	public function delete_font_callback( \WP_REST_Request $request ) {
-		$params  = $request->get_params();
-		$font_id = isset( $params['font_id'] ) ? sanitize_text_field( $params['font_id'] ) : '';
-		$nonce   = isset( $params['wpnonce'] ) ? sanitize_text_field( $params['wpnonce'] ) : '';
-
-		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'prad-nonce' ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Invalid or missing nonce.', 'product-addons' ),
-				),
-				403
-			);
-		}
-
-		if ( empty( $font_id ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Font ID is required.', 'product-addons' ),
-				),
-				400
-			);
-		}
-
-		$fonts      = get_option( 'prad_custom_fonts', array() );
-		$font_found = false;
-		$file_path  = '';
-
-		if ( is_array( $fonts ) ) {
-			foreach ( $fonts as $key => $font ) {
-				if ( $font['id'] === $font_id ) {
-					$font_found = true;
-					$file_path  = str_replace( wp_upload_dir()['baseurl'], wp_upload_dir()['basedir'], $font['src'] );
-
-					// Delete the physical file.
-					if ( file_exists( $file_path ) ) {
-						wp_delete_file( $file_path );
-					}
-
-					// Remove from array.
-					unset( $fonts[ $key ] );
-					break;
-				}
-			}
-
-			// Reindex array.
-			$fonts = array_values( $fonts );
-			update_option( 'prad_custom_fonts', $fonts );
-		}
-
-		if ( ! $font_found ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Font not found.', 'product-addons' ),
-				),
-				404
-			);
-		}
-
-		return new WP_REST_Response(
-			array(
-				'success' => true,
-				'message' => __( 'Font deleted successfully.', 'product-addons' ),
-			),
-			200
-		);
-	}
-
-	/**
-	 * Update Font Callback
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param \WP_REST_Request $request The REST API request object.
-	 * @return WP_REST_Response Response indicating success or failure.
-	 */
-	public function update_font_callback( \WP_REST_Request $request ) {
-		$params      = $request->get_params();
-		$font_id     = isset( $params['font_id'] ) ? sanitize_text_field( $params['font_id'] ) : '';
-		$font_title  = isset( $params['font_title'] ) ? sanitize_text_field( $params['font_title'] ) : '';
-		$font_family = isset( $params['font_family'] ) ? sanitize_text_field( $params['font_family'] ) : '';
-		$nonce       = isset( $params['wpnonce'] ) ? sanitize_text_field( $params['wpnonce'] ) : '';
-
-		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'prad-nonce' ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Invalid or missing nonce.', 'product-addons' ),
-				),
-				403
-			);
-		}
-
-		if ( empty( $font_id ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Font ID is required.', 'product-addons' ),
-				),
-				400
-			);
-		}
-
-		if ( empty( $font_title ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Font title is required.', 'product-addons' ),
-				),
-				400
-			);
-		}
-
-		$fonts      = get_option( 'prad_custom_fonts', array() );
-		$font_found = false;
-
-		if ( is_array( $fonts ) ) {
-			foreach ( $fonts as $key => $font ) {
-				if ( $font['id'] === $font_id ) {
-					$font_found              = true;
-					$fonts[ $key ]['title']  = $font_title;
-					$fonts[ $key ]['family'] = $font_family ? $font_family : $font_title;
-					break;
-				}
-			}
-
-			update_option( 'prad_custom_fonts', $fonts );
-		}
-
-		if ( ! $font_found ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'Font not found.', 'product-addons' ),
-				),
-				404
-			);
-		}
-
-		return new WP_REST_Response(
-			array(
-				'success' => true,
-				'message' => __( 'Font updated successfully.', 'product-addons' ),
-			),
-			200
-		);
-	}
-
-	/**
 	 * Dismiss the builder onboarding tour.
 	 *
 	 * Sets the same flag that creating a first option list sets, so the site
@@ -2600,15 +1864,5 @@ class RequestApi {
 			),
 			200
 		);
-	}
-
-	public function durbin_subscribe_callback( \WP_REST_Request $request ) {
-		if ( ! wp_verify_nonce( $request->get_header( 'X-WP-Nonce' ), 'wp_rest' ) ) {
-			return new WP_REST_Response( array( 'message' => 'Invalid nonce.' ), 403 );
-		}
-
-		DurbinClient::send( DurbinClient::WIZARD_ACTION );
-
-		return new WP_REST_Response( array( 'sent' => true ), 200 );
 	}
 }

@@ -3,11 +3,13 @@ Contributors: RealMag777
 Donate link: https://products-filter.com/downloads
 Tags: filter, product filter, woocommerce, woof, ajax filter
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.3.1
+Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+WC requires at least: 6.0
+WC tested up to: 11.1
 
 HUSKY - WooCommerce Products Filter Professional (former name is WOOF) – flexible, easy and robust professional filter for products for WooCommerce
 
@@ -120,7 +122,7 @@ Latest PHP 8.x.x - COMPATIBLE!
 
 ### Make your site more profitable with next powerful scripts:
 
-&#9989;&nbsp;[BEAR - Bulk Editor for WooCommerce](https://wordpress.org/plugins/woo-bulk-editor/): WordPress plugin for managing and bulk edit WooCommerce Products data in robust and flexible way! Be professionals with managing data of your woocommerce e-shop!
+&#9989;&nbsp;[BEAR - Bulk Editor for WooCommerce (MCP server)](https://wordpress.org/plugins/woo-bulk-editor/): WordPress plugin for managing and bulk edit WooCommerce Products data in robust and flexible way! Be professionals with managing data of your woocommerce e-shop!
 
 &#9989;&nbsp;[FOX - Currency Switcher for WooCommerce](https://wordpress.org/plugins/woocommerce-currency-switcher/): is WooCommerce multi currency plugin, that allows your site visitors switch products prices currencies according to set currencies rates in the real time and pay in the selected currency (optionally). Allows to add any currency for WooCommerce store!
 
@@ -181,6 +183,18 @@ R: You can report security bugs through the Patchstack Vulnerability Disclosure 
 
 
 == Changelog ==
+
+= 1.4.5 =
+* Security fix: Thanks to crow and Wordfence.
+* Fix: with the SEO URL extension enabled, an attribute and a meta field with the same name (pa_niveau and niveau) claimed the same url name, and the values of one of them were dropped from the address https://pluginus.net/support/topic/empty-results-page/
+* Fix: filter on the shop page no longer inherits the previous category page state when SEO URL is enabled
+
+= 1.4.4 =
+* Security: fixed reflected XSS in the text search label (s / woof_text parameters). Thanks to Dthangws and Patchstack.
+* Hardening: only users with the unfiltered_html capability can change the "JavaScript code after AJAX is done" setting.
+
+= 1.4.3.2 =
+* Some little fixes and prepares before moving to woo.com
 
 = 1.4.3.1 =
 * Issue related to wordpress.org version: related to option "Loading word" and additional security fix
@@ -560,4 +574,3 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 
 == Upgrade Notice ==
-Previous version: https://storage.products-filter.com/wp-content/uploads/2023/07/woocommerce-products-filter-v.1.3.3.zip

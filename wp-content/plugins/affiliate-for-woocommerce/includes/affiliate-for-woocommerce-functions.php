@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/
  * @since       1.0.0
- * @version     1.32.0
+ * @version     1.34.1
  */
 
 // Exit if accessed directly.
@@ -733,6 +733,22 @@ function afwc_affiliate_identifier_regex_pattern() {
 }
 
 /**
+ * Get the allowed character set for the tracking param name.
+ *
+ * @return string Return the allowed-character regex.
+ */
+function afwc_pname_allowed_chars_regex() {
+	/**
+	 * Filter to modify the tracking param name allowed-character regex.
+	 *
+	 * @param string The regex pattern.
+	 *
+	 * @since 9.10.0
+	 */
+	return apply_filters( 'afwc_pname_allowed_chars_regex', '^[a-zA-Z0-9_-]+$' );
+}
+
+/**
  * Get affiliate tracking param name.
  *
  * @return string Affiliate tracking param name.
@@ -1440,7 +1456,7 @@ if ( ! function_exists( 'afwc_get_allowed_html_with_svg' ) ) {
 	function afwc_get_allowed_html_with_svg() {
 		$allowed_html  = wp_kses_allowed_html( 'post' );
 		$allowed_html += array(
-			'svg'  => array(
+			'svg'   => array(
 				'xmlns'        => true,
 				'fill'         => true,
 				'viewbox'      => true,
@@ -1448,11 +1464,13 @@ if ( ! function_exists( 'afwc_get_allowed_html_with_svg' ) ) {
 				'stroke'       => true,
 				'class'        => true,
 			),
-			'path' => array(
+			'path'  => array(
 				'stroke-linecap'  => true,
 				'stroke-linejoin' => true,
 				'd'               => true,
 			),
+			// Accessible name for the icon it sits in.
+			'title' => array(),
 		);
 		return $allowed_html;
 	}
@@ -1670,5 +1688,23 @@ if ( ! function_exists( 'afwc_get_settings_sections' ) ) {
 
 		// Return section title or empty string if not found.
 		return $sections[ $key ] ?? '';
+	}
+}
+
+if ( ! function_exists( 'afwc_get_order_refund_period_in_days' ) ) {
+	/**
+	 * Get the order refund period.
+	 *
+	 * @return int Refund period in days.
+	 */
+	function afwc_get_order_refund_period_in_days() {
+		$default = 30;
+		$value   = get_option( 'afwc_order_refund_period_in_days', $default );
+
+		if ( '' === $value || null === $value || false === $value ) {
+			$value = $default;
+		}
+
+		return absint( $value );
 	}
 }

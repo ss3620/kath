@@ -1,7 +1,7 @@
 <?php
 /**
  * VIP Shopper member discounts from annual spend (plan.pdf Moon/Star/Goddess).
- * Skipped for wholesale roles.
+ * Requires the vip_shopper role; wholesale roles use wholesale pricing instead.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -42,9 +42,8 @@ class EG_VIP_Discounts {
 		$user_id = get_current_user_id();
 		$roles   = (array) wp_get_current_user()->roles;
 
-		// Apply for vip_shopper or any logged-in customer in the loyalty ecosystem.
-		$eligible = array_intersect( $roles, array( 'vip_shopper', 'customer', 'affiliate_business_builder', 'ambassador' ) );
-		if ( empty( $eligible ) ) {
+		// VIP Shopper members only. Customers, affiliates and ambassadors pay full price.
+		if ( ! in_array( 'vip_shopper', $roles, true ) ) {
 			return;
 		}
 

@@ -5,7 +5,7 @@
  * @see      This template can be overridden by: https://woocommerce.com/document/affiliate-for-woocommerce/how-to-override-templates/
  * @package  affiliate-for-woocommerce/templates/my-account/dashboard/visits/
  * @since    8.37.0
- * @version  2.0.2
+ * @version  2.0.3
  */
 
 // Exit if accessed directly.
@@ -77,7 +77,7 @@ $visits_colspan = ( true === $is_show_user_agent_column ) ? 5 : 4;
 								<img src="<?php echo esc_url( WC()->plugin_url() ) . '/assets/images/wpspin-2x.gif'; ?>" class="afwc-table-loader" />
 								<span><?php echo esc_html_x( 'Loading...', 'Visits table load more loading text', 'affiliate-for-woocommerce' ); ?></span>
 							</span>
-							<a id="afwc_load_more_visits" class="afwc-load-more-text" data-max_record="<?php echo esc_attr( $visits_data['total_count'] ); ?>">
+							<a id="afwc_load_more_visits" class="afwc-load-more-text" role="button" data-max_record="<?php echo esc_attr( $visits_data['total_count'] ); ?>">
 								<span><?php echo esc_html_x( 'Load more', 'Visits table load more link text in my account', 'affiliate-for-woocommerce' ); ?></span>
 							</a>
 							<span class="afwc-no-load-more-text" style="display: none;"><?php echo esc_html_x( 'No more data to load', 'Text for no data to load', 'affiliate-for-woocommerce' ); ?></span>

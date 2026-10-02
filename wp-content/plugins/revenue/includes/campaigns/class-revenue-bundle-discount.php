@@ -5,9 +5,9 @@
 
 namespace Revenue;
 
-use Automattic\WooCommerce\StoreApi\Schemas\V1\CartItemSchema;
+defined( 'ABSPATH' ) || exit;
 
-//phpcs:disable WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.PHP.StrictComparisons.LooseComparison
+use Automattic\WooCommerce\StoreApi\Schemas\V1\CartItemSchema;
 
 /**
  * WowRevenue Campaign: Bundle Discount
@@ -315,7 +315,7 @@ class Revenue_Bundle_Discount {
 
 			// Add item after merging with $cart_item_data - allow plugins and 'add_cart_item_filter()' to modify cart item.
 			WC()->cart->cart_contents[ $cart_item_key ] = apply_filters(
-				'woocommerce_add_cart_item',
+				'woocommerce_add_cart_item', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce core filter.
 				array_merge(
 					$cart_item_data,
 					array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
@@ -379,13 +379,10 @@ class Revenue_Bundle_Discount {
 			$bundler_offer_data = $cart_item_data['revx_bundle_data'];
 			$bundle_offers      = isset( $cart_item_data['revx_bundle_products'] ) ? $cart_item_data['revx_bundle_products'] : null;
 
-			// Need to change it later with version check.
-			$is_new_version = ! empty( $bundle_offers ); // Detect version based on presence of new structure.
-
 			$trigger_product_id   = isset( $cart_item_data['revx_trigger_product_id'] ) ? $cart_item_data['revx_trigger_product_id'] : false;
 			$has_trigger_on_offer = false;
 
-			// Check if trigger product is in offers (common for both versions).
+			// Check if trigger product is in offers.
 			foreach ( $bundler_offer_data as $offer ) {
 				foreach ( $offer['products'] as $offer_product_id ) {
 					if ( $trigger_product_id == $offer_product_id ) {
@@ -395,12 +392,11 @@ class Revenue_Bundle_Discount {
 				}
 			}
 
-			// Handle trigger product variations for new version.
 			$trigger_data         = isset( $cart_item_data['revx_bundle_trigger_product_data'] ) ? $cart_item_data['revx_bundle_trigger_product_data'] : array();
 			$trigger_variation_id = '';
 			$trigger_variations   = array();
 
-			if ( $is_new_version && ! empty( $trigger_data ) && isset( $trigger_data[ $trigger_product_id ] ) ) {
+			if ( ! empty( $trigger_data ) && isset( $trigger_data[ $trigger_product_id ] ) ) {
 				$trigger_variation_id = $trigger_data[ $trigger_product_id ]['variation_id'] ?? '';
 				$trigger_variations   = $trigger_data[ $trigger_product_id ]['selected_attributes'] ?? array();
 			}
@@ -408,7 +404,8 @@ class Revenue_Bundle_Discount {
 			// Add trigger product if it's bundled with trigger and not in offers.
 			if ( isset( $cart_item_data['revx_bundle_with_trigger'], $cart_item_data['revx_trigger_product_id'] )
 				&& 'yes' === $cart_item_data['revx_bundle_with_trigger']
-				&& ! $has_trigger_on_offer ) {
+				&& ! $has_trigger_on_offer
+				&& wc_get_product( $cart_item_data['revx_trigger_product_id'] ) ) {
 
 				$bundle_cart_data = array(
 					'revx_campaign_id'     => $cart_item_data['revx_campaign_id'],
@@ -421,10 +418,7 @@ class Revenue_Bundle_Discount {
 					'revx_min_qty'         => 1,
 				);
 
-				// Add new version data if available.
-				if ( $is_new_version ) {
-					$bundle_cart_data['revx_bundle_products'] = $cart_item_data['revx_bundle_products'];
-				}
+				$bundle_cart_data['revx_bundle_products'] = $cart_item_data['revx_bundle_products'];
 
 				if ( isset( $cart_item_data['revx_trigger_pid'] ) ) {
 					$bundle_cart_data['revx_trigger_pid'] = $cart_item_data['revx_trigger_pid'];
@@ -435,14 +429,8 @@ class Revenue_Bundle_Discount {
 				$product          = wc_get_product( $offer_product_id );
 				$product_id       = $product->get_id();
 
-				// Use trigger variation data for new version, fallback to default for old version
-				if ( $is_new_version ) {
-					$variation_id = $trigger_variation_id;
-					$variations   = $trigger_variations;
-				} else {
-					$variation_id = $product->is_type( array( 'simple', 'subscription' ) ) ? '' : '';
-					$variations   = $product->is_type( array( 'simple', 'subscription' ) ) ? array() : array();
-				}
+				$variation_id = $trigger_variation_id;
+				$variations   = $trigger_variations;
 
 				/**
 				 * 'revenue_bundled_item_before_add_to_cart' action.
@@ -452,7 +440,7 @@ class Revenue_Bundle_Discount {
 				// Add to cart.
 				$bundled_item_cart_key = $this->bundled_add_to_cart( $product, $item_quantity, $variation_id, $variations, $bundle_cart_data );
 
-				if ( $bundled_item_cart_key && ! in_array( $bundled_item_cart_key, WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'] ) ) {
+				if ( $bundled_item_cart_key && ! in_array( $bundled_item_cart_key, WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'], true ) ) {
 					WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'][] = $bundled_item_cart_key;
 				}
 
@@ -462,13 +450,11 @@ class Revenue_Bundle_Discount {
 				do_action( 'revenue_bundled_item_after_add_to_cart', $product_id, $item_quantity, $variation_id, $variations, $bundle_cart_data );
 			}
 
-			// Process bundle offers - handle both old and new data structures.
-			if ( $is_new_version && ! empty( $bundle_offers ) ) {
-				// New version: Process revx_bundle_products structure.
+			if ( ! empty( $bundle_offers ) ) {
 				foreach ( $bundle_offers as $_p ) {
 					$offer_product_id = $_p['product_id'];
 
-					// Skip trigger products in new version.
+					// Skip trigger products.
 					if ( isset( $_p['is_trigger'] ) && 'yes' == $_p['is_trigger'] ) {
 						continue;
 					}
@@ -487,7 +473,7 @@ class Revenue_Bundle_Discount {
 						'revx_bundle_id'       => $cart_item_data['revx_bundle_id'],
 						'revx_bundle_type'     => 'offer',
 						'revx_bundle_data'     => $cart_item_data['revx_bundle_data'],
-						'revx_bundle_products' => $cart_item_data['revx_bundle_products'], // For new version 2.0
+						'revx_bundle_products' => $cart_item_data['revx_bundle_products'],
 						'revx_bundled_by'      => $cart_item_key,
 						'revx_min_qty'         => $quantity,
 						'rev_is_free_shipping' => $cart_item_data['rev_is_free_shipping'],
@@ -499,7 +485,13 @@ class Revenue_Bundle_Discount {
 
 					$item_quantity = $quantity * $bundle_quantity;
 					$product       = wc_get_product( $offer_product_id );
-					$product_id    = $product->get_id();
+
+					// Product may have been deleted/unpublished between render and submission.
+					if ( ! $product ) {
+						continue;
+					}
+
+					$product_id = $product->get_id();
 
 					// Reset variations for simple products
 					if ( $product->is_type( array( 'simple', 'subscription' ) ) ) {
@@ -515,7 +507,7 @@ class Revenue_Bundle_Discount {
 					// Add to cart.
 					$bundled_item_cart_key = $this->bundled_add_to_cart( $product, $item_quantity, $variation_id, $variations, $bundle_cart_data );
 
-					if ( $bundled_item_cart_key && ! in_array( $bundled_item_cart_key, WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'] ) ) {
+					if ( $bundled_item_cart_key && ! in_array( $bundled_item_cart_key, WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'], true ) ) {
 						WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'][] = $bundled_item_cart_key;
 					}
 
@@ -523,57 +515,6 @@ class Revenue_Bundle_Discount {
 					 * 'revenue_bundled_item_after_add_to_cart' action.
 					 */
 					do_action( 'revenue_bundled_item_after_add_to_cart', $product_id, $item_quantity, $variation_id, $variations, $bundle_cart_data );
-				}
-			} else {
-				// Legacy version: Process revx_bundle_data structure
-				foreach ( $bundler_offer_data as $offer ) {
-					foreach ( $offer['products'] as $offer_product_id ) {
-
-						$bundle_cart_data = array(
-							'revx_campaign_id'     => $cart_item_data['revx_campaign_id'],
-							'revx_campaign_type'   => $cart_item_data['revx_campaign_type'],
-							'revx_bundle_id'       => $cart_item_data['revx_bundle_id'],
-							'revx_bundle_type'     => 'offer',
-							'revx_bundle_data'     => $cart_item_data['revx_bundle_data'],
-							'revx_bundled_by'      => $cart_item_key,
-							'revx_min_qty'         => $offer['quantity'],
-							'rev_is_free_shipping' => $cart_item_data['rev_is_free_shipping'],
-						);
-
-						if ( isset( $cart_item_data['revx_trigger_pid'] ) ) {
-							$bundle_cart_data['revx_trigger_pid'] = $cart_item_data['revx_trigger_pid'];
-						}
-
-						if ( isset( $offer['quantity'] ) && absint( $offer['quantity'] ) === 0 ) {
-							continue;
-						}
-
-						$item_quantity = $offer['quantity'] * $bundle_quantity;
-						$product       = wc_get_product( $offer_product_id );
-						$product_id    = $product->get_id();
-
-						if ( $product->is_type( array( 'simple', 'subscription' ) ) ) {
-							$variation_id = '';
-							$variations   = array();
-						}
-
-						/**
-						 * 'revenue_bundled_item_before_add_to_cart' action.
-						 */
-						do_action( 'revenue_bundled_item_before_add_to_cart', $product_id, $item_quantity, $variation_id, $variations, $cart_item_data );
-
-						// Add to cart.
-						$bundled_item_cart_key = $this->bundled_add_to_cart( $product, $item_quantity, $variation_id, $variations, $bundle_cart_data );
-
-						if ( $bundled_item_cart_key && ! in_array( $bundled_item_cart_key, WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'] ) ) {
-							WC()->cart->cart_contents[ $cart_item_key ]['revx_bundled_items'][] = $bundled_item_cart_key;
-						}
-
-						/**
-						 * 'revenue_bundled_item_after_add_to_cart' action.
-						 */
-						do_action( 'revenue_bundled_item_after_add_to_cart', $product_id, $item_quantity, $variation_id, $variations, $bundle_cart_data );
-					}
 				}
 			}
 		}
@@ -672,14 +613,14 @@ class Revenue_Bundle_Discount {
 				// If bundle discount then check bundle with trigger product, if yes then add trigger product into offer.
 				foreach ( $offers as $offer ) {
 
-					$offered_products = $offer['products'];
+					$offered_products = array_map( 'absint', (array) $offer['products'] );
 
 					if ( isset( $cart_item['revx_trigger_pid'] ) && $product_id == $cart_item['revx_trigger_pid'] ) {
 
 						$offered_products[] = $product_id;
 					}
 
-					if ( in_array( $product_id, $offered_products ) && $offer['quantity'] <= $cart_quantity ) {
+					if ( in_array( $product_id, $offered_products, true ) && $offer['quantity'] <= $cart_quantity ) {
 						$offer_type  = isset( $offer['type'] ) ? $offer['type'] : '';
 						$offer_value = isset( $offer['value'] ) ? $offer['value'] : '';
 					}
@@ -772,7 +713,10 @@ class Revenue_Bundle_Discount {
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
 
-					extract( $data ); //phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 			}
@@ -787,7 +731,7 @@ class Revenue_Bundle_Discount {
 			foreach ( $campaigns as $campaign ) {
 				$current_campaign = $campaign;
 
-				revenue()->load_popup_assets( $campaign );
+				revenue()->load_popup_assets();
 
 				revenue()->update_campaign_impression( $campaign['id'] );
 
@@ -798,7 +742,10 @@ class Revenue_Bundle_Discount {
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
 
-					extract( $data ); //phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 			}
@@ -812,12 +759,10 @@ class Revenue_Bundle_Discount {
 			foreach ( $campaigns as $campaign ) {
 				$current_campaign = $campaign;
 
-				revenue()->load_floating_assets( $campaign );
+				revenue()->load_floating_assets();
 
 				revenue()->update_campaign_impression( $campaign['id'] );
 
-				// EXAMPLE: $file_path = REVENUE_PATH . 'includes/campaigns/views/bundle-discount/template1.php';
-				// GET THE CAMPAIGN VIEW PATH. ADDED FOR BACKWARD COMPATIBILITY.
 				$file_path = revenue()->get_campaign_path( $campaign, 'floating', 'bundle-discount' );
 
 				$file_path = apply_filters( 'revenue_campaign_view_path', $file_path, 'bundle_discount', 'floating', $campaign );
@@ -825,7 +770,10 @@ class Revenue_Bundle_Discount {
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
 
-					extract( $data ); //phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 			}
@@ -865,7 +813,7 @@ class Revenue_Bundle_Discount {
 		$prod       = wc_get_product( $product_id );
 		if ( $prod ) {
 			$post = get_post( $product_id );
-			if ( $post->post_status === 'trash' ) {
+			if ( 'trash' === $post->post_status ) {
 				wp_untrash_post( $product_id );
 			}
 		}
@@ -1106,14 +1054,14 @@ class Revenue_Bundle_Discount {
 			// If bundle discount then check bundle with trigger product, if yes then add trigger product into offer.
 			foreach ( $offers as $offer ) {
 
-				$offered_products = $offer['products'];
+				$offered_products = array_map( 'absint', (array) $offer['products'] );
 
 				if ( isset( $cart_item['revx_trigger_pid'] ) && $product_id == $cart_item['revx_trigger_pid'] ) {
 
 					$offered_products[] = $product_id;
 				}
 
-				if ( in_array( $product_id, $offered_products ) && $offer['quantity'] <= $cart_quantity ) {
+				if ( in_array( $product_id, $offered_products, true ) && $offer['quantity'] <= $cart_quantity ) {
 					$offer_type  = isset( $offer['type'] ) ? $offer['type'] : '';
 					$offer_value = isset( $offer['value'] ) ? $offer['value'] : '';
 				}
@@ -1608,7 +1556,7 @@ class Revenue_Bundle_Discount {
 						$is_child = false;
 
 						if ( isset( $order_item['revx_cart_key'] ) ) {
-							$is_child = in_array( $order_item['revx_cart_key'], $bundled_cart_keys ) ? true : false;
+							$is_child = in_array( $order_item['revx_cart_key'], $bundled_cart_keys, true ) ? true : false;
 						} else {
 							$is_child = isset( $order_item['revx_bundle_data'] ) && $order_item['revx_bundle_data'] == $container_order_item['revx_bundle_data'] && isset( $order_item['revx_bundled_by'] ) ? true : false;
 						}

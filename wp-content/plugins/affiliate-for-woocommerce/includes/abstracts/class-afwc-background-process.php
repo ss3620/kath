@@ -5,7 +5,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/abstracts
  * @since       7.14.0
- * @version     1.1.1
+ * @version     1.1.2
  */
 
 // Exit if accessed directly.
@@ -112,6 +112,41 @@ if ( ! class_exists( 'AFWC_Background_Process' ) ) {
 		}
 
 		/**
+		 * Schedule the next batch during completion of the currently running task.
+		 *
+		 * @return void
+		 */
+		private function schedule_next_batch() {
+
+			if ( ! $this->is_enabled() || ! function_exists( 'as_enqueue_async_action' ) ) {
+				return;
+			}
+
+			// Check if a future run is already scheduled; if so, do not schedule again.
+			if ( function_exists( 'as_get_scheduled_actions' ) && class_exists( 'ActionScheduler_Store' ) ) {
+				$pending = as_get_scheduled_actions(
+					array(
+						'hook'     => $this->action,
+						'status'   => ActionScheduler_Store::STATUS_PENDING,
+						'group'    => $this->group,
+						'per_page' => 1,
+					),
+					'ids'
+				);
+
+				if ( ! empty( $pending ) ) {
+					return; // A future run is already queued.
+				}
+			}
+
+			// Set status to processing.
+			$this->set_status( 'processing' );
+
+			// Enqueue the next batch.
+			as_enqueue_async_action( $this->action, array(), $this->group );
+		}
+
+		/**
 		 * Callback method to execute the process for each batch.
 		 */
 		public function do_task() {
@@ -143,8 +178,8 @@ if ( ! class_exists( 'AFWC_Background_Process' ) ) {
 				);
 			}
 
-			// Handle re-starting the process.
-			$this->start_process();
+			// Schedule the next batch.
+			$this->schedule_next_batch();
 		}
 
 		/**

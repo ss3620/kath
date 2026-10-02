@@ -3,7 +3,7 @@
  * Plugin Name: WPLoyalty
  * Plugin URI: https://wployalty.net
  * Description: Loyalty Rules and Referrals for WooCommerce. Turn your hard-earned sales into repeat purchases by rewarding your customers and building loyalty.
- * Version: 1.4.7
+ * Version: 1.4.8
  * Author: wployalty
  * Slug: wp-loyalty-rules-lite
  * Text Domain: wp-loyalty-rules
@@ -11,7 +11,7 @@
  * Requires Plugins: woocommerce
  * Requires at least: 6.0
  * WC requires at least: 9.0
- * WC tested up to: 11.0
+ * WC tested up to: 11.1
  * Contributors: wployalty
  * Author URI: https://wployalty.net
  * License: GPLv2 or later
@@ -52,7 +52,7 @@ if ( wlrf_is_pro_active() ) {
 	return;
 }
 //Define the plugin version
-defined( 'WLR_PLUGIN_VERSION' ) or define( 'WLR_PLUGIN_VERSION', '1.4.7' );
+defined( 'WLR_PLUGIN_VERSION' ) or define( 'WLR_PLUGIN_VERSION', '1.4.8' );
 // Define the plugin text domain
 defined( 'WLR_TEXT_DOMAIN' ) or define( 'WLR_TEXT_DOMAIN', 'wp-loyalty-rules' );
 // Define the slug

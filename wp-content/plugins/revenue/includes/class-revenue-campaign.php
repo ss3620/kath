@@ -1,6 +1,8 @@
 <?php //phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 namespace Revenue;
 
+defined( 'ABSPATH' ) || exit;
+
 use WC_Shipping_Free_Shipping;
 use DateTime;
 use Revenue\Services\Revenue_Product_Context;
@@ -53,13 +55,6 @@ class Revenue_Campaign {
 	 * @var boolean
 	 */
 	public $is_free_shipping = false;
-
-	/**
-	 * Contain spending goals
-	 *
-	 * @var array
-	 */
-	public $spending_goals = array();
 
 	/**
 	 * Contain status of is script already enqueued or not.
@@ -214,8 +209,6 @@ class Revenue_Campaign {
 
 		add_action( 'revenue_before_campaign_render', array( $this, 'add_campaign_css' ) );
 
-		// add_action('revenue_rest_update_campaign', array($this, 'set_campaign_version'), 10);
-
 		add_filter( 'woocommerce_blocks_checkout_block_registration', array( $this, 'custom_checkout_text_injection' ) );
 		// add_filter( 'woocommerce_blocks_cart_block_registration', array( $this, 'custom_cart_text_injection' ) );
 
@@ -249,25 +242,47 @@ class Revenue_Campaign {
 	 * @return void|\WP_REST_Response
 	 */
 	public function get_campaign_html() {
-		$position = sanitize_text_field( wp_unslash( $_GET['position'] ?? '' ) );
-		if ( ! $position ) {
-			return;
-		}
-		if ( ! method_exists( $this, $position ) ) {
-			return;
-		}
-		// call the method dynamically and return the output.
-		ob_start();
-		$this->{$position}();
-		$html = ob_get_clean();
+		check_ajax_referer( 'revenue-add-to-cart', 'security' );
 
-		wp_send_json_success(
-			array(
-				'innerHtml' => $html,
-			)
+		$position          = isset( $_GET['position'] ) ? sanitize_key( wp_unslash( $_GET['position'] ) ) : '';
+		$allowed_positions = array(
+			'before_cart',
+			'after_cart',
+			'before_cart_table',
+			'after_cart_table',
+			'before_cart_totals',
+			'after_cart_totals',
+			'proceed_to_checkout',
+			'before_checkout_form',
+			'after_checkout_form',
+			'before_checkout_billing_form',
+			'after_checkout_billing_form',
+			'checkout_before_order_review',
+			'checkout_after_order_review',
+			'review_order_before_payment',
+			'review_order_after_payment',
+			'review_order_before_shipping',
+			'review_order_after_shipping',
 		);
-	}
 
+		if ( ! in_array( $position, $allowed_positions, true ) || ! method_exists( $this, $position ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid campaign position.', 'revenue' ) ), 400 );
+			return;
+		}
+
+		$buffer_level = ob_get_level();
+		ob_start();
+		try {
+			$this->{$position}();
+			$html = ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $buffer_level ) {
+				ob_end_clean();
+			}
+		}
+
+		wp_send_json_success( array( 'innerHtml' => $html ) );
+	}
 	/**
 	 * Reference blocks, do not delete, add more if found, might be needed in future.
 	 *
@@ -370,24 +385,19 @@ class Revenue_Campaign {
 		wp_enqueue_style( 'revenue-campaign' );
 		wp_enqueue_style( 'revenue-campaign-buyx_gety' );
 		wp_enqueue_style( 'revenue-campaign-volume' );
-		wp_enqueue_style( 'revenue-campaign-double_order' );
-		wp_enqueue_style( 'revenue-campaign-fbt' );
-		wp_enqueue_style( 'revenue-campaign-mix_match' );
+		do_action( 'revenue_enqueue_campaign_assets' );
 		wp_enqueue_style( 'revenue-utility' );
 		wp_enqueue_style( 'revenue-responsive' );
 		wp_enqueue_style( 'revenue-animated-add-to-cart' );
-		wp_enqueue_style( 'revenue-campaign-spending_goal' );
 		wp_enqueue_script( 'revenue-block-integration' );
 		wp_enqueue_script( 'revenue-campaign' );
 		wp_enqueue_script( 'revenue-slider' );
 		wp_enqueue_script( 'revenue-add-to-cart' );
 		wp_enqueue_script( 'revenue-variation-product-selection' );
 		wp_enqueue_script( 'revenue-checkbox-handler' );
-		wp_enqueue_script( 'revenue-double-order' );
 		wp_enqueue_script( 'revenue-campaign-total' );
 		wp_enqueue_script( 'revenue-countdown' );
 		wp_enqueue_script( 'revenue-animated-add-to-cart' );
-		wp_enqueue_script( 'revenue-spending-goal' );
 		$this->localize_script();
 
 		$position = $blocks_map[ $block['blockName'] ];
@@ -456,34 +466,20 @@ class Revenue_Campaign {
 	}
 
 	/**
-	 * Set campaign version
-	 *
-	 * @param array $campaign Campaign data.
-	 * @return void
-	 */
-	public function set_campaign_version( $campaign ) {
-		revenue()->update_campaign_meta( $campaign['id'], 'campaign_version', '2.0.0' );
-	}
-
-	/**
 	 * Add campaign CSS styles
 	 *
 	 * @param int $campaign_id Campaign ID.
 	 * @return void
 	 */
 	public function add_campaign_css( $campaign_id ) {
-		$campaign_version = revenue()->get_campaign_meta( $campaign_id, 'campaign_version', true );
-
-		if ( '2.0.0' === $campaign_version ) {
-			wp_enqueue_style( 'revx-animation', REVENUE_URL . 'assets/css/common/revenue-animation.css', array(), REVENUE_VER );
-			wp_enqueue_style( 'revx-campaign', REVENUE_URL . 'assets/css/common/revenue-campaign.css', array(), REVENUE_VER );
-		}
+		wp_enqueue_style( 'revx-animation', REVENUE_URL . 'assets/css/common/revenue-animation.css', array(), REVENUE_VER );
+		wp_enqueue_style( 'revx-campaign', REVENUE_URL . 'assets/css/common/revenue-campaign.css', array(), REVENUE_VER );
 		?>
 			<style>
 				:root{
-					<?php echo wp_kses_post( Revenue_Template_Utils::get_global_themes() ); ?>
+					<?php echo wp_strip_all_tags( Revenue_Template_Utils::get_global_themes() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS text node, tags stripped. ?>
 				}
-				<?php echo wp_kses_post( Revenue_Template_Utils::get_global_typography() ); ?>
+				<?php echo wp_strip_all_tags( Revenue_Template_Utils::get_global_typography() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS text node, tags stripped. ?>
 			</style>
 		<?php
 		$placement_settings = revenue()->get_placement_settings( $campaign_id );
@@ -518,7 +514,8 @@ class Revenue_Campaign {
 		}
 
 		// conditionally add css for all page top and bottom placement.
-		if ( 'free_shipping_bar' === $campaign_type || 'spending_goal' === $campaign_type || 'countdown_timer' === $campaign_type ) {
+		$site_wide_types = apply_filters( 'revenue_campaign_site_wide_placement_types', array( 'free_shipping_bar', 'countdown_timer' ) );
+		if ( in_array( $campaign_type, (array) $site_wide_types, true ) ) {
 			// $css .= revenue()->get_campaign_meta( $campaign_id, 'top_css', true );
 			$entire_site_placement = revenue()->get_placement_settings( $campaign_id, 'all_page' );
 			if (
@@ -536,7 +533,7 @@ class Revenue_Campaign {
 
 		?>
 			<style>
-				<?php echo html_entity_decode( $css ); //phpcs:ignore ?>
+				<?php echo wp_strip_all_tags( $css ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS text node, tags stripped, no HTML escaping applies here. ?>
 			</style>
 
 		<?php
@@ -714,7 +711,7 @@ class Revenue_Campaign {
 			$position = $injection['position'];
 
 			// Apply the existing filter to get the HTML we want to inject.
-			$injected_html = apply_filters( $filter, '' );
+			$injected_html = apply_filters( $filter, '' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- $filter is built from our own registry keys.
 
 			if ( $injected_html ) {
 				if ( 'before' === $position ) {
@@ -732,22 +729,7 @@ class Revenue_Campaign {
 		return $parsed_block;
 	}
 
-	/**
-	 * Inject content into the block content based on the filter name and position.
-	 *
-	 * @param string $block_content The original block content.
-	 * @param string $filter_name   The filter name to apply.
-	 * @param string $position      The position to inject content ('before' or 'after').
-	 * @return string Modified block content with injected content.
-	 */
-	private function inject_content_checkout_block( $block_content, $filter_name, $position ) {
-		$revx_checkout_content = apply_filters( $filter_name, '' );
-		if ( 'before' === $position ) {
-			return $revx_checkout_content . $block_content;
-		} else {
-			return $block_content . $revx_checkout_content;
-		}
-	}
+
 
 	/**
 	 * Handle revenue Checkout block filters.
@@ -914,19 +896,7 @@ class Revenue_Campaign {
 				$campaign_type = $cart_item['revx_campaign_type'];
 				$campaign_id   = $cart_item['revx_campaign_id'];
 
-				/**
-				 * Hook for updating the price on the cart from several campaigns
-				 * Valid Campaign Types:
-				 * - normal_discount
-				 * - bundle_discount
-				 * - volume_discount
-				 * - buy_x_get_y
-				 * - mix_match
-				 * - frequently_bought_together
-				 * - spending_goal
-				 */
-
-				// Fire the appropriate action based on the campaign type.
+				// Each campaign type updates its own cart price on this hook.
 				do_action( "revenue_campaign_{$campaign_type}_before_calculate_cart_totals", $cart_item, $campaign_id, WC()->cart );
 				$has_revenue_product = true;
 			}
@@ -959,14 +929,7 @@ class Revenue_Campaign {
 		<?php
 	}
 
-	/**
-	 * Force recalculate shipping charge
-	 *
-	 * @return void
-	 */
-	public function force_recalculate_shipping() {
-		WC()->cart->calculate_shipping();
-	}
+
 
 
 	/**
@@ -998,12 +961,11 @@ class Revenue_Campaign {
 			'select_items_first'           => __( 'Please select the item(s) first', 'revenue' ),
 			'error_adding_to_cart'         => __( 'Error adding to cart', 'revenue' ),
 			'select_at_least_one_product'  => __( 'Please select at least one product to add', 'revenue' ),
-			'mix_match_count_mode'         => apply_filters( 'revenue_mix_match_count_mode', 'unique' ),
-			'mix_match_hide_footer_until_selected' => (bool) apply_filters( 'revenue_mix_match_hide_footer_until_selected', false ),
 		);
 
+		$campaign_localize_data = apply_filters( 'revenue_campaign_localize_data', $campaign_localize_data );
+
 		wp_localize_script( 'revenue-campaign', 'revenue_campaign', $campaign_localize_data );
-		wp_localize_script( 'revenue-v1-campaign', 'revenue_campaign', $campaign_localize_data );
 	}
 
 
@@ -1029,9 +991,6 @@ class Revenue_Campaign {
 		// wp_enqueue_style( 'revenue-campaign' );
 		// wp_enqueue_style( 'revenue-campaign-buyx_gety' );
 		// wp_enqueue_style( 'revenue-campaign-volume' );
-		// wp_enqueue_style( 'revenue-campaign-double_order' );
-		// wp_enqueue_style( 'revenue-campaign-fbt' );
-		// wp_enqueue_style( 'revenue-campaign-mix_match' );
 		// wp_enqueue_style( 'revenue-utility' );
 		// wp_enqueue_style( 'revenue-responsive' );
 		// wp_enqueue_script( 'revenue-campaign' );
@@ -1039,13 +998,10 @@ class Revenue_Campaign {
 		// wp_enqueue_script( 'revenue-add-to-cart' );
 		// wp_enqueue_script( 'revenue-variation-product-selection' );
 		// wp_enqueue_script( 'revenue-checkbox-handler' );
-		// wp_enqueue_script( 'revenue-double-order' );
 		// wp_enqueue_script( 'revenue-campaign-total' );
 		// wp_enqueue_script( 'revenue-countdown' );
 		// wp_enqueue_script( 'revenue-animated-add-to-cart' );
 		// wp_enqueue_style( 'revenue-animated-add-to-cart' );
-		// wp_enqueue_script( 'revenue-spending-goal' );
-		// wp_enqueue_style( 'revenue-campaign-spending_goal' );
 		// wp_enqueue_style( 'revx-animation', REVENUE_URL . 'assets/css/common/revenue-animation.css', array(), REVENUE_VER );
 		// wp_enqueue_style( 'revx-campaign', REVENUE_URL . 'assets/css/common/revenue-campaign.css', array(), REVENUE_VER );
 
@@ -1189,8 +1145,8 @@ class Revenue_Campaign {
 	private function run_campaigns_for_cart_items( $page, $dp_mode, $position = '' ) {
 		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 			// Run campaigns for variations.
-			// Needed for double order campaign and if any campaign has variation trigger.
-			if ( isset( $cart_item['variation_id'] ) ) {
+			// Needed when a campaign uses a variation trigger.
+			if ( ! empty( $cart_item['variation_id'] ) ) {
 				$this->fetch_and_run_campaigns( $cart_item['variation_id'], $page, $dp_mode, $position );
 			}
 			// Run campaigns for main products.
@@ -1267,77 +1223,87 @@ class Revenue_Campaign {
 	 * @return string
 	 */
 	public function run_cart_checkout_block_campaigns( $content ) {
-		$before_extra      = '';
-		$after_extra       = '';
-		$showed_product_id = array();
-		ob_start();
-		if ( is_cart() && has_block( 'woocommerce/cart', get_the_ID() ) ) {
+		$buffer_level = ob_get_level();
+		try {
+			$before_extra      = '';
+			$after_extra       = '';
+			$showed_product_id = array();
+			ob_start();
+			if ( is_cart() && has_block( 'woocommerce/cart', get_the_ID() ) ) {
 
-			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$product_id = $cart_item['product_id'];
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+					$product_id = $cart_item['product_id'];
 
-				Revenue_Product_Context::set_product_context( $product_id );
+					Revenue_Product_Context::set_product_context( $product_id );
 
-				if ( ! isset( $showed_product_id[ $product_id ] ) ) {
-					$showed_product_id[ $product_id ] = true;
-					$this->fetch_and_run_campaigns( $product_id, 'cart_page', 'inpage', 'before_content' );
+					if ( ! isset( $showed_product_id[ $product_id ] ) ) {
+						$showed_product_id[ $product_id ] = true;
+						$this->fetch_and_run_campaigns( $product_id, 'cart_page', 'inpage', 'before_content' );
+					}
+					Revenue_Product_Context::clear_product_context();
 				}
-				Revenue_Product_Context::clear_product_context();
+			}
+			if ( is_checkout() && has_block( 'woocommerce/checkout', get_the_ID() ) ) {
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+					$product_id = $cart_item['product_id'];
+
+					Revenue_Product_Context::set_product_context( $product_id );
+
+					if ( ! isset( $showed_product_id[ $product_id ] ) ) {
+						$showed_product_id[ $product_id ] = true;
+						$campaigns                        = revenue()->get_available_campaigns( $product_id, 'checkout_page', 'inpage', 'before_content' );
+
+						$this->run_campaigns( $campaigns, 'inpage', 'cart_page', 'before_content' );
+					}
+					Revenue_Product_Context::clear_product_context();
+				}
+			}
+			$before_extra = ob_get_clean();
+			ob_start();
+			if ( is_cart() && has_block( 'woocommerce/cart', get_the_ID() ) ) {
+
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+					$product_id = $cart_item['product_id'];
+
+					Revenue_Product_Context::set_product_context( $product_id );
+
+					if ( ! isset( $showed_product_id[ $product_id ] ) ) {
+						$showed_product_id[ $product_id ] = true;
+						$campaigns                        = revenue()->get_available_campaigns( $product_id, 'cart_page', 'inpage', 'after_content' );
+
+						$this->run_campaigns( $campaigns, 'inpage', 'cart_page', 'after_content' );
+					}
+					Revenue_Product_Context::clear_product_context();
+				}
+			}
+			if ( is_checkout() && has_block( 'woocommerce/checkout', get_the_ID() ) ) {
+
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+					$product_id = $cart_item['product_id'];
+
+					Revenue_Product_Context::set_product_context( $product_id );
+
+					if ( ! isset( $showed_product_id[ $product_id ] ) ) {
+						$showed_product_id[ $product_id ] = true;
+						$campaigns                        = revenue()->get_available_campaigns( $product_id, 'checkout_page', 'inpage', 'after_content' );
+
+						$this->run_campaigns( $campaigns, 'inpage', 'cart_page', 'after_content' );
+					}
+					Revenue_Product_Context::clear_product_context();
+				}
+			}
+
+			$after_extra = ob_get_clean();
+
+			return wp_kses( $before_extra, revenue()->get_allowed_tag() ) . $content . wp_kses( $after_extra, revenue()->get_allowed_tag() );
+		} catch ( \Throwable $error ) {
+			Revenue_Product_Context::clear_product_context();
+			throw $error;
+		} finally {
+			while ( ob_get_level() > $buffer_level ) {
+				ob_end_clean();
 			}
 		}
-		if ( is_checkout() && has_block( 'woocommerce/checkout', get_the_ID() ) ) {
-			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$product_id = $cart_item['product_id'];
-
-				Revenue_Product_Context::set_product_context( $product_id );
-
-				if ( ! isset( $showed_product_id[ $product_id ] ) ) {
-					$showed_product_id[ $product_id ] = true;
-					$campaigns                        = revenue()->get_available_campaigns( $product_id, 'checkout_page', 'inpage', 'before_content' );
-
-					$this->run_campaigns( $campaigns, 'inpage', 'cart_page', 'before_content' );
-				}
-				Revenue_Product_Context::clear_product_context();
-			}
-		}
-		$before_extra = ob_get_clean();
-		ob_start();
-		if ( is_cart() && has_block( 'woocommerce/cart', get_the_ID() ) ) {
-
-			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$product_id = $cart_item['product_id'];
-
-				Revenue_Product_Context::set_product_context( $product_id );
-
-				if ( ! isset( $showed_product_id[ $product_id ] ) ) {
-					$showed_product_id[ $product_id ] = true;
-					$campaigns                        = revenue()->get_available_campaigns( $product_id, 'cart_page', 'inpage', 'after_content' );
-
-					$this->run_campaigns( $campaigns, 'inpage', 'cart_page', 'after_content' );
-				}
-				Revenue_Product_Context::clear_product_context();
-			}
-		}
-		if ( is_checkout() && has_block( 'woocommerce/checkout', get_the_ID() ) ) {
-
-			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$product_id = $cart_item['product_id'];
-
-				Revenue_Product_Context::set_product_context( $product_id );
-
-				if ( ! isset( $showed_product_id[ $product_id ] ) ) {
-					$showed_product_id[ $product_id ] = true;
-					$campaigns                        = revenue()->get_available_campaigns( $product_id, 'checkout_page', 'inpage', 'after_content' );
-
-					$this->run_campaigns( $campaigns, 'inpage', 'cart_page', 'after_content' );
-				}
-				Revenue_Product_Context::clear_product_context();
-			}
-		}
-
-		$after_extra = ob_get_clean();
-
-		return $before_extra . $content . $after_extra;
 	}
 
 	/**
@@ -1363,13 +1329,13 @@ class Revenue_Campaign {
 			case 'buy_x_get_y':
 				return $this->is_buy_x_get_y_campaign_stock_valid( $campaign );
 
-			case 'frequently_bought_together':
-				return $this->is_frequently_bought_together_campaign_stock_valid( $campaign );
-
-			case 'mix_match':
-				return $this->is_mix_match_campaign_stock_valid( $campaign );
-
 			default:
+				// Types whose trigger products must all be in stock before the offer runs.
+				$trigger_stock_types = apply_filters( 'revenue_campaign_trigger_stock_types', array() );
+				if ( in_array( $campaign['campaign_type'], (array) $trigger_stock_types, true ) ) {
+					return $this->are_all_trigger_products_in_stock( $campaign );
+				}
+
 				return true;
 		}
 	}
@@ -1416,25 +1382,13 @@ class Revenue_Campaign {
 	}
 
 	/**
-	 * Check frequently bought together campaign stock validity.
+	 * Check that every trigger product the campaign needs is in stock.
 	 *
 	 * @param array $campaign Campaign data.
 	 * @return bool
 	 */
-	private function is_frequently_bought_together_campaign_stock_valid( $campaign ) {
-		$required_product_ids = $this->get_required_product_ids_from_campaign( $campaign );
-		return $this->are_all_products_in_stock( $required_product_ids );
-	}
-
-	/**
-	 * Check mix and match campaign stock validity.
-	 *
-	 * @param array $campaign Campaign data.
-	 * @return bool
-	 */
-	private function is_mix_match_campaign_stock_valid( $campaign ) {
-		$required_product_ids = $this->get_required_product_ids_from_campaign( $campaign );
-		return $this->are_all_products_in_stock( $required_product_ids );
+	private function are_all_trigger_products_in_stock( $campaign ) {
+		return $this->are_all_products_in_stock( $this->get_required_product_ids_from_campaign( $campaign ) );
 	}
 
 	/**
@@ -1530,6 +1484,34 @@ class Revenue_Campaign {
 	 * @param string $position Position.
 	 * @return void
 	 */
+	/**
+	 * Determine the placement_settings key for the page currently being viewed.
+	 *
+	 * @return string
+	 */
+	private function get_current_placement_key() {
+		$which_page = 'all_page';
+		if ( is_product() ) {
+			$which_page = 'product_page';
+		} elseif ( is_cart() ) {
+			$which_page = 'cart_page';
+		} elseif ( is_shop() ) {
+			$which_page = 'shop_page';
+		} elseif ( is_product_category() ) {
+			$which_page = 'product_category_page';
+		} elseif ( is_product_tag() ) {
+			$which_page = 'product_tag_page';
+		} elseif ( is_account_page() ) {
+			$which_page = 'my_account';
+		} elseif ( is_wc_endpoint_url( 'order-received' ) ) {
+			$which_page = 'thankyou_page';
+		} elseif ( is_checkout() ) {
+			$which_page = 'checkout_page';
+		}
+
+		return $which_page;
+	}
+
 	public function run_campaigns( $campaigns, $display_type = 'inpage', $placement = '', $position = '' ) {
 		$typewise_campaigns = array();
 		$campaigns          = $this->filter_running_campaigns( $campaigns );
@@ -1546,60 +1528,23 @@ class Revenue_Campaign {
 
 			$typewise_campaigns[ $campaign['campaign_type'] ][] = $campaign;
 
-			if ( revenue()->is_for_new_builder( $campaign ) ) {
-				wp_enqueue_style( 'revenue-campaign' );
-				wp_enqueue_style( 'revenue-campaign-buyx_gety' );
-				wp_enqueue_style( 'revenue-campaign-volume' );
-				wp_enqueue_style( 'revenue-campaign-double_order' );
-				wp_enqueue_style( 'revenue-campaign-fbt' );
-				wp_enqueue_style( 'revenue-campaign-mix_match' );
-				wp_enqueue_style( 'revenue-utility' );
-				wp_enqueue_style( 'revenue-responsive' );
-				wp_enqueue_script( 'revenue-campaign' );
-				wp_enqueue_script( 'revenue-slider' );
-				wp_enqueue_script( 'revenue-add-to-cart' );
-				wp_enqueue_script( 'revenue-variation-product-selection' );
-				wp_enqueue_script( 'revenue-checkbox-handler' );
-				wp_enqueue_script( 'revenue-double-order' );
-				wp_enqueue_script( 'revenue-campaign-total' );
-				wp_enqueue_script( 'revenue-countdown' );
-				wp_enqueue_script( 'revenue-animated-add-to-cart' );
-				wp_enqueue_style( 'revenue-animated-add-to-cart' );
+			wp_enqueue_style( 'revenue-campaign' );
+			wp_enqueue_style( 'revenue-campaign-buyx_gety' );
+			wp_enqueue_style( 'revenue-campaign-volume' );
+			do_action( 'revenue_enqueue_campaign_assets', $campaign['campaign_type'] );
+			wp_enqueue_style( 'revenue-utility' );
+			wp_enqueue_style( 'revenue-responsive' );
+			wp_enqueue_script( 'revenue-campaign' );
+			wp_enqueue_script( 'revenue-slider' );
+			wp_enqueue_script( 'revenue-add-to-cart' );
+			wp_enqueue_script( 'revenue-variation-product-selection' );
+			wp_enqueue_script( 'revenue-checkbox-handler' );
+			wp_enqueue_script( 'revenue-campaign-total' );
+			wp_enqueue_script( 'revenue-countdown' );
+			wp_enqueue_script( 'revenue-animated-add-to-cart' );
+			wp_enqueue_style( 'revenue-animated-add-to-cart' );
 
-			} else {
-
-				wp_enqueue_style( 'revenue-v1-campaign' );
-				wp_enqueue_style( 'revenue-v1-campaign-buyx_gety' );
-				wp_enqueue_style( 'revenue-v1-campaign-double_order' );
-				wp_enqueue_style( 'revenue-v1-campaign-fbt' );
-				wp_enqueue_style( 'revenue-v1-campaign-mix_match' );
-				wp_enqueue_style( 'revenue-v1-utility' );
-				wp_enqueue_style( 'revenue-v1-responsive' );
-				wp_enqueue_script( 'revenue-v1-campaign' );
-				wp_enqueue_script( 'revenue-v1-add-to-cart' );
-				wp_enqueue_script( 'revenue-v1-animated-add-to-cart' );
-				wp_enqueue_style( 'revenue-v1-animated-add-to-cart' );
-
-			}
-
-			$which_page = 'all_page';
-			if ( is_product() ) {
-				$which_page = 'product_page';
-			} elseif ( is_cart() ) {
-				$which_page = 'cart_page';
-			} elseif ( is_shop() ) {
-				$which_page = 'shop_page';
-			} elseif ( is_product_category() ) {
-				$which_page = 'product_category_page';
-			} elseif ( is_product_tag() ) {
-				$which_page = 'product_tag_page';
-			} elseif ( is_account_page() ) {
-				$which_page = 'my_account';
-			} elseif ( is_wc_endpoint_url( 'order-received' ) ) {
-				$which_page = 'thankyou_page';
-			} elseif ( is_checkout() ) {
-				$which_page = 'checkout_page';
-			}
+			$which_page = $this->get_current_placement_key();
 
 			// If the campaign is not set to display on this page, skip it. Might be done in better way.
 			if ( ! isset( $campaign['placement_settings'][ $which_page ] ) ) {
@@ -1609,7 +1554,7 @@ class Revenue_Campaign {
 			$campaign_view = $campaign['placement_settings'][ $which_page ]['builder_view'];
 			$is_grid       = 'grid' === $campaign_view;
 
-			$is_divider         = in_array( $campaign['campaign_type'], array( 'mix_match', 'frequently_bought_together', 'bundle_discount' ), true );
+			$is_divider         = Revenue_Template_Utils::uses_item_divider( $campaign['campaign_type'] );
 			$is_buy_x_get_y     = in_array( $campaign['campaign_type'], array( 'buy_x_get_y' ), true );
 			$is_volume_discount = in_array( $campaign['campaign_type'], array( 'volume_discount' ), true );
 
@@ -1781,15 +1726,14 @@ class Revenue_Campaign {
 
 				if ( $class ) {
 					do_action( "revenue_campaign_{$type}_{$display_type}_before_render_content" );
-					// @TODO Backward Compatibility should be added for pro.
 
 					if ( method_exists( $class, $method ) ) {
 						?>
 							<style>
 								:root{
-									<?php echo wp_kses_post( Revenue_Template_Utils::get_global_themes() ); ?>
+									<?php echo wp_strip_all_tags( Revenue_Template_Utils::get_global_themes() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS text node, tags stripped. ?>
 								}
-								<?php echo wp_kses_post( Revenue_Template_Utils::get_global_typography() ); ?>
+								<?php echo wp_strip_all_tags( Revenue_Template_Utils::get_global_typography() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS text node, tags stripped. ?>
 							</style>
 						<?php
 						// keep revx-template as wrapper for every campaign.
@@ -1807,7 +1751,7 @@ class Revenue_Campaign {
 						);
 						$method_content = ob_get_clean();
 						// Echo the buffered content inside the wrapper div.
-						echo $method_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wp_kses( $method_content, revenue()->get_allowed_tag() );
 						// Close the wrapper revx-template after all inner content has been printed.
 						echo '</div>';
 					}
@@ -1841,6 +1785,13 @@ class Revenue_Campaign {
 	 * @return bool
 	 */
 	private function filter_campaign( $campaign ) {
+		$campaign = (array) $campaign;
+
+		// Orphan trigger rows can outlive their campaign, leaving an entry with no id or type.
+		if ( empty( $campaign['id'] ) || empty( $campaign['campaign_type'] ) ) {
+			return false;
+		}
+
 		$allowed_multi_render = array( 'stock_scarcity', 'countdown_timer' );
 		if (
 			! in_array( $campaign['campaign_type'], $allowed_multi_render, true )
@@ -1873,23 +1824,9 @@ class Revenue_Campaign {
 		$this->fetch_and_run_campaigns( get_the_ID(), 'product_page', 'inpage', __FUNCTION__ );
 	}
 
-	/**
-	 * Run campaign on after add to cart button.
-	 *
-	 * @return void
-	 */
-	public function after_add_to_cart_button() {
-		$this->fetch_and_run_campaigns( get_the_ID(), 'product_page', 'inpage', __FUNCTION__ );
-	}
 
-	/**
-	 * Run campaign on after add to cart quantity.
-	 *
-	 * @return void
-	 */
-	public function after_add_to_cart_quantity() {
-		$this->fetch_and_run_campaigns( get_the_ID(), 'product_page', 'inpage', __FUNCTION__ );
-	}
+
+
 
 	/**
 	 * Run campaign on before add to cart quantity.
@@ -1977,14 +1914,7 @@ class Revenue_Campaign {
 		return $price . $cart_item_content;
 	}
 
-	/**
-	 * Run campaign on before single product summary
-	 *
-	 * @return void
-	 */
-	public function before_single_product_summary() {
-		$this->fetch_and_run_campaigns( get_the_ID(), 'product_page', 'inpage', __FUNCTION__ );
-	}
+
 
 	/**
 	 * Run campaign on after single product summary
@@ -2014,15 +1944,7 @@ class Revenue_Campaign {
 		$this->fetch_and_run_campaigns( get_the_ID(), 'product_page', 'inpage', __FUNCTION__ );
 	}
 
-	/**
-	 * NOTE: could not find any hook for cart contents. 20 November, 2025.
-	 * Run campaign on before cart contents
-	 *
-	 * @return void
-	 */
-	public function before_cart_contents() {
-		$this->run_campaigns_for_cart_items( 'cart_page', 'inpage', __FUNCTION__ );
-	}
+
 
 	/**
 	 * Run campaign on before cart table
@@ -2142,23 +2064,9 @@ class Revenue_Campaign {
 		$this->run_campaigns_for_cart_items( 'checkout_page', 'inpage', __FUNCTION__ );
 	}
 
-	/**
-	 * Run campaign on review order before order total
-	 *
-	 * @return void
-	 */
-	public function review_order_before_order_total() {
-		$this->run_campaigns_for_cart_items( 'checkout_page', 'inpage', __FUNCTION__ );
-	}
 
-	/**
-	 * Run campaign on review order after order total
-	 *
-	 * @return void
-	 */
-	public function review_order_after_order_total() {
-		$this->run_campaigns_for_cart_items( 'checkout_page', 'inpage', __FUNCTION__ );
-	}
+
+
 
 	/**
 	 * Run campaign on review order before payment
@@ -2286,16 +2194,7 @@ class Revenue_Campaign {
 		return $package_rates;
 	}
 
-	/**
-	 * Handle Animated Add to cart
-	 *
-	 * @return void
-	 */
-	public function handle_animated_add_to_cart() {
-		wp_enqueue_script( 'revenue-animated-add-to-cart' );
-		wp_enqueue_style( 'revenue-animated-add-to-cart' );
-		wp_localize_script( 'revenue-animated-add-to-cart', 'revenue_animated_atc', array( 'data' => $this->animated_button_data ) );
-	}
+
 
 	/**
 	 * WooCommerce check cart items
@@ -2368,17 +2267,7 @@ class Revenue_Campaign {
 				WC()->session->set( 'revenue_cart_data', $cart_data );
 			}
 
-			/**
-			 * Hook for update price on cart from several campaigns
-			 * Valid Campaign Type:
-			 * normal_discount
-			 * bundle_discount
-			 * volume_discount
-			 * buy_x_get_y
-			 * mix_match
-			 * frequently_bought_together
-			 * spending_goal
-			 */
+			// Each campaign type updates its own cart price on this hook.
 			do_action( "revenue_campaign_{$campaign_type}_remove_cart_item", $key, $cart_item, $campaign_id );
 		}
 	}
@@ -2408,17 +2297,7 @@ class Revenue_Campaign {
 				WC()->session->set( 'revenue_cart_data', $cart_data );
 			}
 
-			/**
-			 * Hook for update price on cart from several campaigns
-			 * Valid Campaign Type:
-			 * normal_discount
-			 * bundle_discount
-			 * volume_discount
-			 * buy_x_get_y
-			 * mix_match
-			 * frequently_bought_together
-			 * spending_goal
-			 */
+			// Each campaign type updates its own cart price on this hook.
 			do_action( "revenue_campaign_{$campaign_type}_restore_cart_item", $key, $cart_item, $campaign_id );
 		}
 	}
@@ -2455,17 +2334,7 @@ class Revenue_Campaign {
 
 		if ( isset( $cart_item_data['revx_campaign_id'], $cart_item_data['revx_campaign_type'] ) ) {
 			$campaign_type = $cart_item_data['revx_campaign_type'];
-			/**
-			 * Hook for update price on cart from several campaigns
-			 * Valid Campaign Type:
-			 * normal_discount
-			 * bundle_discount
-			 * volume_discount
-			 * buy_x_get_y
-			 * mix_match
-			 * frequently_bought_together
-			 * spending_goal
-			 */
+			// Each campaign type updates its own cart price on this hook.
 			do_action( "revenue_campaign_{$campaign_type}_added_to_cart", $cart_item_key, $cart_item_data, $product_id, $quantity );
 		}
 	}
@@ -2497,17 +2366,7 @@ class Revenue_Campaign {
 				$campaign_type = $cart_item['revx_campaign_type'];
 				$campaign_id   = $cart_item['revx_campaign_id'];
 
-				/**
-				 * Hook for update price on cart from several campaigns
-				 * Valid Campaign Type:
-				 * normal_discount
-				 * bundle_discount
-				 * volume_discount
-				 * buy_x_get_y
-				 * mix_match
-				 * frequently_bought_together
-				 * spending_goal
-				 */
+				// Each campaign type updates its own cart price on this hook.
 				do_action( "revenue_campaign_{$campaign_type}_before_calculate_cart_totals", $cart_item, $campaign_id, $cart );
 
 				$has_revenue_price = true;
@@ -2597,17 +2456,7 @@ class Revenue_Campaign {
 				$campaign_type = $cart_item['revx_campaign_type'];
 				$campaign_id   = $cart_item['revx_campaign_id'];
 
-				/**
-				 * Hook for update price on cart from several campaigns
-				 * Valid Campaign Type:
-				 * normal_discount
-				 * bundle_discount
-				 * volume_discount
-				 * buy_x_get_y
-				 * mix_match
-				 * frequently_bought_together
-				 * spending_goal
-				 */
+				// Each campaign type updates its own cart price on this hook.
 				do_action( "revenue_campaign_{$campaign_type}_cart_calculate_fees", $cart_item, $campaign_id, $cart );
 			}
 		}
@@ -2812,17 +2661,7 @@ class Revenue_Campaign {
 
 			$item->add_meta_data( '_revx_campaign_id', $campaign_id, true );
 			$item->add_meta_data( '_revx_campaign_type', $campaign_type, true );
-			/**
-			 * Hook for add item meta data
-			 * Valid Campaign Type:
-			 * normal_discount
-			 * bundle_discount
-			 * volume_discount
-			 * buy_x_get_y
-			 * mix_match
-			 * frequently_bought_together
-			 * spending_goal
-			 */
+			// Each campaign type adds its own line item meta on this hook.
 			do_action( "revenue_campaign_{$campaign_type}_create_order_line_item", $item, $cart_item_key, $cart_item, $campaign_id, $order );
 		}
 	}
@@ -2920,6 +2759,8 @@ class Revenue_Campaign {
 			}
 		} elseif ( is_order_received_page() ) {
 			// Thank You page.
+			// Read-only product lookup for the WooCommerce thank-you page.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$order_id = isset( $_GET['order'] ) ? absint( $_GET['order'] ) : 0;
 			if ( $order_id ) {
 				$order = wc_get_order( $order_id );
@@ -3002,6 +2843,12 @@ class Revenue_Campaign {
 
 		$class = apply_filters( 'revenue_campaign_instance', $class, $campaign['campaign_type'] );
 
+		// Nothing can render this type here, so the shortcode outputs nothing at all.
+		if ( ! $class ) {
+			Revenue_Product_Context::clear_product_context();
+			return '';
+		}
+
 		do_action( 'revenue_campaign_before_render_shortcode', $campaign );
 		ob_start();
 		switch ( $campaign['campaign_type'] ) {
@@ -3047,7 +2894,7 @@ class Revenue_Campaign {
 			array(
 				'display_type' => 'inpage',
 				'position'     => '',
-				'placement'    => 'product_page',
+				'placement'    => $this->get_current_placement_key(),
 			),
 			true,
 		);
@@ -3067,48 +2914,28 @@ class Revenue_Campaign {
 		$which_page   = $data['placement'];
 		$campaign_id  = $campaign['id'];
 
-		if ( revenue()->is_for_new_builder( $campaign ) ) {
-			wp_enqueue_style( 'revenue-campaign' );
-			wp_enqueue_style( 'revenue-campaign-buyx_gety' );
-			wp_enqueue_style( 'revenue-campaign-volume' );
-			wp_enqueue_style( 'revenue-campaign-double_order' );
-			wp_enqueue_style( 'revenue-campaign-fbt' );
-			wp_enqueue_style( 'revenue-campaign-mix_match' );
-			wp_enqueue_style( 'revenue-utility' );
-			wp_enqueue_style( 'revenue-responsive' );
-			wp_enqueue_script( 'revenue-campaign' );
-			wp_enqueue_script( 'revenue-slider' );
-			wp_enqueue_script( 'revenue-add-to-cart' );
-			wp_enqueue_script( 'revenue-variation-product-selection' );
-			wp_enqueue_script( 'revenue-checkbox-handler' );
-			wp_enqueue_script( 'revenue-double-order' );
-			wp_enqueue_script( 'revenue-campaign-total' );
-			wp_enqueue_script( 'revenue-countdown' );
-			wp_enqueue_script( 'revenue-animated-add-to-cart' );
-			wp_enqueue_style( 'revenue-animated-add-to-cart' );
-			wp_enqueue_script( 'revenue-campaign-countdown' );
-			wp_enqueue_style( 'revenue-campaign-countdown' );
+		wp_enqueue_style( 'revenue-campaign' );
+		wp_enqueue_style( 'revenue-campaign-buyx_gety' );
+		wp_enqueue_style( 'revenue-campaign-volume' );
+		do_action( 'revenue_enqueue_campaign_assets', $campaign['campaign_type'] );
+		wp_enqueue_style( 'revenue-utility' );
+		wp_enqueue_style( 'revenue-responsive' );
+		wp_enqueue_script( 'revenue-campaign' );
+		wp_enqueue_script( 'revenue-slider' );
+		wp_enqueue_script( 'revenue-add-to-cart' );
+		wp_enqueue_script( 'revenue-variation-product-selection' );
+		wp_enqueue_script( 'revenue-checkbox-handler' );
+		wp_enqueue_script( 'revenue-campaign-total' );
+		wp_enqueue_script( 'revenue-countdown' );
+		wp_enqueue_script( 'revenue-animated-add-to-cart' );
+		wp_enqueue_style( 'revenue-animated-add-to-cart' );
+		wp_enqueue_script( 'revenue-campaign-countdown' );
+		wp_enqueue_style( 'revenue-campaign-countdown' );
 
-		} else {
-
-			wp_enqueue_style( 'revenue-v1-campaign' );
-			wp_enqueue_style( 'revenue-v1-campaign-buyx_gety' );
-			wp_enqueue_style( 'revenue-v1-campaign-double_order' );
-			wp_enqueue_style( 'revenue-v1-campaign-fbt' );
-			wp_enqueue_style( 'revenue-v1-campaign-mix_match' );
-			wp_enqueue_style( 'revenue-v1-utility' );
-			wp_enqueue_style( 'revenue-v1-responsive' );
-			wp_enqueue_script( 'revenue-v1-campaign' );
-			wp_enqueue_script( 'revenue-v1-add-to-cart' );
-			wp_enqueue_script( 'revenue-v1-animated-add-to-cart' );
-			wp_enqueue_style( 'revenue-v1-animated-add-to-cart' );
-
-		}
-
-		$campaign_view = $campaign['placement_settings'][ $which_page ]['builder_view'];
+		$campaign_view = $campaign['placement_settings'][ $which_page ]['builder_view'] ?? 'list';
 		$is_grid       = 'grid' === $campaign_view;
 
-		$is_divider     = in_array( $campaign['campaign_type'], array( 'mix_match', 'frequently_bought_together', 'bundle_discount' ), true );
+		$is_divider     = Revenue_Template_Utils::uses_item_divider( $campaign['campaign_type'] );
 		$is_buy_x_get_y = in_array( $campaign['campaign_type'], array( 'buy_x_get_y' ), true );
 
 		$this->campaign_additional_data[ $campaign['id'] ]['revenue_campaign_type']              = $campaign['campaign_type'];
@@ -3237,7 +3064,10 @@ class Revenue_Campaign {
 
 		ob_start();
 		if ( file_exists( $file_path ) ) {
-			extract($data); //phpcs:ignore
+			// Template vars supplied by the caller (no extract()).
+			$display_type = $data['display_type'] ?? '';
+			$placement    = $data['placement'] ?? '';
+			$position     = $data['position'] ?? '';
 			?>
 			<div class="revx-template">
 				<div class="revenue-campaign-shortcode">
@@ -3254,8 +3084,7 @@ class Revenue_Campaign {
 		if ( ! $should_echo ) {
 			return $output;
 		}
-		// echo wp_kses( $output, revenue()->get_allowed_tag() ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses( $output, revenue()->get_allowed_tag() );
 	}
 
 	/**
@@ -3364,17 +3193,7 @@ class Revenue_Campaign {
 			$campaign_id   = $cart_item['revx_campaign_id'];
 			$campaign_type = $cart_item['revx_campaign_type'];
 
-			/**
-			 * Hook for add item meta data
-			 * Valid Campaign Type:
-			 * normal_discount
-			 * bundle_discount
-			 * volume_discount
-			 * buy_x_get_y
-			 * mix_match
-			 * frequently_bought_together
-			 * spending_goal
-			 */
+			// Each campaign type adds its own line item meta on this hook.
 			do_action( "revenue_campaign_{$campaign_type}_after_item_quantity_updated", $cart_item, $cart_item_key, $quantity );
 		}
 	}

@@ -2,6 +2,10 @@
 /**
  * Button Block Implementation
  *
+ * Deprecated, kept only as legacy support: the Button field can no longer be added in
+ * the builder. This class stays so Button fields that existing users already saved on
+ * their products keep working, and it will be removed in a future release.
+ *
  * @package PRAD
  * @since 1.0.0
  */
@@ -32,24 +36,24 @@ class Button_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options( true );
+		// Fields made with WowAddons Pro's "Advanced Button" are Pro fields, rendered by Pro only.
+		if ( $this->get_property( 'isAdvanced', false ) ) {
+			return '';
+		}
+
+		$options = $this->get_field_options();
 		if ( empty( $options ) ) {
 			return '';
 		}
 
 		$attributes = array_merge(
 			$this->get_common_attributes(),
-			$this->get_selection_attributes(),
-			$this->get_same_price_attributes()
+			$this->get_selection_attributes()
 		);
 
 		$html = sprintf( '<div %s>', $this->build_attributes( $attributes ) );
 
-		if ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) {
-			$html .= $this->render_title_description_price_with_position( $this->same_price_info );
-		} else {
-			$html .= $this->render_title_description_noprice();
-		}
+		$html .= $this->render_title_description_noprice();
 		$html .= $this->render_buttons_group( $options );
 		$html .= $this->render_description_below_field();
 		$html .= '</div>';
@@ -73,9 +77,9 @@ class Button_Block extends Abstract_Block {
 
 		$attributes['class'] = $this->build_css_classes( $css_classes );
 
-		$multiple        = $this->get_property( 'multiple', false );
-		$enableMinMaxRes = $this->get_property( 'enableMinMaxRes', true );
-		if ( $multiple && $enableMinMaxRes ) {
+		$multiple           = $this->get_property( 'multiple', false );
+		$enable_min_max_res = $this->get_property( 'enableMinMaxRes', true );
+		if ( $multiple && $enable_min_max_res ) {
 			$attributes['data-minselect'] = $this->get_property( 'minSelect', '' );
 			$attributes['data-maxselect'] = $this->get_property( 'maxSelect', '' );
 		}
@@ -86,6 +90,7 @@ class Button_Block extends Abstract_Block {
 	/**
 	 * Render the group of buttons
 	 *
+	 * @param array $options Options to render.
 	 * @return string
 	 */
 	private function render_buttons_group( $options ): string {
@@ -105,6 +110,7 @@ class Button_Block extends Abstract_Block {
 	/**
 	 * Render all button options
 	 *
+	 * @param array $options Options to render.
 	 * @return string
 	 */
 	private function render_button_options( $options ): string {
@@ -120,8 +126,8 @@ class Button_Block extends Abstract_Block {
 	/**
 	 * Render a single button option
 	 *
-	 * @param object $item
-	 * @param int    $index
+	 * @param object $item Option data.
+	 * @param int    $index Option index.
 	 * @return string
 	 */
 	private function render_single_button( $item, int $index ): string {
@@ -132,10 +138,10 @@ class Button_Block extends Abstract_Block {
 
 		$html = '<div class="prad-button-container">';
 
-		// Input
+		// Input.
 		$html .= $this->render_button_input( $item, $index, $price_obj, $input_type );
 
-		// Label
+		// Label.
 		$html .= $this->render_button_label( $item, $index, $price_obj, $prad_allowed_html_tags );
 
 		$html .= '</div>';
@@ -146,27 +152,25 @@ class Button_Block extends Abstract_Block {
 	/**
 	 * Render the hidden input for a button
 	 *
-	 * @param object $item
-	 * @param int    $index
-	 * @param array  $price_obj
-	 * @param string $input_type
+	 * @param object $item Option data.
+	 * @param int    $index Option index.
+	 * @param array  $price_obj Price data for the option.
+	 * @param string $input_type Input type (radio or checkbox).
 	 * @return string
 	 */
 	private function render_button_input( $item, int $index, array $price_obj, string $input_type ): string {
-		$blockid            = $this->get_block_id();
-		$item_formula_value = $this->is_formula_value_enabled() && ! empty( $item['formulaValue'] ) ? $item['formulaValue'] : '';
+		$blockid = $this->get_block_id();
 
 		$input_attributes = array(
-			'class'              => 'prad-input-hidden',
-			'type'               => $input_type,
-			'data-index'         => $index,
-			'data-uid'           => $item['uid'] ?? '',
-			'data-formula-value' => $item_formula_value,
-			'id'                 => $blockid . $index,
-			'name'               => $blockid,
-			'value'              => $price_obj['price'],
-			'data-ptype'         => $price_obj['type'],
-			'data-label'         => $item['value'],
+			'class'      => 'prad-input-hidden',
+			'type'       => $input_type,
+			'data-index' => $index,
+			'data-uid'   => $item['uid'] ?? '',
+			'id'         => $blockid . $index,
+			'name'       => $blockid,
+			'value'      => $price_obj['price'],
+			'data-ptype' => $price_obj['type'],
+			'data-label' => $item['value'],
 		);
 
 		return sprintf( '<input %s />', $this->build_attributes( $input_attributes ) );
@@ -175,10 +179,10 @@ class Button_Block extends Abstract_Block {
 	/**
 	 * Render the button label
 	 *
-	 * @param object $item
-	 * @param int    $index
-	 * @param array  $price_obj
-	 * @param array  $allowed_tags
+	 * @param object $item Option data.
+	 * @param int    $index Option index.
+	 * @param array  $price_obj Price data for the option.
+	 * @param array  $allowed_tags Allowed HTML tags for output escaping.
 	 * @return string
 	 */
 	private function render_button_label( $item, int $index, array $price_obj, array $allowed_tags ): string {
@@ -187,17 +191,17 @@ class Button_Block extends Abstract_Block {
 		$html  = sprintf( '<label class="prad-mb-0" for="%s">', esc_attr( $blockid . $index ) );
 		$html .= '<div class="prad-button-item prad-w-fit prad-d-flex prad-item-center prad-gap-8">';
 
-		// Value
+		// Value.
 		$html .= sprintf(
 			'<div title="%s" class="prad-ellipsis-2 prad-text-%s" style="min-width: %s">%s</div>',
 			wp_kses( $item['value'], $allowed_tags ),
-			$item['type'] != 'no_cost' ? 'start' : 'center',
-			$item['type'] != 'no_cost' ? 'unset' : '2rem',
+			'no_cost' !== $item['type'] ? 'start' : 'center',
+			'no_cost' !== $item['type'] ? 'unset' : '2rem',
 			wp_kses( $item['value'], $allowed_tags )
 		);
 
-		// Price
-		if ( $item['type'] != 'no_cost' && ! ( ! empty( $this->same_price_info['enabled'] ) && product_addons()->is_pro_feature_available() ) ) {
+		// Price.
+		if ( 'no_cost' !== $item['type'] ) {
 			$html .= sprintf(
 				'<div class="prad-block-price prad-text-upper">%s</div>',
 				wp_kses( $price_obj['html'], $allowed_tags )

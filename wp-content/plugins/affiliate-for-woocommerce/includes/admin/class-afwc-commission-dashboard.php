@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/admin/
  * @since       2.5.0
- * @version     1.8.0
+ * @version     1.9.2
  */
 
 // Exit if accessed directly.
@@ -34,6 +34,7 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 			'fetch_extra_data',
 			'fetch_templates',
 			'import_template',
+			'duplicate_plan',
 		);
 
 		/**
@@ -136,7 +137,7 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 		 *
 		 * @param array $params Commission params.
 		 * @return int|bool Commission ID on success when inserting the data, true on successful update, false on invalid data.
-		 * @throws RuntimeException On database failure.
+		 * @throws RuntimeException On validation failure or database failure.
 		 */
 		public function process_commission_plan( $params = array() ) {
 			global $wpdb;
@@ -152,16 +153,30 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 
 			$values = array();
 
-			$commission_id                  = ! empty( $commission['id'] ) ? intval( $commission['id'] ) : 0;
-			$values['name']                 = ! empty( $commission['name'] ) ? sanitize_text_field( $commission['name'] ) : '';
+			$commission_id  = ! empty( $commission['id'] ) ? intval( $commission['id'] ) : 0;
+			$values['name'] = ! empty( $commission['name'] ) ? sanitize_text_field( $commission['name'] ) : '';
+
+			if ( empty( $values['name'] ) ) {
+				throw new RuntimeException(
+					esc_html_x( 'Please add a plan title', 'commission plan save validation error message when commission plan title is missing', 'affiliate-for-woocommerce' )
+				);
+			}
+
 			$values['rules']                = ! empty( $commission['rules'] ) ? wp_json_encode( $commission['rules'] ) : '';
 			$values['amount']               = ! empty( $commission['amount'] ) ? floatval( $commission['amount'] ) : 0;
 			$values['type']                 = ! empty( $commission['type'] ) ? sanitize_text_field( $commission['type'] ) : 'Percentage';
 			$values['status']               = ! empty( $commission['status'] ) ? sanitize_text_field( $commission['status'] ) : 'Active';
 			$values['apply_to']             = ! empty( $commission['apply_to'] ) ? sanitize_text_field( $commission['apply_to'] ) : 'all';
 			$values['action_for_remaining'] = ! empty( $commission['action_for_remaining'] ) ? sanitize_text_field( $commission['action_for_remaining'] ) : 'continue';
-			$values['no_of_tiers']          = ! empty( $commission['no_of_tiers'] ) ? intval( $commission['no_of_tiers'] ) : 1;
-			$values['distribution']         = ! empty( $commission['distribution'] ) ? implode( '|', (array) $commission['distribution'] ) : '';
+
+			$max_tiers             = class_exists( 'AFWC_Multi_Tier' ) ? AFWC_Multi_Tier::MAX_TIERS : 0;
+			$no_of_tiers           = max( 1, min( intval( ! empty( $commission['no_of_tiers'] ) ? $commission['no_of_tiers'] : 0 ), $max_tiers ) );
+			$values['no_of_tiers'] = $no_of_tiers;
+
+			// Tier 1 is the base amount, so keep only the ( no_of_tiers - 1 ) distribution entries.
+			$distribution           = ! empty( $commission['distribution'] ) ? array_values( (array) $commission['distribution'] ) : array();
+			$distribution           = array_slice( $distribution, 0, max( 0, $no_of_tiers - 1 ) );
+			$values['distribution'] = ! empty( $distribution ) ? implode( '|', $distribution ) : '';
 
 			// Setup multi-tier values if the feature is enabled.
 			$multi_tier            = is_callable( array( 'AFWC_Multi_Tier', 'get_instance' ) ) ? AFWC_Multi_Tier::get_instance() : null;
@@ -246,11 +261,12 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 
 			$plan_order = is_callable( array( $this, 'get_plans_order' ) ) ? $this->get_plans_order() : array();
 
-			$len = ( ! empty( $plan_order ) && is_array( $plan_order ) ) ? count( $plan_order ) : 0;
+			$priority = isset( $params['priority'] ) && is_numeric( $params['priority'] )
+				? intval( $params['priority'] )
+				: ( ( ! empty( $plan_order ) && is_array( $plan_order ) ) ? count( $plan_order ) : 0 );
 
-			// add new plan id to the -2 position.
+			array_splice( $plan_order, $priority, 0, $last_id );
 
-			array_splice( $plan_order, $len, 0, $last_id );
 			update_option( 'afwc_plan_order', $plan_order, 'no' );
 
 			return $last_id;
@@ -291,7 +307,7 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 					wp_send_json(
 						array(
 							'ACK' => 'Error',
-							'msg' => _x( 'Failed to delete commission plan', 'commission plan delete error message', 'affiliate-for-woocommerce' ),
+							'msg' => _x( 'Failed to delete the plan', 'Notification error message for failed commission plan deletion', 'affiliate-for-woocommerce' ),
 						)
 					);
 				} else {
@@ -310,7 +326,7 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 					wp_send_json(
 						array(
 							'ACK' => 'Success',
-							'msg' => _x( 'Commission plan deleted successfully', 'commission plan delete success message', 'affiliate-for-woocommerce' ),
+							'msg' => _x( 'Plan deleted successfully', 'Notification success message after deleting a commission plan', 'affiliate-for-woocommerce' ),
 						)
 					);
 				}
@@ -492,6 +508,18 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 
 			$files = glob( $templates_dir . '/*.php' );
 			if ( empty( $files ) || ! is_array( $files ) ) {
+				$files = array();
+			}
+
+			/**
+			 * Filter to modify the commission plan templates files list.
+			 *
+			 * @param array $files Array of commission plan templates files.
+			 *
+			 * @since 9.9.0
+			 */
+			$files = apply_filters( 'afwc_commission_plan_templates', $files );
+			if ( empty( $files ) || ! is_array( $files ) ) {
 				wp_send_json_error( array( 'msg' => _x( 'No templates found', 'no templates message', 'affiliate-for-woocommerce' ) ) );
 			}
 
@@ -501,7 +529,7 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 					continue;
 				}
 
-				$template = require $file;
+				$template = require_once $file;
 
 				if ( ! is_array( $template )
 					|| empty( $template['slug'] ) || ! is_string( $template['slug'] )
@@ -516,9 +544,9 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 				}
 
 				$templates[] = array(
-					'slug'        => $template['slug'],
-					'name'        => $template['name'],
-					'description' => $template['description'],
+					'slug'        => sanitize_key( $template['slug'] ),
+					'name'        => sanitize_text_field( $template['name'] ),
+					'description' => sanitize_textarea_field( $template['description'] ),
 				);
 			}
 
@@ -548,7 +576,29 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 			$slug = $params['slug'];
 
 			$templates = array();
-			foreach ( glob( AFWC_PLUGIN_DIRPATH . '/includes/commission-plans/templates/afwc-*.php' ) as $file ) {
+
+			$templates_dir = AFWC_PLUGIN_DIRPATH . '/includes/commission-plans/templates';
+			$files         = ( is_dir( $templates_dir ) && is_readable( $templates_dir ) )
+				? glob( $templates_dir . '/afwc-*.php' )
+				: array();
+
+			if ( empty( $files ) || ! is_array( $files ) ) {
+				$files = array();
+			}
+
+			/**
+			 * Filter to modify the commission plan templates files list.
+			 *
+			 * @param array $files Array of commission plan templates files.
+			 *
+			 * @since 9.9.0
+			 */
+			$files = apply_filters( 'afwc_commission_plan_templates', $files );
+			if ( empty( $files ) || ! is_array( $files ) ) {
+				wp_send_json_error( array( 'msg' => _x( 'Template not found.', 'template not found message', 'affiliate-for-woocommerce' ) ) );
+			}
+
+			foreach ( $files as $file ) {
 				$key               = basename( $file, '.php' );
 				$key               = substr( $key, 5 );
 				$templates[ $key ] = $file;
@@ -558,7 +608,7 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 				wp_send_json_error( array( 'msg' => _x( 'Template not found.', 'template not found message', 'affiliate-for-woocommerce' ) ) );
 			}
 
-			$template = require $templates[ $slug ];
+			$template = require_once $templates[ $slug ];
 
 			if ( ! is_array( $template ) || empty( $template['plan-data'] ) || ! is_array( $template['plan-data'] ) ) {
 				wp_send_json_error( array( 'msg' => _x( 'Invalid template data.', 'invalid template data message', 'affiliate-for-woocommerce' ) ) );
@@ -572,8 +622,56 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 			$plan_data['slug']    = $slug;
 			$params['commission'] = wp_json_encode( $plan_data );
 
+			if ( isset( $template['priority'] ) ) {
+				$params['priority'] = $template['priority'];
+			}
+
 			try {
 				$commission_id = $this->process_commission_plan( $params );
+
+				// Failed to save commission plan.
+				if ( empty( $commission_id ) ) {
+					wp_send_json( array( 'ACK' => 'Failed' ) );
+				}
+
+				// Successfully imported template.
+				wp_send_json(
+					array(
+						'ACK'              => 'Success',
+						'last_inserted_id' => $commission_id,
+					)
+				);
+			} catch ( RuntimeException $e ) {
+				wp_send_json(
+					array(
+						'ACK' => 'Failed',
+						'msg' => $e->getMessage(),
+					)
+				);
+			}
+		}
+
+		/**
+		 * AJAX callback method to import commission plan template
+		 *
+		 * @param array $params Import commission plan template params.
+		 */
+		public function duplicate_plan( $params = array() ) {
+			check_admin_referer( 'afwc-admin-duplicate-commission-plan', 'security' );
+			if ( empty( $params['plan_data'] ) || ! is_string( $params['plan_data'] ) ) {
+				wp_send_json_error( array( 'msg' => _x( 'Invalid plan data.', 'invalid plan data message', 'affiliate-for-woocommerce' ) ) );
+			}
+
+			$plan_data = json_decode( wp_unslash( $params['plan_data'] ), true );
+			$plan_data = $this->validate_commission_plan_data( $plan_data );
+			if ( ! is_array( $plan_data ) ) {
+				wp_send_json_error( array( 'msg' => _x( 'Invalid plan data.', 'invalid plan data message', 'affiliate-for-woocommerce' ) ) );
+			}
+
+			$data['commission'] = wp_json_encode( $plan_data );
+
+			try {
+				$commission_id = $this->process_commission_plan( $data );
 
 				// Failed to save commission plan.
 				if ( empty( $commission_id ) ) {
@@ -616,7 +714,6 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 					case 'type':
 					case 'apply_to':
 					case 'action_for_remaining':
-					case 'distribution':
 						if ( ! is_string( $value ) ) {
 							return false;
 						}
@@ -635,6 +732,8 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 						break;
 
 					case 'rules':
+					case 'distribution':
+					case 'meta_data':
 						if ( ! is_array( $value ) ) {
 							return false;
 						}
@@ -691,6 +790,8 @@ if ( ! class_exists( 'AFWC_Commission_Dashboard' ) ) {
 				if ( ! array_key_exists( 'value', $rule ) ) {
 					return false;
 				}
+
+				unset( $rule['key'] );
 			}
 
 			return $rules;

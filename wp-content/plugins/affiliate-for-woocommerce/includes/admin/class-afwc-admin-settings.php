@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/admin/
  * @since       1.0.0
- * @version     1.7.0
+ * @version     1.7.1
  */
 
 // Exit if accessed directly.
@@ -94,13 +94,14 @@ if ( ! class_exists( 'AFWC_Admin_Settings' ) ) {
 				'afwc-setting-js',
 				'afwcSettingParams',
 				array(
-					'oldPname'            => afwc_get_pname(),
-					'ajaxURL'             => admin_url( 'admin-ajax.php' ),
-					'security'            => array(
+					'oldPname'               => afwc_get_pname(),
+					'ajaxURL'                => admin_url( 'admin-ajax.php' ),
+					'security'               => array(
 						'searchExcludeLTC' => wp_create_nonce( 'afwc-search-exclude-ltc-list' ),
 						'searchIncludeAP'  => wp_create_nonce( 'afwc-search-include-ap-list' ),
 					),
-					'affiliatelimitforAP' => AFWC_AP_INCLUDE_AFFILIATES_LIMIT,
+					'affiliatelimitforAP'    => AFWC_AP_INCLUDE_AFFILIATES_LIMIT,
+					'pnameAllowedCharsRegex' => afwc_pname_allowed_chars_regex(),
 				)
 			);
 

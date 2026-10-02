@@ -4,6 +4,7 @@
  *
  * @package Revenue
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 
 namespace Revenue;
 
@@ -187,7 +188,7 @@ ob_start();
 							}
 						}
 
-						$combination_str                          = json_encode( $combination_key );
+						$combination_str                          = wp_json_encode( $combination_key );
 						$variations[ $index ]['combination_keys'] = $combination_str;
 					}
 				}
@@ -206,7 +207,7 @@ ob_start();
 			$filtered_price = apply_filters( 'revenue_base_price_for_discount_filter', $regular_price, $sale_price );
 
 			foreach ( $offers as $idx => $offer ) {
-				$is_enable_tag = isset( $offer['isEnableTag'] ) && $offer['isEnableTag'] === 'yes';
+				$is_enable_tag = isset( $offer['isEnableTag'] ) && 'yes' === $offer['isEnableTag'];
 				$is_selected   = ( count( $offers ) - 1 ) == $idx;
 				$offer_type    = $offer['type'];
 				$offer_value   = $offer['value'];
@@ -282,7 +283,7 @@ ob_start();
 				 *   will sum them.
 				 * - If it's a single variation, use the offer quantity as the factor to calculate the total price.
 				 */
-				$price_factor = ( $is_multiple_variation_enabled === 'yes' && $is_variable ) ? 1 : floatval( $offer_qty );
+				$price_factor = ( 'yes' === $is_multiple_variation_enabled && $is_variable ) ? 1 : floatval( $offer_qty );
 				// if variations of the product are avaialable , assign them.
 				$offer['variations'] = $variations ?? array();
 				if ( $offer['variations'] ) {
@@ -333,7 +334,7 @@ ob_start();
 							
 							<div class="revx-volume-attributes revx-<?php echo esc_attr( $is_selected ? 'active' : 'inactive' ); ?>">
 								<?php
-								$limits = $is_multiple_variation_enabled === 'yes' ? $offer_qty : 1;
+								$limits = 'yes' === $is_multiple_variation_enabled ? $offer_qty : 1;
 								for ( $i = 0; $i < $limits; $i++ ) {
 									Revenue_Template_Utils::revenue_render_product_variation( $offer, $template_data, $campaign_type );
 								}

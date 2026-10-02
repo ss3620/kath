@@ -24,7 +24,7 @@ class Tiktokforbusiness {
 	 *
 	 * @var string[]
 	 */
-	private static $current_tiktok_for_woocommerce_version = '1.4.1';
+	private static $current_tiktok_for_woocommerce_version = '1.4.2';
 
 	/**
 	 * Whether WooCommerce has been loaded.
@@ -150,7 +150,7 @@ class Tiktokforbusiness {
 
 		TaskLists::add_task(
 			'extended',
-			new Onboarding(
+			new Tt4b_Onboarding(
 				TaskLists::get_list( 'extended' )
 			)
 		);
@@ -183,6 +183,7 @@ class Tiktokforbusiness {
 		delete_option( 'tt4b_app_id' );
 		delete_option( 'tt4b_secret' );
 		delete_option( 'tt4b_access_token' );
+		delete_option( 'tt4b_oauth_state' );
 		delete_option( 'tt4b_external_data_key' );
 		delete_option( 'tt4b_user_country' );
 

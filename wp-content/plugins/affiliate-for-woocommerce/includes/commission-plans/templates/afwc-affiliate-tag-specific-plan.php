@@ -4,7 +4,7 @@
  *
  * @package   affiliate-for-woocommerce/includes/commission-plans/templates/
  * @since     8.60.0
- * @version   1.1.0
+ * @version   1.2.1
  */
 
 // Exit if accessed directly.
@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return array(
 	'slug'        => 'affiliate-tag-specific-plan',
-	'name'        => 'Custom rates for affiliate tags',
+	'name'        => 'Affiliate tags/groups',
 	'description' => 'Set commission rates for affiliates based on their tags (e.g., Gold 25%, Influencers 35%).',
 	'plan-data'   => array(
-		'name'                 => 'Custom rates for affiliate tags',
+		'name'                 => 'Affiliate tags/groups',
 		'status'               => 'Draft',
 		'amount'               => 15.00,
 		'type'                 => 'Percentage',
@@ -39,6 +39,6 @@ return array(
 		'apply_to'             => 'all',
 		'action_for_remaining' => 'continue',
 		'no_of_tiers'          => 1,
-		'distribution'         => '',
+		'distribution'         => array(),
 	),
 );

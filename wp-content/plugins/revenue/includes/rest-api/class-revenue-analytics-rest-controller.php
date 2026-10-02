@@ -7,7 +7,7 @@
 
 namespace Revenue;
 
-//phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.PHP.StrictComparisons.LooseComparison
+defined( 'ABSPATH' ) || exit;
 
 use DateTime;
 use WP_REST_Controller;
@@ -159,7 +159,6 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -221,10 +220,10 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 
 		// Check if we need campaign or order stats keys.
 		foreach ( $data_keys as $key ) {
-			if ( in_array( $key, array( 'total_sales', 'orders_count', 'average_order_value', 'gross_sales' ) ) ) {
+			if ( in_array( $key, array( 'total_sales', 'orders_count', 'average_order_value', 'gross_sales' ), true ) ) {
 				$have_order_stats_keys = true;
 			}
-			if ( in_array( $key, array( 'add_to_cart_count', 'checkout_count', 'rejection_count', 'conversion_rate', 'impression_count' ) ) ) {
+			if ( in_array( $key, array( 'add_to_cart_count', 'checkout_count', 'rejection_count', 'conversion_rate', 'impression_count' ), true ) ) {
 				$have_campaign_stats_keys = true;
 			}
 		}
@@ -330,7 +329,6 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -361,10 +359,10 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 
 		// Check if we need campaign or order stats keys.
 		foreach ( $data_keys as $key ) {
-			if ( in_array( $key, array( 'total_sales', 'orders_count', 'average_order_value', 'gross_sales' ) ) ) {
+			if ( in_array( $key, array( 'total_sales', 'orders_count', 'average_order_value', 'gross_sales' ), true ) ) {
 				$have_order_stats_keys = true;
 			}
-			if ( in_array( $key, array( 'add_to_cart_count', 'checkout_count', 'rejection_count', 'conversion_rate', 'impression_count' ) ) ) {
+			if ( in_array( $key, array( 'add_to_cart_count', 'checkout_count', 'rejection_count', 'conversion_rate', 'impression_count' ), true ) ) {
 				$have_campaign_stats_keys = true;
 			}
 		}
@@ -474,7 +472,6 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -545,7 +542,7 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		$prepared_sql = $wpdb->prepare( $sql, $per_page, $offset ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		// Execute the query.
-		$results = $wpdb->get_results( $prepared_sql ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $prepared_sql ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom analytics tables, report data must be live.
 
 		// Get the total number of records.
 		$total_count = ! empty( $results ) ? $results[0]->total_count : 0;
@@ -560,7 +557,13 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 
 			$datewise_data = (array) $datewise_data;
 
-			extract($datewise_data); //phpcs:ignore
+			// Row columns as local variables (no extract()); reassigned every iteration.
+			$campaign_id   = $datewise_data['campaign_id'] ?? 0;
+			$campaign_name = $datewise_data['campaign_name'] ?? '';
+			$orders_count  = $datewise_data['orders_count'] ?? 0;
+			$total_sales   = $datewise_data['total_sales'] ?? 0;
+			$page          = $datewise_data['page'] ?? '';
+			$date          = $datewise_data['date'] ?? '';
 
 			if ( ! isset( $data[ $campaign_id ] ) ) {
 				$data[ $campaign_id ] = array();
@@ -658,7 +661,6 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -684,6 +686,7 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 
 		$order_meta_select = revenue()->is_custom_orders_table_usages_enabled() ? "SELECT order_id, meta_value AS campaign_id FROM {$wpdb->prefix}wc_orders_meta " : "select  post_id as order_id, meta_value as campaign_id from {$wpdb->prefix}postmeta ";
 
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $order_meta_select is a hardcoded SQL fragment chosen from a boolean check, not user input.
 		$current_query = $wpdb->prepare(
 			"
 			SELECT
@@ -722,8 +725,11 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 			$date_end
 		);
 
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
 		$current_results = $wpdb->get_results( $current_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $order_meta_select is a hardcoded SQL fragment chosen from a boolean check, not user input.
 		$previous_query = $wpdb->prepare(
 			"
 			SELECT
@@ -762,6 +768,7 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 			$prev_date_end
 		);
 
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$previous_results = $wpdb->get_results( $previous_query );  //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		$growth_trends = array();
@@ -870,7 +877,6 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -891,6 +897,7 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 				{$wpdb->prefix}wc_order_stats wcos ON co.post_id = wcos.order_id OR wcos.parent_id = co.post_id";
 
 		if ( $from_date && $to_date ) {
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $order_meta_select is a hardcoded SQL fragment chosen from a boolean check, not user input.
 			$query = $wpdb->prepare(
 				"SELECT
 					MIN(rc.id) AS campaign_id,
@@ -913,6 +920,7 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 				$date_start,
 				$date_end
 			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		} else {
 			$query = "
 			SELECT
@@ -1170,19 +1178,19 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		$date_start = $this->build_mysql_datetime( gmdate( 'Y-m-d H:i:s', strtotime( $from_date ) ) );
 		$date_end   = $this->build_mysql_datetime( gmdate( 'Y-m-d H:i:s', strtotime( '+1 Day', strtotime( $to_date ) ) - 1 ) );
 
-		if ( in_array( 'add_to_cart_count', $data_keys ) ) {
+		if ( in_array( 'add_to_cart_count', $data_keys, true ) ) {
 			$select_clause .= 'COALESCE(SUM(add_to_cart_count), 0) AS add_to_cart_count, ';
 		}
-		if ( in_array( 'checkout_count', $data_keys ) ) {
+		if ( in_array( 'checkout_count', $data_keys, true ) ) {
 			$select_clause .= 'COALESCE(SUM(checkout_count), 0) AS checkout_count, ';
 		}
-		if ( in_array( 'rejection_count', $data_keys ) ) {
+		if ( in_array( 'rejection_count', $data_keys, true ) ) {
 			$select_clause .= 'COALESCE(SUM(rejection_count), 0) AS rejection_count, ';
 		}
-		if ( in_array( 'impression_count', $data_keys ) ) {
+		if ( in_array( 'impression_count', $data_keys, true ) ) {
 			$select_clause .= 'COALESCE(SUM(impression_count), 0) AS impression_count, ';
 		}
-		if ( in_array( 'conversion_rate', $data_keys ) ) {
+		if ( in_array( 'conversion_rate', $data_keys, true ) ) {
 			$select_clause .= 'CASE
 				WHEN COALESCE(SUM(impression_count), 0) > 0 THEN (SUM(order_count) / SUM(impression_count)) * 100
 				ELSE 0
@@ -1213,7 +1221,7 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		$query = $wpdb->prepare($query, $date_start, $date_end, $selected_campaign); //phpcs:ignore
 
 		// Execute the query.
-		$results = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$results = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is built via $wpdb->prepare() above.
 
 		return $results;
 	}
@@ -1293,16 +1301,16 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 			$group_by_clause = "{$wpdb->prefix}revenue_campaigns.campaign_type";
 		}
 		// Determine what to select based on requested data keys.
-		if ( in_array( 'total_sales', $data_keys ) ) {
+		if ( in_array( 'total_sales', $data_keys, true ) ) {
 			$select_clause .= "SUM(COALESCE({$wpdb->prefix}wc_order_stats.total_sales, 0)) AS total_sales, ";
 		}
-		if ( in_array( 'orders_count', $data_keys ) ) {
+		if ( in_array( 'orders_count', $data_keys, true ) ) {
 			$select_clause .= " SUM(CASE WHEN {$wpdb->prefix}wc_order_stats.parent_id = 0 THEN 1 ELSE 0 END) as orders_count, ";
 		}
-		if ( in_array( 'average_order_value', $data_keys ) ) {
+		if ( in_array( 'average_order_value', $data_keys, true ) ) {
 			$select_clause .= "SUM({$wpdb->prefix}wc_order_stats.net_total) / SUM(CASE WHEN {$wpdb->prefix}wc_order_stats.parent_id = 0 THEN 1 ELSE 0 END) AS average_order_value, ";
 		}
-		if ( in_array( 'gross_sales', $data_keys ) ) {
+		if ( in_array( 'gross_sales', $data_keys, true ) ) {
 			$select_clause .= "(SUM({$wpdb->prefix}wc_order_stats.total_sales) + COALESCE(SUM(discount_amount), 0) - SUM({$wpdb->prefix}wc_order_stats.tax_total) - SUM({$wpdb->prefix}wc_order_stats.shipping_total) + ABS(SUM(CASE WHEN {$wpdb->prefix}wc_order_stats.net_total < 0 THEN {$wpdb->prefix}wc_order_stats.net_total ELSE 0 END))) as gross_sales, ";
 		}
 
@@ -1336,7 +1344,7 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 			$query .= ';';
 		}
 
-		$results = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$results = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is built via $wpdb->prepare() above.
 
 		return $results;
 	}
@@ -1396,7 +1404,6 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 		if ( isset( $request['security'] ) ) {
 			$nonce = sanitize_key( $request['security'] );
 		}
-		$result = wp_verify_nonce( $nonce, 'revenue-dashboard' );
 		if ( ! wp_verify_nonce( $nonce, 'revenue-dashboard' ) ) {
 			return new WP_Error( 'revenue_rest_nonce_err0r', __( 'Nonce Verification Failed!', 'revenue' ), array( 'status' => 403 ) );
 		}
@@ -1430,10 +1437,10 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 
 		// Check if we need campaign or order stats keys.
 		foreach ( $data_keys as $key ) {
-			if ( in_array( $key, array( 'total_sales', 'orders_count', 'average_order_value', 'gross_sales' ) ) ) {
+			if ( in_array( $key, array( 'total_sales', 'orders_count', 'average_order_value', 'gross_sales' ), true ) ) {
 				$have_order_stats_keys = true;
 			}
-			if ( in_array( $key, array( 'add_to_cart_count', 'checkout_count', 'rejection_count', 'conversion_rate', 'impression_count' ) ) ) {
+			if ( in_array( $key, array( 'add_to_cart_count', 'checkout_count', 'rejection_count', 'conversion_rate', 'impression_count' ), true ) ) {
 				$have_campaign_stats_keys = true;
 			}
 		}
@@ -1560,130 +1567,5 @@ class Revenue_Analytics_REST_Controller extends WP_REST_Controller {
 
 		// Determine trend and return boolean.
 		return $cur_val > $prev_sum ? 'up' : 'down';
-	}
-
-	/**
-	 * Get Campaign Stats.
-	 *
-	 * @param  array $request Request.
-	 * @return array
-	 */
-	public function get_campaign_total_stats( $request ) {
-		global $wpdb;
-
-		$campaign_id = isset( $request['campaign_id'] ) ? sanitize_text_field( $request['campaign_id'] ) : '';
-
-		$order_meta_select = revenue()->is_custom_orders_table_usages_enabled() ? "SELECT order_id, meta_value AS campaign_id FROM {$wpdb->prefix}wc_orders_meta " : "select  post_id as order_id, meta_value as campaign_id from {$wpdb->prefix}postmeta ";
-
-		$prepared_query = $wpdb->prepare(
-			" SELECT
-        DATE(analytics.date) AS date,
-        COALESCE(SUM(order_stats.total_sales), 0) AS total_sales,
-        COALESCE(SUM(CASE WHEN order_stats.parent_id = 0 THEN 1 ELSE 0 END), 0) AS orders_count,
-        CASE
-            WHEN COALESCE(SUM(analytics.impression_count), 0) > 0 THEN (SUM(analytics.order_count) / SUM(analytics.impression_count)) * 100
-            ELSE 0
-        END AS conversion_rate,
-        COALESCE(SUM(analytics.impression_count), 0) AS impression_count,
-        COALESCE(SUM(analytics.add_to_cart_count), 0) AS add_to_cart,
-        COALESCE(SUM(analytics.rejection_count), 0) AS rejection_count,
-        COALESCE(SUM(analytics.checkout_count), 0) AS checkout_count
-    FROM
-        {$wpdb->prefix}revenue_campaign_analytics AS analytics
-    LEFT JOIN (
-        $order_meta_select
-        WHERE
-            meta_key = '_revx_campaign_id'
-            AND meta_value IS NOT NULL
-    ) AS orders ON analytics.campaign_id = orders.campaign_id
-    LEFT JOIN {$wpdb->prefix}wc_order_stats order_stats ON (order_stats.order_id = orders.order_id OR order_stats.parent_id = orders.order_id) AND orders.order_id IS NOT NULL
-    WHERE
-        analytics.campaign_id = %d
-        AND order_stats.status NOT IN ('wc-auto-draft', 'wc-trash', 'wc-pending', 'wc-failed', 'wc-cancelled', 'wc-checkout-draft')
-    GROUP BY
-        DATE(analytics.date)
-",
-			$campaign_id
-		); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$results        = $wpdb->get_results( $prepared_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		return rest_ensure_response( $results );
-	}
-
-	/**
-	 * Get Campaign Stats.
-	 *
-	 * @param  array $request Request.
-	 * @return array
-	 */
-	public function get_campaign_stats( $request ) {
-		global $wpdb;
-
-		$campaign_id = isset( $request['campaign_id'] ) ? sanitize_text_field( $request['campaign_id'] ) : '';
-
-		// Get campaign start date.
-		//phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$campaign_start_date = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT DATE(date_created) FROM {$wpdb->prefix}revenue_campaigns WHERE id = %d",
-				$campaign_id
-			)
-		);
-
-		$order_meta_select = revenue()->is_custom_orders_table_usages_enabled() ? "SELECT order_id, meta_value AS campaign_id FROM {$wpdb->prefix}wc_orders_meta " : "select  post_id as order_id, meta_value as campaign_id from {$wpdb->prefix}postmeta ";
-
-		//phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT
-            DATE(analytics.date) AS date,
-            COALESCE(SUM(order_stats.total_sales), 0) AS total_sales,
-            COALESCE(SUM(CASE WHEN order_stats.parent_id = 0 THEN 1 ELSE 0 END), 0) AS orders_count,
-            CASE
-                WHEN COALESCE(SUM(analytics.impression_count), 0) > 0 THEN (SUM(analytics.order_count) / SUM(analytics.impression_count)) * 100
-                ELSE 0
-            END AS conversion_rate,
-            COALESCE(SUM(analytics.impression_count), 0) AS impression_count,
-            COALESCE(SUM(analytics.add_to_cart_count), 0) AS add_to_cart,
-            COALESCE(SUM(analytics.rejection_count), 0) AS rejection_count,
-            COALESCE(SUM(analytics.checkout_count), 0) AS checkout_count
-        FROM
-            {$wpdb->prefix}revenue_campaign_analytics AS analytics
-        LEFT JOIN (
-            $order_meta_select
-            WHERE
-                meta_key = '_revx_campaign_id'
-                AND meta_value IS NOT NULL
-        ) AS orders ON analytics.campaign_id = orders.campaign_id
-        LEFT JOIN {$wpdb->prefix}wc_order_stats order_stats ON (order_stats.order_id = orders.order_id OR order_stats.parent_id = orders.order_id) AND orders.order_id IS NOT NULL
-        WHERE
-            analytics.campaign_id = %d
-            AND order_stats.status NOT IN ('wc-auto-draft', 'wc-trash', 'wc-pending', 'wc-failed', 'wc-cancelled', 'wc-checkout-draft')
-        GROUP BY
-            DATE(analytics.date)",
-				$campaign_id
-			)
-		);
-
-		$start_date = new DateTime( $campaign_start_date );
-		$end_date   = new DateTime( 'now' );
-
-		$data_keys = isset( $request['data_keys'] ) ? $request['data_keys'] : array();
-
-		$campaign_stats_chart_data = revenue()->generate_campaigns_stats_chart_data( $start_date->format( 'Y-m-d' ), $end_date->format( 'Y-m-d' ), array(), $data_keys );
-
-		foreach ( $results as $campaign ) {
-			$campaign_stats_chart_data[ $campaign->date ] = array_merge( $campaign_stats_chart_data[ $campaign->date ], (array) $campaign );
-		}
-
-		$today     = gmdate( 'Y-m-d' );
-		$yesterday = gmdate( 'Y-m-d', strtotime( '-1 day' ) );
-
-		$growth = revenue()->calculate_growth( $campaign_stats_chart_data[ $today ], $campaign_stats_chart_data[ $yesterday ], $data_keys );
-
-		return array(
-			'data'   => $campaign_stats_chart_data,
-			'growth' => $growth,
-		);
 	}
 }

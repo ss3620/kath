@@ -53,11 +53,7 @@ class WC_Zipmoney_Payment_Gateway_API_Request_Checkout extends WC_Zipmoney_Payme
 			}
 
 			// save the checkout and session into option table
-			if ( version_compare( WC()->version, '3.2.0', '>=' ) ) {
-				update_option( $checkout->getId(), $order_id, false );
-			} else {
-				update_option( $checkout->getId(), $order_id );
-			}
+			WC_Zipmoney_Payment_Gateway_Util::set_checkout_order_id( $checkout->getId(), $order_id );
 
 			return $checkout;
 

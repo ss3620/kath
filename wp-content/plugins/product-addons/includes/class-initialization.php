@@ -7,12 +7,9 @@
  */
 namespace PRAD\Includes;
 
-use PRAD\Includes\Admin\Notice;
 use PRAD\Includes\Admin\Options;
-use PRAD\Includes\Admin\OurPlugins;
 use PRAD\Includes\Admin\Product\ProductEdit;
 use PRAD\Includes\Common\Hooks;
-use PRAD\Includes\Common\SafeMathEvaluator;
 use PRAD\Includes\Compatibility\Compatibility;
 use PRAD\Includes\Compatibility\ShopCompatibilty;
 use PRAD\Includes\Order\CartPage;
@@ -36,7 +33,6 @@ class Initialization {
 	public function __construct() {
 		$this->requires();
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts_callback' ) );
-		add_action( 'activated_plugin', array( $this, 'activation_redirect' ) );
 	}
 
 	/**
@@ -46,17 +42,11 @@ class Initialization {
 	 * @return void
 	 */
 	public function requires() {
-
-		new Deactive();
 		new PostType();
-		new Analytics();
-		new Xpo();
 
 		new Options();
-		new Notice();
 
 		new ProductEdit();
-		new OurPlugins();
 
 		new CartPage();
 		new CheckoutPage();
@@ -65,7 +55,6 @@ class Initialization {
 		new RequestApi();
 		new Compatibility();
 		new ShopCompatibilty();
-		new SafeMathEvaluator();
 
 		new Cleanup();
 	}
@@ -79,19 +68,16 @@ class Initialization {
 	 */
 	public function admin_scripts_callback() {
 		global $pagenow;
-		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; //phpcs:ignore
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing parameter.
 
+		// Styles only this plugin's own admin menu item (#toplevel_page_prad-dashboard),
+		// which is on every admin screen.
 		product_addons()->enqueue_style( 'prad-admin-style', 'prad-admin' );
-		product_addons()->enqueue_script( 'prad-admin-script', 'prad-admin' );
 
 		if ( 'admin.php' === $pagenow ) {
-			wp_localize_script(
-				'prad-admin-script',
-				'prad_admin',
-				array()
-			);
 			if ( 'prad-dashboard' === $page ) {
-				$user_info = get_userdata( get_current_user_id() );
+				// Keeps the menu's current item in step with the dashboard's pages.
+				product_addons()->enqueue_script( 'prad-admin-script', 'prad-admin' );
 
 				// Styles.
 				product_addons()->enqueue_style( 'prad-editor-css', 'wowaddons' );
@@ -107,35 +93,49 @@ class Initialization {
 					'prad-editor-script',
 					'pradBackendData',
 					array_merge(
-						array(
-							'url'             => PRAD_URL,
-							'db_url'          => admin_url( 'admin.php?page=prad-dashboard#' ),
-							'ajax'            => admin_url( 'admin-ajax.php' ),
-							'version'         => PRAD_VER,
-							'isActive'        => product_addons()->is_lc_active(),
-							'isExpired'       => Xpo::is_lc_expired(),
-							'license'         => get_option( 'edd_prad_license_key' ),
-							'nonce'           => wp_create_nonce( 'prad-nonce' ),
-							'decimal_sep'     => get_option( 'woocommerce_price_decimal_sep', '.' ),
-							'num_decimals'    => get_option( 'woocommerce_price_num_decimals', '2' ),
-							'currency_pos'    => get_option( 'woocommerce_currency_pos', 'left' ),
-							'currencySymbol'  => function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '$',
-							'characterText'   => Xpo::get_prad_settings_item( 'characterText', 'Character' ),
-							'wordText'        => Xpo::get_prad_settings_item( 'wordText', 'Word' ),
-							'userInfo'        => array(
-								'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
-								'email' => $user_info->user_email,
-							),
-							'isFreshInstall'  => self::is_fresh_install(),
-							'helloBar'        => Notice::get_hellobar_config(),
-							'uploadFileTypes' => product_addons()->prad_get_upload_allowed_file_types(),
-							'pradAttributes'  => product_addons()->prad_get_attributes(),
-							'date_format'     => get_option( 'date_format' ),
+						apply_filters(
+							'prad_backend_data',
+							array(
+								'version'         => PRAD_VER,
+								'uploadFileTypes' => array(
+									'png'  => 'image/png',
+									'jpg'  => 'image/jpeg',
+									'jpeg' => 'image/jpeg',
+								),
+							)
 						),
-						Xpo::get_wow_products_details()
+						array(
+							'url'            => PRAD_URL,
+							'db_url'         => admin_url( 'admin.php?page=prad-dashboard#' ),
+							'ajax'           => admin_url( 'admin-ajax.php' ),
+							'nonce'          => wp_create_nonce( 'prad-nonce' ),
+							'decimal_sep'    => get_option( 'woocommerce_price_decimal_sep', '.' ),
+							'num_decimals'   => get_option( 'woocommerce_price_num_decimals', '2' ),
+							'currency_pos'   => get_option( 'woocommerce_currency_pos', 'left' ),
+							'currencySymbol' => function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '$',
+							'characterText'  => Xpo::get_prad_settings_item( 'characterText', 'Character' ),
+							'isFreshInstall' => self::is_fresh_install(),
+							'pradAttributes' => product_addons()->prad_get_attributes(),
+							'date_format'    => get_option( 'date_format' ),
+							/**
+							 * Whether the dashboard shows "Upgrade to Pro" prompts.
+							 *
+							 * @since 1.8.3
+							 *
+							 * @param bool $show Default true.
+							 */
+							'showUpsell'     => (bool) apply_filters( 'prad_show_upsell', true ),
+						)
 					)
 				);
 				wp_set_script_translations( 'prad-editor-script', 'product-addons', PRAD_PATH . 'languages/' );
+
+				/**
+				 * Fires after the builder script is enqueued, so extensions can attach to it.
+				 *
+				 * @since 1.8.3
+				 */
+				do_action( 'prad_enqueue_editor_js' );
 			}
 		}
 
@@ -189,24 +189,5 @@ class Initialization {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Redirect After Active Plugin
-	 *
-	 * @since v.1.0.0
-	 *
-	 * @param string $plugin Plugin name.
-	 *
-	 * @return NULL
-	 */
-	public function activation_redirect( $plugin ) {
-		if ( 'product-addons/product-addons.php' === $plugin ) {
-			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) || isset( $_POST['action'] ) && 'activate-selected' == $_POST['action'] ) { // phpcs:ignore
-				return;
-			}
-			$tab = self::is_fresh_install() ? 'lists' : 'dashboard';
-			exit( wp_safe_redirect( admin_url( 'admin.php?page=prad-dashboard#' . $tab ) ) ); // phpcs:ignore
-		}
 	}
 }

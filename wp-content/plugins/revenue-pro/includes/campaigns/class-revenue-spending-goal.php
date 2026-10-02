@@ -2,6 +2,8 @@
 
 namespace RevenuePro;
 
+defined( 'ABSPATH' ) || exit;
+
 use Revenue;
 use Exception;
 use WC_Shipping_Free_Shipping;
@@ -72,8 +74,6 @@ class Revenue_Spending_Goal {
 	 */
 	public function init() {
 
-		// $this->fetch_campaigns();
-
 		add_action( 'woocommerce_cart_calculate_fees', array( $this, 'apply_campaign_discounts' ) );
 
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'process_shipping_rewards' ), 9999 );
@@ -97,14 +97,6 @@ class Revenue_Spending_Goal {
 
 		add_action( 'wp_ajax_revenue_remove_free_gift', array( $this, 'remove_free_gift' ) );
 		add_action( 'wp_ajax_nopriv_revenue_remove_free_gift', array( $this, 'remove_free_gift' ) );
-
-		// add_action( 'woocommerce_check_cart_items', array( $this, 'validate_cart_gifts' ) );
-
-		// add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'check_and_add_gift_products' ), 20 );
-
-		// add_action( 'woocommerce_cart_updated', array( $this, 'check_and_add_gift_products' ), 20 );
-
-		// add_filter('woocommerce_cart_item_quantity', array($this, 'modify_gift_quantity_input'), 10, 3);
 
 		add_filter( 'revenue_campaign_spending_goal_cart_item_quantity', array( $this, 'modify_gift_quantity_input' ), 10, 2 );
 		add_filter( 'revenue_campaign_spending_goal_store_api_product_quantity_minimum', array( $this, 'modify_gift_quantity_input' ), 10, 2 );
@@ -139,8 +131,6 @@ class Revenue_Spending_Goal {
 	}
 
 	public function register_scripts() {
-		// wp_register_style( 'revenue-spending-goal', REVENUE_PRO_FILE . '/assets/css/spending-goal.css', array(), REVENUE_PRO_VER );
-		// wp_enqueue_style( 'revenue-spending-goal' );
 	}
 
 	/**
@@ -356,7 +346,8 @@ class Revenue_Spending_Goal {
 	 * @return void
 	 */
 	public function auto_add_free_gifts() {
-		$campaign_id = isset( $_POST['campaign_id'] ) ? sanitize_text_field( $_POST['campaign_id'] ) : '';
+		check_ajax_referer( 'revenue-add-to-cart' );
+		$campaign_id = isset( $_POST['campaign_id'] ) ? sanitize_text_field( wp_unslash( $_POST['campaign_id'] ) ) : '';
 
 		if ( empty( $campaign_id ) ) {
 			wp_send_json_error(
@@ -472,8 +463,9 @@ class Revenue_Spending_Goal {
 	 * @return void
 	 */
 	public function add_free_gift() {
-		$campaign_id = isset( $_POST['campaign_id'] ) ? sanitize_text_field( $_POST['campaign_id'] ) : '';
-		$product_id  = isset( $_POST['product_id'] ) ? sanitize_text_field( $_POST['product_id'] ) : '';
+		check_ajax_referer( 'revenue-add-to-cart' );
+		$campaign_id = isset( $_POST['campaign_id'] ) ? sanitize_text_field( wp_unslash( $_POST['campaign_id'] ) ) : '';
+		$product_id  = isset( $_POST['product_id'] ) ? sanitize_text_field( wp_unslash( $_POST['product_id'] ) ) : '';
 
 		if ( empty( $campaign_id ) || empty( $product_id ) ) {
 			wp_send_json_error(
@@ -625,10 +617,12 @@ class Revenue_Spending_Goal {
 	 * @return void
 	 */
 	public function remove_free_gift() {
-		$campaign_id = isset( $_POST['campaign_id'] ) ? sanitize_text_field( $_POST['campaign_id'] ) : '';
-		$product_id  = isset( $_POST['product_id'] ) ? sanitize_text_field( $_POST['product_id'] ) : '';
+		check_ajax_referer( 'revenue-add-to-cart' );
+		$campaign_id = isset( $_POST['campaign_id'] ) ? sanitize_text_field( wp_unslash( $_POST['campaign_id'] ) ) : '';
+		$product_id  = isset( $_POST['product_id'] ) ? sanitize_text_field( wp_unslash( $_POST['product_id'] ) ) : '';
 
 		$removed_key = false;
+		$status      = false;
 		if ( WC()->cart && ! WC()->cart->is_empty() ) {
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 				if ( isset( $cart_item['revx_is_reward_gift'] ) && $cart_item['revx_is_reward_gift'] ) {
@@ -646,8 +640,6 @@ class Revenue_Spending_Goal {
 		}
 
 		wp_send_json_success( array( 'status' => $status ) );
-
-		// $this->add_gift_to_cart($product_id,$quantity,$gift_data);
 	}
 
 
@@ -1128,13 +1120,8 @@ class Revenue_Spending_Goal {
 
 				$current_campaign = $campaign;
 
-				if ( revenue()->is_for_new_builder( $campaign ) ) {
-					wp_enqueue_script( 'revenue-spending-goal' );
-					wp_enqueue_style( 'revenue-campaign-spending_goal' );
-				} else {
-					wp_enqueue_script( 'revenue-v1-spending-goal' );
-					wp_enqueue_style( 'revenue-v1-campaign-spending_goal' );
-				}
+				wp_enqueue_script( 'revenue-spending-goal' );
+				wp_enqueue_style( 'revenue-campaign-spending_goal' );
 
 				revenue()->update_campaign_impression( $campaign['id'] );
 
@@ -1155,7 +1142,7 @@ class Revenue_Spending_Goal {
 			}
 
 			if ( $output ) {
-				echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wp_kses( $output, revenue()->get_allowed_tag() );
 			}
 		}
 
@@ -1174,13 +1161,8 @@ class Revenue_Spending_Goal {
 
 				$current_campaign = $campaign;
 
-				if ( revenue()->is_for_new_builder( $campaign ) ) {
-					wp_enqueue_script( 'revenue-spending-goal' );
-					wp_enqueue_style( 'revenue-campaign-spending_goal' );
-				} else {
-					wp_enqueue_script( 'revenue-v1-spending-goal' );
-					wp_enqueue_style( 'revenue-v1-campaign-spending_goal' );
-				}
+				wp_enqueue_script( 'revenue-spending-goal' );
+				wp_enqueue_style( 'revenue-campaign-spending_goal' );
 
 				$placement_settings = revenue()->get_placement_settings( $campaign['id'] );
 
@@ -1229,7 +1211,7 @@ class Revenue_Spending_Goal {
 			}
 
 			if ( $output ) {
-				echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wp_kses( $output, revenue()->get_allowed_tag() );
 			}
 		}
 
@@ -1250,13 +1232,8 @@ class Revenue_Spending_Goal {
 
 					$current_campaign = $campaign;
 
-					if ( revenue()->is_for_new_builder( $campaign ) ) {
-						wp_enqueue_script( 'revenue-spending-goal' );
-						wp_enqueue_style( 'revenue-campaign-spending_goal' );
-					} else {
-						wp_enqueue_script( 'revenue-v1-spending-goal' );
-						wp_enqueue_style( 'revenue-v1-campaign-spending_goal' );
-					}
+					wp_enqueue_script( 'revenue-spending-goal' );
+					wp_enqueue_style( 'revenue-campaign-spending_goal' );
 
 					$placement_settings = revenue()->get_placement_settings( $campaign['id'] );
 
@@ -1277,7 +1254,7 @@ class Revenue_Spending_Goal {
 				}
 
 				if ( $output ) {
-					echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo wp_kses( $output, revenue()->get_allowed_tag() );
 				}
 			}
 
@@ -1296,13 +1273,8 @@ class Revenue_Spending_Goal {
 
 					$current_campaign = $campaign;
 
-					if ( revenue()->is_for_new_builder( $campaign ) ) {
-						wp_enqueue_script( 'revenue-spending-goal' );
-						wp_enqueue_style( 'revenue-campaign-spending_goal' );
-					} else {
-						wp_enqueue_script( 'revenue-v1-spending-goal' );
-						wp_enqueue_style( 'revenue-v1-campaign-spending_goal' );
-					}
+					wp_enqueue_script( 'revenue-spending-goal' );
+					wp_enqueue_style( 'revenue-campaign-spending_goal' );
 
 					$placement_settings = revenue()->get_placement_settings( $campaign['id'] );
 
@@ -1324,7 +1296,7 @@ class Revenue_Spending_Goal {
 				}
 
 				if ( $output ) {
-					echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo wp_kses( $output, revenue()->get_allowed_tag() );
 				}
 			}
 		}

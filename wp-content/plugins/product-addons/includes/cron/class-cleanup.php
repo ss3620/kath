@@ -22,13 +22,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Cleanup {
 	/**
 	 * Constructor.
-	 * Adds the cleanup action and schedules the event if not already scheduled.
+	 * Adds the cleanup action. The cron event itself is scheduled on plugin
+	 * activation (see product-addons.php) rather than here, since this class
+	 * is only reachable via the plugins_loaded-deferred init chain.
 	 */
 	public function __construct() {
 		add_action( 'prad_cleanup_upload_files', array( $this, 'cleanup_old_files_callback' ) );
-		if ( ! wp_next_scheduled( 'prad_cleanup_upload_files' ) ) {
-			wp_schedule_event( time(), 'daily', 'prad_cleanup_upload_files' );
-		}
 	}
 
 	/**

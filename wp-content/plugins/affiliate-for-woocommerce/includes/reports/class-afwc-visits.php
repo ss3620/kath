@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/reports/
  * @since       6.31.0
- * @version     2.1.3
+ * @version     2.1.4
  */
 
 // Exit if accessed directly.
@@ -574,9 +574,11 @@ if ( ! class_exists( 'AFWC_Visits' ) ) {
 			$is_converted_svg = array(
 				'yes' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="yes">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						<title>' . _x( 'Converted', 'Icon title for a converted visit', 'affiliate-for-woocommerce' ) . '</title>
 					</svg>',
 				'no'  => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="no">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						<title>' . _x( 'Not converted', 'Icon title for a visit that did not convert', 'affiliate-for-woocommerce' ) . '</title>
 					</svg>',
 			);
 

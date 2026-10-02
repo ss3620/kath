@@ -8,6 +8,7 @@
  * @subpackage Templates
  * @version    1.0.0
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 
 namespace Revenue;
 
@@ -21,7 +22,7 @@ $template_data          = revenue()->get_campaign_meta( $campaign['id'], 'builde
 $offers                 = revenue()->get_campaign_meta( $campaign['id'], 'offers', true );
 $placement_settings     = revenue()->get_placement_settings( $campaign['id'] );
 $display_style          = isset( $placement_settings['display_style'] ) ? $placement_settings['display_style'] : 'inpage';
-$slider_columns         = json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
+$slider_columns         = wp_json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
 $products_wrapper_class = 'grid' == $view_mode ? 'revx-slider-wrapper' : '';
 $is_grid_view           = 'grid' === $view_mode;
 

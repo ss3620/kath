@@ -3,6 +3,10 @@
  * Conditional logic for compatibility with WP
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 if ( class_exists( 'WC_REST_Products_Controller' ) ) {
 	class TikTokProductsController extends \WC_REST_Products_Controller {
 		public function prepare_object( $object, $request ) {

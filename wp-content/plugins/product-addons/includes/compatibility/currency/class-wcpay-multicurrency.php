@@ -8,6 +8,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class WcpayMulticurrency {
 
+	/**
+	 * Convert a price into the customer's selected WooCommerce Payments currency.
+	 *
+	 * @param float $price Price in the shop's base currency.
+	 * @return float Converted price.
+	 */
 	public function convert( $price ) {
 		$multi_currency = null;
 
@@ -23,7 +29,7 @@ class WcpayMulticurrency {
 			}
 		}
 
-		// Convert price if instance exists
+		// Convert price if instance exists.
 		if ( $multi_currency instanceof \WCPay\MultiCurrency\MultiCurrency && method_exists( $multi_currency, 'get_price' ) ) {
 			$price = $multi_currency->get_price( $price, 'product' );
 			return $price;
@@ -32,6 +38,12 @@ class WcpayMulticurrency {
 		return $price;
 	}
 
+	/**
+	 * Revert a price from the customer's selected WooCommerce Payments currency back to the shop's base currency.
+	 *
+	 * @param float $price Price in the customer's selected currency.
+	 * @return float Base-currency price.
+	 */
 	public function revert( $price ) {
 		$multi_currency  = null;
 		$converted_price = $price;
@@ -48,7 +60,7 @@ class WcpayMulticurrency {
 			}
 		}
 
-		// Convert price if instance exists
+		// Convert price if instance exists.
 		if ( $multi_currency instanceof \WCPay\MultiCurrency\MultiCurrency && method_exists( $multi_currency, 'get_price' ) ) {
 			$currency = $multi_currency->get_selected_currency();
 			$rate     = $currency->get_rate();
@@ -56,7 +68,7 @@ class WcpayMulticurrency {
 				return $converted_price;
 			}
 
-			// Reverse conversion
+			// Reverse conversion.
 			$base_price = (float) $converted_price / $rate;
 
 			return (float) $base_price;

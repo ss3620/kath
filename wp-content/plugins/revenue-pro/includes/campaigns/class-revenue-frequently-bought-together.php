@@ -2,6 +2,8 @@
 
 namespace RevenuePro;
 
+defined( 'ABSPATH' ) || exit;
+
 use Revenue;
 
 /**
@@ -95,7 +97,7 @@ class Revenue_Frequently_Bought_Together {
 					}
 				}
 
-				if ( $offer_type && ( $offer_value || $offer_type === 'free' ) ) {
+				if ( $offer_type && ( $offer_value || 'free' === $offer_type ) ) {
 					$offered_price = revenue()->calculate_campaign_offered_price(
 						$offer_type,
 						$offer_value,
@@ -137,7 +139,7 @@ class Revenue_Frequently_Bought_Together {
 
 		remove_action( 'revenue_campaign_' . $this->campaign_type . '_remove_cart_item', array( $this, 'remove_cart_item' ), 10 );
 
-		$cart_contents = WC()->cart->cart_contents;
+		$cart_contents  = WC()->cart->cart_contents;
 		$keys_to_remove = array_merge( $trigger_keys, $item_keys );
 
 		// Only remove keys that exist in the cart
@@ -151,7 +153,7 @@ class Revenue_Frequently_Bought_Together {
 		}
 
 		// Recalculate totals and refresh cart once
-		// manually set session as we used unset to remove items from cart, 
+		// manually set session as we used unset to remove items from cart,
 		WC()->cart->set_session();
 		WC()->cart->calculate_totals();
 
@@ -235,7 +237,7 @@ class Revenue_Frequently_Bought_Together {
 		) {
 			$subtotal      = $this->get_discounted_price( $cart_item );
 			$tax_display   = get_option( 'woocommerce_tax_display_cart', 'incl' );
-			$regular_price = 
+			$regular_price =
 				'incl' === $tax_display
 					? wc_get_price_including_tax( $cart_item['data'], array( 'price' => $cart_item['data']->get_regular_price() ) )
 					: $cart_item['data']->get_regular_price();
@@ -267,8 +269,7 @@ class Revenue_Frequently_Bought_Together {
 
 		$required_products = revenue()->get_var( $cart_item['revx_fbt_required_products'] ) ?? 0;
 
-		// $cart_product_ids = revenue()->get_cart_product_ids();
-		$cart_product_ids = revenue()->get_cart_product_ids(true); // pass true to include parent product IDs for v2.0
+		$cart_product_ids = revenue()->get_cart_product_ids( true ); // pass true to include parent product IDs for v2.0
 
 		$contains_all_required = ! array_diff( $required_products, $cart_product_ids );
 
@@ -365,7 +366,6 @@ class Revenue_Frequently_Bought_Together {
 
 		if ( ! empty( $this->campaigns['popup'] ) ) {
 
-
 			$output    = '';
 			$campaigns = $this->campaigns['popup'];
 			foreach ( $campaigns as $campaign ) {
@@ -373,7 +373,7 @@ class Revenue_Frequently_Bought_Together {
 
 				revenue()->update_campaign_impression( $campaign['id'], $post->ID );
 
-				revenue()->load_popup_assets($campaign);
+				revenue()->load_popup_assets();
 
 				$file_path = revenue_pro()->get_campaign_path( $campaign, 'popup', 'frequently-bought-together' );
 
@@ -389,27 +389,12 @@ class Revenue_Frequently_Bought_Together {
 
 		if ( ! empty( $this->campaigns['floating'] ) ) {
 
-			// wp_enqueue_script( 'revenue-floating' );
-
 			$output    = '';
 			$campaigns = $this->campaigns['floating'];
 			foreach ( $campaigns as $campaign ) {
 				$current_campaign = $campaign;
 
-				// $campaign_modified = strtotime( $campaign['date_modified'] );
-				// $is_new_version    = false;
-				// $release_time      = strtotime( '2025-10-15 09:10:00' );
-				// $revenue_version   = REVENUE_VER;
-
-				// if ( $campaign_modified >= $release_time && version_compare( $revenue_version, '2.0.0', '>=' ) ) {
-				// 	$is_new_version = true;
-				// }
-
-				// if ( ! $is_new_version ) {
-				// 	wp_enqueue_style( 'revenue-floating' );
-				// }
-
-				revenue()->load_floating_assets($campaign);
+				revenue()->load_floating_assets();
 
 				revenue()->update_campaign_impression( $campaign['id'], $post->ID );
 

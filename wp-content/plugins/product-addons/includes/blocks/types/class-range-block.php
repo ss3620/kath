@@ -32,7 +32,7 @@ class Range_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 
 		if ( empty( $options ) ) {
 			return '';
@@ -57,6 +57,7 @@ class Range_Block extends Abstract_Block {
 	/**
 	 * Get range specific attributes
 	 *
+	 * @param array $price_info Price information.
 	 * @return array
 	 */
 	private function get_range_attributes( $price_info ): array {
@@ -78,7 +79,7 @@ class Range_Block extends Abstract_Block {
 	/**
 	 * Renders the range input elements
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_range_inputs( array $price_info ): string {
@@ -99,7 +100,7 @@ class Range_Block extends Abstract_Block {
 
 		$html = '<div class="prad-range-input-container">';
 
-		// Range input
+		// Range input.
 		$range_attributes = array_merge(
 			$base_attributes,
 			array(
@@ -108,7 +109,7 @@ class Range_Block extends Abstract_Block {
 			)
 		);
 
-		// Number input
+		// Number input.
 		$number_attributes = array_merge(
 			$base_attributes,
 			array(

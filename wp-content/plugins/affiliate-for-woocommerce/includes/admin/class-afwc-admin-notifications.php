@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/admin/
  * @since       1.3.4
- * @version     1.7.0
+ * @version     1.8.1
  */
 
 // Exit if accessed directly.
@@ -39,6 +39,9 @@ if ( ! class_exists( 'AFWC_Admin_Notifications' ) ) {
 		private function __construct() {
 			// Filter to add Settings link on Plugins page.
 			add_filter( 'plugin_action_links_' . plugin_basename( AFWC_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
+
+			// Links to show when plugin is added via add plugins.
+			add_filter( 'install_plugin_complete_actions', array( $this, 'install_actions' ), 10, 3 );
 
 			// To update footer text & style on AFW screens.
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_footer_style' ) );
@@ -99,6 +102,70 @@ if ( ! class_exists( 'AFWC_Admin_Notifications' ) ) {
 			);
 
 			return array_merge( $action_links, $links );
+		}
+
+		/**
+		 * Function to add more action on plugins page during add plugins.
+		 *
+		 * @param array  $actions     Existing install action links.
+		 * @param object $api         Plugin API object.
+		 * @param string $plugin_file Path to plugin file, relative to plugins directory.
+		 * @return array $actions
+		 */
+		public function install_actions( $actions = array(), $api = null, $plugin_file = '' ) {
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return $actions;
+			}
+
+			if ( strpos( $plugin_file, 'affiliate-for-woocommerce/affiliate-for-woocommerce.php' ) === false ) {
+				return $actions;
+			}
+
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+
+			$is_active = is_plugin_active( $plugin_file );
+			$can_set   = current_user_can( 'manage_options' );
+
+			// Early exit: nothing further to add unless user can manage options and plugin is active.
+			if ( ! $can_set || ! $is_active ) {
+				return $actions;
+			}
+
+			$style = '<style>.afw-install-actions-sep{margin:0 0.4em;color:#c3c4c7;}</style>';
+			$sep   = '<span class="afw-install-actions-sep" aria-hidden="true">|</span>';
+
+			// Plugin is already active (e.g. updating an active plugin) -- its settings page exists, link straight to it.
+			$settings = add_query_arg(
+				array(
+					'page' => 'wc-settings',
+					'tab'  => 'affiliate-for-woocommerce-settings',
+				),
+				admin_url( 'admin.php' )
+			);
+
+			$actions['afw_settings'] = $style . $sep . sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				esc_url( $settings ),
+				esc_html_x( 'Go to Plugin Settings', 'Label for settings link', 'affiliate-for-woocommerce' )
+			);
+
+			// Redirect target for the plugin's own dashboard.
+			$dashboard = add_query_arg(
+				array(
+					'page' => 'affiliate-for-woocommerce',
+				),
+				admin_url( 'admin.php' )
+			);
+
+			$actions['afw_dashboard'] = $sep . sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				esc_url( $dashboard ),
+				esc_html_x( 'Go to Plugin Dashboard', 'Label for dashboard link', 'affiliate-for-woocommerce' )
+			);
+
+			return $actions;
 		}
 
 		/**
@@ -252,7 +319,7 @@ if ( ! class_exists( 'AFWC_Admin_Notifications' ) ) {
 
 			$action_button = sprintf( '<a href="%1$s" class="button button-primary">%2$s</a>', esc_url( $action_url ), $action_button_text );
 
-			$this->show_notice( 'afwc_admin_summary_email_feature', 'info', $title, $message, $action_button, true );
+			$this->show_notice( 'afwc_admin_summary_email_feature_in_non_hpos', 'info', $title, $message, $action_button, true );
 		}
 
 		/**
@@ -337,7 +404,7 @@ if ( ! class_exists( 'AFWC_Admin_Notifications' ) ) {
 					display: flex;
 					justify-content: space-between;
 				}
-				a.afwc_dismiss_admin_notice {
+				div.afwc_admin_notice_wrapper  a.afwc_dismiss_admin_notice {
 					display: block;
 					margin-top: 9px;
 					color: #6b7280;
@@ -345,10 +412,10 @@ if ( ! class_exists( 'AFWC_Admin_Notifications' ) ) {
 					height: 1.25rem;
 					border-radius: 50%;
 				}
-				a.afwc_dismiss_admin_notice:hover {
+				div.afwc_admin_notice_wrapper a.afwc_dismiss_admin_notice:hover {
 					color: #111827;
 				}
-				a.afwc_dismiss_admin_notice svg {
+				div.afwc_admin_notice_wrapper a.afwc_dismiss_admin_notice svg {
 					width: 1.25rem;
 					height: 1.25rem;
 				}
@@ -410,7 +477,12 @@ if ( ! class_exists( 'AFWC_Admin_Notifications' ) ) {
 		 * @return bool True if feedback notification should be shown, false otherwise.
 		 */
 		public static function show_feedback() {
-			// Stop immediately if user has already left a review.
+			// A milestone still shows even for the store manager who has already left a review.
+			if ( is_callable( array( 'AFWC_Milestone', 'has_pending' ) ) && AFWC_Milestone::has_pending() ) {
+				return true;
+			}
+
+			// Stop if user has already left a review (and no milestone is pending, per the check above).
 			if ( get_option( 'afwc_feedback_option_review', false ) ) {
 				return false;
 			}
@@ -485,6 +557,12 @@ if ( ! class_exists( 'AFWC_Admin_Notifications' ) ) {
 				update_option( 'afwc_feedback_close_date', $current_date, 'no' );
 			} elseif ( 'review' === $update_action ) {
 				update_option( 'afwc_feedback_option_review', true, 'no' );
+			}
+
+			// Consume the pending milestone only when the widget reports it was shown; follow-up actions in the same session don't.
+			$milestone_shown = ! empty( $_POST['milestone_shown'] ) ? absint( $_POST['milestone_shown'] ) : 0; // phpcs:ignore
+			if ( ! empty( $milestone_shown ) && in_array( $update_action, array( 'positive', 'negative', 'close', 'review' ), true ) && is_callable( array( 'AFWC_Milestone', 'consume_pending' ) ) ) {
+				AFWC_Milestone::consume_pending();
 			}
 
 			wp_send_json(

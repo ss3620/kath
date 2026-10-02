@@ -32,7 +32,7 @@ class Telephone_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 		if ( empty( $options ) ) {
 			return '';
 		}
@@ -65,11 +65,11 @@ class Telephone_Block extends Abstract_Block {
 	/**
 	 * Render telephone input section
 	 *
-	 * @param array $price_info Price information
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_telephone_input( array $price_info ): string {
-		// Cache property lookups to avoid multiple method calls
+		// Cache property lookups to avoid multiple method calls.
 		$properties = array(
 			'flag_style'  => $this->get_property( 'flagStyle', '' ),
 			'show_flag'   => $this->get_property( 'showFlag', false ),
@@ -87,10 +87,10 @@ class Telephone_Block extends Abstract_Block {
 			)
 		);
 
-		// Determine flag display logic once
+		// Determine flag display logic once.
 		$flag_display = $this->get_flag_display_config( $properties['flag_style'], $properties['show_flag'] );
 
-		// Build telephone container classes
+		// Build telephone container classes.
 		$tel_classes = array(
 			'prad-tel-container',
 			'prad-w-full',
@@ -102,7 +102,7 @@ class Telephone_Block extends Abstract_Block {
 			$tel_classes[] = 'prad-tel-flag-active';
 		}
 
-		// Build HTML using array for better performance
+		// Build HTML using array for better performance.
 		$html_parts   = array();
 		$html_parts[] = '<div class="sss prad-d-flex prad-item-center prad-gap-12 prad-mb-12">';
 		$html_parts[] = sprintf(
@@ -111,15 +111,15 @@ class Telephone_Block extends Abstract_Block {
 			esc_attr( $default_country ? $default_country['code'] : '' )
 		);
 
-		// Add flag selector if needed
+		// Add flag selector if needed.
 		if ( $flag_display['show_flag'] ) {
 			$html_parts[] = $this->render_flag_selector();
 		}
 
-		// Input wrapper
+		// Input wrapper.
 		$html_parts[] = '<div class="prad-tel-input-wrapper prad-d-flex prad-item-center prad-w-full">';
 
-		// Dial code display
+		// Dial code display.
 		if ( $flag_display['show_flag'] || $flag_display['show_dial'] ) {
 			$dial_classes = $flag_display['show_dial'] ? '' : 'prad-d-none';
 			$html_parts[] = sprintf(
@@ -130,7 +130,7 @@ class Telephone_Block extends Abstract_Block {
 			);
 		}
 
-		// Input field with optimized attributes
+		// Input field with optimized attributes.
 		$input_attributes = array(
 			'class'    => 'prad-w-full prad-block-input prad-input',
 			'type'     => 'tel',
@@ -138,7 +138,7 @@ class Telephone_Block extends Abstract_Block {
 			'data-val' => $price_info['price'],
 		);
 
-		// Only add non-empty attributes
+		// Only add non-empty attributes.
 		if ( ! empty( $properties['placeholder'] ) ) {
 			$input_attributes['placeholder'] = $properties['placeholder'];
 		}
@@ -149,7 +149,7 @@ class Telephone_Block extends Abstract_Block {
 		$html_parts[] = sprintf( '<input %s />', $this->build_attributes( $input_attributes ) );
 		$html_parts[] = '</div></div>';
 
-		// Price display
+		// Price display.
 		if ( $this->should_show_price_beside_field( $price_info ) ) {
 			$html_parts[] = $this->render_price_html( $price_info, 'beside' );
 		}
@@ -162,8 +162,8 @@ class Telephone_Block extends Abstract_Block {
 	/**
 	 * Get flag display configuration
 	 *
-	 * @param string $flag_style Flag style setting
-	 * @param bool   $show_flag Show flag setting
+	 * @param string $flag_style Flag style setting.
+	 * @param bool   $show_flag Show flag setting.
 	 * @return array Flag display configuration
 	 */
 	private function get_flag_display_config( string $flag_style, bool $show_flag ): array {
@@ -188,7 +188,7 @@ class Telephone_Block extends Abstract_Block {
 	private function render_flag_selector(): string {
 		$html = '<div class="prad-tel-country-wrapper prad-relative">';
 
-		// Flag handler
+		// Flag handler.
 		$html .= '<div class="prad-tel-flag-handler prad-d-flex prad-item-center prad-gap-8">';
 		$html .= '<div class="prad-tel-flag prad-flag-selected"></div>';
 		$html .= '<div class="prad-flag-arrow">';
@@ -196,7 +196,7 @@ class Telephone_Block extends Abstract_Block {
 		$html .= '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m1 1 6 6 6-6" />';
 		$html .= '</svg></div></div>';
 
-		// Country list container
+		// Country list container.
 		$html .= '<div class="prad-tel-country-list-container prad-absolute prad-bg-base2">';
 		$html .= '<div class="prad-country-search">';
 		$html .= sprintf(

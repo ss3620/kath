@@ -41,15 +41,6 @@ class ProductEdit {
 	public function prad_tab_data() {
 		global $post;
 		$product_id = $post->ID;
-
-		$option_ids        = product_addons()->get_product_option_ids( $product_id );
-		$counter           = 1;
-		$published_options = array_filter(
-			$option_ids,
-			function ( $id ) {
-				return get_post_status( $id ) === 'publish';
-			}
-		);
 		?>
 		<div class="panel woocommerce_options_panel" id="prad_tab_data" style="padding: 20px !important;">
 		<div id="prad-product-edit-wrap" data-product-id="<?php echo esc_attr( $product_id ); ?>"></div>

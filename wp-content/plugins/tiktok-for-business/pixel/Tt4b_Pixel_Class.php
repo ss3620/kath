@@ -380,7 +380,7 @@ class Tt4b_Pixel_Class {
 			if ( '' === $parent_id ) {
 				$parent_id = $parent_product->get_id();
 			}
-			$content_id = variation_content_id_helper( $method, $parent_id, $content_id, $product->get_id() );
+			$content_id = tt4b_variation_content_id_helper( $method, $parent_id, $content_id, $product->get_id() );
 		}
 
 		$price = $product->get_price();
@@ -401,7 +401,7 @@ class Tt4b_Pixel_Class {
 		if ( Method::PURCHASE !== $method && Method::VIEWCONTENT !== $method && $variation_id > 0 ) {
 			$variation = wc_get_product( $variation_id );
 			// if variation sku is same as parent product id, update content_id to match synced SKU_ID synced during catalog sync.
-			$content_id = variation_content_id_helper( $method, $content_id, $variation->get_sku(), $variation_id );
+			$content_id = tt4b_variation_content_id_helper( $method, $content_id, $variation->get_sku(), $variation_id );
 
 			// use variation price.
 			$price      = $variation->get_price();
@@ -534,7 +534,7 @@ class Tt4b_Pixel_Class {
 		);
 
 		if ( isset( $_COOKIE[ self::TTCLID_COOKIE ] ) ) {
-			$user['ttclid'] = sanitize_text_field( $_COOKIE[ self::TTCLID_COOKIE ] );
+			$user['ttclid'] = sanitize_text_field( wp_unslash( $_COOKIE[ self::TTCLID_COOKIE ] ) );
 		}
 
 		if ( isset( $_COOKIE[ self::TTP_COOKIE ] ) ) {
@@ -662,7 +662,7 @@ class Tt4b_Pixel_Class {
 	protected static function get_and_validate_option( $option_name, $default = false ) {
 		$option = get_option( "tt4b_{$option_name}", $default );
 		if ( false === $option ) {
-			throw new Exception( sprintf( 'Missing option "%s"', $option_name ) );
+			throw new Exception( sprintf( 'Missing option "%s"', esc_html( $option_name ) ) );
 		}
 
 		return $option;
@@ -714,15 +714,17 @@ class Tt4b_Pixel_Class {
 	 *  Grab ttclid from URL and set cookie for 30 days
 	 */
 	public static function set_ttclid() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- ttclid arrives on TikTok ad click-through URLs.
 		if ( isset( $_GET['ttclid'] ) ) {
-			setcookie( self::TTCLID_COOKIE, sanitize_text_field( $_GET['ttclid'] ), time() + 30 * 86400, '/' );
+			setcookie( self::TTCLID_COOKIE, sanitize_text_field( wp_unslash( $_GET['ttclid'] ) ), time() + 30 * 86400, '/' );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
 
 	public static function get_user_ip_address() {
 		foreach ( array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ) as $key ) {
 			if ( array_key_exists( $key, $_SERVER ) ) {
-				foreach ( explode( ',', sanitize_text_field( $_SERVER[ $key ] ) ) as $ip ) {
+				foreach ( explode( ',', sanitize_text_field( wp_unslash( $_SERVER[ $key ] ) ) ) as $ip ) {
 					$ip = trim( $ip );
 					if ( false !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
 						return $ip;
@@ -868,7 +870,7 @@ class Tt4b_Pixel_Class {
 	 * @return void
 	 */
 	private static function print_event( $event, $pixel_code, $data, $hashed_email, $hashed_phone, $event_id ) {
-		wp_register_script( 'tiktok-tracking-handle-header', '', '', 'v1' );
+		wp_register_script( 'tiktok-tracking-handle-header', '', '', 'v1', false );
 		wp_enqueue_script( 'tiktok-tracking-handle-header' );
 		$event_code_script = '<script>' . self::prepare_event_code( $event, $pixel_code, $data, $event_id ) . '</script>';
 		wp_add_inline_script( 'tiktok-tracking-handle-header', $event_code_script );
@@ -916,7 +918,7 @@ class Tt4b_Pixel_Class {
 		$script = $script . "'$pixel_code'";
 		$script = $script . ');
 		 }(window, document, \'ttq\');';
-		wp_register_script( 'tiktok-pixel-tracking-handle-header', '', '', 'v1' );
+		wp_register_script( 'tiktok-pixel-tracking-handle-header', '', '', 'v1', false );
 		wp_enqueue_script( 'tiktok-pixel-tracking-handle-header' );
 		wp_add_inline_script( 'tiktok-pixel-tracking-handle-header', $script );
 
@@ -924,7 +926,7 @@ class Tt4b_Pixel_Class {
 		if ( ! empty( self::$events ) ) {
 			foreach ( self::$events as $key => $value ) {
 				// register a dummy script to add small inline snippet
-				wp_register_script( 'tiktok-tracking-handle-header', '', '', 'v1' );
+				wp_register_script( 'tiktok-tracking-handle-header', '', '', 'v1', false );
 				wp_enqueue_script( 'tiktok-tracking-handle-header' );
 				wp_add_inline_script( 'tiktok-tracking-handle-header', $key );
 				wp_add_inline_script( 'tiktok-tracking-handle-header', $value );

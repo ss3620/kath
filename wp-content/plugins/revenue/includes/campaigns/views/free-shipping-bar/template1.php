@@ -8,6 +8,7 @@
  * @subpackage Templates
  * @version    1.0.0
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 
 //phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
@@ -18,8 +19,6 @@ use Revenue;
 /**
  * The Template for displaying revenue view
  *
- * @package Revenue
- * @version 1.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -31,16 +30,16 @@ $offers                 = revenue()->get_campaign_meta( $campaign['id'], 'offers
 $is_grid_view           = 'grid' === $view_mode;
 $current_page           = revenue()->get_current_page();
 $placement_settings     = $campaign['placement_settings'];
-$slider_columns         = json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
+$slider_columns         = wp_json_encode( Revenue_Template_Utils::get_slider_data( $template_data ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
 $products_wrapper_class = $is_grid_view ? 'revx-slider-wrapper' : '';
 $is_all_page_active     = isset( $placement_settings['all_page'] ) ? 'yes' === $placement_settings['all_page']['status'] : false;
 $is_other_page_active   = isset( $placement_settings[ $current_page ] ) ? 'yes' === $placement_settings[ $current_page ]['status'] : false;
 $page_key               = ( $is_all_page_active && ! $is_other_page_active ) ? 'all_page' : $current_page;
 $display_style          = $placement_settings[ $page_key ]['display_style'] ?? 'inpage';
-$is_upsell_on           = 'yes' === $campaign['upsell_products_status'];
-$is_progress_bar        = 'yes' === $campaign['is_show_free_shipping_bar'];
-$is_cta_btn             = 'yes' === $campaign['enable_cta_button'];
-$is_campaign_close      = 'yes' === $campaign['show_close_icon'];
+$is_upsell_on           = 'yes' === ( $campaign['upsell_products_status'] ?? '' );
+$is_progress_bar        = 'yes' === ( $campaign['is_show_free_shipping_bar'] ?? '' );
+$is_cta_btn             = 'yes' === ( $campaign['enable_cta_button'] ?? '' );
+$is_campaign_close      = 'yes' === ( $campaign['show_close_icon'] ?? '' );
 
 $button_link = ! empty( $offers[0]['cta_link'] ) ? $offers[0]['cta_link'] : wc_get_page_permalink( 'shop' );
 
@@ -106,16 +105,16 @@ foreach ( $offers as $index => $offer ) {
 // handle Upsale products.
 $upsell_products = array();
 
-if ( 'yes' === $campaign['upsell_products_status'] ) {
+if ( 'yes' === ( $campaign['upsell_products_status'] ?? '' ) ) {
 
-	$data            = $campaign['upsell_products'];
+	$data            = $campaign['upsell_products'] ?? array();
 	$upsell_products = array();
 
 	if ( ! is_array( $data ) ) {
 		$data = array();
 	}
 
-	foreach ( $data as $order ) {
+	foreach ( $data as $order ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- $order is a local template variable
 		// Ensure 'products' is an array of product IDs.
 		if ( ! isset( $order['products'] ) || ! is_array( $order['products'] ) ) {
 			continue;
@@ -217,7 +216,7 @@ ob_start();
 	data-cart-total="<?php echo esc_attr( $cart_total ); ?>"
 	data-based-on="<?php echo esc_attr( $offers[0]['free_shipping_based_on'] ); ?>"
 	data-progress="<?php echo esc_attr( $progress ); ?>"
-	data-show-confetti="<?php echo esc_attr( $campaign['show_confetti'] ); ?>"
+	data-show-confetti="<?php echo esc_attr( $campaign['show_confetti'] ?? '' ); ?>"
 	data-final-message="<?php echo esc_attr( $offers[0]['after_message'] ?? '' ); ?>"
 	data-radius="<?php echo esc_attr( $is_drawer ? $radius : '' ); ?>"
 >

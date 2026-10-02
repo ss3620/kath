@@ -69,6 +69,15 @@ class Order extends Base {
 				$action_data['allowed_condition'] = $allowed_condition;
 				$status                           = $rule->processCampaignCondition( $action_data, true );
 				$item_price                       = self::$woocommerce_helper->getProductPrice( $product, null, false, '' );
+				/* Bundle product price adjustment */
+				if ( self::$woocommerce_helper->isMethodExists( $product, 'get_type' ) && $product->get_type() == 'bundle'
+					&& self::$woocommerce_helper->isMethodExists( $product, 'contains' ) && $product->contains( 'priced_individually' )
+					&& self::$woocommerce_helper->isMethodExists( $product, 'get_bundle_price' ) ) {
+					$item_price = $product->get_bundle_price( 'min' );
+					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Existing public WPLoyalty hook retained because customers may use it.
+					$item_price = apply_filters( 'wlr_product_price', $item_price, null, false, '' );
+				}
+				/* End Bundle product price adjustment */
 				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Existing public WPLoyalty hook retained because customers may use it.
 				$item_price                       = apply_filters( 'wlr_is_product_page_price', $item_price, $product );
 				$item_line_quantity               = 1;
@@ -126,6 +135,8 @@ class Order extends Base {
 					$calculate_price = $cart_line_subtotal + $cart_item['line_subtotal_tax'];
 				}
 				$product_price = $calculate_price / $cart_line_qty;
+				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Existing public WPLoyalty hook retained because customers may use it.
+				$product_price = apply_filters( 'wlr_product_price', $product_price, null, false, '' );
 
 			}
 			/* End Bundle product price adjustment */
@@ -197,6 +208,8 @@ class Order extends Base {
 					$calculate_price = $item_line_subtotal + $order_item->get_subtotal_tax();
 				}
 				$item_price = $calculate_price / $item_line_quantity;
+				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Existing public WPLoyalty hook retained because customers may use it.
+				$item_price = apply_filters( 'wlr_product_price', $item_price, $order_item, false, $order->get_currency() );
 			}
 			/* End Bundle product price adjustment */
 			if ( $item_line_subtotal != $item_line_total && $is_earn_point_after_discount == 'yes' ) {

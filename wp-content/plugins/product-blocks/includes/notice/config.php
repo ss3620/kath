@@ -31,6 +31,11 @@ return array(
 	'brand_name'             => 'WowStore',
 	'brand_color'            => '#DD106C',
 
+	// Pro's headline price, quoted by any promo whose offer is the base price.
+	// Formatted, not numeric: currency and symbol live here so a price change
+	// is one edit for every surface.
+	'pro_price'              => '$39',
+
 	// `source` records where the click came from, so it differs per surface —
 	// one key per promos/ file. `campaign` is shared; `medium` is set per promo.
 	'utm_source'             => 'db-wowstore-notice',

@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string
  */
-function variation_content_id_helper( $method, $parent_id, $sku_id, $product_id ) {
+function tt4b_variation_content_id_helper( $method, $parent_id, $sku_id, $product_id ) {
 	if ( METHOD::CATALOG == $method || Method::DELETE == $method || Method::PURCHASE == $method ) {
 		if ( $sku_id == $parent_id ) {
 			$sku_id = $parent_id . '-' . $product_id;

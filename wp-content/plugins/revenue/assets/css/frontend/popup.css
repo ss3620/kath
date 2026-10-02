@@ -71,12 +71,6 @@
     /* max-width: 350px !important; */
     flex-basis: 65%;
 }
-.revx-popup-container .revx-selected-product-container {
-    min-width: 180px;
-}
-.revx-popup-container .revx-selected-item .revx-flex {
-    flex-direction: row !important;
-}
 /* Popup content */
 /* Additional styles for the campaign items */
 

@@ -14,7 +14,6 @@ namespace Revenue;
 use Revenue;
 use Revenue\Services\Revenue_Product_Context;
 
-// use Revenue\Revenue_Template_Utils;
 
 /**
  * The Template for displaying revenue view
@@ -76,7 +75,7 @@ $trigger_items = revenue()->getTriggerProductsData( $campaign['campaign_trigger_
 $fbt_items = array_merge( $trigger_items, $offer_products );
 ob_start();
 ?>
-	<div 
+	<div
 		class="
 			<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'productBodyWrapper' ) ); ?>
 			<?php echo esc_attr( $display_style ); ?> <?php echo esc_attr( $device_manager_class ); ?>
@@ -85,15 +84,15 @@ ob_start();
 	>
 		<div class="revx-product-body-wrapper">
 			<?php Revenue_Template_Utils::render_wrapper_header( $campaign, $template_data ); ?>
-			<?php echo esc_attr( Revenue_Template_Utils::render_fbt_products_container( $campaign, $template_data, $placement, true, false, $product ) ); ?>
+			<?php echo esc_attr( Revenue_Pro_Template_Utils::render_fbt_products_container( $campaign, $template_data, $placement, true, false, $product ) ); ?>
 		</div>
 		<div
 			class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'fbtFooter' ) ); ?> revx-d-flex revx-justify-between revx-item-center revx-gap-10"
 		>
 			<div class="revx-d-flex revx-item-center">
 				<div data-fbt-trigger-items="trigger">
-					<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'selectedTriggerTitle', '', '', '', 'text', 'selectedTitle', false, 'selectedTriggerTitle' ); ?>
-					<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'selectedPrice', '', '', '', 'text', '', false, '' ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'selectedTriggerTitle', '', '', '', 'text', 'selectedTitle', false, 'selectedTriggerTitle' ), revenue()->get_allowed_tag() ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'selectedPrice', '', '', '', 'text', '', false, '' ), revenue()->get_allowed_tag() ); ?>
 				</div>
 				<div
 					class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'fbtFooterIcon' ) ); ?> revx-icon"
@@ -115,8 +114,8 @@ ob_start();
 					</svg>
 				</div>
 				<div data-fbt-offer-items="offer">
-					<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'selectedOfferTitle', '', '', '', 'text', 'selectedTitle', false, 'selectedOfferTitle' ); ?>
-					<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'selectedPrice', '', '', '', 'text', '', false, '' ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'selectedOfferTitle', '', '', '', 'text', 'selectedTitle', false, 'selectedOfferTitle' ), revenue()->get_allowed_tag() ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'selectedPrice', '', '', '', 'text', '', false, '' ), revenue()->get_allowed_tag() ); ?>
 				</div>
 				<div
 					class="<?php echo esc_attr( Revenue_Template_Utils::get_element_class( $template_data, 'fbtFooterIcon' ) ); ?> revx-icon"
@@ -137,20 +136,23 @@ ob_start();
 					</svg>
 				</div>
 				<div data-fbt-total="total">
-					<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'selectedTitle', '', '', '', 'text', '', false, 'selectedTotalTitle' ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'selectedTitle', '', '', '', 'text', '', false, 'selectedTotalTitle' ), revenue()->get_allowed_tag() ); ?>
 					<!-- selectedTotalTitle is used in jsx -->
-					<?php echo Revenue_Template_Utils::render_rich_text( $template_data, 'selectedTotalTitle', '', '', '', 'text', 'selectedPrice', false, '' ); ?>
+					<?php echo wp_kses( Revenue_Template_Utils::render_rich_text( $template_data, 'selectedTotalTitle', '', '', '', 'text', 'selectedPrice', false, '' ), revenue()->get_allowed_tag() ); ?>
 				</div>
 			</div>
-			<?php 
-			echo Revenue_Template_Utils::render_add_to_cart_button(
-				$template_data,
-				false,
-				'addToCartWrapper',
-				$campaign['id'],
-				$campaign['campaign_type'],
-				$view_mode,
-				$is_skip_add_to_cart
+			<?php
+			echo wp_kses(
+				Revenue_Template_Utils::render_add_to_cart_button(
+					$template_data,
+					false,
+					'addToCartWrapper',
+					$campaign['id'],
+					$campaign['campaign_type'],
+					$view_mode,
+					$is_skip_add_to_cart
+				),
+				revenue()->get_allowed_tag()
 			);
 			?>
 		</div>

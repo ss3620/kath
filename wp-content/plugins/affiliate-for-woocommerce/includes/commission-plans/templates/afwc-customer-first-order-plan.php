@@ -4,7 +4,7 @@
  *
  * @package   affiliate-for-woocommerce//includes/commission-plans/templates/
  * @since     8.58.0
- * @version   1.2.0
+ * @version   1.3.1
  */
 
 // Exit if accessed directly.
@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return array(
 	'slug'        => 'customer-first-order-plan',
-	'name'        => 'First-order commissions',
+	'name'        => 'First-order',
 	'description' => "Give commission only on a customer's first purchase.",
 	'plan-data'   => array(
-		'name'                 => 'First-order commissions',
+		'name'                 => 'First-order',
 		'status'               => 'Draft',
 		'amount'               => 20.00,
 		'type'                 => 'Percentage',
@@ -39,6 +39,6 @@ return array(
 		'apply_to'             => 'all',
 		'action_for_remaining' => 'zero',
 		'no_of_tiers'          => 1,
-		'distribution'         => '',
+		'distribution'         => array(),
 	),
 );

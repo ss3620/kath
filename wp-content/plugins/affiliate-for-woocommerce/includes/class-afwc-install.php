@@ -4,7 +4,7 @@
  *
  * @package     affiliate-for-woocommerce/includes/
  * @since       1.0.0
- * @version     1.0.13
+ * @version     1.0.16
  */
 
 // Exit if accessed directly.
@@ -87,7 +87,8 @@ if ( ! class_exists( 'AFWC_Install' ) ) {
 								KEY afwc_referrals_sda (status, datetime, affiliate_id),
 								KEY afwc_referrals_tda (type, datetime, affiliate_id),
 								KEY afwc_referrals_ref (reference(20)),
-								KEY afwc_referrals_currency (currency_id)
+								KEY afwc_referrals_currency (currency_id),
+								KEY afwc_referrals_post (post_id)
 							) $collate;
 							CREATE TABLE {$wpdb->prefix}afwc_payouts (
 							  	payout_id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -131,7 +132,7 @@ if ( ! class_exists( 'AFWC_Install' ) ) {
 								apply_to varchar(20) DEFAULT NULL,
 								action_for_remaining varchar(20) DEFAULT NULL,
 								no_of_tiers varchar(20) DEFAULT NULL,
-								distribution varchar(50) DEFAULT NULL,
+								distribution varchar(255) DEFAULT NULL,
 								meta_data longtext DEFAULT NULL,
 								PRIMARY KEY  (id)
 							) $collate;

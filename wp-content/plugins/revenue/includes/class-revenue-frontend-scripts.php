@@ -54,22 +54,7 @@ class Revenue_Frontend_Scripts {
 		wp_register_script( $handle, $path, $deps, $version, $in_footer );
 	}
 
-	/**
-	 * Register and enqueue a script for use.
-	 *
-	 * @uses   wp_enqueue_script()
-	 * @param  string   $handle    Name of the script. Should be unique.
-	 * @param  string   $path      Full URL of the script, or path of the script relative to the WordPress root directory.
-	 * @param  string[] $deps      An array of registered script handles this script depends on.
-	 * @param  string   $version   String specifying script version number, if it has one, which is added to the URL as a query string for cache busting purposes. If version is set to false, a version number is automatically added equal to current installed WordPress version. If set to null, no version is added.
-	 * @param  boolean  $in_footer Whether to enqueue the script before </body> instead of in the <head>. Default 'false'.
-	 */
-	private static function enqueue_script( $handle, $path = '', $deps = array( 'jquery' ), $version = REVENUE_VER, $in_footer = array( 'strategy' => 'defer' ) ) {
-		if ( ! in_array( $handle, self::$scripts, true ) && $path ) {
-			self::register_script( $handle, $path, $deps, $version, $in_footer );
-		}
-		wp_enqueue_script( $handle );
-	}
+
 
 	/**
 	 * Register a style for use.
@@ -91,23 +76,7 @@ class Revenue_Frontend_Scripts {
 		}
 	}
 
-	/**
-	 * Register and enqueue a styles for use.
-	 *
-	 * @uses   wp_enqueue_style()
-	 * @param  string   $handle  Name of the stylesheet. Should be unique.
-	 * @param  string   $path    Full URL of the stylesheet, or path of the stylesheet relative to the WordPress root directory.
-	 * @param  string[] $deps    An array of registered stylesheet handles this stylesheet depends on.
-	 * @param  string   $version String specifying stylesheet version number, if it has one, which is added to the URL as a query string for cache busting purposes. If version is set to false, a version number is automatically added equal to current installed WordPress version. If set to null, no version is added.
-	 * @param  string   $media   The media for which this stylesheet has been defined. Accepts media types like 'all', 'print' and 'screen', or media queries like '(orientation: portrait)' and '(max-width: 640px)'.
-	 * @param  boolean  $has_rtl If has RTL version to load too.
-	 */
-	private static function enqueue_style( $handle, $path = '', $deps = array(), $version = REVENUE_VER, $media = 'all', $has_rtl = false ) {
-		if ( ! in_array( $handle, self::$styles, true ) && $path ) {
-			self::register_style( $handle, $path, $deps, $version, $media, $has_rtl );
-		}
-		wp_enqueue_style( $handle );
-	}
+
 
 	/**
 	 * Register all Revenue scripts.
@@ -115,89 +84,23 @@ class Revenue_Frontend_Scripts {
 	private static function register_scripts() {
 		$version = REVENUE_VER;
 
-		$register_v1_scripts = array(
-			'revenue-v1-campaign'             => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/campaign.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-            ),
-			'revenue-v1-add-to-cart'                 => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/add-to-cart.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-            ),
-			'revenue-v1-popup'                 => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/popup.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-floating'             => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/floating.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-drawer'             => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/drawer.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-spending-goal'             => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/spending-goal.js' ),
-				'deps'    => array( 'jquery', 'wp-i18n' ),
-				'version' => $version,
-			),
-			'revenue-v1-free-shipping-bar'             => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/free-shipping-bar.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-upsell-slider'             => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/upsell-slider.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-countdown'            => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/countdown.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-animated-add-to-cart' => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/animated-atc.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-campaign-countdown' => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/countdown-timer.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-			'revenue-v1-campaign-stock-scarcity' => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/v1/stock-scarcity.js' ),
-				'deps'    => array( 'jquery' ),
-				'version' => $version,
-			),
-		);
-		foreach ( $register_v1_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
-		}
-
 		$register_scripts = array(
-			'revenue-utils'                   => array(
+			'revenue-utils'                       => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/utils.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-campaign'                => array(
+			'revenue-campaign'                    => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/campaign.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-slider'                  => array(
+			'revenue-slider'                      => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/slider.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-add-to-cart'             => array(
+			'revenue-add-to-cart'                 => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/add-to-cart.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
@@ -207,72 +110,62 @@ class Revenue_Frontend_Scripts {
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-checkbox-handler' => array(
+			'revenue-checkbox-handler'            => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/checkbox-handler.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-popup'                   => array(
+			'revenue-popup'                       => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/popup.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-floating'                => array(
+			'revenue-floating'                    => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/floating.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-drawer'                  => array(
+			'revenue-drawer'                      => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/drawer.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-spending-goal'           => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/spending-goal.js' ),
-				'deps'    => array( 'jquery', 'wp-i18n' ),
-				'version' => $version,
-			),
-			'revenue-free-shipping-bar'       => array(
+			'revenue-free-shipping-bar'           => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/free-shipping-bar.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-upsell-slider'           => array(
+			'revenue-upsell-slider'               => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/upsell-slider.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-countdown'               => array(
+			'revenue-countdown'                   => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/countdown.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-animated-add-to-cart'    => array(
+			'revenue-animated-add-to-cart'        => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/animated-atc.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-campaign-countdown'      => array(
+			'revenue-campaign-countdown'          => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/countdown-timer.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-campaign-stock-scarcity' => array(
+			'revenue-campaign-stock-scarcity'     => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/stock-scarcity.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-double-order'            => array(
-				'src'     => self::get_asset_url( 'assets/js/frontend/double_order.js' ),
-				'deps'    => array( 'jquery', 'revenue-utils', 'revenue-checkbox-handler' ), // double order depends on checkbox-handler as that is the main checkbox toggle handler and toggle event laucher
-				'version' => $version,
-			),
-			'revenue-campaign-total' => array(
+			'revenue-campaign-total'              => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/campaign-total.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
 			),
-			'revenue-block-integration' => array(
+			'revenue-block-integration'           => array(
 				'src'     => self::get_asset_url( 'assets/js/frontend/block-integration.js' ),
 				'deps'    => array( 'jquery' ),
 				'version' => $version,
@@ -299,38 +192,14 @@ class Revenue_Frontend_Scripts {
 				'version' => $version,
 				'has_rtl' => false,
 			),
-			'revenue-campaign-volume'      => array(
+			'revenue-campaign-volume'         => array(
 				'src'     => self::get_asset_url( 'assets/css/frontend/campaign/volume.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-campaign-double_order'   => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/campaign/double_order.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-campaign-spending_goal'  => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/campaign/spending_goal.css' ),
 				'deps'    => array(),
 				'version' => $version,
 				'has_rtl' => false,
 			),
 			'revenue-campaign-fsb'            => array(
 				'src'     => self::get_asset_url( 'assets/css/frontend/campaign/free_shipping_bar.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-campaign-fbt'            => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/campaign/frequently_bought_together.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-campaign-mix_match'      => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/campaign/mix_match.css' ),
 				'deps'    => array(),
 				'version' => $version,
 				'has_rtl' => false,
@@ -387,97 +256,6 @@ class Revenue_Frontend_Scripts {
 		foreach ( $register_styles as $name => $props ) {
 			self::register_style( $name, $props['src'], $props['deps'], $props['version'], 'all', $props['has_rtl'] );
 		}
-
-		$register_styles_v1 = array(
-			'revenue-v1-campaign-buyx_gety'      => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/campaign/buyx_gety.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign-double_order'   => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/campaign/double_order.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign-spending_goal'  => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/campaign/spending_goal.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign-fsb'            => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/campaign/free_shipping_bar.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign-fbt'            => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/campaign/frequently_bought_together.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign-mix_match'      => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/campaign/mix_match.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign'                => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/campaign.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-responsive'              => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/responsive.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-utility'                 => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/utility.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-popup'                   => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/popup.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-floating'                => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/floating.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-countdown'               => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/countdown.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign-countdown'      => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/countdown-timer.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-			'revenue-v1-campaign-stock-scarcity' => array(
-				'src'     => self::get_asset_url( 'assets/css/frontend/v1/stock-scarcity.css' ),
-				'deps'    => array(),
-				'version' => $version,
-				'has_rtl' => false,
-			),
-		);
-
-		foreach ( $register_styles_v1 as $name => $props ) {
-			self::register_style( $name, $props['src'], $props['deps'], $props['version'], 'all', $props['has_rtl'] );
-		}
 	}
 
 	/**
@@ -486,15 +264,11 @@ class Revenue_Frontend_Scripts {
 	public static function load_scripts() {
 		global $post;
 
-		if ( ! did_action( 'before_revenue_init' ) ) {
+		if ( ! did_action( 'revenue_before_init' ) ) {
 			return;
 		}
 
 		self::register_scripts();
 		self::register_styles();
-
-		// Set up translations for frontend scripts
-		wp_set_script_translations( 'revenue-spending-goal', 'revenue', REVENUE_PATH . '/languages' );
-		wp_set_script_translations( 'revenue-v1-spending-goal', 'revenue', REVENUE_PATH . '/languages' );
 	}
 }

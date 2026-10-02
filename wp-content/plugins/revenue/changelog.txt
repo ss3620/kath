@@ -1,3 +1,82 @@
+= 2.1.9 – 30 March 2026 =
+* Improvement: Improved tooltip behavior in Spending Goal campaigns for more consistent interaction in block based cart and checkout.
+* Improvement: Enhanced block-based rendering compatibility by ensuring scripts and styles load correctly.
+* Fix: Corrected total fixed price calculation in cart to match campaign logic accurately.
+* Fix: Resolved rounding edge cases in pricing to ensure consistent and accurate values based on store decimal settings.
+* Fix: Fixed total fixed price display issues in campaign templates.
+* Fix: Check required product stock status before running any kind of bundle campaigns (e.g. bundle discount, buy x get y).
+
+= 2.1.8 – 16 March 2026 =
+* Improvement: WowRevenue now supports multisite websites.
+* Fix: Added text localization support for frontend buttons and toasters.
+* Fix: PHP error for undefined variable in countdown timer.
+* Fix: Skip add to cart now works as intended in bundle discount campaigns.
+
+= 2.1.6 – 10 March 2026 =
+* New: Filters added for extensibilty of buy x get y.
+* Improvement: Navbar and notices alignment on plugin dashboard.
+* Fix: Bundle discount badge percentage calculation issue.
+
+= 2.1.5 – 19 February 2026 =
+* Improvement: Enhanced the performance of the Buy X Get Y campaign.
+
+= 2.1.4 – 09 February 2026 =
+* Fix: Free gift items are now added automatically on page load and when products are added to cart via forms, ensuring eligible rewards are not missed.
+* Fix: Corrected total calculation when multiple campaigns are active — campaigns are now detected accurately without duplication.
+
+= 2.1.3 – 03 February 2026 =
+* Fix: Corrected Volume Discount “Total saved” text — it now displays the proper saved amount.
+
+= 2.1.2 – 02 February 2026 =
+* New: Added a global base price filter to determine the price used before discount calculation for campaign types - Normal Discount, Bundle Discount, Volume Discount, Buy X Get Y, Free Shipping.
+* Improvement: Discount calculation now supports both regular price and sale price as the base price through the new filter logic.
+* Improvement: Display prices and save badges now respect the filtered base price across all supported campaigns.
+* Fix: Improved consistency between frontend displayed prices and cart/checkout calculated prices when custom base pricing is applied via extensions.
+
+= 2.1.1 – 28 January 2026 =
+* New: Added support for multiple variations in campaigns — total quantity and price now correctly calculate when multiple variations of the same product are in the cart.
+* Improvement: Enhanced shortcode rendering to properly detect the correct product context on all pages.
+* Fix: Corrected dynamic price updates for variable products in campaigns, ensuring accurate totals when selecting variations.
+* Fix: Resolved default attribute and variation selection issues.
+* Fix: Fixed frontend price mismatches — regular and offer prices now display correctly for all quantities.
+* Fix: Corrected bundle discount handling for the same variation added from different offers — existing product quantities now increase instead of being ignored.
+
+= 2.1.0 – 04 January 2026 =
+* Improvement: Optimized product selection logic to prevent redundant API calls.
+
+= 2.0.10 – 29 December 2025 =
+* Fix: Resolved an issue where initial builder data was missing for Volume Discount and Mix & Match campaigns.
+* Fix: Addressed a deprecated SVG rendering notice.
+* Improvement: Improved the positioning and behavior of front-end popups and floating displays.
+* Improvement: Enhanced the builder settings panel with an improved UI/UX.
+
+= 2.0.9 – 22 December 2025 =
+* Fix: Corrected decimal precision issues in pricing and discounts to ensure proper rounding and display in mini carts.
+* Fix: Resolved automatic campaign update issues caused by multi-render scenarios.
+* Fix: Prevented unnecessary “unsaved changes” warnings when opening and closing campaigns without making edits.
+* Improvement: Simplified campaign editor state tracking for better performance and reliability.
+* Improvement: Improved toolbar value tracking — changes in templates and builder elements are now accurately detected.
+
+= 2.0.8 – 03 December 2025 =
+* Improvement: Enhanced global style handling — updated logic to ensure styles apply correctly and independently.
+* Improvement: Added toast notification when styles are applied successfully.
+* Improvement: General stability improvements using guard clauses for cleaner processing.
+* Improvement: Increased z-index of frontend toasters to prevent them from being hidden under the navbar.
+* Fix: Resolved warning in product search (admin) caused by object-to-string conversion.
+* Fix: Prevented multi-render issue in campaign layouts; only unique campaigns now appear when multiple campaigns exist on a single product.
+* Fix: Corrected style syncing issue by cloning objects before processing to avoid reference conflicts.
+
+= 2.0.7 – 27 November 2025 =
+* Improvement: Improved global saved styles functionality.
+* Improvement: Enhanced RTL support and responsiveness.
+* Improvement: Removed default height in the Campaign Builder.
+* Improvement: Refactored codebase for better maintainability.
+* Improvement: Improved shortcode compatibility — campaigns now display correctly when inserted via shortcode.
+* Fix: Fixed issue where volume discount skip caused the “Add to Cart” button to malfunction.
+* Fix: Resolved free shipping bar styling issue affecting the entire site drawer.
+* Fix: Fixed countdown timer and stock scarcity conflicts with other campaign types.
+* Fix: Corrected stock scarcity progress bar visibility issue on the Woodmart theme shop page.
+
 = 2.0.6 – 19 November 2025 =
 * New: Added full RTL (Right-to-Left) layout support.
 * New: Enhanced responsiveness across the builder and all other pages.
@@ -35,19 +114,87 @@
 * Improvement: Updated Contents in builder.
 
 = 2.0.0 – 20 October 2025 =
-* New: Grid and List for better discount showcasing. 
+* New: Grid and List for better discount showcasing.
 * New: Builder restructure and redesign.
 * New: Overall plugin performance optimization.
 * New: Template system created and added for all campaigns.
-* New: New discount styling system for discount campaigns. 
-* New: Preset color palette added as style settings. 
+* New: New discount styling system for discount campaigns.
+* New: Preset color palette added as style settings.
 * New: New templates can be created and saved for discount campaigns.
 * New: Device-wise typography setup.
 * New: Device-wise campaign appearance customization.
 * New: Campaign visibility options added for different devices (Laptop, Tablet, Mobile).
-* New: Campaign Grid option for product visibility. 
+* New: Campaign Grid option for product visibility.
 * New: Added Variable Product Support.
 * New: Given Support for in-page, floating, and pop-up design dynamically.
+
+= 1.2.14 – 30 September 2025 =
+* Fix: Resolved conflict issues in Bundle Discount when the same product was included multiple times.
+* Fix: Corrected coupon creation permission issue.
+
+= 1.2.13 – 15 September 2025 =
+* Improvement: Added full translation support for the Add to Cart button on the frontend.
+* Improvement: Improved performance and efficiency of campaign graph queries.
+
+= 1.2.12 – 18 August 2025 =
+* Fix: Resolved hidden issue with Builder Editing component.
+
+= 1.2.11 – 10 August 2025 =
+* Fix: Resolved user input issue in bundle discount.
+* Improvement: Optimized defaults and applied min/max limits to discount values.
+
+= 1.2.10 – 06 August 2025 =
+* Fix: Enabled required product issue in Mix and Match campaign.
+* Fix: Set default discount value in free shipping logic.
+* Fix: Set minimum/default to 1 for min_quantity and discount to avoid zero-value issues.
+
+= 1.2.9 – 30 July 2025 =
+* New: Introduced a confirmation modal to warn users of unsaved changes when navigating back on the campaign page.
+* Improvement: Enhanced campaign analytics with updated detail metrics.
+* Fix: Resolved issue where Double Order campaigns rendered multiple times when using shortcodes.
+* Fix: Corrected initial display of "undefined %" in Double Order campaigns.
+* Fix: Fixed issue where the campaign name was not appearing if only one campaign existed.
+* Fix: Addressed NaN display and incorrect discount calculation on initial page load.
+* Fix: Resolved fatal error encountered after activating the Revenue plugin.
+* Fix: Eliminated warning triggered during initial rule creation with Spending Goal campaigns.
+* Fix: Enabled proper scrolling when campaign content overflows the container.
+* Fix: Suppressed warning when no products are assigned to a campaign.
+* Fix: Synchronized countdown timer and scheduled settings with the calendar correctly.
+* Fix: Corrected broken variable product links in campaign trigger products.
+* Fix: Selecting all campaigns now properly marks the header checkbox; unselecting also works as expected.
+* Fix: Resolved product duplication issue when using the "Add to Cart" button.
+* Fix: Fixed increment/decrement functionality for product quantities within campaigns.
+* Fix: Addressed initial date selection issue in the campaign calendar.
+* Fix: Fixed Floating issue in cart page.
+* Fix: Resolved issue where end time options were not displayed when start time was unset.
+
+= 1.2.8 – 20 July 2025 =
+* New: Introduced a new Overview page.
+* New: Updated the License page design and functionality.
+* New: Added a new Support section.
+* Fix: Resolved mobile menu not closing issue.
+* Fix: Fixed scrolling issue in the Builder Products section.
+* Fix: Fixed double order campaigns message issue and fixed corner case.
+* Fix: Resolved layout issues with the Create Campaign modal on larger screens.
+
+= 1.2.7 – 22 June 2025 =
+* Improvement: Optimized the Campaign Page for faster loading.
+
+= 1.2.6 – 19 June 2025 =
+* Fix: Edit Cart Page Warning issue fixed.
+
+= 1.2.5 – 02 June 2025 =
+* Improvement: Added compatibility with Cart Block.
+* Improvement: Added compatibility with Checkout Block.
+* Fix: Resolved issue with out-of-stock products in Bundle Discount campaigns.
+* Fix: Corrected "Most Popular" checkbox selection issue in Volume Discount.
+* Fix: Fixed issue where normal discounts did not behave like quantity-based discounts.
+* Fix: Resolved shortcode support issue for Cart Block.
+
+= 1.2.4 – 25 May 2025 =
+* Fix: Next Order Coupon Usage limit per user Condition Issue Fixed
+* Fix: Free Shipping Position Wise display Issue Fixed
+* Fix: Bundle Discount Campaign Out of Stock Issue Fixed
 
 = 1.2.3 – 19 May 2025 =
 * New: Next Order Coupon Campaign Added

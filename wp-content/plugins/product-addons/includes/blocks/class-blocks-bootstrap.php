@@ -74,23 +74,4 @@ class Blocks_Bootstrap {
 			new Render_Product_Fields();
 		}
 	}
-
-
-	/**
-	 * Get initialization status
-	 *
-	 * @return bool
-	 */
-	public function is_initialized(): bool {
-		return $this->initialized;
-	}
-
-
-	/**
-	 * Force re-initialization (useful for testing)
-	 */
-	public function force_reinit(): void {
-		$this->initialized = false;
-		$this->init();
-	}
 }

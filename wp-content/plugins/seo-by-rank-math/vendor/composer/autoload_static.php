@@ -4,9 +4,10 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
+class ComposerStaticInitda5118e07739bcc2a9ee8b03eeea8972
 {
     public static $files = array (
+        '6c592737b91137905268e9a0eb968869' => __DIR__ . '/..' . '/wp-media/apply-filters-typed/functions.php',
         'da5f6548f070d3d306f90eee42dd5de6' => __DIR__ . '/..' . '/donatj/phpuseragentparser/src/UserAgentParser.php',
         'bcb90d312f16e4ff52a76c5aa3f98ae0' => __DIR__ . '/..' . '/cmb2/cmb2/init.php',
         '65bb6728e4ea5a6bfba27700e81f7a00' => __DIR__ . '/../..' . '/includes/template-tags.php',
@@ -23,6 +24,7 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
             'WP\\McpSchema\\' => 13,
             'WP\\MCP\\' => 7,
             'WPMedia\\Mixpanel\\' => 17,
+            'WPMedia\\MCP\\OAuth\\' => 18,
         ),
     );
 
@@ -43,6 +45,10 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
         array (
             0 => __DIR__ . '/..' . '/wp-media/wp-mixpanel/src',
         ),
+        'WPMedia\\MCP\\OAuth\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc',
+        ),
     );
 
     public static $classMap = array (
@@ -55,6 +61,7 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
         'RankMath\\AI_Visibility\\Api\\Checkout_Controller' => __DIR__ . '/../..' . '/includes/modules/ai-visibility/Api/class-checkout-controller.php',
         'RankMath\\AI_Visibility\\Api\\Trial_Controller' => __DIR__ . '/../..' . '/includes/modules/ai-visibility/Api/class-trial-controller.php',
         'RankMath\\AI_Visibility\\Cache' => __DIR__ . '/../..' . '/includes/modules/ai-visibility/class-cache.php',
+        'RankMath\\AI_Visibility\\Platforms' => __DIR__ . '/../..' . '/includes/modules/ai-visibility/class-platforms.php',
         'RankMath\\Abilities\\AI_Visibility\\Create_AI_Visibility_Brand' => __DIR__ . '/../..' . '/includes/abilities/ai-visibility/class-create-ai-visibility-brand.php',
         'RankMath\\Abilities\\AI_Visibility\\Get_AI_Visibility_Brand_Insights' => __DIR__ . '/../..' . '/includes/abilities/ai-visibility/class-get-ai-visibility-brand-insights.php',
         'RankMath\\Abilities\\AI_Visibility\\Get_AI_Visibility_Brand_Queries' => __DIR__ . '/../..' . '/includes/abilities/ai-visibility/class-get-ai-visibility-brand-queries.php',
@@ -74,8 +81,12 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
         'RankMath\\Abilities\\Link_Genius\\Link_Report_Runner' => __DIR__ . '/../..' . '/includes/abilities/link-genius/class-link-report-runner.php',
         'RankMath\\Abilities\\Link_Genius\\Post_Links_Runner' => __DIR__ . '/../..' . '/includes/abilities/link-genius/class-post-links-runner.php',
         'RankMath\\Abilities\\Link_Genius\\Subscriber' => __DIR__ . '/../..' . '/includes/abilities/link-genius/class-subscriber.php',
+        'RankMath\\Abilities\\Monitor_404\\Get_404_Logs' => __DIR__ . '/../..' . '/includes/abilities/monitor-404/class-get-404-logs.php',
+        'RankMath\\Abilities\\Monitor_404\\Subscriber' => __DIR__ . '/../..' . '/includes/abilities/monitor-404/class-subscriber.php',
         'RankMath\\Abilities\\Post_SEO\\Get_Post_SEO_Meta' => __DIR__ . '/../..' . '/includes/abilities/post-seo/class-get-post-seo-meta.php',
         'RankMath\\Abilities\\Post_SEO\\Subscriber' => __DIR__ . '/../..' . '/includes/abilities/post-seo/class-subscriber.php',
+        'RankMath\\Abilities\\Redirections\\Get_Redirections' => __DIR__ . '/../..' . '/includes/abilities/redirections/class-get-redirections.php',
+        'RankMath\\Abilities\\Redirections\\Subscriber' => __DIR__ . '/../..' . '/includes/abilities/redirections/class-subscriber.php',
         'RankMath\\Abilities\\SEO_Analysis\\Audit_Result' => __DIR__ . '/../..' . '/includes/abilities/seo-analysis/class-audit-result.php',
         'RankMath\\Abilities\\SEO_Analysis\\Audit_Runner' => __DIR__ . '/../..' . '/includes/abilities/seo-analysis/class-audit-runner.php',
         'RankMath\\Abilities\\SEO_Analysis\\Audit_Site_SEO' => __DIR__ . '/../..' . '/includes/abilities/seo-analysis/class-audit-site-seo.php',
@@ -87,6 +98,8 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
         'RankMath\\Abilities\\Schema\\Get_Post_Schema' => __DIR__ . '/../..' . '/includes/abilities/schema/class-get-post-schema.php',
         'RankMath\\Abilities\\Schema\\Subscriber' => __DIR__ . '/../..' . '/includes/abilities/schema/class-subscriber.php',
         'RankMath\\Abilities\\Settings\\Abstract_Ability' => __DIR__ . '/../..' . '/includes/abilities/settings/class-abstract-ability.php',
+        'RankMath\\Abilities\\Settings\\Get_Llms_Txt' => __DIR__ . '/../..' . '/includes/abilities/settings/class-get-llms-txt.php',
+        'RankMath\\Abilities\\Settings\\Get_Robots_Txt' => __DIR__ . '/../..' . '/includes/abilities/settings/class-get-robots-txt.php',
         'RankMath\\Abilities\\Settings\\Get_Settings' => __DIR__ . '/../..' . '/includes/abilities/settings/class-get-settings.php',
         'RankMath\\Abilities\\Settings\\Get_System_Status' => __DIR__ . '/../..' . '/includes/abilities/settings/class-get-system-status.php',
         'RankMath\\Abilities\\Settings\\Set_Breadcrumb_Settings' => __DIR__ . '/../..' . '/includes/abilities/settings/class-set-breadcrumb-settings.php',
@@ -99,6 +112,8 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
         'RankMath\\Abilities\\Settings\\Set_Sitemap_Settings' => __DIR__ . '/../..' . '/includes/abilities/settings/class-set-sitemap-settings.php',
         'RankMath\\Abilities\\Settings\\Set_Website_Identity' => __DIR__ . '/../..' . '/includes/abilities/settings/class-set-website-identity.php',
         'RankMath\\Abilities\\Settings\\Subscriber' => __DIR__ . '/../..' . '/includes/abilities/settings/class-subscriber.php',
+        'RankMath\\Abilities\\Sitemap\\Get_Sitemap_Status' => __DIR__ . '/../..' . '/includes/abilities/sitemap/class-get-sitemap-status.php',
+        'RankMath\\Abilities\\Sitemap\\Subscriber' => __DIR__ . '/../..' . '/includes/abilities/sitemap/class-subscriber.php',
         'RankMath\\Abilities\\Subscriber_Interface' => __DIR__ . '/../..' . '/includes/abilities/interface-subscriber.php',
         'RankMath\\Admin\\Admin' => __DIR__ . '/../..' . '/includes/admin/class-admin.php',
         'RankMath\\Admin\\Admin_Breadcrumbs' => __DIR__ . '/../..' . '/includes/admin/class-admin-breadcrumbs.php',
@@ -393,6 +408,7 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
         'RankMath\\ThirdParty\\WPML' => __DIR__ . '/../..' . '/includes/3rdparty/wpml/class-wpml.php',
         'RankMath\\Thumbnail_Overlay' => __DIR__ . '/../..' . '/includes/class-thumbnail-overlay.php',
         'RankMath\\Tools\\AIOSEO_Blocks' => __DIR__ . '/../..' . '/includes/modules/database-tools/class-aioseo-blocks.php',
+        'RankMath\\Tools\\AIOSEO_FAQ_Converter' => __DIR__ . '/../..' . '/includes/modules/database-tools/class-aioseo-faq-converter.php',
         'RankMath\\Tools\\AIOSEO_TOC_Converter' => __DIR__ . '/../..' . '/includes/modules/database-tools/class-aioseo-toc-converter.php',
         'RankMath\\Tools\\Database_Tools' => __DIR__ . '/../..' . '/includes/modules/database-tools/class-database-tools.php',
         'RankMath\\Tools\\Update_Score' => __DIR__ . '/../..' . '/includes/modules/database-tools/class-update-score.php',
@@ -432,6 +448,29 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
         'RankMath\\WooCommerce\\Sitemap' => __DIR__ . '/../..' . '/includes/modules/woocommerce/class-sitemap.php',
         'RankMath\\WooCommerce\\WC_Vars' => __DIR__ . '/../..' . '/includes/modules/woocommerce/class-wc-vars.php',
         'RankMath\\WooCommerce\\WooCommerce' => __DIR__ . '/../..' . '/includes/modules/woocommerce/class-woocommerce.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\AuthorizeCallback' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/AuthorizeCallback.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\AuthorizeEndpoint' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/AuthorizeEndpoint.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\CimdResolver' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/CimdResolver.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\ClaudeClientVerifier' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/ClaudeClientVerifier.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\ConsentEndpoint' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/ConsentEndpoint.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\Discovery\\Endpoints' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/Discovery/Endpoints.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\Discovery\\HealthCheck' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/Discovery/HealthCheck.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\Http404Trait' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/Http404Trait.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\JWT' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/JWT.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\ParseBodyTrait' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/ParseBodyTrait.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\RevokeEndpoint' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/RevokeEndpoint.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\Rewrite' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/Rewrite.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\Router' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/Router.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\SecretManager' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/SecretManager.php',
+        'WPMedia\\MCP\\OAuth\\Auth\\TokenEndpoint' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Auth/TokenEndpoint.php',
+        'WPMedia\\MCP\\OAuth\\Bootstrap' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Bootstrap.php',
+        'WPMedia\\MCP\\OAuth\\Context' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Context.php',
+        'WPMedia\\MCP\\OAuth\\Logging\\McpLogger' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Logging/McpLogger.php',
+        'WPMedia\\MCP\\OAuth\\Transport\\McpObservabilityHandler' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Transport/McpObservabilityHandler.php',
+        'WPMedia\\MCP\\OAuth\\Transport\\OAuthHttpTransport' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Transport/OAuthHttpTransport.php',
+        'WPMedia\\MCP\\OAuth\\Transport\\Server' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Transport/Server.php',
+        'WPMedia\\MCP\\OAuth\\Transport\\ServerRegistrar' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Transport/ServerRegistrar.php',
+        'WPMedia\\MCP\\OAuth\\Views\\Render' => __DIR__ . '/..' . '/wp-media/mcp-oauth/inc/Views/Render.php',
         'WPMedia\\Mixpanel\\Optin' => __DIR__ . '/..' . '/wp-media/wp-mixpanel/src/Optin.php',
         'WPMedia\\Mixpanel\\Tracking' => __DIR__ . '/..' . '/wp-media/wp-mixpanel/src/Tracking.php',
         'WPMedia\\Mixpanel\\TrackingPlugin' => __DIR__ . '/..' . '/wp-media/wp-mixpanel/src/TrackingPlugin.php',
@@ -709,9 +748,9 @@ class ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit201f9c42499d4bdfbb99397d553be8b8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitda5118e07739bcc2a9ee8b03eeea8972::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitda5118e07739bcc2a9ee8b03eeea8972::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitda5118e07739bcc2a9ee8b03eeea8972::$classMap;
 
         }, null, ClassLoader::class);
     }

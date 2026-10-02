@@ -32,7 +32,7 @@ class Color_Picker_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 		if ( empty( $options ) ) {
 			return '';
 		}
@@ -55,6 +55,7 @@ class Color_Picker_Block extends Abstract_Block {
 	/**
 	 * Get specific attributes
 	 *
+	 * @param array $price_info Price information.
 	 * @return array
 	 */
 	private function get_field_specific_attributes( $price_info ) {
@@ -76,15 +77,16 @@ class Color_Picker_Block extends Abstract_Block {
 	/**
 	 * Render color picker input
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_color_picker( $price_info ): string {
 		$html = '<div class="prad-d-flex prad-item-center prad-gap-12 prad-w-full">';
 
-		// Input field
+		// Input field.
 		$html .= $this->render_color_input( $price_info );
 
-		// Price beside input
+		// Price beside input.
 		if ( $this->should_show_price_beside_field( $price_info ) ) {
 			$html .= $this->render_price_html( $price_info, 'beside' );
 		}
@@ -92,13 +94,12 @@ class Color_Picker_Block extends Abstract_Block {
 		$html .= '</div>';
 
 		return $html;
-
-		return $html;
 	}
 
 	/**
 	 * Render color picker input
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_color_input( $price_info ): string {
@@ -116,6 +117,9 @@ class Color_Picker_Block extends Abstract_Block {
 	/**
 	 * Render color picker input
 	 *
+	 * @param array  $price_info    Price information.
+	 * @param string $default_color Default color value.
+	 * @param string $block_id      Block ID.
 	 * @return string
 	 */
 	private function render_input_type_color( $price_info, $default_color, $block_id ): string {
@@ -136,6 +140,7 @@ class Color_Picker_Block extends Abstract_Block {
 	/**
 	 * Render color picker input
 	 *
+	 * @param string $default_color Default color value.
 	 * @return string
 	 */
 	private function render_input_type_text( $default_color ): string {

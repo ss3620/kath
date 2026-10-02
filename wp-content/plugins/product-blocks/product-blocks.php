@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WowStore – Store Builder & Product Blocks for WooCommerce
  * Description: <a href="https://www.wpxpo.com/product/wowstore/?utm_source=wowstore_org&utm_medium=wpxpo&utm_campaign=wstore-dashboard">WowStore</a> is an all-in-one solution for creating visually stunning and conversion-focused WooCommerce stores. The main and attractive features are WooCommerce Builder, Variation Swatches, Wishlist, Comparison, etc.
- * Version:     4.5.5
+ * Version:     4.5.7
  * Author:      WowStore Team
  * Author URI:  https://www.wpxpo.com/product/wowstore/?utm_source=db-wstore-plugin&utm_medium=wpxpo&utm_campaign=wstore-dashboard
  * Text Domain: product-blocks
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define Constants.
-define( 'WOPB_VER', '4.5.5' );
+define( 'WOPB_VER', '4.5.7' );
 define( 'WOPB_URL', plugin_dir_url( __FILE__ ) );
 define( 'WOPB_BASE', plugin_basename( __FILE__ ) );
 define( 'WOPB_PATH', plugin_dir_path( __FILE__ ) );

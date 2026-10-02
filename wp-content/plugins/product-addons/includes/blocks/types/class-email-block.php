@@ -32,7 +32,7 @@ class Email_Block extends Abstract_Block {
 	 * @return string
 	 */
 	public function render(): string {
-		$options = $this->get_field_options();
+		$options = $this->get_field_options( true );
 		if ( empty( $options ) ) {
 			return '';
 		}
@@ -67,6 +67,7 @@ class Email_Block extends Abstract_Block {
 	/**
 	 * Render email input section
 	 *
+	 * @param array $price_info Price information.
 	 * @return string
 	 */
 	private function render_email_input( array $price_info ): string {

@@ -9,6 +9,10 @@
 
 namespace RevenuePro;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class Revenue_Pro_Install {
 
 

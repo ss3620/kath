@@ -15,8 +15,10 @@ class WC_Zip_Controller_Charge_Controller extends WC_Zip_Controller_Abstract_Con
 	public function create_charge( $options ) {
 		 $result = array( 'result' => false );
 
-		// validate the $options
-		if ( ! isset( $options['result'] ) || ! isset( $options['checkoutId'] ) ) {
+		// validate the $options. These come straight from the query string, where a
+		// repeated parameter arrives as an array and passes isset() happily.
+		if ( ! isset( $options['result'] ) || ! isset( $options['checkoutId'] )
+			|| ! is_string( $options['result'] ) || ! is_string( $options['checkoutId'] ) ) {
 			$result['title']   = 'Invalid request';
 			$result['content'] = 'There are some parameters missing in the request url.';
 			wc_add_notice( __( 'The payment has been cancelled.', 'zippayment' ), 'error' );
@@ -36,22 +38,24 @@ class WC_Zip_Controller_Charge_Controller extends WC_Zip_Controller_Abstract_Con
 			WC_Zipmoney_Payment_Gateway_Config::LOG_LEVEL_DEBUG
 		);
 
+		$order_id = 0;
+
 		try {
 			switch ( $options['result'] ) {
 				case 'approved':
 					// if it is approved, then we will create a charge
 
 					// Once the result is approved, change the post_type from "shop_quote" to "shop_order"
-					if ( $this->WC_Zipmoney_Payment_Gateway->doTokenisation() ) {
+					if ( $this->WC_Zipmoney_Payment_Gateway->doTokenisation() && isset( $options['key'] ) ) {
 						$order_id = wc_get_order_id_by_order_key( wc_clean( wp_unslash( $options['key'] ) ) );
 					}
 
 					if ( ! $order_id ) {
-						$order_id = get_option( $checkoutId );
+						$order_id = WC_Zipmoney_Payment_Gateway_Util::get_checkout_order_id( $checkoutId );
 					}
 					// AU SMI adding prefix but lightbox redirect will not have prefix
 					if ( ! $order_id ) {
-						$order_id = get_option( 'au-' . $checkoutId );
+						$order_id = WC_Zipmoney_Payment_Gateway_Util::get_checkout_order_id( 'au-' . $checkoutId );
 						if ( $order_id ) {
 							$checkoutId = 'au-' . $checkoutId;
 						}
@@ -99,7 +103,7 @@ class WC_Zip_Controller_Charge_Controller extends WC_Zip_Controller_Abstract_Con
 					$result['redirect_url'] = $this->wc_get_checkout_url();
 					wc_add_notice( __( 'Your application has been declined. Please contact Zip Co for further information.', 'zippayment' ), 'error' );
 					// remove the wp_option
-					delete_option( $checkoutId );
+					WC_Zipmoney_Payment_Gateway_Util::delete_checkout_order_id( $checkoutId );
 					break;
 				case 'cancelled':
 					$result['title']   = 'The checkout has been cancelled';
@@ -107,7 +111,7 @@ class WC_Zip_Controller_Charge_Controller extends WC_Zip_Controller_Abstract_Con
 					wc_add_notice( __( 'The payment has been cancelled.', 'zippayment' ), 'error' );
 					$result['redirect_url'] = $this->wc_get_checkout_url();
 					// remove the wp_option
-					delete_option( $checkoutId );
+					WC_Zipmoney_Payment_Gateway_Util::delete_checkout_order_id( $checkoutId );
 					break;
 			}
 		} catch ( Exception $ex ) {

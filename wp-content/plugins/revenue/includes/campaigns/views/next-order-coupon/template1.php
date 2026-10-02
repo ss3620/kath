@@ -8,6 +8,7 @@
  * @subpackage Templates
  * @version    1.0.0
  */
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file: variables are scoped to include context, not true globals.
 
 //phpcs:ignore Generic.Files.LineEndings.InvalidEOLChar
 
@@ -18,8 +19,6 @@ use Revenue;
 /**
  * The Template for displaying revenue view
  *
- * @package Revenue
- * @version 1.0.0
  */
 
 defined( 'ABSPATH' ) || exit;

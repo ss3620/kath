@@ -7,6 +7,11 @@
  *
  * @package TikTok
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 require_once 'Tt4b_Pixel_Class.php';
 add_action( 'woocommerce_add_to_cart', array( 'Tt4b_Pixel_Class', 'inject_add_to_cart_event' ), 40, 4 );
 add_action( 'woocommerce_before_single_product_summary', array( 'Tt4b_Pixel_Class', 'inject_view_content_event' ) );

@@ -5,8 +5,7 @@
 
 namespace Revenue;
 
-//phpcs:disable WordPress.PHP.StrictInArray.MissingTrueStrict, WordPress.PHP.StrictComparisons.LooseComparison
-
+defined( 'ABSPATH' ) || exit;
 
 /**
  * WowRevenue Campaign: Normal Discount
@@ -50,50 +49,7 @@ class Revenue_Normal_Discount {
 		add_filter( 'revenue_campaign_normal_discount_cart_item_price', array( $this, 'cart_item_price' ), 9999, 2 );
 	}
 
-	/**
-	 * Retrieves the offer products for a given campaign.
-	 *
-	 * @param int $campaign_id The ID of the campaign.
-	 * @return array An array of offer product data.
-	 */
-	public function get_offer_products( $campaign_id ) {
-		$offer_data = array();
 
-		$offers = revenue()->get_campaign_meta( $campaign_id, 'offers', true );
-
-		foreach ( $offers as $offer ) {
-			$offered_product_ids = $offer['products'] ?? array();
-			$offer_qty           = $offer['quantity'] ?? '';
-			$offer_value         = $offer['value'] ?? '';
-			$offer_type          = $offer['type'] ?? '';
-			$is_tag_enabled      = isset( $offer['isEnableTag'] ) && 'yes' === $offer['isEnableTag'];
-
-			foreach ( $offered_product_ids as $offer_product_id ) {
-				$offered_product = wc_get_product( $offer_product_id );
-				if ( ! $offered_product || ! $offered_product->is_in_stock() ) {
-					continue;
-				}
-				if ( revenue()->is_hide_product( $campaign_id, $offer_product_id ) ) {
-					continue;
-				}
-
-				$image = wp_get_attachment_image_src( get_post_thumbnail_id( $offered_product->get_id() ), 'single-post-thumbnail' ) ?: array( wc_placeholder_img_src() );
-
-				// Add the product data to the offer_data array.
-				$offer_data[] = array(
-					'title'          => $offered_product->get_title(),
-					'thumbnail'      => $image[0],  // Corrected this line.
-					'regular_price'  => $offered_product->get_regular_price(),
-					'sale_price'     => $offered_product->get_sale_price(),
-					'min_qty'        => $offer_qty,
-					'discount_type'  => $offer_type,
-					'discount_value' => $offer_value,
-				);
-			}
-		}
-
-		return $offer_data;
-	}
 
 	/**
 	 * Outputs in-page views for a list of campaigns.
@@ -200,7 +156,10 @@ class Revenue_Normal_Discount {
 
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-					extract( $data ); //phpcs:ignore
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 			}
@@ -215,7 +174,7 @@ class Revenue_Normal_Discount {
 				}
 				$this->rendered_campaign_ids[] = $campaign['id'];
 
-				revenue()->load_popup_assets( $campaign );
+				revenue()->load_popup_assets();
 
 				revenue()->update_campaign_impression( $campaign['id'] );
 				$current_campaign = $campaign;
@@ -232,7 +191,10 @@ class Revenue_Normal_Discount {
 
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-					extract( $data ); //phpcs:ignore
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 			}
@@ -246,7 +208,7 @@ class Revenue_Normal_Discount {
 					continue;
 				}
 
-				revenue()->load_floating_assets( $campaign );
+				revenue()->load_floating_assets();
 
 				$this->rendered_campaign_ids[] = $campaign['id'];
 
@@ -265,7 +227,10 @@ class Revenue_Normal_Discount {
 
 				if ( file_exists( $file_path ) ) {
 					do_action( 'revenue_before_campaign_render', $campaign['id'], $campaign );
-					extract( $data ); //phpcs:ignore
+					// Template vars supplied by the caller (no extract()).
+					$display_type = $data['display_type'] ?? '';
+					$placement    = $data['placement'] ?? '';
+					$position     = $data['position'] ?? '';
 					include $file_path;
 				}
 			}
@@ -302,9 +267,9 @@ class Revenue_Normal_Discount {
 
 			foreach ( $offers as $offer ) {
 
-				$offered_products = $offer['products'];
+				$offered_products = array_map( 'absint', (array) $offer['products'] );
 
-				if ( in_array( $product_id, $offered_products ) && $offer['quantity'] <= $cart_quantity ) {
+				if ( in_array( $product_id, $offered_products, true ) && $offer['quantity'] <= $cart_quantity ) {
 					$offer_type  = isset( $offer['type'] ) ? $offer['type'] : '';
 					$offer_value = isset( $offer['value'] ) ? $offer['value'] : '';
 				}
@@ -353,9 +318,9 @@ class Revenue_Normal_Discount {
 			$offer_value = '';
 
 			foreach ( $offers as $offer ) {
-				$offered_products = $offer['products'];
+				$offered_products = array_map( 'absint', (array) $offer['products'] );
 
-				if ( in_array( $product_id, $offered_products ) && $offer['quantity'] <= $cart_quantity ) {
+				if ( in_array( $product_id, $offered_products, true ) && $offer['quantity'] <= $cart_quantity ) {
 					$offer_type  = isset( $offer['type'] ) ? $offer['type'] : '';
 					$offer_value = isset( $offer['value'] ) ? $offer['value'] : '';
 				}
